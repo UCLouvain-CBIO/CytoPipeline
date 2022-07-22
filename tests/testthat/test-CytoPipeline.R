@@ -1,0 +1,573 @@
+# # flags controlling execution flow of this file
+# runFullPipelineTests <- TRUE
+# 
+# rawDataDir <- paste0(system.file("extdata", package = "CytoPipeline"), "/")
+# rdsDir <- paste0(system.file("extdata", package = "CytoPipeline"), "/")
+# experimentName <- "OMIP021_PeacoQC"
+# sampleFiles <- paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+# 
+# # main parameters : sample files and output files
+# pipelineParams <- list()
+# pipelineParams$experimentName <- experimentName
+# pipelineParams$sampleFiles <- sampleFiles
+# pipelineParams$storePreprocessedFiles <- FALSE
+# pipelineParams$storePlotsInFiles <- FALSE
+# pipelineParams$saveScaleTransform <- FALSE
+# 
+# test_that("CytoPipeline default creation raises no error", {
+#   expect_error(pipL0 <- CytoPipeline(), NA)
+# })
+# 
+# test_that("Cytopipeline add/remove/clean processing step works", {
+#   pipL <- CytoPipeline(pipelineParams)
+# 
+#   pipL <- addProcessingStep(pipL,
+#                             whichQueue = "scale transform",
+#                             CytoProcessingStep(
+#                               name = "scale_transform_read",
+#                               FUN = "readRDS",
+#                               ARGS = list(file = paste0(rdsDir,"OMIP021_TransList.rds"))
+#                             )
+#   )
+# 
+#   expect_equal(getNbProcessingSteps(pipL, "scale transform"), 1)
+# 
+#   pipL <- addProcessingStep(pipL,
+#                             whichQueue = "scale transform",
+#                             CytoProcessingStep(
+#                               name = "scale_transform_sum",
+#                               FUN = "sum",
+#                               ARGS = list()
+#                             )
+#   )
+# 
+# 
+#   expect_equal(getNbProcessingSteps(pipL, "scale transform"), 2)
+# 
+#   pipL <- removeProcessingStep(pipL,
+#                                 whichQueue = "scale transform",
+#                                 index = 2)
+#   expect_equal(getNbProcessingSteps(pipL, "scale transform"), 1)
+#   pS <- getProcessingStep(pipL, whichQueue = "scale transform", index = 1)
+#   expect_equal(pS@FUN, "readRDS")
+# 
+#   pipL <- addProcessingStep(pipL,
+#                             whichQueue = "pre-processing",
+#                             CytoProcessingStep(
+#                               name = "pre-processing_sum",
+#                               FUN = "sum",
+#                               ARGS = list()
+#                             )
+#                            )
+#   expect_equal(getNbProcessingSteps(pipL, "scale transform"), 1)
+#   expect_equal(getNbProcessingSteps(pipL, "pre-processing"), 1)
+# 
+#   expect_error(pipL <- addProcessingStep(pipL,
+#                                          whichQueue = "pre-processing",
+#                                          CytoProcessingStep(
+#                                            name = "pre-processing_sum",
+#                                            FUN = "mean",
+#                                            ARGS = list()
+#                                          )
+#   ), regexp = "There already exist a step")
+# 
+#   pipL <- cleanProcessingSteps(pipL)
+#   expect_equal(getNbProcessingSteps(pipL, "scale transform"), 0)
+#   expect_equal(getNbProcessingSteps(pipL, "pre-processing"), 0)
+# 
+# })
+# 
+# test_that("CytoPipeline with reading scale transfo only raises no error", {
+#   expect_error({
+#   pipL <- CytoPipeline(pipelineParams)
+# 
+#   pipL <-
+#     addProcessingStep(pipL,
+#                       whichQueue = "scale transform",
+#                       CytoProcessingStep(
+#                         name = "scale_transform_read",
+#                         FUN = "readRDS",
+#                         ARGS = list(file = paste0(rdsDir,"OMIP021_TransList.rds"))
+#                       )
+#     )
+#   suppressWarnings(execute(pipL, rmCache = TRUE))}, NA)
+# })
+# 
+# if (runFullPipelineTests) {
+#   test_that("CytoPipeline with complex flows raises no error", {
+#     expect_error({
+#       pipL <- CytoPipeline(pipelineParams)
+# 
+#       ### SCALE TRANSFORMATION STEPS ###
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "scale transform",
+#                           CytoProcessingStep(
+#                             name = "flowframe_read",
+#                             FUN = "readSampleFiles",
+#                             ARGS = list(whichSamples = "all",
+#                                         truncate_max_range = FALSE,
+#                                         min.limit = NULL)
+#                           ))
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "scale transform",
+#                           CytoProcessingStep(
+#                             name = "remove_margins",
+#                             FUN = "removeMarginsPeacoQC",
+#                             ARGS = list()
+#                           ))
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "scale transform",
+#                           CytoProcessingStep(
+#                             name = "compensate",
+#                             FUN = "compensateFromMatrix",
+#                             ARGS = list(matrixSource = "fcs")
+#                           ))
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "scale transform",
+#                           CytoProcessingStep(
+#                             name = "flowframe_aggregate",
+#                             FUN = "FF_AggregateAndSample",
+#                             ARGS = list(nTotalEvents = 10000,
+#                                         seed = 0)
+#                           ))
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "scale transform",
+# 
+#                           CytoProcessingStep(
+#                             name = "scale_transform_estimate",
+#                             FUN = "estimateScaleTransforms",
+#                             ARGS = list(fluoMethod = "estimateLogicle",
+#                                         scatterMethod = "linear",
+#                                         scatterRefMarker = "BV785 - CD3")
+#                           ))
+# 
+#       ### PRE-PROCESSING STEPS ###
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "pre-processing",
+#                           CytoProcessingStep(
+#                             name = "flowframe_read",
+#                             FUN = "readSampleFiles",
+#                             ARGS = list(truncate_max_range = FALSE,
+#                                         min.limit = NULL)
+#                           ))
+# 
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "pre-processing",
+#                           CytoProcessingStep(
+#                             name = "remove_margins",
+#                             FUN = "removeMarginsPeacoQC",
+#                             ARGS = list()
+#                           ))
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "pre-processing",
+#                           CytoProcessingStep(
+#                             name = "compensate",
+#                             FUN = "compensateFromMatrix",
+#                             ARGS = list(matrixSource = "fcs")
+#                           ))
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "pre-processing",
+#                           CytoProcessingStep(
+#                             name = "remove_doublets",
+#                             FUN = "removeDoubletsFlowStats",
+#                             ARGS = list(areaChannels = c("FSC-A", "SSC-A"),
+#                                         heightChannels = c("FSC-H", "SSC-H"),
+#                                         wider_gate = TRUE)
+#                           ))
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "pre-processing",
+#                           CytoProcessingStep(
+#                             name = "remove_debris",
+#                             FUN = "removeDebrisFlowClustTmix",
+#                             ARGS = list(FSCChannel = c("FSC-A"),
+#                                         SSCChannel = c("SSC-A"),
+#                                         nClust = 3,
+#                                         level = 0.97,
+#                                         B = 100,
+#                                         verbose = TRUE)
+#                           ))
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "pre-processing",
+#                           CytoProcessingStep(
+#                             name = "remove_dead_cells",
+#                             FUN = "removeDeadCellsGateTail",
+#                             ARGS = list(
+#                               FSCChannel = c("FSC-A"),
+#                               LDMarker = "L/D Aqua - Viability",
+#                               num_peaks = 2,
+#                               ref_peak = 2,
+#                               strict = FALSE,
+#                               positive = FALSE)
+#                           ))
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "pre-processing",
+#                           CytoProcessingStep(
+#                             name = "perform_QC",
+#                             FUN = "qualityControlPeacoQC",
+#                             ARGS = list(preTransform = TRUE,
+#                                         min_cells = 150, #default
+#                                         max_bins = 500, # default
+#                                         step = 500, # default,
+#                                         MAD = 6, # default
+#                                         IT_limit = 0.55, # default
+#                                         force_IT = 150, # default
+#                                         peak_removal = 0.3333, #default
+#                                         min_nr_bins_peakdetection = 10 # default
+#                             )
+#                           ))
+# 
+#       pipL <-
+#         addProcessingStep(pipL,
+#                           whichQueue = "pre-processing",
+#                           CytoProcessingStep(
+#                             name = "transform",
+#                             FUN = "applyScaleTransforms",
+#                             ARGS = list()
+#                           ))
+# 
+#       suppressWarnings(execute(pipL, rmCache = TRUE))}, NA)
+#   })
+# 
+#   test_that("CytoPipeline with json input raises no error", {
+#     expect_error({
+#         jsonPath <- system.file("extdata",
+#                                 "pipelineParams.json",
+#                                 package = "CytoPipeline")
+#         pipL2 <- CytoPipeline(jsonPath)
+#         suppressWarnings(execute(pipL2, rmCache = FALSE))},
+#       NA)
+#   })
+# 
+#   test_that("CytoPipeline rebuilt from cache raises no error", {
+#     expect_error({
+#       pipL3 <- buildCytoPipelineFromCache(experimentName = experimentName)
+#       suppressWarnings(execute(pipL3, rmCache = FALSE))},
+#       NA)
+#   })
+# 
+#   test_that("CytoPipeline not in cache with warning", {
+#     expect_warning(
+#       pipL4 <- buildCytoPipelineFromCache(experimentName = "non_existent"),
+#       regexp = "no cache directory found")
+#   })
+#   
+#   
+#   test_that("Check consistency with cache works", {
+#     pipL5 <- CytoPipeline(experimentName = "DummyExperiment")
+#     sampleFiles(pipL5) <- sampleFiles
+#     deleteCytoPipelineCache(pipL5)
+#     
+#     pipL5 <- addProcessingStep(pipL5,
+#                                "scale transform",
+#                                CytoProcessingStep(
+#                                  name = "flowframe_read",
+#                                  FUN = "readSampleFiles",
+#                                  ARGS = list(whichSamples = "all",
+#                                              truncate_max_range = FALSE,
+#                                              min.limit = NULL)
+#                                ))
+#     res <- checkCytoPipelineConsistencyWithCache(pipL5)
+#     
+#     expect_error(suppressWarnings(execute(pipL5, rmCache = TRUE)), NA)
+#     
+#     res <- checkCytoPipelineConsistencyWithCache(pipL5)
+#     expect_equal(res$isConsistent, TRUE)
+#     expect_equal(unname(res$scaleTransformStepStatus[1]), "run")
+#     
+#     pipL5 <-
+#       addProcessingStep(pipL5,
+#                         whichQueue = "pre-processing",
+#                         CytoProcessingStep(
+#                           name = "flowframe_read",
+#                           FUN = "readSampleFiles",
+#                           ARGS = list(truncate_max_range = FALSE,
+#                                       min.limit = NULL)
+#                         ))
+#     res <- checkCytoPipelineConsistencyWithCache(pipL5)
+#     expect_equal(res$isConsistent, TRUE)
+#     expect_equal(unname(res$scaleTransformStepStatus[1]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[1,1]), "not_run")
+#     expect_equal(unname(res$preProcessingStepStatus[1,2]), "not_run")
+#     expect_equal(res$scaleTransformStepOutputObjNames, c("flowframe_read_obj"))
+#     expect_equal(res$scaleTransformStepOutputClasses, c("flowSet"))
+#     expect_equal(res$preProcessingStepOutputObjNames, c("unknown"))
+#     expect_equal(res$preProcessingStepOutputClasses, c("unknown"))
+#     
+#     expect_error(execute(pipL5, rmCache = FALSE), NA)
+#     res <- checkCytoPipelineConsistencyWithCache(pipL5)
+#     expect_equal(res$isConsistent, TRUE)
+#     expect_equal(unname(res$scaleTransformStepStatus[1]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[1,1]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[1,2]), "run")
+#     expect_equal(res$scaleTransformStepOutputObjNames, c("flowframe_read_obj"))
+#     expect_equal(res$scaleTransformStepOutputClasses, c("flowSet"))
+#     expect_equal(res$preProcessingStepOutputObjNames, c("flowframe_read_obj"))
+#     expect_equal(res$preProcessingStepOutputClasses, c("flowFrame"))
+#     
+#     pipL5 <-
+#       addProcessingStep(pipL5,
+#                         whichQueue = "pre-processing",
+#                         CytoProcessingStep(
+#                           name = "remove_margins",
+#                           FUN = "removeMarginsPeacoQC",
+#                           ARGS = list()
+#                         ))
+#     
+#     res <- checkCytoPipelineConsistencyWithCache(pipL5)
+#     expect_equal(res$isConsistent, TRUE)
+#     expect_equal(unname(res$scaleTransformStepStatus[1]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[1,1]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[1,2]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[2,1]), "not_run")
+#     expect_equal(unname(res$preProcessingStepStatus[2,2]), "not_run")
+#     expect_equal(res$scaleTransformStepOutputObjNames, c("flowframe_read_obj"))
+#     expect_equal(res$scaleTransformStepOutputClasses, c("flowSet"))
+#     expect_equal(res$preProcessingStepOutputObjNames,
+#                  c("flowframe_read_obj", "unknown"))
+#     expect_equal(res$preProcessingStepOutputClasses,
+#                  c("flowFrame", "unknown"))
+#     
+#     
+#     expect_error(suppressWarnings(execute(pipL5, rmCache = FALSE)), NA)
+#     res <- checkCytoPipelineConsistencyWithCache(pipL5)
+#     expect_equal(res$isConsistent, TRUE)
+#     expect_equal(unname(res$scaleTransformStepStatus[1]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[1,1]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[1,2]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[2,1]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[2,2]), "run")
+#     expect_equal(res$scaleTransformStepOutputObjNames, c("flowframe_read_obj"))
+#     expect_equal(res$scaleTransformStepOutputClasses, c("flowSet"))
+#     expect_equal(res$preProcessingStepOutputObjNames,
+#                  c("flowframe_read_obj", "remove_margins_obj"))
+#     expect_equal(res$preProcessingStepOutputClasses,
+#                  c("flowFrame", "flowFrame"))
+#     
+#     pipL5_bad <- pipL5
+#     
+#     pipL5_bad@flowFramesPreProcessingQueue[[2]]@name <- "aaaaaa"
+#     res <- checkCytoPipelineConsistencyWithCache(pipL5_bad)
+#     expect_equal(res$isConsistent, FALSE)
+#     expect_equal(res$inconsistencyMsg,
+#                  paste0("inconsistent pre-processing step #2 for sample file ",
+#                         "sample_Donor1.fcs (different in cache)"))
+#     expect_equal(unname(res$scaleTransformStepStatus[1]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[1,1]), "run")
+#     expect_equal(unname(res$preProcessingStepStatus[2,1]), "inconsistent")
+#     
+#     expect_error(suppressWarnings(execute(pipL5_bad, rmCache = FALSE)),
+#                  regexp = "inconsistent pre-processing step")
+#     
+#     pipL5 <- removeProcessingStep(pipL5, whichQueue = "pre-processing",
+#                                   index = 2)
+#     
+#     expect_equal(res$isConsistent, FALSE)
+#     expect_equal(res$inconsistencyMsg,
+#                  "inconsistent pre-processing step #2 for sample file sample_Donor1.fcs (different in cache)")
+#   })
+#   
+#   
+#   test_that("plotCytoPipelineProcessingQueue works", {
+#     pipL6 <- CytoPipeline(experimentName = "DummyExperiment")
+#     
+#     deleteCytoPipelineCache(pipL6)
+#     
+#     sampleFiles(pipL6) <- sampleFiles[2] # put only second sample file for the time being
+#     pipL6 <- addProcessingStep(pipL6,
+#                                "scale transform",
+#                                CytoProcessingStep(
+#                                  name = "flowframe_read",
+#                                  FUN = "readSampleFiles",
+#                                  ARGS = list(whichSamples = "all",
+#                                              truncate_max_range = FALSE,
+#                                              min.limit = NULL)
+#                                ))
+#     
+#     expect_error(plotCytoPipelineProcessingQueue(pipL6,
+#                                                  whichQueue = "scale transform"), NA)
+#     
+#     expect_error(suppressWarnings(execute(pipL6, rmCache = TRUE)), NA)
+#     
+#     expect_error(plotCytoPipelineProcessingQueue(pipL6,
+#                                                  whichQueue = "scale transform"), NA)
+#     expect_message(plotCytoPipelineProcessingQueue(pipL6,
+#                                                    whichQueue = "pre-processing"),
+#                    regexp = "no sample file passed")
+#     
+#     pipL6 <-
+#       addProcessingStep(pipL6,
+#                         whichQueue = "pre-processing",
+#                         CytoProcessingStep(
+#                           name = "flowframe_read",
+#                           FUN = "readSampleFiles",
+#                           ARGS = list(truncate_max_range = FALSE,
+#                                       min.limit = NULL)
+#                         ))
+#     
+#     expect_error(plotCytoPipelineProcessingQueue(pipL6,
+#                                                  whichQueue = "scale transform"), NA)
+#     expect_message(plotCytoPipelineProcessingQueue(pipL6,
+#                                                    whichQueue = "pre-processing"),
+#                    regexp = "no sample file passed")
+#     
+#     execute(pipL6, rmCache = FALSE)
+#     
+#     plotCytoPipelineProcessingQueue(pipL6,
+#                                     whichQueue = "scale transform")
+#     expect_error(plotCytoPipelineProcessingQueue(pipL6,
+#                                                  sampleFile = 1,
+#                                                  whichQueue = "pre-processing"), NA)
+#     expect_error(plotCytoPipelineProcessingQueue(pipL6,
+#                                                  sampleFile = 2,
+#                                                  whichQueue = "pre-processing"),
+#                  regexp = "out of bounds")
+#     
+#     
+#     pipL6 <-
+#       addProcessingStep(pipL6,
+#                         whichQueue = "pre-processing",
+#                         CytoProcessingStep(
+#                           name = "remove_margins",
+#                           FUN = "removeMarginsPeacoQC",
+#                           ARGS = list()
+#                         ))
+#     plotCytoPipelineProcessingQueue(pipL6,
+#                                     whichQueue = "scale transform")
+#     plotCytoPipelineProcessingQueue(pipL6,
+#                                     sampleFile = 1,
+#                                     whichQueue = "pre-processing")
+#     
+#     suppressWarnings(execute(pipL6, rmCache = FALSE))
+#     
+#     plotCytoPipelineProcessingQueue(pipL6,
+#                                     whichQueue = "scale transform")
+#     plotCytoPipelineProcessingQueue(pipL6,
+#                                     sampleFile = 1,
+#                                     whichQueue = "pre-processing")
+#     
+#     # add first sample file to see the impact
+#     sampleFiles(pipL6) <- sampleFiles
+#     
+#     plotCytoPipelineProcessingQueue(pipL6,
+#                                     whichQueue = "scale transform")
+#     # following should show yellow boxes
+#     plotCytoPipelineProcessingQueue(pipL6,
+#                                     whichQueue = "pre-processing")
+#     # following should show bow in green
+#     plotCytoPipelineProcessingQueue(pipL6,
+#                                     sampleFile = 2,
+#                                     whichQueue = "pre-processing")
+#     
+#     suppressWarnings(execute(pipL6, rmCache = FALSE))
+#     
+#     plotCytoPipelineProcessingQueue(pipL6,
+#                                     whichQueue = "scale transform")
+#     # following should now show the green box
+#     plotCytoPipelineProcessingQueue(pipL6,
+#                                     whichQueue = "pre-processing")
+#     # following as well
+#     plotCytoPipelineProcessingQueue(pipL6,
+#                                     sampleFile = sampleFiles[2],
+#                                     whichQueue = "pre-processing")
+#     
+#     
+#     pipL6@flowFramesPreProcessingQueue[[2]]@name <- "aaaaaa"
+#     
+#     expect_warning(plotCytoPipelineProcessingQueue(
+#       pipL6,
+#       whichQueue = "scale transform"),
+#       regexp = "CytoPipeline object not consistent with cache")
+#     
+#     expect_warning(plotCytoPipelineProcessingQueue(
+#       pipL6,
+#       sampleFile = 1,
+#       whichQueue = "pre-processing"),
+#       regexp = "CytoPipeline object not consistent with cache")
+#     
+#     
+#     expect_error(execute(pipL6, rmCache = FALSE), regexp = "inconsistent")
+#   })
+#   
+#   test_that("getCytoPipelineObject works",{
+#     expect_error({
+#       pipL7 <- buildCytoPipelineFromCache(experimentName = experimentName)
+#       
+#       plotCytoPipelineProcessingQueue(pipL7,
+#                                       sampleFile = 1,
+#                                       whichQueue = "pre-processing")
+#       
+#       getCytoPipelineObjectInfos(pipL7, whichQueue = "pre-processing",
+#                                  sampleFile = sampleFiles[1])
+#       getCytoPipelineObjectInfos(pipL7, whichQueue = "scale transform",
+#                                  sampleFile = sampleFiles[1])
+#       
+#       ffFrom <- getCytoPipelineFlowFrame(pipL7,
+#                                          whichQueue = "pre-processing",
+#                                          sampleFile = sampleFiles[1],
+#                                          objectName = "compensate_obj")
+#       
+#       ffTo <- getCytoPipelineFlowFrame(pipL7,
+#                                        whichQueue = "pre-processing",
+#                                        sampleFile = sampleFiles[1],
+#                                        objectName = "remove_doublets_obj")
+#       
+#       ggplotFilterEvents(ffFrom, ffTo, xchannel = "FSC-A", ychannel = "FSC-H")
+#       
+#       plotCytoPipelineProcessingQueue(pipL7,
+#                                       whichQueue = "scale transform")
+#     }, NA)
+#     
+#     
+#     expect_error(getCytoPipelineScaleTransform(pipL7,
+#                                                whichQueue = "scale transform",
+#                                                objectName = "flowframe_aggregate_obj"),
+#                  regexp = "does not appear to be transformList")
+#     
+#     expect_error(transList <-
+#                    getCytoPipelineScaleTransform(pipL7,
+#                                                  whichQueue = "scale transform",
+#                                                  objectName = "scale_transform_estimate_obj"),
+#                  NA)
+#     
+#     expect_error(ffAgg <- getCytoPipelineFlowFrame(pipL7,
+#                                                    whichQueue = "scale transform",
+#                                                    objectName = "flowframe_aggregate_obj"),
+#                  NA)
+#     
+#   })
+# 
+# 
+# }
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 

@@ -1,0 +1,62 @@
+Package: CytoPipeline
+Title: Automation and visualization of flow cytometry data analysis pipelines
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "Philippe",
+             family = "Hauchamps",
+             role = c("aut", "cre"),
+             email = "philippe.hauchamps@uclouvain.be",
+             comment = c(ORCID = "0000-0003-2865-1852")),
+      person(given = "Laurent", family = "Gatto",
+             email = "laurent.gatto@uclouvain.be",
+             role = "aut",
+             comment = c(ORCID = "0000-0002-1520-2268")))
+Description: This package provides support for automation and visualization of flow cytometry data analysis pipelines.
+License: >GPL-3 + file
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.0
+LazyData: true
+LazyDataCompression: gzip
+Collate: 
+    'CytoPipeline-functions.R'
+    'CytoPipeline.R'
+    'CytoProcessingStep.R'
+    'CytoProcessingStepImplementations.R'
+    'data.R'
+    'utils.R'
+    'ggplots.R'
+Depends: 
+    R (>= 4.2),
+    flowCore
+Imports:
+    grDevices,
+    graphics,
+    methods,
+    stats,
+    ggplot2,
+    ggcyto,
+    plotly,
+    shiny,
+    BiocFileCache,
+    flowWorkspace,
+    FlowSOM,
+    CytoML,
+    openCyto,
+    PeacoQC,
+    flowAI,
+    flowClean,
+    flowCut,
+    flowClust,
+    flowStats,
+    ggpubr,
+    diagram,
+    jsonlite
+Suggests: 
+    testthat (>= 3.0.0),
+    vdiffr,
+    diffviewer,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Config/testthat/edition: 3
