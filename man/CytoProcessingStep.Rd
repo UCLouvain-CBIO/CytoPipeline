@@ -16,13 +16,13 @@ CytoProcessingStep(name = character(), FUN = character(), ARGS = list())
 
 \S4method{show}{CytoProcessingStep}(object)
 
-executeProcessingStep(object, ...)
+executeProcessingStep(x, ...)
 
-getName(object)
+getName(x)
 
 \method{as.list}{CytoProcessingStep}(x, ...)
 
-as.json.CytoProcessingStep(object, pretty = FALSE)
+as.json.CytoProcessingStep(x, pretty = FALSE)
 
 from.json.CytoProcessingStep(jsonString)
 }
@@ -34,9 +34,15 @@ from the function name}
 
 \item{ARGS}{\code{list} of arguments to be passed along to \code{FUN}.}
 
-\item{object}{\code{CytoProcessingStep} object.}
+\item{object}{a \code{CytoProcessingStep} object.}
 
-\item{...}{optional additional arguments to be passed along.}
+\item{x}{a \code{CytoProcessingStep} object.}
+
+\item{...}{other arguments (not used)}
+
+\item{pretty}{formatting set-up (see jsonlite::toJSON doc)}
+
+\item{jsonString}{a \code{character()} containing a JSON string.}
 }
 \value{
 The \code{CytoProcessingStep} function returns and object of type

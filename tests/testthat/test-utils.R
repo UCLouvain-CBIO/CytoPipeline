@@ -1,3 +1,15 @@
+# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
+#   
+#   Description and complete License: see LICENSE file.
+# 
+# This program (CytoPipeline) is free software: 
+#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details (<http://www.gnu.org/licenses/>).
+
 ff <- OMIP021Samples[[1]]
 
 # adding Original_ID column
@@ -268,6 +280,40 @@ test_that("findTimeChannel works", {
   ret3 <- findTimeChannel(OMIP021Samples[[1]],
                           excludeChannels = "Time")
   expect_null(ret3)
+})
+
+test_that("getChannelNamesFromMarkers works", {
+  # with existing markers
+  ret <- getChannelNamesFromMarkers(OMIP021Samples[[1]],
+                                    c("FSC-A",
+                                      "L/D Aqua - Viability",
+                                      "FITC - gdTCR",
+                                      "PECy5 - CD28"))
+  
+  expected <- c("FSC-A", "525/50Violet-A", "530/30Blue-A", "670/30Yellow-A")
+  expect_equal(ret, expected)
+  
+  # with boolean vector
+  indices <- c(1, 6, 14, 18)
+  boolInput <- rep(FALSE, 21)
+  boolInput[indices] <- TRUE 
+  ret <- getChannelNamesFromMarkers(OMIP021Samples[[1]],
+                                    boolInput)
+  
+  expect_equal(ret, expected)
+
+  
+  # with indices vector
+  ret <- getChannelNamesFromMarkers(OMIP021Samples[[1]],
+                                    boolInput)
+  expect_equal(ret, expected)
+  
+  # missing channel
+  missingInput <- c("CD4")
+  
+  expect_error(getChannelNamesFromMarkers(OMIP021Samples[[1]],
+                                    missingInput),
+               regexp = "could not be found")
 })
 
 

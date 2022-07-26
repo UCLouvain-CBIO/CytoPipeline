@@ -108,6 +108,7 @@ appendCellID <- function (ff, eventIDs = 1:flowCore::nrow(ff))
 #' column names for fluorochrom channels
 #' @param ff a flowCore::flowFrame
 #' @return new flowCore::flowFrame with the new column names
+#' @export
 addCompensation2FluoChannelNames <- function(ff){
   if (!inherits(ff, "flowFrame")){
     stop("ff type not recognized, should be a flowFrame")
@@ -233,7 +234,7 @@ aggregateAndSample <- function (fs,
         flowFrame <- current_ff
       }
       else {
-        channels <- GetChannels(current_ff, channels)
+        channels <- getChannelNamesFromMarkers(current_ff, channels)
         flowFrame <- current_ff[, c(channels, colnames(m)),
                                 drop = FALSE]
       }
@@ -295,10 +296,10 @@ getTransfoParams <- function(transList,
   if (is.null(transMap)) {
     return(NULL)
   } else {
-    if (.hasSlot(transMap, "f")) {
-      tf <- new("transform", .Data = transMap@f)
-    } else if (.hasSlot(transMap, ".Data")) {
-      tf <- new("transform", .Data = transMap@.Data)
+    if (methods::.hasSlot(transMap, "f")) {
+      tf <- methods::new("transform", .Data = transMap@f)
+    } else if (methods::.hasSlot(transMap, ".Data")) {
+      tf <- methods::new("transform", .Data = transMap@.Data)
     } else {
       stop("transfo on channel does not have 'f' or '.Data' slot => not handled")
     }
@@ -394,8 +395,8 @@ computeScatterChannelsLinearScale <- function(ff,
   }
 
 
-  q5Goal <- quantile(flowCore::exprs(ff_t)[,referenceChannel], 0.05)
-  q95Goal <- quantile(flowCore::exprs(ff_t)[,referenceChannel], 0.95)
+  q5Goal <- stats::quantile(flowCore::exprs(ff_t)[,referenceChannel], 0.05)
+  q95Goal <- stats::quantile(flowCore::exprs(ff_t)[,referenceChannel], 0.95)
 
   # adapt scatter channels to have the same percentiles
   # -A channels are modified independently, and the SAME transfo are applied to
@@ -403,8 +404,8 @@ computeScatterChannelsLinearScale <- function(ff,
   foundAreaScatter <- FALSE
   if ("FSC-A" %in% scatterChannels) {
     ch <- "FSC-A"
-    q5FSCA <- quantile(flowCore::exprs(ff)[, ch], 0.05)
-    q95FSCA <- quantile(flowCore::exprs(ff)[, ch], 0.95)
+    q5FSCA <- stats::quantile(flowCore::exprs(ff)[, ch], 0.05)
+    q95FSCA <- stats::quantile(flowCore::exprs(ff)[, ch], 0.95)
     FSCAa <- (q95Goal - q5Goal) / (q95FSCA - q5FSCA)
     FSCAb <- q5Goal - q5FSCA * (q95Goal - q5Goal) / (q95FSCA - q5FSCA)
     if (!silent) {
@@ -452,8 +453,8 @@ computeScatterChannelsLinearScale <- function(ff,
   }
   if ("SSC-A" %in% scatterChannels) {
     ch <- "SSC-A"
-    q5SSCA <- quantile(flowCore::exprs(ff)[, ch], 0.05)
-    q95SSCA <- quantile(flowCore::exprs(ff)[, ch], 0.95)
+    q5SSCA <- stats::quantile(flowCore::exprs(ff)[, ch], 0.05)
+    q95SSCA <- stats::quantile(flowCore::exprs(ff)[, ch], 0.95)
     SSCAa <- (q95Goal - q5Goal) / (q95SSCA - q5SSCA)
     SSCAb <- q5Goal - q5SSCA * (q95Goal - q5Goal) / (q95SSCA - q5SSCA)
     if (!silent) {
@@ -540,7 +541,7 @@ findTimeChannel <- function(obj, excludeChannels = c()) {
   if (is.na(time)) {
     if (isFlowSet)
       xx <- exprs(obj[[1]])[, includedChannels]
-    else if (is(obj, "flowFrame"))
+    else if (methods::is(obj, "flowFrame"))
       xx <- exprs(obj)[, includedChannels]
     cont <- apply(xx, 2, function(y) all(sign(diff(y)) >=
                                            0))
@@ -550,5 +551,59 @@ findTimeChannel <- function(obj, excludeChannels = c()) {
   if (!length(time) || length(time) > 1)
     time <- NULL
   return(time)
+}
+
+#' @title get channel names from markers
+#' @description finds name of channels corresponding to user provided markers
+#'
+#' @param ff a flowCore::flowFrame
+#' @param markers a vector of markers, either provided as :
+#' - an array of booleans (referring to flowFrame columns)
+#' - an array of integers (indices in flowFrame columns)
+#' - an array of characters (exact markers or channel patterns)
+#'
+#' @return a character vector, containing the names of the corresponding channels
+#' @export
+#'
+getChannelNamesFromMarkers <- function (ff, markers) 
+{
+  if (!inherits(ff, "flowFrame")) {
+    stop("ff type not recognized, should be a flowFrame")
+  }
+  
+  frameChannels <- unname(flowCore::parameters(ff)@data[["name"]])
+  frameMarkers <- unname(flowCore::parameters(ff)@data[["desc"]])
+  
+  if (is.logical(markers)) 
+    markers <- which(markers)
+  channelNames <- c()
+  for (marker in markers) {
+    if (is.numeric(marker)) {
+      iChannel <- marker
+    }
+    else {
+      marker <- paste0("^\\Q", marker, "\\E$")
+      iChannel <- grep(marker, frameMarkers)
+    }
+    if (length(iChannel) != 0) {
+      for (i in iChannel) {
+        channel <- frameChannels[iChannel]
+        names(channel) <- frameMarkers[iChannel]
+        channelNames <- c(channelNames, channel)
+      }
+    }
+    else {
+      iChannel <- grep(marker, frameChannels)
+      if (length(iChannel) != 0) {
+        channel <- frameChannels[iChannel]
+        names(channel) <- channel
+        channelNames <- c(channelNames, channel)
+      }
+      else {
+        stop(paste("Marker", marker, "could not be found"))
+      }
+    }
+  }
+  return(unname(channelNames))
 }
 

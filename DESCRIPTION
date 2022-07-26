@@ -12,7 +12,7 @@ Authors@R:
              role = "aut",
              comment = c(ORCID = "0000-0002-1520-2268")))
 Description: This package provides support for automation and visualization of flow cytometry data analysis pipelines.
-License: >GPL-3 + file
+License: GPL (>=3) | file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
@@ -30,28 +30,19 @@ Depends:
     R (>= 4.2),
     flowCore
 Imports:
-    grDevices,
-    graphics,
     methods,
     stats,
     ggplot2,
     ggcyto,
-    plotly,
-    shiny,
     BiocFileCache,
-    flowWorkspace,
-    FlowSOM,
-    CytoML,
     openCyto,
     PeacoQC,
     flowAI,
-    flowClean,
-    flowCut,
     flowClust,
     flowStats,
-    ggpubr,
     diagram,
-    jsonlite
+    jsonlite,
+    scales
 Suggests: 
     testthat (>= 3.0.0),
     vdiffr,

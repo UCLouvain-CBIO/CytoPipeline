@@ -1,3 +1,15 @@
+# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
+#   
+#   Description and complete License: see LICENSE file.
+# 
+# This program (CytoPipeline) is free software: 
+#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details (<http://www.gnu.org/licenses/>).
+
 setClassUnion("characterOrFunction", c("character", "function"))
 
 #' @title Cyto Processing step
@@ -52,7 +64,7 @@ setClass("CytoProcessingStep",
            if (length(object@FUN)) {
              if (!is.function(object@FUN)) {
                res <- try(match.fun(object@FUN), silent = TRUE)
-               if (is(res, "try-error"))
+               if (methods::is(res, "try-error"))
                  msg <- c(msg, paste0("Function '", object@FUN,
                                       "' not found."))
              }
@@ -76,7 +88,7 @@ CytoProcessingStep <- function(name = character(), FUN = character(),
                                ARGS = list())  {
   if (missing(FUN))
     FUN <- character()
-  new("CytoProcessingStep", name = name, FUN = FUN, ARGS = ARGS)
+  methods::new("CytoProcessingStep", name = name, FUN = FUN, ARGS = ARGS)
 }
 
 .cat_fun <- function(x) {
@@ -86,6 +98,8 @@ CytoProcessingStep <- function(name = character(), FUN = character(),
 }
 
 #' @rdname CytoProcessingStep
+#' 
+#' @param object a `CytoProcessingStep` object.
 #'
 #' @exportMethod show
 setMethod("show", "CytoProcessingStep", function(object) {
@@ -102,7 +116,7 @@ setMethod("show", "CytoProcessingStep", function(object) {
   }
 })
 
-#' @param object `CytoProcessingStep` object.
+#' @param x a `CytoProcessingStep` object.
 #'
 #' @param ... optional additional arguments to be passed along.
 #'
@@ -111,31 +125,32 @@ setMethod("show", "CytoProcessingStep", function(object) {
 #' @md
 #'
 #' @export
-executeProcessingStep <- function(object, ...) {
-  if (!is(object, "CytoProcessingStep"))
-    stop("'object' should be a 'CytoProcessingStep' object!")
-  do.call(object@FUN, args = c(list(...), object@ARGS))
+executeProcessingStep <- function(x, ...) {
+  if (!methods::is(x, "CytoProcessingStep"))
+    stop("'x' should be a 'CytoProcessingStep' object!")
+  do.call(x@FUN, args = c(list(...), x@ARGS))
 }
 
-#' @param object `CytoProcessingStep` object.
+#' @param x a `CytoProcessingStep` object.
 #'
 #' @rdname CytoProcessingStep
 #'
 #' @export
-getName <- function(object) {
-  if (!is(object, "CytoProcessingStep"))
-    stop("'object' should be a 'CytoProcessingStep' object!")
-  return(object@name)
+getName <- function(x) {
+  if (!methods::is(x, "CytoProcessingStep"))
+    stop("'x' should be a 'CytoProcessingStep' object!")
+  return(x@name)
 }
 
-#' @param object `CytoProcessingStep` object.
+#' @param x a `CytoProcessingStep` object.
+#' @param ... other arguments (not used)
 #'
 #' @rdname CytoProcessingStep
 #'
 #' @export
 as.list.CytoProcessingStep <- function(x, ...) {
-  if (!is(x, "CytoProcessingStep"))
-    stop("'object' should be a 'CytoProcessingStep' object!")
+  if (!methods::is(x, "CytoProcessingStep"))
+    stop("'x' should be a 'CytoProcessingStep' object!")
   ll <- list()
   ll$name <- x@name
   ll$FUN <- x@FUN
@@ -143,18 +158,19 @@ as.list.CytoProcessingStep <- function(x, ...) {
   return(ll)
 }
 
-#' @param object `CytoProcessingStep` object.
+#' @param x a `CytoProcessingStep` object.
+#' @param pretty formatting set-up (see jsonlite::toJSON doc)
 #'
 #' @rdname CytoProcessingStep
 #'
 #' @export
-as.json.CytoProcessingStep <- function(object, pretty = FALSE) {
-  myList <- as.list.CytoProcessingStep(object)
+as.json.CytoProcessingStep <- function(x, pretty = FALSE) {
+  myList <- as.list.CytoProcessingStep(x)
   ret <- jsonlite::toJSON(myList, pretty = pretty, null = "null")
   return(as.character(ret))
 }
 
-#' @param object `CytoProcessingStep` object.
+#' @param jsonString a `character()` containing a JSON string.
 #'
 #' @rdname CytoProcessingStep
 #'

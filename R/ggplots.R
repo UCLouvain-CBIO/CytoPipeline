@@ -1,3 +1,27 @@
+# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
+#   
+#   Description and complete License: see LICENSE file.
+# 
+# This program (CytoPipeline) is free software: 
+#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details (<http://www.gnu.org/licenses/>).
+
+# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
+#   
+#   Description and complete License: see LICENSE file.
+# 
+# This program (CytoPipeline) is free software: 
+#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details (<http://www.gnu.org/licenses/>).
+
 ##' @include utils.R
 NULL
 
@@ -42,7 +66,8 @@ ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100)
 
     df
   }
-
+  
+  
   if (isFlowSet) {
     df <- flowCore::fsApply(obj, FUN = flowRateDataFrame,
                                timeUnit = timeUnit)
@@ -52,7 +77,9 @@ ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100)
     df <- flowRateDataFrame(obj, timeUnit = timeUnit)
   }
 
-
+  # following 2 statements just to allow R cmd CHECK w/o note
+  time <- NULL
+  nbEvents <- NULL
   pTime <- ggplot(df) + theme_gray() +
     geom_point(aes(x = time, y = nbEvents)) +
     geom_line(aes(x = time, y = nbEvents)) +
@@ -329,6 +356,7 @@ ggplotFilterEvents <- function(ffPre, ffPost,
 
   nEvents <- nrow(df)
   if(nDisplayCells < 1) stop("n_display_cells should be strictly positive!")
+  i <- 0
   if(nDisplayCells < nEvents){
     if(!is.null(seed)){
       set.seed(seed)
@@ -365,6 +393,9 @@ ggplotFilterEvents <- function(ffPre, ffPost,
   }
 
   # plot main layer
+  # following 2 statements just to allow R cmd CHECK w/o note
+  x <- NULL
+  y <- NULL
   p <- ggplot(df[i,], aes(x = x, y = y)) +
     geom_point(size = size,
                color = ifelse(flowCore::exprs(ffPre)[i,"Original_ID"] %in%

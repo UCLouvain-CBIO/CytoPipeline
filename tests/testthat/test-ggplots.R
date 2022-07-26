@@ -1,3 +1,15 @@
+# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
+#   
+#   Description and complete License: see LICENSE file.
+# 
+# This program (CytoPipeline) is free software: 
+#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details (<http://www.gnu.org/licenses/>).
+
 compensationMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
 
 ffC <- CytoPipeline::compensate(OMIP021Samples[[1]],
@@ -92,11 +104,8 @@ test_that("ggplotFilterEvents works", {
   ffPre <- OMIP021Samples[[1]]
 
   LDMarker <- "L/D Aqua - Viability"
-  # p <- ggplotEvents(ffPre, xChannel = "FSC-A", xScale = "linear",
-  #                         yChannel = LDMarker, yScale = "logicle")
-  # p
-
-  LDChannel <- FlowSOM::GetChannels(ffPre, markers = LDMarker)
+  
+  LDChannel <- getChannelNamesFromMarkers(ffPre, markers = LDMarker)
   liveGateMatrix <- matrix(data = c(50000, 50000, 100000, 200000, 200000,
                                       100, 1000, 2000, 2000, 1),
                              ncol = 2,

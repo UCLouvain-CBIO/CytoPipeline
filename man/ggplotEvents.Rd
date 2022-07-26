@@ -51,7 +51,7 @@ transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)}
 
 \item{xLinearRange}{if (xScale == "linear"), the x axis range to be used}
 
-\item{yLinearRange}{if (yscale == "linear"), the y axis range to be used}
+\item{yLinearRange}{if (yScale == "linear"), the y axis range to be used}
 }
 \value{
 a list of ggplot objects
