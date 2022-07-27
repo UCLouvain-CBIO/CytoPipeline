@@ -18,7 +18,9 @@ ggplotEvents(
   xLogicleParams = list(w = 2, m = 6.42, a = 0, t = 262144),
   yLogicleParams = list(w = 2, m = 6.42, a = 0, t = 262144),
   xLinearRange = NULL,
-  yLinearRange = NULL
+  yLinearRange = NULL,
+  transList = NULL,
+  runTransforms = FALSE
 )
 }
 \arguments{
@@ -52,6 +54,19 @@ transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)}
 \item{xLinearRange}{if (xScale == "linear"), the x axis range to be used}
 
 \item{yLinearRange}{if (yScale == "linear"), the y axis range to be used}
+
+\item{transList}{optional list of scale transformations to be applied to each
+channel. If it is non null, 'x/yScale', 'x/yLogicleParams' and
+'x/yLinear_range' will be discarded.}
+
+\item{runTransforms}{(TRUE/FALSE) only taken into account if transList is
+not NULL. Will 'transList' result in data being effectively transformed ?
+\itemize{
+\item If TRUE, than the data will undergo transformations prior to
+visualization.
+\item If FALSE, the axis will be scaled but the data themselves are
+not transformed.
+}}
 }
 \value{
 a list of ggplot objects

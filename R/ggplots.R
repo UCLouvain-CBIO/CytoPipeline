@@ -114,6 +114,15 @@ ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100)
 #' transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)
 #' @param xLinearRange if (xScale == "linear"), the x axis range to be used
 #' @param yLinearRange if (yScale == "linear"), the y axis range to be used
+#' @param transList optional list of scale transformations to be applied to each 
+#' channel. If it is non null, 'x/yScale', 'x/yLogicleParams' and 
+#' 'x/yLinear_range' will be discarded.
+#' @param runTransforms (TRUE/FALSE) only taken into account if transList is 
+#' not NULL. Will 'transList' result in data being effectively transformed ?
+#' - If TRUE, than the data will undergo transformations prior to
+#' visualization.
+#' - If FALSE, the axis will be scaled but the data themselves are
+#' not transformed.
 #' @return a list of ggplot objects
 #' @import ggplot2
 #' @importFrom ggcyto scale_x_logicle
@@ -135,7 +144,9 @@ ggplotEvents <- function(obj,
                          yLogicleParams = list(w = 2, m = 6.42,
                                                  a = 0, t = 262144),
                          xLinearRange = NULL,
-                         yLinearRange = NULL){
+                         yLinearRange = NULL,
+                         transList = NULL,
+                         runTransforms = FALSE){
 
 
   #browser()
@@ -154,12 +165,18 @@ ggplotEvents <- function(obj,
 
   xChMk <- flowCore::getChannelMarker(fr, xChannel)
   xChannel <- xChMk$name
-  xLabel <- paste0(xChMk$name, " : ", xChMk$desc)
+  xLabel <- xChannel
+  if (!is.na(xChMk$desc)) {
+    xLabel <- paste0(xLabel, " : ", xChMk$desc)
+  }
 
   if(!is.null(yChannel)){
     yChMk <- flowCore::getChannelMarker(fr, yChannel)
     yChannel <- yChMk$name
-    yLabel <- paste0(yChMk$name, " : ", yChMk$desc)
+    yLabel <- yChannel
+    if (!is.na(yChMk$desc)) {
+      yLabel <- paste0(yLabel, " : ", yChMk$desc)
+    }
   }
 
   # perform sub-sampling if necessary
@@ -173,6 +190,68 @@ ggplotEvents <- function(obj,
     } else {
       obj <- subsample(obj, nSamples = nDisplayCells, seed = seed)
     }
+  }
+  
+  xTransformed <- FALSE
+  yTransformed <- FALSE
+  if (!is.null(transList)) {
+    
+    res <- getTransfoParams(transList, xChannel)
+    if (!is.null(res)) {
+      if (runTransforms) {
+        xScale <- "linear"
+        xTransformed <- TRUE
+        if (res$type == "logicle") {
+          xLinearRange <- c(0, res$paramsList$m)
+        }
+      } else {
+        xScale <- res$type
+        if(res$type == "logicle"){
+          xLogicleParams <- res$paramsList
+        }
+      }
+    }
+    
+    if (!is.null(yChannel)) {
+      res <- getTransfoParams(transList, yChannel)
+      if(!is.null(res)){
+        if (runTransforms) {
+          yScale <- "linear"
+          yTransformed <- TRUE
+          if (res$type == "logicle") {
+            yLinearRange <- c(0, res$paramsList$m)
+          }
+        } else {
+          yScale <- res$type
+          if(res$type == "logicle"){
+            yLogicleParams <- res$paramsList
+          }
+        }
+      }
+    }
+    
+    if (runTransforms) {
+      # adapt scale to linear and linear_range to null if trans_list is passed
+      # and is effectively run
+      appliedTransList <- c()
+      
+      # remove not mentioned channels from trans_list
+      appliedTransList <- transList
+      transChannels <- names(transList@transforms)
+      for (n in transChannels) {
+        if (! (n %in% c(xChannel, yChannel))) {
+          appliedTransList@transforms[[n]] <- NULL
+        }
+      }
+      if (isFlowSet) {
+        obj <- flowCore::fsApply(obj, FUN = function(ff, transList){
+          flowCore::transform(obj, translist = transList)
+        }, transList = appliedTransList)
+      } else {
+        obj <- flowCore::transform(obj, translist = appliedTransList)
+      }
+      
+    } 
   }
 
   # find axis ranges depending on scales
@@ -203,6 +282,12 @@ ggplotEvents <- function(obj,
 
   # main plot layer
 
+  if (xTransformed) {
+    xLabel <- paste0(xLabel, " (transformed)")
+  }
+  if (yTransformed) {
+    yLabel <- paste0(yLabel, " (transformed)")
+  }
 
   if(is.null(yChannel)){
     p <- ggplot(data = obj,
@@ -335,11 +420,19 @@ ggplotFilterEvents <- function(ffPre, ffPost,
 
   xChMk <- flowCore::getChannelMarker(ffPre, xChannel)
   xChannel <- xChMk$name
-  xLabel <- paste0(xChMk$name, " : ", xChMk$desc)
-
-  yChMk <- flowCore::getChannelMarker(ffPre, yChannel)
-  yChannel <- yChMk$name
-  yLabel <- paste0(yChMk$name, " : ", yChMk$desc)
+  xLabel <- xChannel
+  if (!is.na(xChMk$desc)) {
+    xLabel <- paste0(xLabel, " : ", xChMk$desc)
+  }
+  
+  if(!is.null(yChannel)){
+    yChMk <- flowCore::getChannelMarker(ffPre, yChannel)
+    yChannel <- yChMk$name
+    yLabel <- yChannel
+    if (!is.na(yChMk$desc)) {
+      yLabel <- paste0(yLabel, " : ", yChMk$desc)
+    }
+  }
 
   if (!"Original_ID" %in% flowCore::colnames(ffPre)) {
     ffPre <- appendCellID(ffPre)

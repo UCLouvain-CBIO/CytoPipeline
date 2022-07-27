@@ -69,7 +69,7 @@
 <polyline points='52.32,383.51 55.06,383.51 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
 <polyline points='52.32,244.88 55.06,244.88 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
 <polyline points='52.32,106.26 55.06,106.26 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<text x='384.79' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='57.46px' lengthAdjust='spacingAndGlyphs'>FSC-A : NA</text>
+<text x='384.79' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='33.01px' lengthAdjust='spacingAndGlyphs'>FSC-A</text>
 <text transform='translate(13.05,292.27) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='34.86px' lengthAdjust='spacingAndGlyphs'>density</text>
 <text x='55.06' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='170.98px' lengthAdjust='spacingAndGlyphs'>ggplotEvents 1D linear single</text>
 </g>

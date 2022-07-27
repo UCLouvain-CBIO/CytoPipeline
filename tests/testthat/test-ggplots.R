@@ -10,16 +10,6 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
-compensationMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
-
-ffC <- CytoPipeline::compensate(OMIP021Samples[[1]],
-                      spillover = compensationMatrix)
-fsC <- CytoPipeline::compensate(OMIP021Samples,
-                      spillover = compensationMatrix)
-
-translist <- flowCore::estimateLogicle(ffC,
-                                       colnames(compensationMatrix))
-
 
 
 test_that("ggplotFlowRate works", {
@@ -75,6 +65,43 @@ test_that("ggplotEvents with 1D works", {
                     xScale = "logicle", alpha = 0.5, fill = 'red')
 
   vdiffr::expect_doppelganger("ggplotEvents 1D fill and color", fig = p)
+  
+  compensationMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
+  
+  ffC <- CytoPipeline::compensate(OMIP021Samples[[1]],
+                                  spillover = compensationMatrix,
+                                  updateChannelNames = FALSE)
+  
+  transList <- flowCore::estimateLogicle(ffC,
+                                         colnames(compensationMatrix))
+  
+  transList <- c(transList, 
+                 flowCore::transformList("FSC-A", 
+                                         flowCore::linearTransform(a = 0.00001)))
+  
+  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "450/50Violet-A",
+                    xScale = "linear", transList = transList, 
+                    runTransforms = FALSE)
+  vdiffr::expect_doppelganger("ggplotEvents 1D transformList logicle not run", 
+                              fig = p)
+  
+  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "450/50Violet-A",
+                    xScale = "linear", transList = transList, 
+                    runTransforms = TRUE)
+  vdiffr::expect_doppelganger("ggplotEvents 1D transformList logicle run", 
+                              fig = p)
+  
+  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "FSC-A",
+                    xScale = "logicle", transList = transList, 
+                    runTransforms = FALSE)
+  vdiffr::expect_doppelganger("ggplotEvents 1D transformList linear not run", 
+                              fig = p)
+  
+  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "FSC-A",
+                    xScale = "logicle", transList = transList, 
+                    runTransforms = TRUE)
+  vdiffr::expect_doppelganger("ggplotEvents 1D transformList linear run", 
+                              fig = p)
 })
 
 test_that("ggplotEvents with 2D works", {
