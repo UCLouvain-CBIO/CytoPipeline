@@ -18,43 +18,11 @@ sampleFiles <- paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 
 # reference compensated fcs file
 comp_matrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
-ff_c <- compensate(OMIP021Samples[[1]], spillover = comp_matrix)
+ff_c <- runCompensation(OMIP021Samples[[1]], spillover = comp_matrix)
 
 # reference scale transformation list
 refTransListPath <- paste0(rdsDir, "OMIP021_TransList.rds")
 refTransList <- readRDS(file = refTransListPath)
-
-# parameters for compensation
-
-#compensationMethod <- "import" # read matrix from an external file
-compensationMethod <- "fcs" #uses matrix stored in respective fcs files
-compensationParams <- list()
-
-# parameters for margin removal
-
-marginMethod <- "PeacoQC"
-marginParams <- list()
-
-transformMethod <- "compute"
-transformParams <- list()
-transformParams$aggNCells <- 100000
-transformParams$aggSeed <- 1
-transformParams$fcsReadParams <- list()
-transformParams$fcsReadParams$truncate_max_range <- FALSE
-transformParams$fcsReadParams$min.limit <- NULL
-transformParams$fluoMethod <- "estimateLogicle"
-transformParams$scatterMethod <- "linear"
-referenceMarker <- "BV785 - CD3" # Scatter values will be scaled to have the same range
-transformParams$scatterRefMarker <- referenceMarker
-transformParams$manualUpdate <- FALSE
-transformParams$saveTransfo <- FALSE
-#transformParams$rdsOutputDir <- rdsDir
-
-# parameters for import of scale transformations
-importTransformParams <- list()
-importTransformParams$manualUpdate <- FALSE
-importTransformParams$saveTransfo <- FALSE
-importTransformParams$rdsInputPath <- paste0(rdsDir, "OMIP021_TransList.rds")
 
 test_that("estimateScaleTransforms work", {
   

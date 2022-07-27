@@ -64,15 +64,15 @@ test_that("addCompensation2FluoChannelNames works", {
 
 })
 
-test_that("compensate works", {
+test_that("runCompensation works", {
   compMatrix <- flowCore::spillover(ff)$SPILL
   ff1 <- flowCore::compensate(ff, spillover = compMatrix)
-  ff2 <- CytoPipeline::compensate(ff, spillover = compMatrix,
+  ff2 <- runCompensation(ff, spillover = compMatrix,
                        updateChannelNames = FALSE)
 
   expect_equal(ff2, ff1)
 
-  ff2 <- compensate(ff, spillover = compMatrix)
+  ff2 <- runCompensation(ff, spillover = compMatrix)
   # the following avoids comparing name attributes
   expect_true(all(flowCore::exprs(ff2)==flowCore::exprs(ff1)))
   expect_equal(flowCore::colnames(ff2),
@@ -84,7 +84,7 @@ test_that("compensate works", {
                  "Comp-610/20Yellow-A","Comp-670/30Yellow-A","Comp-710/50Yellow-A",
                  "Comp-780/60Yellow-A","Time","Original_ID"))
 
-  fs <- CytoPipeline::compensate(OMIP021Samples,
+  fs <- runCompensation(OMIP021Samples,
                                  spillover = compMatrix)
   ff3 <- flowCore::compensate(OMIP021Samples[[1]],
                               spillover = compMatrix)

@@ -127,7 +127,7 @@ addCompensation2FluoChannelNames <- function(ff){
 
 #' @title compensate with additional options
 #' @description : this is a simple wrapper around the flowCore::compensate()
-#' utility, for now allowing to trigger an update of the fluo channel names
+#' utility, allowing to trigger an update of the fluo channel names
 #' with a prefix 'comp-' (as in FlowJo)
 #'
 #' @param obj a flowCore::flowFrame or flowCore::flowSet
@@ -140,7 +140,7 @@ addCompensation2FluoChannelNames <- function(ff){
 #'
 #' @return a new object with compensated data, and possibly updated column names
 #' @export
-compensate <- function(obj, spillover, updateChannelNames = TRUE){
+runCompensation <- function(obj, spillover, updateChannelNames = TRUE){
   isFlowSet <- FALSE
   if (inherits(obj, "flowSet")) {
     isFlowSet <- TRUE

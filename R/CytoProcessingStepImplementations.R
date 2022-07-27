@@ -144,9 +144,10 @@ compensateFromMatrix <- function(x,
                                      
     }
 
-    ffOut <- CytoPipeline::compensate(ff, 
-                                      compensationMatrix,
-                                      updateChannelNames = updateChannelNames)
+    ffOut <- runCompensation(ff, 
+                             compensationMatrix,
+                             updateChannelNames = updateChannelNames)
+                                      
     return(ffOut)
   }
 

@@ -68,9 +68,9 @@ test_that("ggplotEvents with 1D works", {
   
   compensationMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
   
-  ffC <- CytoPipeline::compensate(OMIP021Samples[[1]],
-                                  spillover = compensationMatrix,
-                                  updateChannelNames = FALSE)
+  ffC <- runCompensation(OMIP021Samples[[1]],
+                         spillover = compensationMatrix,
+                         updateChannelNames = FALSE)
   
   transList <- flowCore::estimateLogicle(ffC,
                                          colnames(compensationMatrix))
@@ -124,6 +124,33 @@ test_that("ggplotEvents with 2D works", {
   p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "TETaGC", xScale = "logicle",
                     yChannel = "CD27", yScale = "logicle", bins = 128)
   vdiffr::expect_doppelganger("ggplotEvents 2D x logicle y logicle bins", fig = p)
+  
+  
+  compensationMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
+  
+  ffC <- runCompensation(OMIP021Samples[[1]],
+                         spillover = compensationMatrix,
+                         updateChannelNames = FALSE)
+  
+  transList <- flowCore::estimateLogicle(ffC,
+                                         colnames(compensationMatrix))
+  
+  transList <- c(transList, 
+                 flowCore::transformList("FSC-A", 
+                                         flowCore::linearTransform(a = 0.00001)))
+  
+  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "TETaGC", xScale = "logicle",
+                    yChannel = "CD27", yScale = "logicle",
+                    transList = transList, 
+                    runTransforms = FALSE)
+  vdiffr::expect_doppelganger("ggplotEvents 2D x logicle y logicle transList not run",
+                              fig = p)
+  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "TETaGC", xScale = "logicle",
+                    yChannel = "CD27", yScale = "logicle",
+                    transList = transList, 
+                    runTransforms = TRUE)
+  vdiffr::expect_doppelganger("ggplotEvents 2D x logicle y logicle transList run",
+                              fig = p)
 })
 
 
