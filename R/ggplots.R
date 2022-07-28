@@ -170,7 +170,7 @@ ggplotEvents <- function(obj,
     xLabel <- paste0(xLabel, " : ", xChMk$desc)
   }
 
-  if(!is.null(yChannel)){
+  if (!is.null(yChannel)) {
     yChMk <- flowCore::getChannelMarker(fr, yChannel)
     yChannel <- yChMk$name
     yLabel <- yChannel
@@ -206,7 +206,7 @@ ggplotEvents <- function(obj,
         }
       } else {
         xScale <- res$type
-        if(res$type == "logicle"){
+        if (res$type == "logicle") {
           xLogicleParams <- res$paramsList
         }
       }
@@ -214,7 +214,7 @@ ggplotEvents <- function(obj,
     
     if (!is.null(yChannel)) {
       res <- getTransfoParams(transList, yChannel)
-      if(!is.null(res)){
+      if (!is.null(res)) {
         if (runTransforms) {
           yScale <- "linear"
           yTransformed <- TRUE
@@ -223,7 +223,7 @@ ggplotEvents <- function(obj,
           }
         } else {
           yScale <- res$type
-          if(res$type == "logicle"){
+          if (res$type == "logicle") {
             yLogicleParams <- res$paramsList
           }
         }
@@ -259,8 +259,8 @@ ggplotEvents <- function(obj,
   xScale <- match.arg(xScale)
   yScale <- match.arg(yScale)
 
-  if(xScale == "logicle"){
-    if(is.null(xLogicleParams)){
+  if (xScale == "logicle") {
+    if (is.null(xLogicleParams)) {
       stop("xLogicleParams can't be NULL if xScale == logicle")
     } else {
       xAxesLimits <- c(0, xLogicleParams$m)
@@ -269,8 +269,8 @@ ggplotEvents <- function(obj,
       myXRange <- myInverseTrans@.Data(xAxesLimits)
     }
   }
-  if(yScale == "logicle"){
-    if(is.null(yLogicleParams)){
+  if (yScale == "logicle") {
+    if (is.null(yLogicleParams)) {
       stop("yLogicleParams can't be NULL if yScale == logicle")
     } else {
       yAxesLimits <- c(0, yLogicleParams$m)
@@ -289,7 +289,7 @@ ggplotEvents <- function(obj,
     yLabel <- paste0(yLabel, " (transformed)")
   }
 
-  if(is.null(yChannel)){
+  if (is.null(yChannel)) {
     p <- ggplot(data = obj,
                 mapping = aes_q(x = as.symbol(xChannel))) +
       geom_density(fill = fill, alpha = alpha) +
@@ -311,12 +311,12 @@ ggplotEvents <- function(obj,
 
   # add scales for x and y, as well as axis limits
 
-  if(xScale == "logicle"){
-    if(is.null(yChannel)){
+  if (xScale == "logicle") {
+    if (is.null(yChannel)) {
       p <- p +
         do.call(scale_x_logicle, args = xLogicleParams) +
         coord_cartesian(xlim = myXRange)
-    } else if(yScale == "logicle") {
+    } else if (yScale == "logicle") {
       p <- p +
         do.call(scale_x_logicle, args = xLogicleParams) +
         do.call(scale_y_logicle, args = yLogicleParams) +
@@ -329,10 +329,10 @@ ggplotEvents <- function(obj,
                         ylim = yLinearRange)
     }
   } else {
-    if(is.null(yChannel)){
+    if (is.null(yChannel)) {
       p <- p +
         coord_cartesian(xlim = xLinearRange)
-    } else if(yScale == "logicle") {
+    } else if (yScale == "logicle") {
       p <- p +
         do.call(scale_y_logicle, args = yLogicleParams) +
         coord_cartesian(xlim = xLinearRange,
@@ -346,7 +346,7 @@ ggplotEvents <- function(obj,
 
   # if 2D, apply geom_hex at the end (after axis ranges)
   # and hex fill colour palette
-  if(!is.null(yChannel)){
+  if (!is.null(yChannel)) {
     p <- p + geom_hex(bins = bins) +
       scale_fill_gradientn(colours = grDevices::rainbow(n = 5, end = 0.65,
                                                         rev = TRUE,
@@ -425,7 +425,7 @@ ggplotFilterEvents <- function(ffPre, ffPost,
     xLabel <- paste0(xLabel, " : ", xChMk$desc)
   }
   
-  if(!is.null(yChannel)){
+  if (!is.null(yChannel)) {
     yChMk <- flowCore::getChannelMarker(ffPre, yChannel)
     yChannel <- yChMk$name
     yLabel <- yChannel
@@ -448,10 +448,10 @@ ggplotFilterEvents <- function(ffPre, ffPost,
   # perform sub-sampling if necessary
 
   nEvents <- nrow(df)
-  if(nDisplayCells < 1) stop("n_display_cells should be strictly positive!")
+  if (nDisplayCells < 1) stop("n_display_cells should be strictly positive!")
   i <- 0
-  if(nDisplayCells < nEvents){
-    if(!is.null(seed)){
+  if (nDisplayCells < nEvents) {
+    if (!is.null(seed)) {
       set.seed(seed)
     }
     i <- sample(nEvents, nDisplayCells)
@@ -464,8 +464,8 @@ ggplotFilterEvents <- function(ffPre, ffPost,
   xScale <- match.arg(xScale)
   yScale <- match.arg(yScale)
 
-  if(xScale == "logicle"){
-    if(is.null(xLogicleParams)){
+  if (xScale == "logicle") {
+    if (is.null(xLogicleParams)) {
       stop("x_logicle_params can't be NULL if xScale == logicle")
     } else {
       xAxesLimits <- c(0, xLogicleParams$m)
@@ -474,8 +474,8 @@ ggplotFilterEvents <- function(ffPre, ffPost,
       myXRange <- myInverseTrans@.Data(xAxesLimits)
     }
   }
-  if(yScale == "logicle"){
-    if(is.null(yLogicleParams)){
+  if (yScale == "logicle") {
+    if (is.null(yLogicleParams)) {
       stop("yLogicleParams can't be NULL if yScale == logicle")
     } else {
       yAxesLimits <- c(0, yLogicleParams$m)
@@ -507,16 +507,16 @@ ggplotFilterEvents <- function(ffPre, ffPost,
 
   # add scales for x and y, as well as axis limits
 
-  if(xScale == "logicle"){
+  if (xScale == "logicle") {
     xArgs <- xLogicleParams
     if (interactive) {
       xArgs <- c(xArgs, label=scales::scientific_format())
     } 
-    if(is.null(yChannel)){
+    if (is.null(yChannel)) {
       p <- p +
         do.call(scale_x_logicle, args = xArgs) +
         coord_cartesian(xlim = myXRange)
-    } else if(yScale == "logicle") {
+    } else if (yScale == "logicle") {
       yArgs <- yLogicleParams
       if (interactive) {
         yArgs <- c(yArgs, label=scales::scientific_format())
@@ -533,10 +533,10 @@ ggplotFilterEvents <- function(ffPre, ffPost,
                         ylim = yLinearRange)
     }
   } else {
-    if(is.null(yChannel)){
+    if (is.null(yChannel)) {
       p <- p +
         coord_cartesian(xlim = xLinearRange)
-    } else if(yScale == "logicle") {
+    } else if (yScale == "logicle") {
       yArgs <- yLogicleParams
       if (interactive) {
         yArgs <- c(yArgs, label=scales::scientific_format())

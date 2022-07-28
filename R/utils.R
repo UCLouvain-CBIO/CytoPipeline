@@ -21,7 +21,7 @@ areSignalCols <- function(ff,
   retCols <- sapply(flowCore::colnames(ff),
                           FUN = function(ch, toRemovePatterns){
                             res <- TRUE
-                            for(pat in toRemovePatterns){
+                            for (pat in toRemovePatterns) {
                               res <- res & !grepl(pat, ch, ignore.case = TRUE)
                             }
                             res
@@ -528,7 +528,7 @@ findTimeChannel <- function(obj, excludeChannels = c()) {
   isFlowSet <- FALSE
   if (inherits(obj, "flowSet")) {
     isFlowSet <- TRUE
-  } else if(inherits(obj, "flowFrame")) {
+  } else if (inherits(obj, "flowFrame")) {
   } else {
     stop("obj type not recognized, should be a flowFrame or flowSet")
   }

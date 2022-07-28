@@ -70,21 +70,21 @@ removeProcessingStep <- function(x,
                                  whichQueue = c("scale transform",
                                                 "pre-processing"),
                                 index) {
-  if(!is.numeric(index)){
+  if (!is.numeric(index)) {
     stop("index should be a numeric")
   }
   stopifnot(inherits(x, "CytoPipeline"))
   whichQueue <- match.arg(whichQueue)
   if (whichQueue == "scale transform"){
     ll <- length(x@scaleTransformProcessingQueue)
-    if(index<=0 || index > ll){
+    if (index<=0 || index > ll) {
       stop("index out of bound")
     }
     x@scaleTransformProcessingQueue <-
       x@scaleTransformProcessingQueue[-index]
   } else {
     ll <- length(x@flowFramesPreProcessingQueue)
-    if(index<=0 || index > ll){
+    if (index<=0 || index > ll) {
       stop("index out of bound")
     }
     x@flowFramesPreProcessingQueue <-
@@ -118,20 +118,20 @@ getProcessingStep <- function(x,
                               whichQueue = c("scale transform",
                                              "pre-processing"),
                               index) {
-  if(!is.numeric(index)){
+  if (!is.numeric(index)) {
     stop("index should be a numeric")
   }
   stopifnot(inherits(x, "CytoPipeline"))
   whichQueue <- match.arg(whichQueue)
   if (whichQueue == "scale transform"){
     ll <- length(x@scaleTransformProcessingQueue)
-    if(index<=0 || index > ll){
+    if (index<=0 || index > ll) {
       stop("index out of bound")
     }
     return(x@scaleTransformProcessingQueue[[index]])
   } else {
     ll <- length(x@flowFramesPreProcessingQueue)
-    if(index<=0 || index > ll){
+    if (index<=0 || index > ll) {
       stop("index out of bound")
     }
     return(x@flowFramesPreProcessingQueue[[index]])
@@ -147,7 +147,7 @@ getProcessingStepNames <- function(x, whichQueue = c("scale transform",
                                                      "pre-processing")) {
   nSteps <- getNbProcessingSteps(x, whichQueue)
   stepNames <- character()
-  if(nSteps > 0) {
+  if (nSteps > 0) {
     stepNames <- sapply(1:nSteps,
                         FUN = function(i) {
                           pS <- getProcessingStep(x, whichQueue, i)
@@ -253,7 +253,7 @@ execute <- function(x,
   # remove cache if 'rmCache' is set to
   if (rmCache) {
     bfci <- BiocFileCache::bfcinfo(bfc)
-    if(nrow(bfci) > 0) {
+    if (nrow(bfci) > 0) {
       warning("Found a previous cache with experiment name ",
               x@experimentName, " => removed it")
       BiocFileCache::removebfc(bfc, ask = FALSE)
@@ -327,7 +327,7 @@ execute <- function(x,
   } # end loop on steps
 
   # store transformList for use in flowFrames pre-processing steps
-  if(inherits(res, "transformList")) {
+  if (inherits(res, "transformList")) {
     currentTransList <- res
     if (x@saveScaleTransform) {
       if (!length(x@scaleTransformFile))
@@ -479,7 +479,7 @@ buildCytoPipelineFromCache <- function(experimentName, path = "."){
     if (nSteps > 0) {
       uniqueStepNbs <- unique(stepsInfos$stepNb)
 
-      if(length(uniqueStepNbs) != nrow(stepsInfos))
+      if (length(uniqueStepNbs) != nrow(stepsInfos))
         stop("more than one step having the same step nb. Cache is inconsistent,",
              " deleting it manually is advised")
 
@@ -504,7 +504,7 @@ buildCytoPipelineFromCache <- function(experimentName, path = "."){
     nSteps <- nrow(stepsInfos)
     if (nSteps > 0) {
       uniqueStepNbs <- unique(stepsInfos$stepNb)
-      if(length(uniqueStepNbs) != nrow(stepsInfos))
+      if (length(uniqueStepNbs) != nrow(stepsInfos))
         stop("more than one step having the same step nb. Cache is inconsistent,",
              " deleting it manually is advised")
       stepsInfos <- stepsInfos[order(stepsInfos$stepNb),]
@@ -582,7 +582,7 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
   bfc <- BiocFileCache::BiocFileCache(cacheDir, ask = FALSE)
   cacheInfo <- BiocFileCache::bfcinfo(bfc)
 
-  if(nrow(cacheInfo) == 0) {
+  if (nrow(cacheInfo) == 0) {
     return(ret)
   }
 
@@ -598,7 +598,7 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
   if (nStepsInCache > 0) {
     uniqueStepNbs <- unique(stepsInfos$stepNb)
 
-    if(length(uniqueStepNbs) != nrow(stepsInfos))
+    if (length(uniqueStepNbs) != nrow(stepsInfos))
       stop("more than one step having the same step nb. Cache is inconsistent,",
            " deleting it manually is advised")
 
@@ -681,7 +681,7 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
     if (nStepsInCache > 0) {
       uniqueStepNbs <- unique(stepsInfos$stepNb)
 
-      if(length(uniqueStepNbs) != nrow(stepsInfos))
+      if (length(uniqueStepNbs) != nrow(stepsInfos))
         stop("more than one step having the same step nb. Cache is inconsistent,",
              " deleting it manually is advised")
 
@@ -800,7 +800,7 @@ getCytoPipelineObjectFromCache <-
     #browser()
     stopifnot(inherits(x, "CytoPipeline"))
     whichQueue <- match.arg(whichQueue)
-    if(whichQueue == "scale transform") {
+    if (whichQueue == "scale transform") {
       sampleFile <- NULL
     } else {
       if (is.numeric(sampleFile)) {
@@ -843,7 +843,7 @@ getCytoPipelineObjectFromCache <-
              "file => unexpected inconsistency")
       }
 
-      if(length(indexInCache) == 0) {
+      if (length(indexInCache) == 0) {
         stop("Combination (sample file, object name) not found in cache")
       }
     } else {
@@ -860,7 +860,7 @@ getCytoPipelineObjectFromCache <-
              "sample file => unexpected inconsistency")
       }
 
-      if(length(indexInCache) == 0) {
+      if (length(indexInCache) == 0) {
         stop("Object name not found in cache")
       }
     }
@@ -899,7 +899,7 @@ getCytoPipelineObjectInfos <-
     #browser()
     stopifnot(inherits(x, "CytoPipeline"))
     whichQueue <- match.arg(whichQueue)
-    if(whichQueue == "scale transform") {
+    if (whichQueue == "scale transform") {
       sampleFile <- NULL
     }
 
@@ -922,7 +922,7 @@ getCytoPipelineObjectInfos <-
       indexesInCache <- which(cacheInfo$type == whichQueue &
                               cacheInfo$fcsfile == sampleFile)
 
-      if(length(indexesInCache) == 0) {
+      if (length(indexesInCache) == 0) {
         stop("Combination ('", whichQueue,"'", sampleFile, ") not found in cache")
       }
     } else {
@@ -975,7 +975,7 @@ getCytoPipelineFlowFrame <-
                             objectName = objectName,
                             path = path)
 
-    if(!inherits(ret, "flowFrame")) {
+    if (!inherits(ret, "flowFrame")) {
       stop("Object '", objectName,
            "' does not appear to be a flowFrame")
     }
@@ -1012,7 +1012,7 @@ getCytoPipelineScaleTransform <-
                             objectName = objectName,
                             path = path)
 
-    if(!inherits(ret, "transformList")) {
+    if (!inherits(ret, "transformList")) {
       stop("Object '", objectName,
            "' does not appear to be a transformList")
     }
@@ -1147,7 +1147,7 @@ plotCytoPipelineProcessingQueue <-
 
     M <- matrix(nrow = nSteps+1, ncol = nSteps+1, byrow = TRUE, data = 0)
 
-    if(nSteps >=1) {
+    if (nSteps >=1) {
       for (j in seq_along(steps)) {
         M[j+1 ,j] <- steps[j]
       }

@@ -177,9 +177,9 @@ as.json.CytoProcessingStep <- function(x, pretty = FALSE) {
 #' @export
 from.json.CytoProcessingStep <- function(jsonString) {
   myList <- jsonlite::fromJSON(jsonString, simplifyDataFrame = FALSE)
-  if(is.null(myList$name)) stop("name not found in Processing Step json string")
-  if(is.null(myList$FUN)) stop("FUN not found in Processing Step json string")
-  if(is.null(myList$ARGS)) stop("FUN not found in Processing Step json string")
+  if (is.null(myList$name)) stop("name not found in Processing Step json string")
+  if (is.null(myList$FUN)) stop("FUN not found in Processing Step json string")
+  if (is.null(myList$ARGS)) stop("FUN not found in Processing Step json string")
   object <- CytoProcessingStep(myList$name, myList$FUN, myList$ARGS)
   return(object)
 }

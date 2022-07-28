@@ -279,7 +279,7 @@ sampleFiles <- function(x) {
     if (is.null(params[[m]]))
       stop("No ", m, " provided")
     
-    if( length(params[[m]]) == 0 ){
+    if (length(params[[m]]) == 0) {
       methods::slot(x, m) <-
         vector(mode = mode(methods::slot(x, m)),
                length = 0)
@@ -288,9 +288,9 @@ sampleFiles <- function(x) {
     }
   }
   
-  for(o in optional) {
+  for (o in optional) {
     if (!is.null(params[[o]])) {
-      if( length(params[[o]]) == 0 ){
+      if (length(params[[o]]) == 0) {
         methods::slot(x, o) <-
           vector(mode = mode(methods::slot(x, o)),
                  length = 0)

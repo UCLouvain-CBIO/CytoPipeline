@@ -134,10 +134,10 @@ compensateFromMatrix <- function(x,
         getAcquiredCompensationMatrix(ff)
     } else {
       # import matrix from file (path)
-      if(is.null(matrixPath)){
+      if (is.null(matrixPath)) {
         stop("No path specified for compensation matrix!")
       }
-      if(!file.exists(matrixPath)) stop("Compensation matrix file not found!")
+      if (!file.exists(matrixPath)) stop("Compensation matrix file not found!")
       compensationMatrix <- utils:: read.csv(matrixPath,
                                              check.names = FALSE,
                                              row.names = 1)
@@ -193,7 +193,7 @@ removeDoubletsPeacoQC <- function(ff,
 
   # validate common scatter channel parameters
   nScatterFilters <- length(areaChannels)
-  if(nScatterFilters < 1 || nScatterFilters > 2) {
+  if (nScatterFilters < 1 || nScatterFilters > 2) {
     stop("nb of scatter channels for doublets removal should be either 1 or 2!")
   }
   if (length(heightChannels) != nScatterFilters) {
@@ -242,7 +242,7 @@ removeDoubletsFlowStats <- function(ff,
 
   # validate common scatter channel parameters
   nScatterFilters <- length(areaChannels)
-  if(nScatterFilters < 1 || nScatterFilters > 2) {
+  if (nScatterFilters < 1 || nScatterFilters > 2) {
     stop("nb of scatter channels for doublets removal should be either 1 or 2!")
   }
   if (length(heightChannels) != nScatterFilters) {
@@ -372,8 +372,8 @@ removeDebrisFlowClustTmix <- function(ff,
   debrisIndex <- which.min(FSCMedians)
   keptClustersIndexes <- setdiff(1:nClust,debrisIndex)
   tokeepFilter <- resCellsFilter[[keptClustersIndexes[1]]]
-  if(nClust > 2){
-    for(i in keptClustersIndexes[-1]){
+  if (nClust > 2) {
+    for (i in keptClustersIndexes[-1]) {
       tokeepFilter <- tokeepFilter | resCellsFilter[[i]]
     }
   }
