@@ -139,7 +139,7 @@ test_that("removeDoubletsPeacoQC works", {
     removeDoubletsFlowStats(ref_ff_c,
                             areaChannels = c("FSC-A", "SSC-A"),
                             heightChannels = c("FSC-H", "SSC-H"),
-                            nmaps = c(3,5))
+                            nmads = c(3,5))
   
   ref_ff_s2 <- readRDS(test_path("fixtures", "ff_s2.rds"))
   
@@ -147,6 +147,24 @@ test_that("removeDoubletsPeacoQC works", {
   
   expect_equal(flowCore::exprs(ff_s2), 
                flowCore::exprs(ref_ff_s2))
+})
+
+test_that("removeDoubletsCytoPipeline works", {
+  ref_ff_c <- readRDS(test_path("fixtures", "ff_c.rds"))
+  
+  ff_s3 <-
+    removeDoubletsCytoPipeline(ref_ff_c,
+                               areaChannels = c("FSC-A", "SSC-A"),
+                               heightChannels = c("FSC-H", "SSC-H"),
+                               nmads = c(3,5))
+                            
+  
+  ref_ff_s3 <- readRDS(test_path("fixtures", "ff_s3.rds"))
+  
+  #saveRDS(ff_s3, test_path("fixtures", "ff_s3.rds"))   
+  
+  expect_equal(flowCore::exprs(ff_s3), 
+               flowCore::exprs(ref_ff_s3))
 })
 
 test_that("removeDebrisFlowClustTmix works", {
@@ -261,59 +279,72 @@ test_that("qualityControlFlowAI works", {
                flowCore::exprs(ref_ff_qualityControl_flowAI))
 })
 
-# qualityControlParamsFlowClean <-
-#   list(binSize = 0.01, # default
-#        nCellCutoff = 500, # default
-#        cutoff = "median", # default
-#        fcMax = 1.3, # default
-#        nstable = 5)
-# 
-# ref_ff_qualityControl_flowClean <- 
-#   readRDS(paste0(rdsDir, "ff_QC_flowClean.rds"))
-# 
-# test_that("Quality control step works with flowClean", {
-#   ff_QualityControl <- #suppressWarnings(
-#     runQualityControl(fs_raw[[1]],
-#                       qualityControlMethod = "flowClean",
-#                       qualityControlPreTransform = FALSE,
-#                       qualityControlParams = qualityControlParamsFlowClean)#)
-# 
-#   #saveRDS(ff_QualityControl, paste0(rdsDir, "ff_QC_flowClean.rds"))
-#   expect_equal(flowCore::exprs(ff_QualityControl),
-#                flowCore::exprs(ref_ff_qualityControl_flowClean))
-# })
-# 
-# ref_ff_qualityControl_flowCut <- readRDS(paste0(rdsDir, "ff_QC_flowCut.rds"))
-# 
-# qualityControlParamsFlowCut <-
-#   list(MaxContin = 0.1,
-#        MeanOfMeans = 0.13,
-#        MaxOfMeans = 0.15,
-#        MaxValleyHgt = 0.1,
-#        MaxPercCut = 0.3,
-#        LowDensityRemoval = 0.1,
-#        RemoveMultiSD = 7,
-#        AlwaysClean = FALSE,
-#        IgnoreMonotonic = FALSE,
-#        MonotonicFix = NULL,
-#        Measures = c(1:8))
-# 
-# test_that("Quality control step works with flowCut", {
-#   ff_QualityControl <- suppressWarnings(
-#     runQualityControl(fs_raw[[1]],
-#                       qualityControlMethod = "flowCut",
-#                       qualityControlPreTransform = FALSE,
-#                       qualityControlParams = qualityControlParamsFlowCut))
-# 
-#   #saveRDS(ff_QualityControl, paste0(rdsDir, "ff_QC_flowCut.rds"))
-#   expect_equal(flowCore::exprs(ff_QualityControl),
-#                flowCore::exprs(ref_ff_qualityControl_flowCut))
-# })
-# 
-# ref_ff_t <- readRDS(paste0(rdsDir, "ff_t.rds"))
-# test_that("Scale transformation step works", {
-#   ff_t <- flowCore::transform(ref_ff_qualityControl,
-#                               translist = refTransList)
-#   saveRDS(ff_t, paste0(rdsDir, "ff_t.rds"))
-#   expect_equal(ff_t, ref_ff_t)
-# })
+test_that("qualityControlFlowCut works", {
+  
+  rawDataDir <- paste0(system.file("extdata", package = "CytoPipeline"), "/")
+  sampleFiles <- paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+  
+  truncateMaxRange <- FALSE
+  minLimit <- NULL
+  
+  fs_raw <-
+    flowCore::read.flowSet(sampleFiles,
+                           truncate_max_range = truncateMaxRange,
+                           min.limit = minLimit)
+  fs_raw <- flowCore::fsApply(fs_raw, FUN = appendCellID)
+  
+  ff_QualityControl <- suppressWarnings(    
+    qualityControlFlowCut(fs_raw[[1]],
+                          MaxContin = 0.1,
+                          MeanOfMeans = 0.13,
+                          MaxOfMeans = 0.15,
+                          MaxValleyHgt = 0.1,
+                          MaxPercCut = 0.3,
+                          LowDensityRemoval = 0.1,
+                          RemoveMultiSD = 7,
+                          AlwaysClean = FALSE,
+                          IgnoreMonotonic = FALSE,
+                          MonotonicFix = NULL,
+                          Measures = c(1:8)))
+                                                                 
+  
+  ref_ff_qualityControl_flowCut <- 
+    readRDS(test_path("fixtures", "ff_QC_flowCut.rds"))
+  
+  #saveRDS(ff_QualityControl, test_path("fixtures", "ff_QC_flowCut.rds"))   
+  
+  expect_equal(flowCore::exprs(ff_QualityControl),
+               flowCore::exprs(ref_ff_qualityControl_flowCut))
+})
+
+test_that("qualityControlFlowClean works", {
+  
+  rawDataDir <- paste0(system.file("extdata", package = "CytoPipeline"), "/")
+  sampleFiles <- paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+  
+  truncateMaxRange <- FALSE
+  minLimit <- NULL
+  
+  fs_raw <-
+    flowCore::read.flowSet(sampleFiles,
+                           truncate_max_range = truncateMaxRange,
+                           min.limit = minLimit)
+  fs_raw <- flowCore::fsApply(fs_raw, FUN = appendCellID)
+  
+  ff_QualityControl <- suppressWarnings(    
+    qualityControlFlowClean(fs_raw[[1]],
+                            binSize = 0.01, # default
+                            nCellCutoff = 500, # default
+                            cutoff = "median", # default
+                            fcMax = 1.3, # default
+                            nstable = 5))
+  
+  ref_ff_qualityControl_flowClean <- 
+    readRDS(test_path("fixtures", "ff_QC_flowClean.rds"))
+  
+  #saveRDS(ff_QualityControl, test_path("fixtures", "ff_QC_flowClean.rds"))   
+  
+  expect_equal(flowCore::exprs(ff_QualityControl),
+               flowCore::exprs(ref_ff_qualityControl_flowClean))
+})
+

@@ -1,6 +1,6 @@
 Package: CytoPipeline
 Title: Automation and visualization of flow cytometry data analysis pipelines
-Version: 0.0.0.9000
+Version: 0.9.1
 Authors@R: 
     c(person(given = "Philippe",
              family = "Hauchamps",
@@ -24,6 +24,7 @@ Collate:
     'CytoProcessingStep.R'
     'CytoProcessingStepImplementations.R'
     'data.R'
+    'gating.R'
     'utils.R'
     'ggplots.R'
 Depends: 
@@ -38,6 +39,8 @@ Imports:
     openCyto,
     PeacoQC,
     flowAI,
+    flowCut,
+    flowClean,
     flowClust,
     flowStats,
     diagram,
