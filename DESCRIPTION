@@ -45,6 +45,7 @@ Imports:
     scales
 Suggests: 
     testthat (>= 3.0.0),
+    withr,
     vdiffr,
     diffviewer,
     knitr,

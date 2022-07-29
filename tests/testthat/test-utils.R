@@ -10,23 +10,21 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
-ff <- OMIP021Samples[[1]]
 
-# adding Original_ID column
-newData <- matrix(data = seq(dim(ff)[1]),
-                  nrow = dim(ff)[1],
-                  ncol = 1)
-colnames(newData) = "Original_ID"
-ff <- flowCore::fr_append_cols(ff, newData)
 
 test_that("areSignalCols works", {
-    expectedRes <- c(rep(TRUE, times = 20), FALSE, FALSE)
+  ff <- OMIP021Samples[[1]]
 
-    res <- areSignalCols(ff)
-    expect_equal(res, expectedRes, ignore_attr = TRUE)
+  expectedRes <- c(rep(TRUE, times = 20), FALSE, FALSE)
+
+  res <- areSignalCols(ff)
+  expect_equal(res, expectedRes, ignore_attr = TRUE)
 })
 
 test_that("areFluoCols works", {
+  
+  ff <- OMIP021Samples[[1]]
+  
   expectedRes <- c(rep(FALSE, times = 4),
                     rep(TRUE, times = 16),
                     FALSE, FALSE)
@@ -38,16 +36,22 @@ test_that("areFluoCols works", {
 
 
 test_that("subsample works", {
+  ff <- OMIP021Samples[[1]]
+  
   nSamples <- 500
   ffSub <- subsample(ff, nSamples)
   expect_equal(flowCore::nrow(ffSub), nSamples)
 
-  ffSub <- subsample(ff, 100001) # subsample with more samples than original nrow (10000)
-  expect_equal(flowCore::nrow(ffSub), 100000)
+  # subsample with more samples than original nrow (2000)
+  ffSub <- subsample(ff, 20001)  
+  
+  expect_equal(flowCore::nrow(ffSub), 20000)
 })
 
 
 test_that("addCompensation2FluoChannelNames works", {
+  ff <- OMIP021Samples[[1]]
+  
   ff2 <- CytoPipeline::addCompensation2FluoChannelNames(ff)
 
   expect_equal(flowCore::colnames(ff2),
@@ -65,6 +69,8 @@ test_that("addCompensation2FluoChannelNames works", {
 })
 
 test_that("runCompensation works", {
+  ff <- OMIP021Samples[[1]]
+  
   compMatrix <- flowCore::spillover(ff)$SPILL
   ff1 <- flowCore::compensate(ff, spillover = compMatrix)
   ff2 <- runCompensation(ff, spillover = compMatrix,
@@ -97,7 +103,7 @@ test_that("runCompensation works", {
                  "Comp-670/14Red-A","Comp-730//45Red-A","Comp-780/60Red-A",
                  "Comp-530/30Blue-A","Comp-710/50Blue-A","Comp-582/15Yellow-A",
                  "Comp-610/20Yellow-A","Comp-670/30Yellow-A","Comp-710/50Yellow-A",
-                 "Comp-780/60Yellow-A","Time"))
+                 "Comp-780/60Yellow-A","Time", "Original_ID"))
 })
 
 test_that("aggregateAndSample works", {
@@ -141,7 +147,7 @@ test_that("getTransfoParams works", {
   ret <- getTransfoParams(translist, channel = "525/50Violet-A")
   expect_equal(ret$type, "logicle")
   expect_equal(ret$paramsList$a, 0.)
-  myW <- 0.279436215
+  myW <- 0.2833999
   expect_equal(ret$paramsList$w, myW)
   expect_equal(ret$paramsList$m, 4.5)
   expect_equal(ret$paramsList$t, 262143)
@@ -172,14 +178,14 @@ test_that("computeScatterChannelsLinearScale works", {
   targetFSCA <- list()
   targetFSCA$type <- "linear"
   targetFSCA$paramsList <- list()
-  targetFSCA$paramsList$a <- 1.32626566e-05
-  targetFSCA$paramsList$b <- 0.44968368
+  targetFSCA$paramsList$a <- 1.33379026e-05
+  targetFSCA$paramsList$b <- 0.44564007
 
   targetSSCA <- list()
   targetSSCA$type <- "linear"
   targetSSCA$paramsList <- list()
-  targetSSCA$paramsList$a <- 1.035344e-05
-  targetSSCA$paramsList$b <- 0.41956996
+  targetSSCA$paramsList$a <- 1.04044897e-05
+  targetSSCA$paramsList$b <- 0.4179506
 
   transList <- flowCore::estimateLogicle(ff,
                                          channels = refChannel)
@@ -220,10 +226,10 @@ test_that("computeScatterChannelsLinearScale works", {
 
   # test with a NULL transList
 
-  targetFSCA$paramsList$a <- 0.046767773
-  targetFSCA$paramsList$b <- -479.21978
-  targetSSCA$paramsList$a <- 0.036509075
-  targetSSCA$paramsList$b <- -585.40903
+  targetFSCA$paramsList$a <- 0.04710823
+  targetFSCA$paramsList$b <- -482.60836
+  targetSSCA$paramsList$a <- 0.036747689
+  targetSSCA$paramsList$b <- -580.405
   retTransList <-
     computeScatterChannelsLinearScale(ff,
                                       transList = NULL,
