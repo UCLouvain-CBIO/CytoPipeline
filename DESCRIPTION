@@ -11,14 +11,25 @@ Authors@R:
              email = "laurent.gatto@uclouvain.be",
              role = "aut",
              comment = c(ORCID = "0000-0002-1520-2268")))
-Description: This package provides support for automation and visualization of flow cytometry data analysis pipelines.
+Description: This package provides support for automation and visualization of 
+ flow cytometry data analysis pipelines. In the current state, the package
+ focuses on the preprocessing and quality control part. The main provided 
+ functionalities are: 
+ - explicit and centralized definition of the pipeline pre-processing step,
+  using a json input file or through step by step definition of a CytoPipeline 
+  object with R code
+ - user-defined steps enabled through the CytoPipeline and CytoProcessingStep
+  S4 classes
+ - intermediary results retrieval and visualization thanks to file caching
+  (BiocFileCache implementation)
 License: GPL (>=3) | file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
 LazyData: true
 LazyDataCompression: gzip
-biocViews: FlowCytometry, Preprocessing, QualityControl, ImmunoOncology, Software, Visualization
+biocViews: FlowCytometry, Preprocessing, QualityControl, ImmunoOncology, 
+ Software, Visualization
 Collate: 
     'CytoPipeline-functions.R'
     'CytoPipeline.R'
