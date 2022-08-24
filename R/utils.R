@@ -306,13 +306,13 @@ getTransfoParams <- function(transList,
 
     sm <- flowCore::summary(tf)
     ret <- list()
-    if (!is.null(sm$k) && (class(sm$k) == "transform")) {
+    if (!is.null(sm$k) && methods::is(sm$k, "transform")) {
       ret$type <- "logicle"
       ret$paramsList <- list(a = unname(sm$a),
                               w = unname(sm$w),
                               m = unname(sm$m),
                               t = unname(sm$t))
-    } else if (!is.null(sm$t) && (class(sm$t) == "transform")) {
+    } else if (!is.null(sm$t) && methods::is(sm$t, "transform")) {
       ret$type <- "linear"
       ret$paramsList <- list(a = unname(sm$a),
                               b = unname(sm$b))
