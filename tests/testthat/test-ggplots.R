@@ -4,7 +4,7 @@
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General 
+#   you can redistribute it and/or modify it under the terms of the GNU General
 # Public License as published by the Free Software Foundation, 
 # either version 3 of the License, or (at your option) any later version.
 # 
@@ -42,7 +42,7 @@ test_that("ggplotEvents with 1D works", {
 
   p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "FSC-A", xScale = "linear",
                     xLinearRange = c(0,250000))
-  vdiffr::expect_doppelganger("ggplotEvents 1D linear explicit range - single", 
+  vdiffr::expect_doppelganger("ggplotEvents 1D linear explicit range - single",
                               fig = p)
 
   p <- ggplotEvents(OMIP021Samples, xChannel = "FSC-A", xScale = "linear")
@@ -86,27 +86,27 @@ test_that("ggplotEvents with 1D works", {
                               flowCore::linearTransform(a = 0.00001)))
   
   p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "450/50Violet-A",
-                    xScale = "linear", transList = transList, 
+                    xScale = "linear", transList = transList,
                     runTransforms = FALSE)
-  vdiffr::expect_doppelganger("ggplotEvents 1D transformList logicle not run", 
+  vdiffr::expect_doppelganger("ggplotEvents 1D transformList logicle not run",
                               fig = p)
   
   p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "450/50Violet-A",
-                    xScale = "linear", transList = transList, 
+                    xScale = "linear", transList = transList,
                     runTransforms = TRUE)
-  vdiffr::expect_doppelganger("ggplotEvents 1D transformList logicle run", 
+  vdiffr::expect_doppelganger("ggplotEvents 1D transformList logicle run",
                               fig = p)
   
   p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "FSC-A",
                     xScale = "logicle", transList = transList, 
                     runTransforms = FALSE)
-  vdiffr::expect_doppelganger("ggplotEvents 1D transformList linear not run", 
+  vdiffr::expect_doppelganger("ggplotEvents 1D transformList linear not run",
                               fig = p)
   
   p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "FSC-A",
                     xScale = "logicle", transList = transList, 
                     runTransforms = TRUE)
-  vdiffr::expect_doppelganger("ggplotEvents 1D transformList linear run", 
+  vdiffr::expect_doppelganger("ggplotEvents 1D transformList linear run",
                               fig = p)
 })
 

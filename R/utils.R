@@ -4,7 +4,7 @@
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General 
+#   you can redistribute it and/or modify it under the terms of the GNU General
 # Public License as published by the Free Software Foundation, 
 # either version 3 of the License, or (at your option) any later version.
 # 
@@ -20,7 +20,7 @@
 #' @param toRemovePatterns a vector of string patterns that are to be considered
 #' as non signal
 #'
-#' @return a vector of booleans of which the dimension is equal to the number of 
+#' @return a vector of booleans of which the dimension is equal to the number of
 #' columns in ff
 #' @export
 #'
@@ -51,7 +51,7 @@ areSignalCols <- function(ff,
 #' @param toRemovePatterns a vector of string patterns that are to be considered
 #' as non fluorochrome
 #'
-#' @return a vector of booleans of which the dimension is equal to the number of 
+#' @return a vector of booleans of which the dimension is equal to the number of
 #' columns in ff
 #' @export
 #'

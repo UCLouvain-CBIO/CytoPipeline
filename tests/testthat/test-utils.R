@@ -4,7 +4,7 @@
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General 
+#   you can redistribute it and/or modify it under the terms of the GNU General
 # Public License as published by the Free Software Foundation, 
 # either version 3 of the License, or (at your option) any later version.
 # 
@@ -57,14 +57,15 @@ test_that("addCompensation2FluoChannelNames works", {
   
   ff2 <- CytoPipeline::addCompensation2FluoChannelNames(ff)
 
-  expect_equal(flowCore::colnames(ff2),
-               c("FSC-A","FSC-H","SSC-A","SSC-H",
-                 "Comp-450/50Violet-A","Comp-525/50Violet-A","Comp-540/30Violet-A",
-                 "Comp-585/15Violet-A","Comp-610/20Violet-A","Comp-670/30Violet-A",
-                 "Comp-670/14Red-A","Comp-730//45Red-A","Comp-780/60Red-A",
-                 "Comp-530/30Blue-A","Comp-710/50Blue-A","Comp-582/15Yellow-A",
-                 "Comp-610/20Yellow-A","Comp-670/30Yellow-A","Comp-710/50Yellow-A",
-                 "Comp-780/60Yellow-A","Time","Original_ID"))
+  expect_equal(
+    flowCore::colnames(ff2),
+    c("FSC-A","FSC-H","SSC-A","SSC-H",
+      "Comp-450/50Violet-A","Comp-525/50Violet-A","Comp-540/30Violet-A",
+      "Comp-585/15Violet-A","Comp-610/20Violet-A","Comp-670/30Violet-A",
+      "Comp-670/14Red-A","Comp-730//45Red-A","Comp-780/60Red-A",
+      "Comp-530/30Blue-A","Comp-710/50Blue-A","Comp-582/15Yellow-A",
+      "Comp-610/20Yellow-A","Comp-670/30Yellow-A","Comp-710/50Yellow-A",
+      "Comp-780/60Yellow-A","Time","Original_ID"))
 
   expect_error(addCompensation2FluoChannelNames(OMIP021Samples),
                regexp = "type not recognized")
@@ -84,14 +85,15 @@ test_that("runCompensation works", {
   ff2 <- runCompensation(ff, spillover = compMatrix)
   # the following avoids comparing name attributes
   expect_true(all(flowCore::exprs(ff2)==flowCore::exprs(ff1)))
-  expect_equal(flowCore::colnames(ff2),
-               c("FSC-A","FSC-H","SSC-A","SSC-H",
-                 "Comp-450/50Violet-A","Comp-525/50Violet-A","Comp-540/30Violet-A",
-                 "Comp-585/15Violet-A","Comp-610/20Violet-A","Comp-670/30Violet-A",
-                 "Comp-670/14Red-A","Comp-730//45Red-A","Comp-780/60Red-A",
-                 "Comp-530/30Blue-A","Comp-710/50Blue-A","Comp-582/15Yellow-A",
-                 "Comp-610/20Yellow-A","Comp-670/30Yellow-A","Comp-710/50Yellow-A",
-                 "Comp-780/60Yellow-A","Time","Original_ID"))
+  expect_equal(
+    flowCore::colnames(ff2),
+    c("FSC-A","FSC-H","SSC-A","SSC-H",
+      "Comp-450/50Violet-A","Comp-525/50Violet-A","Comp-540/30Violet-A",
+      "Comp-585/15Violet-A","Comp-610/20Violet-A","Comp-670/30Violet-A",
+      "Comp-670/14Red-A","Comp-730//45Red-A","Comp-780/60Red-A",
+      "Comp-530/30Blue-A","Comp-710/50Blue-A","Comp-582/15Yellow-A",
+      "Comp-610/20Yellow-A","Comp-670/30Yellow-A","Comp-710/50Yellow-A",
+      "Comp-780/60Yellow-A","Time","Original_ID"))
 
   fs <- runCompensation(OMIP021Samples,
                                  spillover = compMatrix)
@@ -99,14 +101,15 @@ test_that("runCompensation works", {
                               spillover = compMatrix)
   # the following avoids comparing name attributes
   expect_true(all(flowCore::exprs(fs[[1]])==flowCore::exprs(ff3)))
-  expect_equal(flowCore::colnames(fs),
-               c("FSC-A","FSC-H","SSC-A","SSC-H",
-                 "Comp-450/50Violet-A","Comp-525/50Violet-A","Comp-540/30Violet-A",
-                 "Comp-585/15Violet-A","Comp-610/20Violet-A","Comp-670/30Violet-A",
-                 "Comp-670/14Red-A","Comp-730//45Red-A","Comp-780/60Red-A",
-                 "Comp-530/30Blue-A","Comp-710/50Blue-A","Comp-582/15Yellow-A",
-                 "Comp-610/20Yellow-A","Comp-670/30Yellow-A","Comp-710/50Yellow-A",
-                 "Comp-780/60Yellow-A","Time", "Original_ID"))
+  expect_equal(
+    flowCore::colnames(fs),
+    c("FSC-A","FSC-H","SSC-A","SSC-H",
+      "Comp-450/50Violet-A","Comp-525/50Violet-A","Comp-540/30Violet-A",
+      "Comp-585/15Violet-A","Comp-610/20Violet-A","Comp-670/30Violet-A",
+      "Comp-670/14Red-A","Comp-730//45Red-A","Comp-780/60Red-A",
+      "Comp-530/30Blue-A","Comp-710/50Blue-A","Comp-582/15Yellow-A",
+      "Comp-610/20Yellow-A","Comp-670/30Yellow-A","Comp-710/50Yellow-A",
+      "Comp-780/60Yellow-A","Time", "Original_ID"))
 })
 
 test_that("aggregateAndSample works", {

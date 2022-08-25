@@ -4,7 +4,7 @@
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General 
+#   you can redistribute it and/or modify it under the terms of the GNU General
 # Public License as published by the Free Software Foundation, 
 # either version 3 of the License, or (at your option) any later version.
 # 
@@ -108,7 +108,7 @@ ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100)
 #' transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)
 #' @param xLinearRange if (xScale == "linear"), the x axis range to be used
 #' @param yLinearRange if (yScale == "linear"), the y axis range to be used
-#' @param transList optional list of scale transformations to be applied to each 
+#' @param transList optional list of scale transformations to be applied to each
 #' channel. If it is non null, 'x/yScale', 'x/yLogicleParams' and 
 #' 'x/yLinear_range' will be discarded.
 #' @param runTransforms (TRUE/FALSE) only taken into account if transList is 

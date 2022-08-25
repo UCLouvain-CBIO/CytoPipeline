@@ -4,7 +4,7 @@
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General 
+#   you can redistribute it and/or modify it under the terms of the GNU General
 # Public License as published by the Free Software Foundation, 
 # either version 3 of the License, or (at your option) any later version.
 # 
@@ -103,7 +103,8 @@ removeProcessingStep <- function(x,
 
 ##' @describeIn handlingProcessingSteps gets the number of processing
 ##' steps in a processing queue
-##' @return - for `getNbProcessingSteps`: the number of processing steps present in the target queue
+##' @return - for `getNbProcessingSteps`: the number of processing steps present
+##' in the target queue
 ##' @export
 ##'
 getNbProcessingSteps <- function(x,
@@ -230,7 +231,7 @@ showProcessingSteps <- function(x,
 #' the set of sample names as an implicit first input. At the end of the queue,
 #' a scale transform List is assumed to be created.
 #' Second, the flowFrame pre-processing queue, reapeatedly for each sample file.
-#' The scale transform list generated in the previous step is taken as implicit 
+#' The scale transform list generated in the previous step is taken as implicit
 #' input, together with the initial sample file. At the end of the queue run, a
 #' pre-processed flowFrame is assumed to be generated.
 #' No change is made on the input CytoPipeline object, all results are stored in
@@ -1209,14 +1210,4 @@ plotCytoPipelineProcessingQueue <-
     }
 
   }
-
-
-
-
-
-
-
-
-
-
 

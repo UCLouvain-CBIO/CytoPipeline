@@ -4,7 +4,7 @@
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General 
+#   you can redistribute it and/or modify it under the terms of the GNU General
 # Public License as published by the Free Software Foundation, 
 # either version 3 of the License, or (at your option) any later version.
 # 
@@ -14,7 +14,7 @@
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
 #' @title Read fcs sample files
-#' @description Wrapper around flowCore::read.fcs() or flowCore::read.flowSet(). 
+#' @description Wrapper around flowCore::read.fcs() or flowCore::read.flowSet().
 #' Also adds a "Cell_ID" additional column, used in flowFrames comparison
 #' @param sampleFiles a vector of character path to sample files
 #' @param whichSamples either 'all' if all sample files need to be read, or
@@ -82,7 +82,7 @@ removeMarginsPeacoQC <- function(x, ...) {
 
 #' @title extract compensation matrix from a flowCore::flowFrame
 #' @description helper function retrieving the compensation matrix stored 
-#' in fcs file (if any). It scans the following keywords: $SPILL, $spillover and 
+#' in fcs file (if any). It scans the following keywords: $SPILL, $spillover and
 #' $SPILLOVER
 #' @param ff a flowCore::flowFrame
 #'
@@ -114,7 +114,7 @@ getAcquiredCompensationMatrix <- function(ff){
 #' the fcs files (different compensation matrices can then be applied by fcs 
 #' file)
 #' if "import", uses matrixPath to read the matrix (should be a csv file)
-#' @param matrixPath if matrixSource == "import", will be used as the input csv 
+#' @param matrixPath if matrixSource == "import", will be used as the input csv
 #' file path
 #' @param updateChannelNames if TRUE, updates the fluo channel names by 
 #' prefixing them with "comp-"
@@ -170,13 +170,13 @@ compensateFromMatrix <- function(x,
 #' Can apply the PeacoQC function subsequently on several channel pairs, 
 #' e.g. (FSC-A, FSC-H) and (SSC-A, SSC-H)
 #' @param ff a flowCore::flowFrame
-#' @param areaChannels a character vector containing the name of the 'area type' 
+#' @param areaChannels a character vector containing the name of the 'area type'
 #' channels one wants to use
 #' @param heightChannels a character vector containing the name of the 
 #' 'height type' channels one wants to use
 #' @param nmads a numeric vector with the bandwidth above the ratio allowed, per
 #' channels pair (cells are kept if the ratio between -A channel\[i\] and 
-#' -H channel\[i\] is smaller than the median ratio + nmad\[i\] times the median 
+#' -H channel\[i\] is smaller than the median ratio + nmad\[i\] times the median
 #' absolute deviation of the ratios). Default is 4, for all channel pairs.
 #' @param verbose If set to TRUE, the median ratio and width will be printed. 
 #' @param ... additional parameters passed to PeacoQC::RemoveDoublets()
@@ -225,7 +225,7 @@ removeDoubletsPeacoQC <- function(ff,
 #' Can apply the flowStats function subsequently on several channel pairs, 
 #' e.g. (FSC-A, FSC-H) and (SSC-A, SSC-H)
 #' @param ff a flowCore::flowFrame
-#' @param areaChannels a character vector containing the name of the 'area type' 
+#' @param areaChannels a character vector containing the name of the 'area type'
 #' channels one wants to use
 #' @param heightChannels a character vector containing the name of the 
 #' 'height type' channels one wants to use
@@ -281,13 +281,13 @@ removeDoubletsFlowStats <- function(ff,
 #' Can apply the flowStats function subsequently on several channel pairs, 
 #' e.g. (FSC-A, FSC-H) and (SSC-A, SSC-H)
 #' @param ff a flowCore::flowFrame
-#' @param areaChannels a character vector containing the name of the 'area type' 
+#' @param areaChannels a character vector containing the name of the 'area type'
 #' channels one wants to use
 #' @param heightChannels a character vector containing the name of the 
 #' 'height type' channels one wants to use
 #' @param nmads a numeric vector with the bandwidth above the ratio allowed, per
 #' channels pair (cells are kept if the ratio between -A channel\[i\] and 
-#' -H channel\[i\] is smaller than the median ratio + nmad\[i\] times the median 
+#' -H channel\[i\] is smaller than the median ratio + nmad\[i\] times the median
 #' absolute deviation of the ratios). Default is 4, for all channel pairs.
 #' @param ... additional parameters passed to CytoPipeline::singletGate()
 #'
