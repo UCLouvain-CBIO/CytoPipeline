@@ -65,12 +65,20 @@ subsample <- function(ff, nSamples, seed = NULL){
   if (!inherits(ff, "flowFrame")){
     stop("ff type not recognized, should be a flowFrame")
   }
-  if (!is.null(seed)){
-    set.seed(seed)
-  }
+  
   eventCounts <- length(flowCore::exprs(ff)[,1])
   nSamples <- min(eventCounts, nSamples)
-  keep <- sample(1:eventCounts, size = nSamples, replace = FALSE)
+  
+  if (!is.null(seed)) {
+    withr::with_seed(seed, 
+                     keep <- sample(1:eventCounts, 
+                                    size = nSamples, 
+                                    replace = FALSE))
+  } else {
+    keep <- sample(1:eventCounts, 
+                   size = nSamples, 
+                   replace = FALSE)
+  }
 
   # add Original_ID as a new column if necessary
   ff <- appendCellID(ff, 1:(flowCore::nrow(ff)))
@@ -200,9 +208,12 @@ aggregateAndSample <- function (fs,
     stop("fs object type not recognized, should be flowCore::flowSet")
   }
 
+  
   if (!is.null(seed)) {
-    set.seed(seed)
+    # set the seed locally in the execution environment, restore it afterward
+    withr::local_seed(seed)
   }
+  
   nFrames <- length(fs)
   cFrame <- ceiling(nTotalEvents/nFrames)
   flowFrame <- NULL
@@ -217,7 +228,7 @@ aggregateAndSample <- function (fs,
     prev_agg <- length(grep("File[0-9]*$", colnames(current_ff)))
     if (prev_agg > 0) {
       new_col_names[c(1, 2)] <- paste0(new_col_names[c(1, 2)], prev_agg +
-                                    1)
+                                         1)
     }
     prev_ids <- length(grep("Original_ID[0-9]*$", flowCore::colnames(current_ff)))
     if (prev_ids > 0) {
@@ -261,6 +272,7 @@ aggregateAndSample <- function (fs,
               flowCore::exprs(current_ff)[,commonCols, drop = FALSE])
     }
   }
+  
   if (diffNumberChannels) {
     warning("Flow frames do not contain the same number of channels/markers")
   }

@@ -452,9 +452,12 @@ ggplotFilterEvents <- function(ffPre, ffPost,
   i <- 0
   if (nDisplayCells < nEvents) {
     if (!is.null(seed)) {
-      set.seed(seed)
+      withr::with_seed(seed, 
+                       i <- sample(nEvents, nDisplayCells))
+    } else {
+      i <- sample(nEvents, nDisplayCells)
     }
-    i <- sample(nEvents, nDisplayCells)
+    
   } else {
     i <- seq(nEvents)
   }

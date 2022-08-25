@@ -175,6 +175,7 @@ test_that("ggplotFilterEvents works", {
 
   p <- ggplotFilterEvents(ffPre = ffPre,
                           ffPost = ffL,
+                          nDisplayCells = 20000,
                           xChannel = "FSC-A", xScale = "linear",
                           yChannel = LDMarker, yScale = "logicle") +
     ggtitle("Live gate filter")
@@ -182,6 +183,7 @@ test_that("ggplotFilterEvents works", {
 
   p <- ggplotFilterEvents(ffPre = ffPre,
                           ffPost = ffL,
+                          nDisplayCells = 20000,
                           xChannel = "FSC-A", xScale = "linear",
                           yChannel = LDMarker, yScale = "logicle",
                           interactive = TRUE) +
@@ -191,6 +193,7 @@ test_that("ggplotFilterEvents works", {
   p <- ggplotFilterEvents(ffPre = ffPre,
                           ffPost = ffL,
                           nDisplayCells = 5000,
+                          seed = 1,
                           xChannel = "FSC-A", xScale = "linear",
                           yChannel = LDMarker, yScale = "logicle") +
     ggtitle("Live gate filter")
@@ -207,6 +210,7 @@ test_that("ggplotFilterEvents works", {
   p <- ggplotFilterEvents(size = 0.1,
                           ffPre = ffPre,
                           ffPost = ffL,
+                          seed = 1,
                           xChannel = "FSC-A", xScale = "linear",
                           yChannel = LDMarker, yScale = "logicle") +
     ggtitle("Live gate filter")
