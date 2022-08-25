@@ -41,7 +41,7 @@ setClassUnion("characterOrFunction", c("character", "function"))
 #'
 #' getName(ps)
 #'
-#' executeProcessingStep(ps, 1:10)
+#' executeProcessingStep(ps, seq_len(10))
 #'
 #'
 #' @name CytoProcessingStep

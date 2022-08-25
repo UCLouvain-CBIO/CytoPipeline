@@ -203,7 +203,7 @@ removeDoubletsPeacoQC <- function(ff,
   if (length(nmads) != nScatterFilters) {
     stop("inconsistency between length of area channel and nMAD vectors!")
   }
-  for (i in 1:nScatterFilters){
+  for (i in seq_len(nScatterFilters)){
     ff <-
       PeacoQC::RemoveDoublets(ff,
                               channel1 = areaChannels[i],
@@ -249,7 +249,7 @@ removeDoubletsFlowStats <- function(ff,
     stop("inconsistency between length of area and height channel vectors!")
   }
 
-  for (i in 1:nScatterFilters){
+  for (i in seq_len(nScatterFilters)){
     currentSingletGate <-
       flowStats::singletGate(ff,
                              filterId = paste0("Singlets_",
@@ -310,7 +310,7 @@ removeDoubletsCytoPipeline <- function(ff,
   if (length(nmads) != nScatterFilters) {
     stop("inconsistency between length of area channel and nMAD vectors!")
   }
-  for (i in 1:nScatterFilters){
+  for (i in seq_len(nScatterFilters)){
     
     currentSingletGate <-
       singletsGate(ff,
@@ -361,7 +361,7 @@ removeDebrisManual <- function(ff,
                                gateData,
                                ...) {
   # if not present already, add a column with Cell ID
-  ff <- appendCellID(ff, 1:(flowCore::nrow(ff)))
+  ff <- appendCellID(ff, seq_len(flowCore::nrow(ff)))
 
   cellsGateMatrix <- matrix(data = gateData, ncol = 2,
                             dimnames = list(c(), c(FSCChannel, SSCChannel)))
@@ -423,7 +423,7 @@ removeDebrisFlowClustTmix <- function(ff,
 
   resCellsFilter <- flowCore::filter(ff, cellsFilter)
   
-  FSCMedians <- sapply(X = 1:nClust,
+  FSCMedians <- sapply(X = seq_len(nClust),
                        FUN = function(x, ff, flt){
                          resCellsFltr <- flt[[x]]
                          stats::median(flowCore::exprs(ff)[
@@ -434,7 +434,7 @@ removeDebrisFlowClustTmix <- function(ff,
                        ff = ff, flt = resCellsFilter)
 
   debrisIndex <- which.min(FSCMedians)
-  keptClustersIndexes <- setdiff(1:nClust,debrisIndex)
+  keptClustersIndexes <- setdiff(seq_len(nClust),debrisIndex)
   tokeepFilter <- resCellsFilter[[keptClustersIndexes[1]]]
   if (nClust > 2) {
     for (i in keptClustersIndexes[-1]) {
@@ -632,7 +632,7 @@ qualityControlFlowAI <- function(ff,
                          folder_results = folder_results,
                          ...)
 
-  goodEvents <- !(1:(flowCore::nrow(ffIn)) %in% badEventIDs)
+  goodEvents <- !(seq_len(flowCore::nrow(ffIn)) %in% badEventIDs)
   ff <- ff[goodEvents,] # note we take ff and not ffIn (no transfo)
 
   return(ff)
@@ -760,7 +760,7 @@ qualityControlFlowCut <- function(ff,
   #browser()
   badEventIDs <- res$ind
   
-  goodEvents <- !(1:(flowCore::nrow(ffIn)) %in% badEventIDs)
+  goodEvents <- !(seq_len(flowCore::nrow(ffIn)) %in% badEventIDs)
   ff <- ff[goodEvents,] # note we take ff and not ffIn (no transfo)
   
   return(ff)

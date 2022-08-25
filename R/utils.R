@@ -71,17 +71,17 @@ subsample <- function(ff, nSamples, seed = NULL){
   
   if (!is.null(seed)) {
     withr::with_seed(seed, 
-                     keep <- sample(1:eventCounts, 
+                     keep <- sample(seq_len(eventCounts), 
                                     size = nSamples, 
                                     replace = FALSE))
   } else {
-    keep <- sample(1:eventCounts, 
+    keep <- sample(seq_len(eventCounts), 
                    size = nSamples, 
                    replace = FALSE)
   }
 
   # add Original_ID as a new column if necessary
-  ff <- appendCellID(ff, 1:(flowCore::nrow(ff)))
+  ff <- appendCellID(ff, seq_len(flowCore::nrow(ff)))
 
   ff[keep,]
 }
@@ -97,7 +97,7 @@ subsample <- function(ff, nSamples, seed = NULL){
 #'
 #' @return new flowCore::flowFrame containing the added 'Original_ID' column
 #' @export
-appendCellID <- function (ff, eventIDs = 1:flowCore::nrow(ff))
+appendCellID <- function (ff, eventIDs = seq_len(flowCore::nrow(ff)))
 {
   if (!inherits(ff, "flowFrame")){
     stop("ff type not recognized, should be a flowFrame")

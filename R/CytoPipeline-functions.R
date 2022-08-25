@@ -148,7 +148,7 @@ getProcessingStepNames <- function(x, whichQueue = c("scale transform",
   nSteps <- getNbProcessingSteps(x, whichQueue)
   stepNames <- character()
   if (nSteps > 0) {
-    stepNames <- sapply(1:nSteps,
+    stepNames <- sapply(seq_len(nSteps),
                         FUN = function(i) {
                           pS <- getProcessingStep(x, whichQueue, i)
                           pS@name
@@ -487,7 +487,7 @@ buildCytoPipelineFromCache <- function(experimentName, path = "."){
 
       #x <- cleanProcessingSteps(x, whichQueue = "scale transform")
 
-      for (j in 1:nSteps) {
+      for (j in seq_len(nSteps)) {
         pS <- from.json.CytoProcessingStep(
           as.character(stepsInfos[j, "stepJsonSerialize"]))
         x <- addProcessingStep(x, whichQueue = "scale transform", pS)
@@ -510,7 +510,7 @@ buildCytoPipelineFromCache <- function(experimentName, path = "."){
       stepsInfos <- stepsInfos[order(stepsInfos$stepNb),]
       #x <- cleanProcessingSteps(x, whichQueue = "pre-processing")
 
-      for (j in 1:nSteps) {
+      for (j in seq_len(nSteps)) {
         pS <- from.json.CytoProcessingStep(
           as.character(stepsInfos[j, "stepJsonSerialize"]))
         x <- addProcessingStep(x, whichQueue = "pre-processing", pS)
@@ -610,7 +610,7 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
       return(ret)
     }
 
-    for (j in 1:nStepsInCache) {
+    for (j in seq_len(nStepsInCache)) {
       pS <- from.json.CytoProcessingStep(
         as.character(stepsInfos[j, "stepJsonSerialize"]))
       pS2 <- getProcessingStep(x,
@@ -687,7 +687,7 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
 
       stepsInfos <- stepsInfos[order(stepsInfos$stepNb),]
 
-      for (j in 1:nStepsInCache) {
+      for (j in seq_len(nStepsInCache)) {
         pS <- from.json.CytoProcessingStep(
           as.character(stepsInfos[j, "stepJsonSerialize"]))
         pS2 <- getProcessingStep(x,
@@ -1115,7 +1115,7 @@ plotCytoPipelineProcessingQueue <-
       warning("No sample file in CytoPipeline object")
       box.lcol <- c("black", rep("red", nSteps))
     } else if (nSteps > 0) {
-      for (i in 1:nSteps) {
+      for (i in seq_len(nSteps)) {
         stepStatus <- ""
         if (whichQueue == "pre-processing") {
           if (unname(res$preProcessingStepStatus[i, sampleFileIndex]) == "run") {
