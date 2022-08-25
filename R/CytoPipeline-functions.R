@@ -277,7 +277,7 @@ execute <- function(x,
   for (s in seq_along(x@scaleTransformProcessingQueue)) {
     cacheResourceName <- getName(x@scaleTransformProcessingQueue[[s]])
     stepName <- getName(x@scaleTransformProcessingQueue[[s]])
-    cacheResourceName = paste0("scaleTransform_step", s, "_",
+    cacheResourceName <- paste0("scaleTransform_step", s, "_",
                                stepName)
 
     msg <- paste0("Proceeding with step ", s, " [", stepName, "]")
@@ -306,7 +306,7 @@ execute <- function(x,
             res)
       }
       # store file in cache
-      cacheResourceFile = BiocFileCache::bfcnew(bfc, cacheResourceName)
+      cacheResourceFile <- BiocFileCache::bfcnew(bfc, cacheResourceName)
       saveRDS(res, unname(cacheResourceFile))
 
       # add one entry in cache meta data tables
@@ -342,12 +342,12 @@ execute <- function(x,
   for (file in x@sampleFiles) {
     #browser()
     message("#####################################################")
-    message(paste0("### NOW PRE-PROCESSING FILE ", file, "..."))
+    message("### NOW PRE-PROCESSING FILE ", file, "...")
     message("#####################################################")
 
     for (s in seq_along(x@flowFramesPreProcessingQueue)) {
       stepName <- getName(x@flowFramesPreProcessingQueue[[s]])
-      cacheResourceName = paste0("preprocessing_",
+      cacheResourceName <- paste0("preprocessing_",
                                  basename(file),
                                  "_step", s, "_",
                                  stepName)
@@ -378,7 +378,7 @@ execute <- function(x,
             )
         }
          # store file in cache
-        cacheResourceFile = BiocFileCache::bfcnew(bfc, cacheResourceName)
+        cacheResourceFile <- BiocFileCache::bfcnew(bfc, cacheResourceName)
         saveRDS(res, unname(cacheResourceFile))
 
         # add one entry in cache meta data tables

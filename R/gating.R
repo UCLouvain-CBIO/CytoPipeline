@@ -44,9 +44,9 @@ singletsGate <- function(ff, filterId = "Singlets",
   ch2Min <- ch1Median/(ratioMedian + nmad * ratioMad) - 1
   ch2Range <- ch2RefPoint - ch2Min
   if (verbose)
-    message(paste0("Median ratio: ", ratioMedian, ", width: ", nmad * ratioMad,
-                   ", Ch1 median : ", ch1Median, ", Ch 2 range : ",
-                   ch2Range))
+    message("Median ratio: ", ratioMedian, ", width: ", nmad * ratioMad,
+            ", Ch1 median : ", ch1Median, ", Ch 2 range : ",
+            ch2Range)
   
   ch2TargetAtCh1Min <- ch1Min/ratioMedian - 1
   ch2TargetAtCh1Max <- ch1Max/ratioMedian - 1

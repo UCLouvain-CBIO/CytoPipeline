@@ -96,9 +96,8 @@ getAcquiredCompensationMatrix <- function(ff){
     compensationMatrix <- res$`$SPILLOVER`
   } else {
     fileId <- flowCore::identifier(ff)
-    msg <- ("Issue retrieving compensation matrix for file ")
-    msg <- paste0(msg, fileId, " : slot is NULL!")
-    stop(msg)
+    stop("Issue retrieving compensation matrix for file ",
+         fileId, " : slot is NULL!")
   }
   return(compensationMatrix)
 }
@@ -127,7 +126,7 @@ compensateFromMatrix <- function(x,
 ){
   myFunc <- function(ff, matrixSource = c("fcs", "import"),
                    matrixPath = NULL) {
-    matrixSource = match.arg(matrixSource)
+    matrixSource <- match.arg(matrixSource)
     if (matrixSource == "fcs") {
       # obtains compensation matrix
       compensationMatrix <-
@@ -606,15 +605,15 @@ qualityControlFlowAI <- function(ff,
     flowCore::colnames(ffIn)[!areSignalCols(ffIn)]
   message("Applying flowAI method...")
   if (outputDiagnostic) {
-    html_report = "_QC"
-    mini_report = "QCmini"
+    html_report <- "_QC"
+    mini_report <- "QCmini"
     if (!is.null(outputDir))
-      folder_results = outputDir
-    else folder_results = "resultsQC"
+      folder_results <- outputDir
+    else folder_results <- "resultsQC"
   } else {
-    html_report = FALSE
-    mini_report = FALSE
-    folder_results = FALSE
+    html_report <- FALSE
+    mini_report <- FALSE
+    folder_results <- FALSE
   }
   
   badEventIDs <-
@@ -677,15 +676,15 @@ qualityControlPeacoQC <- function(ff,
   channel4QualityControl <-
     flowCore::colnames(ffIn)[areSignalCols(ffIn)]
   if (outputDiagnostic) {
-    plot = TRUE
-    report = TRUE
+    plot <- TRUE
+    report <- TRUE
     if (!is.null(outputDir))
-      output_directory = outputDir
-    else output_directory = "."
+      output_directory <- outputDir
+    else output_directory <- "."
   } else {
-    plot = FALSE
-    report = FALSE
-    output_directory = NULL #not used
+    plot <- FALSE
+    report <- FALSE
+    output_directory <- NULL #not used
   }
   
   res <- PeacoQC::PeacoQC(ff = ffIn,
@@ -740,13 +739,13 @@ qualityControlFlowCut <- function(ff,
   message("Applying flowCut method...")
   channelsIndices <- which(CytoPipeline::areSignalCols(ffIn))
   if (outputDiagnostic) {
-    Plot = "All"
+    Plot <- "All"
     if (!is.null(outputDir))
-      Directory = outputDir
-    else filePrefixWithDir = "resultsQC"
+      Directory <- outputDir
+    else filePrefixWithDir <- "resultsQC"
   } else {
-    Directory = NULL #not used
-    Plot = "None"
+    Directory <- NULL #not used
+    Plot <- "None"
   }
   
   res <-
@@ -807,10 +806,10 @@ qualityControlFlowClean <- function(ff,
   vectMarkers <- which(CytoPipeline::areSignalCols(ffIn))
   
   if (outputDiagnostic) {
-    diagnostic = TRUE
+    diagnostic <- TRUE
     if (!is.null(outputDir))
-      filePrefixWithDir = outputDir
-    else filePrefixWithDir = "resultsQC"
+      filePrefixWithDir <- outputDir
+    else filePrefixWithDir <- "resultsQC"
     
     # add original fcs file name in prefix, as flowClean is designed to work
     # for one fcs at the time
@@ -819,8 +818,8 @@ qualityControlFlowClean <- function(ff,
     filename <- sub("([^.]+)\\.[[:alnum:]]+$", "\\1", filename)
     filePrefixWithDir <- paste0(filePrefixWithDir, filename)
   } else {
-    filePrefixWithDir = NULL #not used
-    diagnostic = FALSE
+    filePrefixWithDir <- NULL #not used
+    diagnostic <- FALSE
   }
   
   goodVsBadVector <-
@@ -886,14 +885,11 @@ estimateScaleTransforms <- function(ff, fluoMethod = c("estimateLogicle", "none"
   if (scatterMethod == "linear") {
     if (is.null(scatterRefMarker))
       stop("linear scatter method requires a scatterRefMarker")
-    msg <-
-      "Estimating linear transformation for scatter channels : "
-    msg <- paste0(msg,
-                  "reference marker = ",
-                  scatterRefMarker,
-                  "..."
-    )
-    message(msg)
+
+    message("Estimating linear transformation for scatter channels : ",
+            "reference marker = ",
+            scatterRefMarker,
+            "...")
     transList <-
       computeScatterChannelsLinearScale(ff,
                                         transList = transList,

@@ -329,9 +329,8 @@ getTransfoParams <- function(transList,
       ret$paramsList <- list(a = unname(sm$a),
                               b = unname(sm$b))
     } else {
-      msg <- "transformation type not recognized, currently this function only "
-      msg <- paste0(msg, "works with linear or logicle transforms")
-      stop(msg)
+      stop("transformation type not recognized, currently this function only ",
+           "works with linear or logicle transforms")
     }
     return(ret)
   }
@@ -382,9 +381,8 @@ computeScatterChannelsLinearScale <- function(ff,
 
   if (is.null(transList)) {
     if (!silent) {
-      msg <- "NULL transList found...\n"
-      msg <- paste0(msg, "Continued with no transfo applied on reference channel")
-      message(msg)
+      message("NULL transList found...\n",
+              "Continued with no transfo applied on reference channel")
     }
     ff_t <- ff[, referenceChannel]
   } else {
@@ -393,9 +391,8 @@ computeScatterChannelsLinearScale <- function(ff,
     }
     if (is.null(transList@transforms[[referenceChannel]])) {
       if (!silent) {
-        msg <- "No transformation found for referenceChannel in transList\n"
-        msg <- paste0(msg, "Continued with no transfo applied on reference channel")
-        message(msg)
+        message("No transformation found for referenceChannel in transList\n",
+                "Continued with no transfo applied on reference channel")
       }
       ff_t <- ff[, referenceChannel]
     } else {
@@ -426,10 +423,10 @@ computeScatterChannelsLinearScale <- function(ff,
               round(q95FSCA, 4))
       message("target quantiles : q5 = ", round(q5Goal, 4), " ; q95 = ",
               round(q95Goal, 4))
-      message(paste0("a = ",
-                     formatC(FSCAa, format = "e", digits = 2),
-                     " ; b = ",
-                     formatC(FSCAb, format = "e", digits = 2)))
+      message("a = ",
+              formatC(FSCAa, format = "e", digits = 2),
+              " ; b = ",
+              formatC(FSCAb, format = "e", digits = 2))
     }
     tf <- flowCore::linearTransform(a = FSCAa, b = FSCAb)
     if (is.null(transList)) {
@@ -475,10 +472,10 @@ computeScatterChannelsLinearScale <- function(ff,
                round(q95SSCA, 4))
       message("target quantiles : q5 = ", round(q5Goal, 4), " ; q95 = ",
               round(q95Goal, 4))
-      message(paste0("a = ",
-                     formatC(SSCAa, format = "e", digits = 2),
-                     " ; b = ",
-                     formatC(SSCAb, format = "e", digits = 2)))
+      message("a = ",
+              formatC(SSCAa, format = "e", digits = 2),
+              " ; b = ",
+              formatC(SSCAb, format = "e", digits = 2))
     }
     tf <- flowCore::linearTransform(a = SSCAa, b = SSCAb)
     if (is.null(transList)) {
@@ -514,10 +511,10 @@ computeScatterChannelsLinearScale <- function(ff,
   }
 
   if (!foundAreaScatter) {
-    msg <- "did not find any -A scatters in channels => did not transform anything\n"
-    msg <- paste0(msg, "The following scatter channels were found: ",
-                  scatterChannels)
-    warning(msg)
+    warning("did not find any -A scatters in channels => ",
+            "did not transform anything\n",
+            "The following scatter channels were found: ",
+            scatterChannels)
   }
 
   return(transList)
@@ -612,7 +609,7 @@ getChannelNamesFromMarkers <- function (ff, markers)
         channelNames <- c(channelNames, channel)
       }
       else {
-        stop(paste("Marker", marker, "could not be found"))
+        stop("Marker", marker, "could not be found")
       }
     }
   }
