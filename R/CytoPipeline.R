@@ -146,7 +146,7 @@ setMethod("CytoPipeline", "missing",
 #'
 setMethod("CytoPipeline", "list",
           function(object) {
-            x = methods::new("CytoPipeline",
+            x <- methods::new("CytoPipeline",
                              experimentName = "default_experiment",
                              scaleTransformProcessingQueue = list(),
                              flowFramesPreProcessingQueue = list(),
@@ -169,7 +169,7 @@ setMethod("CytoPipeline", "character",
             pipelineParams <- jsonlite::read_json(object,
                                                   simplifyVector = TRUE,
                                                   simplifyDataFrame = FALSE)
-            cytoPipeline = CytoPipeline(pipelineParams)
+            cytoPipeline <- CytoPipeline(pipelineParams)
             return(cytoPipeline)
           }
 )

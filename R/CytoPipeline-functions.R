@@ -540,10 +540,10 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
   ret <- list(isConsistent = TRUE, inconsistencyMsg = character(0))
 
   nScaleTransformSteps <- length(x@scaleTransformProcessingQueue)
-  ret$scaleTransformStepStatus = rep("not_run", nScaleTransformSteps)
-  ret$scaleTransformStepOutputObjNames =
+  ret$scaleTransformStepStatus <- rep("not_run", nScaleTransformSteps)
+  ret$scaleTransformStepOutputObjNames <-
     rep("unknown", nScaleTransformSteps)
-  ret$scaleTransformStepOutputClasses =
+  ret$scaleTransformStepOutputClasses <-
     rep("unknown", nScaleTransformSteps)
 
   if (nScaleTransformSteps >0) {
@@ -553,13 +553,13 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
 
   nPreProcessingSteps <- length(x@flowFramesPreProcessingQueue)
   nSampleFiles <- length(x@sampleFiles)
-  ret$preProcessingStepStatus =
+  ret$preProcessingStepStatus <-
     matrix(rep("not_run", nPreProcessingSteps * nSampleFiles),
            nrow = nPreProcessingSteps,
            ncol = nSampleFiles)
-  ret$preProcessingStepOutputObjNames =
+  ret$preProcessingStepOutputObjNames <-
     rep("unknown", nPreProcessingSteps)
-  ret$preProcessingStepOutputClasses =
+  ret$preProcessingStepOutputClasses <-
     rep("unknown", nPreProcessingSteps)
 
   if (nPreProcessingSteps > 0 && nSampleFiles > 0) {
