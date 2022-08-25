@@ -18,7 +18,8 @@ areSignalCols <- function(ff,
   }
   
   
-  retCols <- sapply(flowCore::colnames(ff),
+  retCols <- vapply(flowCore::colnames(ff),
+                          FUN.VALUE = logical(1),
                           FUN = function(ch, toRemovePatterns){
                             res <- TRUE
                             for (pat in toRemovePatterns) {

@@ -422,7 +422,8 @@ removeDebrisFlowClustTmix <- function(ff,
 
   resCellsFilter <- flowCore::filter(ff, cellsFilter)
   
-  FSCMedians <- sapply(X = seq_len(nClust),
+  FSCMedians <- vapply(X = seq_len(nClust),
+                       FUN.VALUE = double(1),
                        FUN = function(x, ff, flt){
                          resCellsFltr <- flt[[x]]
                          stats::median(flowCore::exprs(ff)[

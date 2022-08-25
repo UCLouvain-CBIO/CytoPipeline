@@ -148,7 +148,8 @@ getProcessingStepNames <- function(x, whichQueue = c("scale transform",
   nSteps <- getNbProcessingSteps(x, whichQueue)
   stepNames <- character()
   if (nSteps > 0) {
-    stepNames <- sapply(seq_len(nSteps),
+    stepNames <- vapply(seq_len(nSteps),
+                        FUN.VALUE = character(1),
                         FUN = function(i) {
                           pS <- getProcessingStep(x, whichQueue, i)
                           pS@name
@@ -1078,7 +1079,7 @@ plotCytoPipelineProcessingQueue <-
       if (is.null(sampleFile) && length(x@sampleFiles) > 0) {
         message("no sample file passed as argument => defaulting to first ",
                 "sample file")
-        sampleFileIndex = 1
+        sampleFileIndex <- 1
       } else if (is.numeric(sampleFile)) {
         if (sampleFile>0 && sampleFile <= length(x@sampleFiles)) {
           sampleFileIndex <- sampleFile
