@@ -1,21 +1,12 @@
-# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
+# CytoPipeline - Copyright (C) <2022> 
+# <Université catholique de Louvain (UCLouvain), Belgique>
 #   
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details (<http://www.gnu.org/licenses/>).
-
-# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
-#   
-#   Description and complete License: see LICENSE file.
-# 
-# This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#   you can redistribute it and/or modify it under the terms of the GNU General 
+# Public License as published by the Free Software Foundation, 
+# either version 3 of the License, or (at your option) any later version.
 # 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -56,7 +47,8 @@ ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100)
 
     h <- graphics::hist(flowCore::exprs(ff)[, timeChName],
                         breaks = seq(min(flowCore::exprs(ff)[, timeChName]),
-                                     max(flowCore::exprs(ff)[, timeChName]) + timeUnit,
+                                     max(flowCore::exprs(ff)[, timeChName]) + 
+                                       timeUnit,
                                      by = timeUnit),
                         plot = FALSE)
 
@@ -98,8 +90,10 @@ ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100)
 #' if 2D : geom_hex will be used \cr
 #'
 #' @param obj a flowCore::flowFrame or flowCore::flowSet
-#' @param xChannel channel (name or index) or marker name to be displayed on x axis
-#' @param yChannel channel (name or index) or marker name to be displayed on y axis
+#' @param xChannel channel (name or index) or marker name to be displayed 
+#' on x axis
+#' @param yChannel channel (name or index) or marker name to be displayed 
+#' on y axis
 #' @param nDisplayCells maximum number of events that will be plotted. If
 #' the number of events exceed this number, a sub-sampling will be performed
 #' @param seed seed used for sub-sampling (if any)
@@ -367,8 +361,10 @@ ggplotEvents <- function(obj,
 #'
 #' @param ffPre a flowCore::flowFrame, before applying filter
 #' @param ffPost a flowCore::flowFrame, after applying filter
-#' @param xChannel channel (name or index) or marker name to be displayed on x axis
-#' @param yChannel channel (name or index) or marker name to be displayed on y axis
+#' @param xChannel channel (name or index) or marker name to be displayed 
+#' on x axis
+#' @param yChannel channel (name or index) or marker name to be displayed 
+#' on y axis
 #' @param nDisplayCells maximum number of events that will be plotted. If
 #' the number of events exceed this number, a subsampling will be performed
 #' @param seed seed used for sub-sampling (if any)

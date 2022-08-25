@@ -17,7 +17,8 @@ aggregateAndSample(
 \arguments{
 \item{fs}{a flowCore::flowset}
 
-\item{nTotalEvents}{Total number of cells to select from the input flow frames}
+\item{nTotalEvents}{Total number of cells to select from the input flow
+frames}
 
 \item{seed}{seed to be set before sampling for reproducibility.
 Default NULL does not set any seed.}

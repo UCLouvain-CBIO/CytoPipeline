@@ -1,9 +1,12 @@
-# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
+# CytoPipeline - Copyright (C) <2022> 
+# <Université catholique de Louvain (UCLouvain), Belgique>
 #   
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#   you can redistribute it and/or modify it under the terms of the GNU General 
+# Public License as published by the Free Software Foundation, 
+# either version 3 of the License, or (at your option) any later version.
 # 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -108,12 +111,13 @@ getAcquiredCompensationMatrix <- function(ff){
 #' in the fcs files themselves or provided as a csv file. 
 #' @param x a flowCore::flowSet or a flowCore::flowFrame
 #' @param matrixSource if "fcs", the compensation matrix will be fetched from 
-#' the fcs files (different compensation matrices can then be applied by fcs file)
+#' the fcs files (different compensation matrices can then be applied by fcs 
+#' file)
 #' if "import", uses matrixPath to read the matrix (should be a csv file)
 #' @param matrixPath if matrixSource == "import", will be used as the input csv 
 #' file path
-#' @param updateChannelNames if TRUE, updates the fluo channel names by prefixing
-#' them with "comp-"
+#' @param updateChannelNames if TRUE, updates the fluo channel names by 
+#' prefixing them with "comp-"
 #' @param ... additional arguments (not used)
 #' @return the compensated flowSet or flowFrame
 #' @export
@@ -225,7 +229,8 @@ removeDoubletsPeacoQC <- function(ff,
 #' channels one wants to use
 #' @param heightChannels a character vector containing the name of the 
 #' 'height type' channels one wants to use
-#' @param widerGate a boolean as wider_gate parameter to flowStats::singletGate()
+#' @param widerGate a boolean as wider_gate parameter to 
+#' flowStats::singletGate()
 #' @param ... additional parameters passed to flowStats::singletGate()
 #'
 #' @return a flowCore::flowFrame with removed doublets events from the input
@@ -342,8 +347,8 @@ removeDoubletsCytoPipeline <- function(ff,
 #' FSC-A, SSC-A 2D representation. The function internally uses 
 #' flowCore::polygonGate()
 #' @param ff a flowCore::flowFrame
-#' @param FSCChannel a character containing the exact name of the forward scatter
-#' channel
+#' @param FSCChannel a character containing the exact name of the forward 
+#' scatter channel
 #' @param SSCChannel a character containing the exact name of the side scatter
 #' channel 
 #' @param gateData a numerical vector containing the polygon gate coordinates
@@ -452,13 +457,14 @@ removeDebrisFlowClustTmix <- function(ff,
 
 #' @title remove dead cells from a flowFrame using manual gating
 #' @description remove dead cells from a flowFrame, using manual gating in the
-#' FSC-A, '(a)Live/Dead' 2D representation. The function uses flowCore::polygonGate()
+#' FSC-A, '(a)Live/Dead' 2D representation. The function uses 
+#' flowCore::polygonGate()
 #' @param ff a flowCore::flowFrame
 #' @param preTransform boolean, if TRUE: the transList list of scale transforms
 #' will be applied first on the LD channel.
 #' @param transList applied in conjunction with preTransform == TRUE
-#' @param FSCChannel a character containing the exact name of the forward scatter
-#' channel
+#' @param FSCChannel a character containing the exact name of the forward 
+#' scatter channel
 #' @param LDMarker a character containing the exact name of the marker 
 #' corresponding to (a)Live/Dead channel 
 #' @param gateData a numerical vector containing the polygon gate coordinates
@@ -506,8 +512,8 @@ removeDeadCellsManual <- function(ff,
 
 #' @title remove dead cells from a flowFrame
 #' @description this function removes dead cells from a flowFrame, using a 
-#' specific '(a)live/dead' channel, and the openCyto::gate_tail() gating function
-#' (see doc of the openCyto package)
+#' specific '(a)live/dead' channel, and the openCyto::gate_tail() gating 
+#' function (see doc of the openCyto package)
 
 #' @param ff a flowCore::flowFrame
 #' @param preTransform if TRUE, apply the transList scale transform prior to 
@@ -852,11 +858,11 @@ applyScaleTransforms <- function(ff, transList, ...){
 
 #' @title estimates scale tranformations
 #' @description this function estimates the scale transformations to be applied
-#' on a flowFrame to obtain 'good behaving' distributions, i.e. the best possible
-#' separation between + population and - population.
-#' It distinguishes between scatter channels, where either linear, or no transform
-#' is applied, and fluo channels, where either logicle trnasform - using 
-#' flowCore::estimateLogicle - is estimated, or no transform is applied.
+#' on a flowFrame to obtain 'good behaving' distributions, i.e. the best 
+#' possible separation between + population and - population.
+#' It distinguishes between scatter channels, where either linear, or no 
+#' transform is applied, and fluo channels, where either logicle transform 
+#' - using flowCore::estimateLogicle - is estimated, or no transform is applied.
 #' The idea of linear transform of scatter channels is as follows: a reference
 #' channel (not a scatter one) is selected and a linear transform (Y = AX + B)
 #' is applied to all scatter channel, as to align their 5 and 95 percentiles to
@@ -871,9 +877,10 @@ applyScaleTransforms <- function(ff, transList, ...){
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
 #' 
-estimateScaleTransforms <- function(ff, fluoMethod = c("estimateLogicle", "none"),
-                               scatterMethod = c("linear", "none"),
-                               scatterRefMarker = NULL) {
+estimateScaleTransforms <- function(ff, 
+                                    fluoMethod = c("estimateLogicle", "none"),
+                                    scatterMethod = c("linear", "none"),
+                                    scatterRefMarker = NULL) {
   fluoMethod <- match.arg(fluoMethod)
   scatterMethod <- match.arg(scatterMethod)
 

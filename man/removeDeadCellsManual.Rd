@@ -22,8 +22,8 @@ will be applied first on the LD channel.}
 
 \item{transList}{applied in conjunction with preTransform == TRUE}
 
-\item{FSCChannel}{a character containing the exact name of the forward scatter
-channel}
+\item{FSCChannel}{a character containing the exact name of the forward
+scatter channel}
 
 \item{LDMarker}{a character containing the exact name of the marker
 corresponding to (a)Live/Dead channel}
@@ -39,5 +39,6 @@ a flowCore::flowFrame with removed dead cells from the input
 }
 \description{
 remove dead cells from a flowFrame, using manual gating in the
-FSC-A, '(a)Live/Dead' 2D representation. The function uses flowCore::polygonGate()
+FSC-A, '(a)Live/Dead' 2D representation. The function uses
+flowCore::polygonGate()
 }

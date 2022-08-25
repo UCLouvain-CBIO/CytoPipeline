@@ -26,9 +26,11 @@ ggplotFilterEvents(
 
 \item{ffPost}{a flowCore::flowFrame, after applying filter}
 
-\item{xChannel}{channel (name or index) or marker name to be displayed on x axis}
+\item{xChannel}{channel (name or index) or marker name to be displayed
+on x axis}
 
-\item{yChannel}{channel (name or index) or marker name to be displayed on y axis}
+\item{yChannel}{channel (name or index) or marker name to be displayed
+on y axis}
 
 \item{nDisplayCells}{maximum number of events that will be plotted. If
 the number of events exceed this number, a subsampling will be performed}

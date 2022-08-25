@@ -3,12 +3,13 @@
 \name{computeScatterChannelsLinearScale}
 \alias{computeScatterChannelsLinearScale}
 \title{compute linear transformation of scatter channels found in ff, based
-on 5\% and 95\% of referenceChannel, set as target. If there is a transformation
-defined in transList for referenceChannel, it is applied first, before
-computing quantiles.
+on 5\% and 95\% of referenceChannel, set as target. If there is a
+transformation defined in transList for referenceChannel, it is applied
+first, before computing quantiles.
 Then the computed linear transformations (or each scatter channel) are added
-into the transfo_list. -A channels are computed, and same lienar transformation
-is then applied to corresponding -W and -H channels (if they exist in ff).}
+into the transfo_list. -A channels are computed, and same linear
+transformation is then applied to corresponding -W and -H channels
+(if they exist in ff).}
 \usage{
 computeScatterChannelsLinearScale(
   ff,

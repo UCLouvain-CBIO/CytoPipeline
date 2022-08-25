@@ -26,9 +26,11 @@ ggplotEvents(
 \arguments{
 \item{obj}{a flowCore::flowFrame or flowCore::flowSet}
 
-\item{xChannel}{channel (name or index) or marker name to be displayed on x axis}
+\item{xChannel}{channel (name or index) or marker name to be displayed
+on x axis}
 
-\item{yChannel}{channel (name or index) or marker name to be displayed on y axis}
+\item{yChannel}{channel (name or index) or marker name to be displayed
+on y axis}
 
 \item{nDisplayCells}{maximum number of events that will be plotted. If
 the number of events exceed this number, a sub-sampling will be performed}

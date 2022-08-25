@@ -21,7 +21,8 @@ channels one wants to use}
 \item{heightChannels}{a character vector containing the name of the
 'height type' channels one wants to use}
 
-\item{widerGate}{a boolean as wider_gate parameter to flowStats::singletGate()}
+\item{widerGate}{a boolean as wider_gate parameter to
+flowStats::singletGate()}
 
 \item{...}{additional parameters passed to flowStats::singletGate()}
 }

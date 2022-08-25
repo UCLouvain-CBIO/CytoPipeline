@@ -4,7 +4,7 @@
 \alias{appendCellID}
 \title{append 'Original_ID' column to a flowframe}
 \usage{
-appendCellID(ff, eventIDs = 1:flowCore::nrow(ff))
+appendCellID(ff, eventIDs = seq_len(flowCore::nrow(ff)))
 }
 \arguments{
 \item{ff}{a flowCore::flowFrame}

@@ -43,12 +43,43 @@ showProcessingSteps(x, whichQueue = c("scale transform", "pre-processing"))
 \arguments{
 \item{x}{a CytoPipeline object}
 
-\item{whichQueue}{selects the processing queue for which we manage the processing
+\item{whichQueue}{selects the processing queue for which we manage the
+processing
 steps}
 
 \item{newPS}{the new processing step to be added (CytoProcessingStep object)}
 
 \item{index}{index of the processing step to remove}
+}
+\value{
+\itemize{
+\item for \code{addProcessingStep}: the updated CytoPipeline object
+}
+
+\itemize{
+\item for \code{removeProcessingStep}: the updated CytoPipeline object
+}
+
+\itemize{
+\item for \code{getNbProcessingSteps}: the number of processing steps present in the target queue
+}
+
+\itemize{
+\item for \code{getProcessingStep}: the obtained CytoProcessingStep object
+}
+
+\itemize{
+\item for \code{getProcessingStepNames}: the vector of step names
+}
+
+\itemize{
+\item for \code{cleanProcessingSteps}: the updated CytoPipeline object
+}
+
+\itemize{
+\item for \code{showProcessingSteps}: nothing (only console display side
+effect is required)
+}
 }
 \description{
 functions to manipulate processing steps in processing queues
@@ -56,11 +87,11 @@ of CytoPipeline objects
 }
 \section{Functions}{
 \itemize{
-\item \code{addProcessingStep}: adds a processing step in one of the processing queues (at the
-end), returns the modified CytoPipeline object
+\item \code{addProcessingStep}: adds a processing step in one of the
+processing queues (at the end), returns the modified CytoPipeline object
 
-\item \code{removeProcessingStep}: removes a processing step from one of the
-processing queues, returns the modified CytoPipeline object
+\item \code{removeProcessingStep}: removes a processing step from one of
+the processing queues, returns the modified CytoPipeline object
 
 \item \code{getNbProcessingSteps}: gets the number of processing
 steps in a processing queue

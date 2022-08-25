@@ -1,9 +1,12 @@
-# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
+# CytoPipeline - Copyright (C) <2022> 
+# <Université catholique de Louvain (UCLouvain), Belgique>
 #   
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#   you can redistribute it and/or modify it under the terms of the GNU General 
+# Public License as published by the Free Software Foundation, 
+# either version 3 of the License, or (at your option) any later version.
 # 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,8 +26,8 @@
 ##'
 ##' Class representing a flow cytometry pipeline, and composed of two processing
 ##' queues, i.e. lists of CytoProcessingStep objects :
-##' - a list of CytoProcessingStep(s) for pre-calculation of scale transformations
-##' per channel
+##' - a list of CytoProcessingStep(s) for pre-calculation of scale 
+##' transformations per channel
 ##' - a list of CytoProcessingStep(s) for the pre-processing of flow frames
 ##'
 ##' @slot scaleTransformProcessingQueue A `list()` of CytoProcessingStep objects
@@ -119,7 +122,8 @@ setMethod("show", "CytoPipeline",
           })
 
 
-setGeneric("CytoPipeline", function(object, ...) standardGeneric("CytoPipeline"))
+setGeneric("CytoPipeline", function(object, ...) 
+  standardGeneric("CytoPipeline"))
 
 #' @rdname CytoPipeline
 #' @param experimentName the experiment name
@@ -178,6 +182,8 @@ setMethod("CytoPipeline", "character",
 #' 
 #' @param x a `CytoPipeline` object
 #' @param ... additional arguments (not used here)
+#' 
+#' @return - for `as.list.CytoPipeline`: the obtained list
 #'
 #' @export
 #'

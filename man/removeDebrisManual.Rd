@@ -9,8 +9,8 @@ removeDebrisManual(ff, FSCChannel, SSCChannel, gateData, ...)
 \arguments{
 \item{ff}{a flowCore::flowFrame}
 
-\item{FSCChannel}{a character containing the exact name of the forward scatter
-channel}
+\item{FSCChannel}{a character containing the exact name of the forward
+scatter channel}
 
 \item{SSCChannel}{a character containing the exact name of the side scatter
 channel}

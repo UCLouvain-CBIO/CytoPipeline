@@ -12,6 +12,11 @@ export2JSONFile(x, path)
 
 \item{path}{the full path to the name of the file to be created}
 }
+\value{
+\itemize{
+\item for \code{export2JSONFile}: nothing
+}
+}
 \description{
 functions to export CytoPipeline objects in various
 formats
@@ -19,6 +24,6 @@ formats
 \section{Functions}{
 \itemize{
 \item \code{export2JSONFile}: exports a CytoPipeline object
-to a JSON file
+to a JSON file (writing the file = side effect)
 }}
 

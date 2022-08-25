@@ -51,12 +51,17 @@ sampleFiles(x) <- value
 
 \item{value}{the new value to be assigned}
 }
+\value{
+\itemize{
+\item for \code{as.list.CytoPipeline}: the obtained list
+}
+}
 \description{
 Class representing a flow cytometry pipeline, and composed of two processing
 queues, i.e. lists of CytoProcessingStep objects :
 \itemize{
-\item a list of CytoProcessingStep(s) for pre-calculation of scale transformations
-per channel
+\item a list of CytoProcessingStep(s) for pre-calculation of scale
+transformations per channel
 \item a list of CytoProcessingStep(s) for the pre-processing of flow frames
 }
 }

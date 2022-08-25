@@ -1,9 +1,12 @@
-# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
+# CytoPipeline - Copyright (C) <2022> 
+# <Université catholique de Louvain (UCLouvain), Belgique>
 #   
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#   you can redistribute it and/or modify it under the terms of the GNU General 
+# Public License as published by the Free Software Foundation, 
+# either version 3 of the License, or (at your option) any later version.
 # 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,14 +18,16 @@
 ##' @description functions to manipulate processing steps in processing queues 
 ##' of CytoPipeline objects
 ##' @param x a CytoPipeline object
-##' @param whichQueue selects the processing queue for which we manage the processing 
+##' @param whichQueue selects the processing queue for which we manage the 
+##' processing 
 ##' steps
 NULL
 
 ##' @title handling processing steps in CytoPipeline objects
 ##' @param newPS the new processing step to be added (CytoProcessingStep object)
-##' @describeIn handlingProcessingSteps adds a processing step in one of the processing queues (at the
-##' end), returns the modified CytoPipeline object
+##' @describeIn handlingProcessingSteps adds a processing step in one of the 
+##' processing queues (at the end), returns the modified CytoPipeline object
+##' @return - for `addProcessingStep`: the updated CytoPipeline object
 ##'
 ##' @export
 #'
@@ -62,9 +67,12 @@ addProcessingStep <- function(x,
 
 
 ##' @param index index of the processing step to remove
-##' @describeIn handlingProcessingSteps removes a processing step from one of the
-##' processing queues, returns the modified CytoPipeline object
+##' @describeIn handlingProcessingSteps removes a processing step from one of 
+##' the processing queues, returns the modified CytoPipeline object
+##' @return - for `removeProcessingStep`: the updated CytoPipeline object
+##' 
 ##' @export
+##' 
 ##'
 removeProcessingStep <- function(x,
                                  whichQueue = c("scale transform",
@@ -95,6 +103,7 @@ removeProcessingStep <- function(x,
 
 ##' @describeIn handlingProcessingSteps gets the number of processing
 ##' steps in a processing queue
+##' @return - for `getNbProcessingSteps`: the number of processing steps present in the target queue
 ##' @export
 ##'
 getNbProcessingSteps <- function(x,
@@ -112,6 +121,7 @@ getNbProcessingSteps <- function(x,
 
 ##' @describeIn handlingProcessingSteps gets a processing step at a
 ##' specific index of a processing queue
+##' @return - for `getProcessingStep`: the obtained CytoProcessingStep object
 ##' @export
 ##'
 getProcessingStep <- function(x,
@@ -141,6 +151,7 @@ getProcessingStep <- function(x,
 
 ##' @describeIn handlingProcessingSteps gets a character vector of all
 ##' processing step names of a specific processing queue
+##' @return - for `getProcessingStepNames`: the vector of step names
 ##' @export
 ##'
 getProcessingStepNames <- function(x, whichQueue = c("scale transform",
@@ -161,6 +172,7 @@ getProcessingStepNames <- function(x, whichQueue = c("scale transform",
 
 ##' @describeIn handlingProcessingSteps deletes all processing steps in one
 ##' or both processing queues, returns the modified CytoPipeline object
+##' @return - for `cleanProcessingSteps`: the updated CytoPipeline object
 ##' @export
 ##'
 cleanProcessingSteps <- function(x,
@@ -179,6 +191,8 @@ cleanProcessingSteps <- function(x,
 
 ##' @describeIn handlingProcessingSteps shows all processing steps in a
 ##' processing queue
+##' @return - for `showProcessingSteps`: nothing (only console display side 
+##' effect is required)
 ##' @export
 ##'
 showProcessingSteps <- function(x,
@@ -284,7 +298,8 @@ execute <- function(x,
     msg <- paste0("Proceeding with step ", s, " [", stepName, "]")
     if (cacheResourceName %in% BiocFileCache::bfcinfo(bfc)$rname) {
       message(msg, ": found in cache!")
-      cacheResourceFile <- BiocFileCache::bfcrpath(x = bfc, rnames = cacheResourceName)
+      cacheResourceFile <- BiocFileCache::bfcrpath(x = bfc, 
+                                                   rnames = cacheResourceName)
       res <- readRDS(cacheResourceFile)
     } else {
       message(msg, " ...")
@@ -323,7 +338,8 @@ execute <- function(x,
                                   outputClass = outputClass,
                                   outputObjectName = outputObjectName))
 
-      BiocFileCache::bfcmeta(bfc, name = "generic", append = TRUE) <- genericMeta
+      BiocFileCache::bfcmeta(bfc, name = "generic", append = TRUE) <- 
+        genericMeta
     }
   } # end loop on steps
 
@@ -332,7 +348,8 @@ execute <- function(x,
     currentTransList <- res
     if (x@saveScaleTransform) {
       if (!length(x@scaleTransformFile))
-        stop("saving scale tranformations require a 'scaleTranformFile' to be set")
+        stop("saving scale tranformations require a 'scaleTranformFile' to be ",
+             "set")
       saveRDS(currentTransList,
               file = paste0(rdsOutputDir,
                             x@scaleTransformFile))
@@ -398,7 +415,8 @@ execute <- function(x,
         preprocessingMeta <- data.frame(list(rid = names(cacheResourceFile),
                                              fcsfile = basename(file)))
 
-        BiocFileCache::bfcmeta(bfc, name = "generic", append = TRUE) <- genericMeta
+        BiocFileCache::bfcmeta(bfc, name = "generic", append = TRUE) <- 
+          genericMeta
         BiocFileCache::bfcmeta(bfc, name = "preprocessing", append = TRUE) <-
           preprocessingMeta
 
@@ -409,8 +427,8 @@ execute <- function(x,
 
 ##' @name interactingWithCytoPipelineCache
 ##' @title interaction between CytoPipeline object and disk cache
-##' @description functions supporting the interaction between a CytoPipeline object
-##' and the file cache on disk
+##' @description functions supporting the interaction between a CytoPipeline 
+##' object and the file cache on disk
 ##' @param x a CytoPipeline object
 ##' @param path the full path to the experiment storage on disk 
 ##' (without the /.cache)
@@ -419,10 +437,11 @@ execute <- function(x,
 ##' @return 
 ##' for `deleteCytoPipelineCache`: nothing\cr  
 ##' for `buildCytoPipelineCache`: the built CytoPipeline object\cr  
-##' for `checkCytoPipelineConsistencyWithCache`: a list with the following values:  
+##' for `checkCytoPipelineConsistencyWithCache`: a list with the following 
+##' values:  
 ##' - `isConsistent` (TRUE/FALSE)
-##' - `inconsistencyMsg`: character filled in by an inconsistency message in case the 
-##' cache and CytoPipeline object are not consistent with each other
+##' - `inconsistencyMsg`: character filled in by an inconsistency message in 
+##' case the cache and CytoPipeline object are not consistent with each other
 ##' - `scaleTransformStepStatus`: a character vector, containing, for each scale
 ##' transform step, a status from c("run", "not run", "inconsistent")
 ##' - `preProcessingStepStatus`: a character matrix, containing, for each
@@ -481,8 +500,8 @@ buildCytoPipelineFromCache <- function(experimentName, path = "."){
       uniqueStepNbs <- unique(stepsInfos$stepNb)
 
       if (length(uniqueStepNbs) != nrow(stepsInfos))
-        stop("more than one step having the same step nb. Cache is inconsistent,",
-             " deleting it manually is advised")
+        stop("more than one step having the same step nb. ",
+             "Cache is inconsistent, deleting it manually is advised")
 
       stepsInfos <- stepsInfos[order(stepsInfos$stepNb),]
 
@@ -506,8 +525,8 @@ buildCytoPipelineFromCache <- function(experimentName, path = "."){
     if (nSteps > 0) {
       uniqueStepNbs <- unique(stepsInfos$stepNb)
       if (length(uniqueStepNbs) != nrow(stepsInfos))
-        stop("more than one step having the same step nb. Cache is inconsistent,",
-             " deleting it manually is advised")
+        stop("more than one step having the same step nb. ",
+             "Cache is inconsistent, deleting it manually is advised")
       stepsInfos <- stepsInfos[order(stepsInfos$stepNb),]
       #x <- cleanProcessingSteps(x, whichQueue = "pre-processing")
 
@@ -651,8 +670,8 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
     uniqueStepNbs <- unique(stepsInfos$stepNb)
 
     if (length(uniqueStepNbs) != nrow(stepsInfos))
-      stop("more than one step having the same step nb. Cache is inconsistent,",
-           " deleting it manually is advised")
+      stop("more than one step having the same step nb. ",
+           "Cache is inconsistent, deleting it manually is advised")
 
     stepsInfos <- stepsInfos[order(stepsInfos$stepNb),]
     if (nStepsInCache > nPreProcessingSteps) {
@@ -683,8 +702,8 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
       uniqueStepNbs <- unique(stepsInfos$stepNb)
 
       if (length(uniqueStepNbs) != nrow(stepsInfos))
-        stop("more than one step having the same step nb. Cache is inconsistent,",
-             " deleting it manually is advised")
+        stop("more than one step having the same step nb. ",
+             "Cache is inconsistent, deleting it manually is advised")
 
       stepsInfos <- stepsInfos[order(stepsInfos$stepNb),]
 
@@ -730,7 +749,8 @@ NULL
 
 ##' 
 ##' @describeIn exportCytoPipeline exports a CytoPipeline object 
-##' to a JSON file
+##' to a JSON file (writing the file = side effect)
+##' @return - for `export2JSONFile`: nothing
 ##' @export
 ##'
 export2JSONFile <- function(x, path){
@@ -811,7 +831,8 @@ getCytoPipelineObjectFromCache <-
           stop("sampleFile out of bounds")
         }
       } else {
-        sampleFileIndex <- which(basename(x@sampleFiles) == basename(sampleFile))
+        sampleFileIndex <- 
+          which(basename(x@sampleFiles) == basename(sampleFile))
         if (length(sampleFileIndex) == 0) {
           stop("sampleFile not found in CytoPipeline")
         } else if (length(sampleFileIndex) > 1) {
@@ -840,8 +861,8 @@ getCytoPipelineObjectFromCache <-
       indexInCache <- which(cacheInfo$outputObjectName == objectName &
                               cacheInfo$fcsfile == sampleFile)
       if (length(indexInCache) > 1) {
-        stop("More than one line in cache corresponding to object name and sample",
-             "file => unexpected inconsistency")
+        stop("More than one line in cache corresponding to object name and " ,
+             "sample file => unexpected inconsistency")
       }
 
       if (length(indexInCache) == 0) {
@@ -924,7 +945,8 @@ getCytoPipelineObjectInfos <-
                               cacheInfo$fcsfile == sampleFile)
 
       if (length(indexesInCache) == 0) {
-        stop("Combination ('", whichQueue,"'", sampleFile, ") not found in cache")
+        stop("Combination ('", whichQueue,"'", sampleFile, ") not found in ",
+             "cache")
       }
     } else {
       if (!("fcsfile" %in% colnames(cacheInfo))) {
@@ -936,7 +958,8 @@ getCytoPipelineObjectInfos <-
       }
       
       if (length(indexesInCache) == 0) {
-        stop("Combination ('", whichQueue,"', no sample file) not found in cache")
+        stop("Combination ('", whichQueue,"', no sample file) not found in ",
+             "cache")
       }
     }
 
@@ -1087,7 +1110,8 @@ plotCytoPipelineProcessingQueue <-
           stop("sampleFile out of bounds")
         }
       } else {
-        sampleFileIndex <- which(basename(x@sampleFiles) == basename(sampleFile))
+        sampleFileIndex <- 
+          which(basename(x@sampleFiles) == basename(sampleFile))
         if (length(sampleFileIndex) == 0) {
           stop("sampleFile not found in CytoPipeline")
         } else if (length(sampleFileIndex) > 1) {
@@ -1119,7 +1143,8 @@ plotCytoPipelineProcessingQueue <-
       for (i in seq_len(nSteps)) {
         stepStatus <- ""
         if (whichQueue == "pre-processing") {
-          if (unname(res$preProcessingStepStatus[i, sampleFileIndex]) == "run") {
+          if (unname(res$preProcessingStepStatus[i, sampleFileIndex]) 
+              == "run") {
             box.lcol[i+1] <- "green"
           }
           if (res$preProcessingStepOutputObjNames[i] != "unknown") {

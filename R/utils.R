@@ -1,3 +1,18 @@
+# CytoPipeline - Copyright (C) <2022> 
+# <Université catholique de Louvain (UCLouvain), Belgique>
+#   
+#   Description and complete License: see LICENSE file.
+# 
+# This program (CytoPipeline) is free software: 
+#   you can redistribute it and/or modify it under the terms of the GNU General 
+# Public License as published by the Free Software Foundation, 
+# either version 3 of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details (<http://www.gnu.org/licenses/>).
+
 
 #' @title find flow frame columns that represent true signal
 #' @description : find flow frame columns that represent true signal
@@ -182,7 +197,8 @@ runCompensation <- function(obj, spillover, updateChannelNames = TRUE){
 #' inputs have been replaced by a flowSet input.
 #'
 #' @param fs a flowCore::flowset
-#' @param nTotalEvents Total number of cells to select from the input flow frames
+#' @param nTotalEvents Total number of cells to select from the input flow 
+#' frames
 #' @param seed seed to be set before sampling for reproducibility.
 #' Default NULL does not set any seed.
 #' @param channels Channels/markers to keep in the aggregate.
@@ -231,7 +247,8 @@ aggregateAndSample <- function (fs,
       new_col_names[c(1, 2)] <- paste0(new_col_names[c(1, 2)], prev_agg +
                                          1)
     }
-    prev_ids <- length(grep("Original_ID[0-9]*$", flowCore::colnames(current_ff)))
+    prev_ids <- length(grep("Original_ID[0-9]*$", 
+                            flowCore::colnames(current_ff)))
     if (prev_ids > 0) {
       new_col_names[3] <- paste0(new_col_names[3], prev_ids + 1)
     }
@@ -264,8 +281,9 @@ aggregateAndSample <- function (fs,
           length(commonCols)) {
         diffNumberChannels <- TRUE
       }
-      if (!diffMarkers && any(!flowCore::markernames(current_ff)[commonCols] %in%
-                              flowCore::markernames(flowFrame)[commonCols])) {
+      if (!diffMarkers && 
+          any(!flowCore::markernames(current_ff)[commonCols] %in%
+              flowCore::markernames(flowFrame)[commonCols])) {
         diffMarkers <- TRUE
       }
       flowCore::exprs(flowFrame) <-
@@ -314,7 +332,8 @@ getTransfoParams <- function(transList,
     } else if (methods::.hasSlot(transMap, ".Data")) {
       tf <- methods::new("transform", .Data = transMap@.Data)
     } else {
-      stop("transfo on channel does not have 'f' or '.Data' slot => not handled")
+      stop("transfo on channel does not have 'f' or '.Data' slot ",
+           "=> not handled")
     }
 
     sm <- flowCore::summary(tf)
@@ -340,12 +359,13 @@ getTransfoParams <- function(transList,
 
 
 #' @title compute linear transformation of scatter channels found in ff, based
-#' on 5% and 95% of referenceChannel, set as target. If there is a transformation
-#' defined in transList for referenceChannel, it is applied first, before
-#' computing quantiles.
+#' on 5% and 95% of referenceChannel, set as target. If there is a 
+#' transformation defined in transList for referenceChannel, it is applied
+#' first, before computing quantiles.
 #' Then the computed linear transformations (or each scatter channel) are added
-#' into the transfo_list. -A channels are computed, and same lienar transformation
-#' is then applied to corresponding -W and -H channels (if they exist in ff).
+#' into the transfo_list. -A channels are computed, and same linear 
+#' transformation is then applied to corresponding -W and -H channels 
+#' (if they exist in ff).
 #' @description based on a referenceChannel
 #' @param ff a flowCore::flowFrame
 #' @param transList an initial flowCore::transformList
@@ -398,8 +418,9 @@ computeScatterChannelsLinearScale <- function(ff,
       ff_t <- ff[, referenceChannel]
     } else {
       transfoList <-
-        flowCore::transformList(from = referenceChannel,
-                                tfun = transList@transforms[[referenceChannel]]@f)
+        flowCore::transformList(
+          from = referenceChannel,
+          tfun = transList@transforms[[referenceChannel]]@f)
       ff_t <- flowCore::transform(ff[, referenceChannel],transfoList)
     }
   }
@@ -525,7 +546,8 @@ computeScatterChannelsLinearScale <- function(ff,
 #' @title find time channel in flowSet/flowFrame
 #' @description tries to find a channel in a flowSet/flowFrame that could
 #' be the time channel. First tries to identify a channel name containing the
-#' 'time' string, then tries to identify a single monotonically increasing channel.
+#' 'time' string, then tries to identify a single monotonically increasing 
+#' channel.
 #'
 #' @param obj a flowCore::flowFrame or flowCore::flowSet
 #' @param excludeChannels vector of column names to exclude in the search
@@ -572,7 +594,8 @@ findTimeChannel <- function(obj, excludeChannels = c()) {
 #' - an array of integers (indices in flowFrame columns)
 #' - an array of characters (exact markers or channel patterns)
 #'
-#' @return a character vector, containing the names of the corresponding channels
+#' @return a character vector, containing the names of the corresponding 
+#' channels
 #' @export
 #'
 getChannelNamesFromMarkers <- function (ff, markers) 

@@ -16,14 +16,15 @@ compensateFromMatrix(
 \item{x}{a flowCore::flowSet or a flowCore::flowFrame}
 
 \item{matrixSource}{if "fcs", the compensation matrix will be fetched from
-the fcs files (different compensation matrices can then be applied by fcs file)
+the fcs files (different compensation matrices can then be applied by fcs
+file)
 if "import", uses matrixPath to read the matrix (should be a csv file)}
 
 \item{matrixPath}{if matrixSource == "import", will be used as the input csv
 file path}
 
-\item{updateChannelNames}{if TRUE, updates the fluo channel names by prefixing
-them with "comp-"}
+\item{updateChannelNames}{if TRUE, updates the fluo channel names by
+prefixing them with "comp-"}
 
 \item{...}{additional arguments (not used)}
 }

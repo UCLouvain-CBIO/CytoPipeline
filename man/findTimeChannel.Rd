@@ -18,5 +18,6 @@ time. If not found, returns NULL.
 \description{
 tries to find a channel in a flowSet/flowFrame that could
 be the time channel. First tries to identify a channel name containing the
-'time' string, then tries to identify a single monotonically increasing channel.
+'time' string, then tries to identify a single monotonically increasing
+channel.
 }

@@ -30,6 +30,6 @@ a flowCore::flowFrame with removed dead cells from the input
 }
 \description{
 this function removes dead cells from a flowFrame, using a
-specific '(a)live/dead' channel, and the openCyto::gate_tail() gating function
-(see doc of the openCyto package)
+specific '(a)live/dead' channel, and the openCyto::gate_tail() gating
+function (see doc of the openCyto package)
 }

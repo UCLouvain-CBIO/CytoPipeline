@@ -25,11 +25,12 @@ disk}
 \value{
 for \code{deleteCytoPipelineCache}: nothing\cr
 for \code{buildCytoPipelineCache}: the built CytoPipeline object\cr
-for \code{checkCytoPipelineConsistencyWithCache}: a list with the following values:
+for \code{checkCytoPipelineConsistencyWithCache}: a list with the following
+values:
 \itemize{
 \item \code{isConsistent} (TRUE/FALSE)
-\item \code{inconsistencyMsg}: character filled in by an inconsistency message in case the
-cache and CytoPipeline object are not consistent with each other
+\item \code{inconsistencyMsg}: character filled in by an inconsistency message in
+case the cache and CytoPipeline object are not consistent with each other
 \item \code{scaleTransformStepStatus}: a character vector, containing, for each scale
 transform step, a status from c("run", "not run", "inconsistent")
 \item \code{preProcessingStepStatus}: a character matrix, containing, for each
@@ -38,8 +39,8 @@ c("run", "not run", "inconsistent")
 }
 }
 \description{
-functions supporting the interaction between a CytoPipeline object
-and the file cache on disk
+functions supporting the interaction between a CytoPipeline
+object and the file cache on disk
 }
 \section{Functions}{
 \itemize{

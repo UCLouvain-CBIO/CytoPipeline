@@ -1,9 +1,12 @@
-# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
+# CytoPipeline - Copyright (C) <2022> 
+# <Université catholique de Louvain (UCLouvain), Belgique>
 #   
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#   you can redistribute it and/or modify it under the terms of the GNU General 
+# Public License as published by the Free Software Foundation, 
+# either version 3 of the License, or (at your option) any later version.
 # 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -444,7 +447,8 @@ test_that("Check consistency with cache works", {
   
   expect_equal(res$isConsistent, FALSE)
   expect_equal(res$inconsistencyMsg,
-               "inconsistent pre-processing step #2 for sample file sample_Donor1.fcs (different in cache)")
+               paste0("inconsistent pre-processing step #2 for sample file ",
+                      "sample_Donor1.fcs (different in cache)"))
 })
 
 
@@ -457,7 +461,8 @@ test_that("plotCytoPipelineProcessingQueue works", {
   sampleFiles <- paste0(rawDataDir, list.files(rawDataDir, 
                                                pattern = "sample_"))
   
-  sampleFiles(pipL6) <- sampleFiles[2] # put only second sample file for the time being
+  # put only second sample file for the time being
+  sampleFiles(pipL6) <- sampleFiles[2] 
   pipL6 <- addProcessingStep(pipL6,
                              "scale transform",
                              CytoProcessingStep(
@@ -640,24 +645,29 @@ test_that("getCytoPipelineObject works",{
   }, NA)
   
   
-  expect_error(getCytoPipelineScaleTransform(pipL7,
-                                             whichQueue = "scale transform",
-                                             objectName = "flowframe_aggregate_obj",
-                                             path = outputDir),
-               regexp = "does not appear to be a transformList")
+  expect_error(
+    getCytoPipelineScaleTransform(
+      pipL7,
+      whichQueue = "scale transform",
+      objectName = "flowframe_aggregate_obj",
+      path = outputDir),
+    regexp = "does not appear to be a transformList")
   
-  expect_error(transList <-
-                 getCytoPipelineScaleTransform(pipL7,
-                                               whichQueue = "scale transform",
-                                               objectName = "scale_transform_estimate_obj",
-                                               path = outputDir),
-               NA)
+    
+  expect_error(
+    transList <-
+      getCytoPipelineScaleTransform(pipL7,
+                                    whichQueue = "scale transform",
+                                    objectName = "scale_transform_estimate_obj",
+                                    path = outputDir),
+    NA)
   
-  expect_error(ffAgg <- getCytoPipelineFlowFrame(pipL7,
-                                                 whichQueue = "scale transform",
-                                                 objectName = "flowframe_aggregate_obj",
-                                                 path = outputDir),
-               NA)
+  expect_error(
+    ffAgg <- getCytoPipelineFlowFrame(pipL7,
+                                      whichQueue = "scale transform",
+                                      objectName = "flowframe_aggregate_obj",
+                                      path = outputDir),
+    NA)
   
 })
 

@@ -1,9 +1,12 @@
-# CytoPipeline - Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
+# CytoPipeline - Copyright (C) <2022> 
+# <Université catholique de Louvain (UCLouvain), Belgique>
 #   
 #   Description and complete License: see LICENSE file.
 # 
 # This program (CytoPipeline) is free software: 
-#   you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#   you can redistribute it and/or modify it under the terms of the GNU General 
+# Public License as published by the Free Software Foundation, 
+# either version 3 of the License, or (at your option) any later version.
 # 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -39,7 +42,8 @@ test_that("ggplotEvents with 1D works", {
 
   p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "FSC-A", xScale = "linear",
                     xLinearRange = c(0,250000))
-  vdiffr::expect_doppelganger("ggplotEvents 1D linear explicit range - single", fig = p)
+  vdiffr::expect_doppelganger("ggplotEvents 1D linear explicit range - single", 
+                              fig = p)
 
   p <- ggplotEvents(OMIP021Samples, xChannel = "FSC-A", xScale = "linear")
   vdiffr::expect_doppelganger("ggplotEvents 1D linear double", fig = p)
@@ -53,8 +57,9 @@ test_that("ggplotEvents with 1D works", {
                                                                 w = 2,
                                                                 m = 7,
                                                                 t = 270000))
-  vdiffr::expect_doppelganger("ggplotEvents 1D logicle with explicit params - single",
-                              fig = p)
+  vdiffr::expect_doppelganger(
+    "ggplotEvents 1D logicle with explicit params - single",
+    fig = p)
 
   p <- ggplotEvents(OMIP021Samples[[2]], xChannel = "450/50Violet-A",
                     xScale = "logicle", nDisplayCells = 5000, seed = 1)
@@ -75,9 +80,10 @@ test_that("ggplotEvents with 1D works", {
   transList <- flowCore::estimateLogicle(ffC,
                                          colnames(compensationMatrix))
   
-  transList <- c(transList, 
-                 flowCore::transformList("FSC-A", 
-                                         flowCore::linearTransform(a = 0.00001)))
+  transList <- 
+    c(transList, 
+      flowCore::transformList("FSC-A", 
+                              flowCore::linearTransform(a = 0.00001)))
   
   p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "450/50Violet-A",
                     xScale = "linear", transList = transList, 
@@ -105,25 +111,43 @@ test_that("ggplotEvents with 1D works", {
 })
 
 test_that("ggplotEvents with 2D works", {
-  p <- ggplotEvents(OMIP021Samples, xChannel = "FSC-A", xScale = "linear",
-                    yChannel = "SSC-A", yScale = "linear")
+  p <- ggplotEvents(OMIP021Samples, 
+                    xChannel = "FSC-A", 
+                    xScale = "linear",
+                    yChannel = "SSC-A", 
+                    yScale = "linear")
   vdiffr::expect_doppelganger("ggplotEvents 2D linear double", fig = p)
 
-  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "FSC-A", xScale = "linear",
-                    yChannel = "610/20Violet-A", yScale = "logicle")
+  p <- ggplotEvents(OMIP021Samples[[1]], 
+                    xChannel = "FSC-A", 
+                    xScale = "linear",
+                    yChannel = "610/20Violet-A", 
+                    yScale = "logicle")
   vdiffr::expect_doppelganger("ggplotEvents 2D x linear y logicle", fig = p)
 
-  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "450/50Violet-A", xScale = "logicle",
-                    yChannel = "SSC-A", yScale = "linear")
+  p <- ggplotEvents(OMIP021Samples[[1]], 
+                    xChannel = "450/50Violet-A", 
+                    xScale = "logicle",
+                    yChannel = "SSC-A", 
+                    yScale = "linear")
   vdiffr::expect_doppelganger("ggplotEvents 2D x logicle y linear", fig = p)
 
-  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "TETaGC", xScale = "logicle",
-                    yChannel = "CD27", yScale = "logicle")
-  vdiffr::expect_doppelganger("ggplotEvents 2D x logicle y logicle by markers", fig = p)
+  p <- ggplotEvents(OMIP021Samples[[1]], 
+                    xChannel = "TETaGC", 
+                    xScale = "logicle",
+                    yChannel = "CD27", 
+                    yScale = "logicle")
+  vdiffr::expect_doppelganger(
+    "ggplotEvents 2D x logicle y logicle by markers", fig = p)
 
-  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "TETaGC", xScale = "logicle",
-                    yChannel = "CD27", yScale = "logicle", bins = 128)
-  vdiffr::expect_doppelganger("ggplotEvents 2D x logicle y logicle bins", fig = p)
+  p <- ggplotEvents(OMIP021Samples[[1]], 
+                    xChannel = "TETaGC", 
+                    xScale = "logicle",
+                    yChannel = "CD27", 
+                    yScale = "logicle", 
+                    bins = 128)
+  vdiffr::expect_doppelganger(
+    "ggplotEvents 2D x logicle y logicle bins", fig = p)
   
   
   compensationMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
@@ -135,22 +159,31 @@ test_that("ggplotEvents with 2D works", {
   transList <- flowCore::estimateLogicle(ffC,
                                          colnames(compensationMatrix))
   
-  transList <- c(transList, 
-                 flowCore::transformList("FSC-A", 
-                                         flowCore::linearTransform(a = 0.00001)))
+  transList <- 
+    c(transList, 
+      flowCore::transformList("FSC-A", 
+                              flowCore::linearTransform(a = 0.00001)))
   
-  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "TETaGC", xScale = "logicle",
-                    yChannel = "CD27", yScale = "logicle",
+  p <- ggplotEvents(OMIP021Samples[[1]], 
+                    xChannel = "TETaGC", 
+                    xScale = "logicle",
+                    yChannel = "CD27", 
+                    yScale = "logicle",
                     transList = transList, 
                     runTransforms = FALSE)
-  vdiffr::expect_doppelganger("ggplotEvents 2D x logicle y logicle transList not run",
-                              fig = p)
-  p <- ggplotEvents(OMIP021Samples[[1]], xChannel = "TETaGC", xScale = "logicle",
-                    yChannel = "CD27", yScale = "logicle",
+  vdiffr::expect_doppelganger(
+    "ggplotEvents 2D x logicle y logicle transList not run",
+    fig = p)
+  p <- ggplotEvents(OMIP021Samples[[1]], 
+                    xChannel = "TETaGC", 
+                    xScale = "logicle",
+                    yChannel = "CD27", 
+                    yScale = "logicle",
                     transList = transList, 
                     runTransforms = TRUE)
-  vdiffr::expect_doppelganger("ggplotEvents 2D x logicle y logicle transList run",
-                              fig = p)
+  vdiffr::expect_doppelganger(
+    "ggplotEvents 2D x logicle y logicle transList run",
+    fig = p)
 })
 
 
@@ -188,7 +221,8 @@ test_that("ggplotFilterEvents works", {
                           yChannel = LDMarker, yScale = "logicle",
                           interactive = TRUE) +
     ggtitle("Live gate filter")
-  vdiffr::expect_doppelganger("ggplotFilterEvents 2D - all points - interactive", fig = p)
+  vdiffr::expect_doppelganger(
+    "ggplotFilterEvents 2D - all points - interactive", fig = p)
 
   p <- ggplotFilterEvents(ffPre = ffPre,
                           ffPost = ffL,
@@ -197,7 +231,8 @@ test_that("ggplotFilterEvents works", {
                           xChannel = "FSC-A", xScale = "linear",
                           yChannel = LDMarker, yScale = "logicle") +
     ggtitle("Live gate filter")
-  vdiffr::expect_doppelganger("ggplotFilterEvents 2D - 5000 points", fig = p)
+  vdiffr::expect_doppelganger(
+    "ggplotFilterEvents 2D - 5000 points", fig = p)
 
   p <- ggplotFilterEvents(ffPre = ffPre,
                           ffPost = ffL,
@@ -205,7 +240,8 @@ test_that("ggplotFilterEvents works", {
                           xChannel = "FSC-A", xScale = "linear",
                           yChannel = LDMarker, yScale = "logicle") +
     ggtitle("Live gate filter")
-  vdiffr::expect_doppelganger("ggplotFilterEvents 2D - Infinite nb of points", fig = p)
+  vdiffr::expect_doppelganger(
+    "ggplotFilterEvents 2D - Infinite nb of points", fig = p)
 
   p <- ggplotFilterEvents(size = 0.1,
                           ffPre = ffPre,

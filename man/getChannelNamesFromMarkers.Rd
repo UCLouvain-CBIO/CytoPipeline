@@ -17,7 +17,8 @@ getChannelNamesFromMarkers(ff, markers)
 }}
 }
 \value{
-a character vector, containing the names of the corresponding channels
+a character vector, containing the names of the corresponding
+channels
 }
 \description{
 finds name of channels corresponding to user provided markers
