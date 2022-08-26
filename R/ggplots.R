@@ -30,56 +30,58 @@ NULL
 #'
 ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100)
 {
-  isFlowSet <- FALSE
-  if (inherits(obj, "flowSet")) {
-    isFlowSet <- TRUE
-  } else if (inherits(obj, "flowFrame")) {
-  } else {
-    stop("obj type not recognized, should be a flowFrame or flowSet")
-  }
-
-  flowRateDataFrame <- function(ff, timeUnit){
-    Y <- flowCore::exprs(ff)
-    timeChName <- findTimeChannel(ff)
-    if (is.null(timeChName)) {
-      stop("No Time columns in flow frame => impossible to calculate flow rate")
+    isFlowSet <- FALSE
+    if (inherits(obj, "flowSet")) {
+        isFlowSet <- TRUE
+    } else if (inherits(obj, "flowFrame")) {
+    } else {
+        stop("obj type not recognized, should be a flowFrame or flowSet")
     }
-
-    h <- graphics::hist(flowCore::exprs(ff)[, timeChName],
-                        breaks = seq(min(flowCore::exprs(ff)[, timeChName]),
-                                     max(flowCore::exprs(ff)[, timeChName]) + 
-                                       timeUnit,
-                                     by = timeUnit),
-                        plot = FALSE)
-
-    df <- data.frame(time = h$mids,
-                     nbEvents = h$counts * 1000 / timeUnit,
-                     name = flowCore::identifier(ff))
-
-    df
-  }
-  
-  
-  if (isFlowSet) {
-    df <- flowCore::fsApply(obj, FUN = flowRateDataFrame,
-                               timeUnit = timeUnit)
-    df <- do.call(rbind.data.frame, df)
-
-  } else {
-    df <- flowRateDataFrame(obj, timeUnit = timeUnit)
-  }
-
-  # following 2 statements just to allow R cmd CHECK w/o note
-  time <- NULL
-  nbEvents <- NULL
-  pTime <- ggplot(df) + theme_gray() +
-    geom_point(aes(x = time, y = nbEvents)) +
-    geom_line(aes(x = time, y = nbEvents)) +
-    ggtitle(title) +
-    facet_wrap(~name) +
-    xlab("Time") + ylab("Nr of events per second")
-  return(pTime)
-
+    
+    flowRateDataFrame <- function(ff, timeUnit){
+        Y <- flowCore::exprs(ff)
+        timeChName <- findTimeChannel(ff)
+        if (is.null(timeChName)) {
+            stop("No Time columns in flow frame ",
+                 "=> impossible to calculate flow rate")
+        }
+        
+        h <- graphics::hist(
+            flowCore::exprs(ff)[, timeChName],
+            breaks = seq(min(flowCore::exprs(ff)[, timeChName]),
+                         max(flowCore::exprs(ff)[, timeChName]) + 
+                             timeUnit,
+                         by = timeUnit),
+            plot = FALSE)
+        
+        df <- data.frame(time = h$mids,
+                         nbEvents = h$counts * 1000 / timeUnit,
+                         name = flowCore::identifier(ff))
+        
+        df
+    }
+    
+    
+    if (isFlowSet) {
+        df <- flowCore::fsApply(obj, FUN = flowRateDataFrame,
+                                timeUnit = timeUnit)
+        df <- do.call(rbind.data.frame, df)
+        
+    } else {
+        df <- flowRateDataFrame(obj, timeUnit = timeUnit)
+    }
+    
+    # following 2 statements just to allow R cmd CHECK w/o note
+    time <- NULL
+    nbEvents <- NULL
+    pTime <- ggplot(df) + theme_gray() +
+        geom_point(aes(x = time, y = nbEvents)) +
+        geom_line(aes(x = time, y = nbEvents)) +
+        ggtitle(title) +
+        facet_wrap(~name) +
+        xlab("Time") + ylab("Nr of events per second")
+    return(pTime)
+    
 }
 
 #' @title plot events in 1D or 2D, using ggplot2
@@ -134,220 +136,224 @@ ggplotEvents <- function(obj,
                          xScale = c("linear", "logicle"),
                          yScale = c("linear", "logicle"),
                          xLogicleParams = list(w = 2, m = 6.42,
-                                                 a = 0, t = 262144),
+                                               a = 0, t = 262144),
                          yLogicleParams = list(w = 2, m = 6.42,
-                                                 a = 0, t = 262144),
+                                               a = 0, t = 262144),
                          xLinearRange = NULL,
                          yLinearRange = NULL,
                          transList = NULL,
                          runTransforms = FALSE){
-
-
-  #browser()
-
-  isFlowSet <- FALSE
-  if (inherits(obj, "flowSet")) {
-    fr <- obj[[1]]
-    isFlowSet <- TRUE
-  } else if (inherits(obj, "flowFrame")) {
-    fr <- obj
-  } else {
-    stop("obj type not recognized, should be a flowFrame or flowSet")
-  }
-
-  # find channel and marker names to specify axis labels
-
-  xChMk <- flowCore::getChannelMarker(fr, xChannel)
-  xChannel <- xChMk$name
-  xLabel <- xChannel
-  if (!is.na(xChMk$desc)) {
-    xLabel <- paste0(xLabel, " : ", xChMk$desc)
-  }
-
-  if (!is.null(yChannel)) {
-    yChMk <- flowCore::getChannelMarker(fr, yChannel)
-    yChannel <- yChMk$name
-    yLabel <- yChannel
-    if (!is.na(yChMk$desc)) {
-      yLabel <- paste0(yLabel, " : ", yChMk$desc)
-    }
-  }
-
-  # perform sub-sampling if necessary
-
-  if (nDisplayCells < Inf) {
-    if (nDisplayCells < 1) stop("n_display_cells should be strictly positive!")
-    if (isFlowSet) {
-      obj <- flowCore::fsApply(obj, FUN = subsample,
-                     nSamples = nDisplayCells,
-                     seed = seed)
-    } else {
-      obj <- subsample(obj, nSamples = nDisplayCells, seed = seed)
-    }
-  }
-  
-  xTransformed <- FALSE
-  yTransformed <- FALSE
-  if (!is.null(transList)) {
     
-    res <- getTransfoParams(transList, xChannel)
-    if (!is.null(res)) {
-      if (runTransforms) {
-        xScale <- "linear"
-        xTransformed <- TRUE
-        if (res$type == "logicle") {
-          xLinearRange <- c(0, res$paramsList$m)
-        }
-      } else {
-        xScale <- res$type
-        if (res$type == "logicle") {
-          xLogicleParams <- res$paramsList
-        }
-      }
+    
+    #browser()
+    
+    isFlowSet <- FALSE
+    if (inherits(obj, "flowSet")) {
+        fr <- obj[[1]]
+        isFlowSet <- TRUE
+    } else if (inherits(obj, "flowFrame")) {
+        fr <- obj
+    } else {
+        stop("obj type not recognized, should be a flowFrame or flowSet")
+    }
+    
+    # find channel and marker names to specify axis labels
+    
+    xChMk <- flowCore::getChannelMarker(fr, xChannel)
+    xChannel <- xChMk$name
+    xLabel <- xChannel
+    if (!is.na(xChMk$desc)) {
+        xLabel <- paste0(xLabel, " : ", xChMk$desc)
     }
     
     if (!is.null(yChannel)) {
-      res <- getTransfoParams(transList, yChannel)
-      if (!is.null(res)) {
-        if (runTransforms) {
-          yScale <- "linear"
-          yTransformed <- TRUE
-          if (res$type == "logicle") {
-            yLinearRange <- c(0, res$paramsList$m)
-          }
-        } else {
-          yScale <- res$type
-          if (res$type == "logicle") {
-            yLogicleParams <- res$paramsList
-          }
+        yChMk <- flowCore::getChannelMarker(fr, yChannel)
+        yChannel <- yChMk$name
+        yLabel <- yChannel
+        if (!is.na(yChMk$desc)) {
+            yLabel <- paste0(yLabel, " : ", yChMk$desc)
         }
-      }
     }
     
-    if (runTransforms) {
-      # adapt scale to linear and linear_range to null if trans_list is passed
-      # and is effectively run
-      appliedTransList <- c()
-      
-      # remove not mentioned channels from trans_list
-      appliedTransList <- transList
-      transChannels <- names(transList@transforms)
-      for (n in transChannels) {
-        if (! (n %in% c(xChannel, yChannel))) {
-          appliedTransList@transforms[[n]] <- NULL
+    # perform sub-sampling if necessary
+    
+    if (nDisplayCells < Inf) {
+        if (nDisplayCells < 1) 
+            stop("n_display_cells should be strictly positive!")
+        if (isFlowSet) {
+            obj <- flowCore::fsApply(obj, FUN = subsample,
+                                     nSamples = nDisplayCells,
+                                     seed = seed)
+        } else {
+            obj <- subsample(obj, nSamples = nDisplayCells, seed = seed)
         }
-      }
-      if (isFlowSet) {
-        obj <- flowCore::fsApply(obj, FUN = function(ff, transList){
-          flowCore::transform(obj, translist = transList)
-        }, transList = appliedTransList)
-      } else {
-        obj <- flowCore::transform(obj, translist = appliedTransList)
-      }
-      
-    } 
-  }
-
-  # find axis ranges depending on scales
-
-  xScale <- match.arg(xScale)
-  yScale <- match.arg(yScale)
-
-  if (xScale == "logicle") {
-    if (is.null(xLogicleParams)) {
-      stop("xLogicleParams can't be NULL if xScale == logicle")
-    } else {
-      xAxesLimits <- c(0, xLogicleParams$m)
-      myTrans <- do.call(flowCore::logicleTransform, args = xLogicleParams)
-      myInverseTrans <- flowCore::inverseLogicleTransform(myTrans)
-      myXRange <- myInverseTrans@.Data(xAxesLimits)
     }
-  }
-  if (yScale == "logicle") {
-    if (is.null(yLogicleParams)) {
-      stop("yLogicleParams can't be NULL if yScale == logicle")
-    } else {
-      yAxesLimits <- c(0, yLogicleParams$m)
-      myTrans <- do.call(flowCore::logicleTransform, args = yLogicleParams)
-      myInverseTrans <- flowCore::inverseLogicleTransform(myTrans)
-      myYRange <- myInverseTrans@.Data(yAxesLimits)
+    
+    xTransformed <- FALSE
+    yTransformed <- FALSE
+    if (!is.null(transList)) {
+        
+        res <- getTransfoParams(transList, xChannel)
+        if (!is.null(res)) {
+            if (runTransforms) {
+                xScale <- "linear"
+                xTransformed <- TRUE
+                if (res$type == "logicle") {
+                    xLinearRange <- c(0, res$paramsList$m)
+                }
+            } else {
+                xScale <- res$type
+                if (res$type == "logicle") {
+                    xLogicleParams <- res$paramsList
+                }
+            }
+        }
+        
+        if (!is.null(yChannel)) {
+            res <- getTransfoParams(transList, yChannel)
+            if (!is.null(res)) {
+                if (runTransforms) {
+                    yScale <- "linear"
+                    yTransformed <- TRUE
+                    if (res$type == "logicle") {
+                        yLinearRange <- c(0, res$paramsList$m)
+                    }
+                } else {
+                    yScale <- res$type
+                    if (res$type == "logicle") {
+                        yLogicleParams <- res$paramsList
+                    }
+                }
+            }
+        }
+        
+        if (runTransforms) {
+            # adapt scale to linear and linear_range to null 
+            # if trans_list is passed and is effectively run
+            appliedTransList <- c()
+            
+            # remove not mentioned channels from trans_list
+            appliedTransList <- transList
+            transChannels <- names(transList@transforms)
+            for (n in transChannels) {
+                if (! (n %in% c(xChannel, yChannel))) {
+                    appliedTransList@transforms[[n]] <- NULL
+                }
+            }
+            if (isFlowSet) {
+                obj <- flowCore::fsApply(obj, FUN = function(ff, transList){
+                    flowCore::transform(obj, translist = transList)
+                }, transList = appliedTransList)
+            } else {
+                obj <- flowCore::transform(obj, translist = appliedTransList)
+            }
+            
+        } 
     }
-  }
-
-  # main plot layer
-
-  if (xTransformed) {
-    xLabel <- paste0(xLabel, " (transformed)")
-  }
-  if (yTransformed) {
-    yLabel <- paste0(yLabel, " (transformed)")
-  }
-
-  if (is.null(yChannel)) {
-    p <- ggplot(data = obj,
-                mapping = aes_q(x = as.symbol(xChannel))) +
-      geom_density(fill = fill, alpha = alpha) +
-      xlab(xLabel)
-  } else {
-    p <- ggplot(data = obj,
-                mapping = aes_q(x = as.symbol(xChannel),
-                                y = as.symbol(yChannel))) +
-      #geom_hex(bins = bins) + # will apply geom_hex after coord_cartesian
-      xlab(xLabel) +
-      ylab(yLabel)
-  }
-
-
-  # add faceting
-
-  p <- p + facet_wrap(~name) +
-    theme(legend.position="none")
-
-  # add scales for x and y, as well as axis limits
-
-  if (xScale == "logicle") {
+    
+    # find axis ranges depending on scales
+    
+    xScale <- match.arg(xScale)
+    yScale <- match.arg(yScale)
+    
+    if (xScale == "logicle") {
+        if (is.null(xLogicleParams)) {
+            stop("xLogicleParams can't be NULL if xScale == logicle")
+        } else {
+            xAxesLimits <- c(0, xLogicleParams$m)
+            myTrans <- 
+                do.call(flowCore::logicleTransform, args = xLogicleParams)
+            myInverseTrans <- flowCore::inverseLogicleTransform(myTrans)
+            myXRange <- myInverseTrans@.Data(xAxesLimits)
+        }
+    }
+    if (yScale == "logicle") {
+        if (is.null(yLogicleParams)) {
+            stop("yLogicleParams can't be NULL if yScale == logicle")
+        } else {
+            yAxesLimits <- c(0, yLogicleParams$m)
+            myTrans <- 
+                do.call(flowCore::logicleTransform, args = yLogicleParams)
+            myInverseTrans <- flowCore::inverseLogicleTransform(myTrans)
+            myYRange <- myInverseTrans@.Data(yAxesLimits)
+        }
+    }
+    
+    # main plot layer
+    
+    if (xTransformed) {
+        xLabel <- paste0(xLabel, " (transformed)")
+    }
+    if (yTransformed) {
+        yLabel <- paste0(yLabel, " (transformed)")
+    }
+    
     if (is.null(yChannel)) {
-      p <- p +
-        do.call(scale_x_logicle, args = xLogicleParams) +
-        coord_cartesian(xlim = myXRange)
-    } else if (yScale == "logicle") {
-      p <- p +
-        do.call(scale_x_logicle, args = xLogicleParams) +
-        do.call(scale_y_logicle, args = yLogicleParams) +
-        coord_cartesian(xlim = myXRange,
-                        ylim = myYRange)
+        p <- ggplot(data = obj,
+                    mapping = aes_q(x = as.symbol(xChannel))) +
+            geom_density(fill = fill, alpha = alpha) +
+            xlab(xLabel)
     } else {
-      p <- p +
-        do.call(scale_x_logicle, args = xLogicleParams) +
-        coord_cartesian(xlim = myXRange,
-                        ylim = yLinearRange)
+        p <- ggplot(data = obj,
+                    mapping = aes_q(x = as.symbol(xChannel),
+                                    y = as.symbol(yChannel))) +
+            #geom_hex(bins = bins) + # will apply geom_hex after coord_cartesian
+            xlab(xLabel) +
+            ylab(yLabel)
     }
-  } else {
-    if (is.null(yChannel)) {
-      p <- p +
-        coord_cartesian(xlim = xLinearRange)
-    } else if (yScale == "logicle") {
-      p <- p +
-        do.call(scale_y_logicle, args = yLogicleParams) +
-        coord_cartesian(xlim = xLinearRange,
-                        ylim = myYRange)
+    
+    
+    # add faceting
+    
+    p <- p + facet_wrap(~name) +
+        theme(legend.position="none")
+    
+    # add scales for x and y, as well as axis limits
+    
+    if (xScale == "logicle") {
+        if (is.null(yChannel)) {
+            p <- p +
+                do.call(scale_x_logicle, args = xLogicleParams) +
+                coord_cartesian(xlim = myXRange)
+        } else if (yScale == "logicle") {
+            p <- p +
+                do.call(scale_x_logicle, args = xLogicleParams) +
+                do.call(scale_y_logicle, args = yLogicleParams) +
+                coord_cartesian(xlim = myXRange,
+                                ylim = myYRange)
+        } else {
+            p <- p +
+                do.call(scale_x_logicle, args = xLogicleParams) +
+                coord_cartesian(xlim = myXRange,
+                                ylim = yLinearRange)
+        }
     } else {
-      p <- p +
-        coord_cartesian(xlim = xLinearRange,
-                        ylim = yLinearRange)
+        if (is.null(yChannel)) {
+            p <- p +
+                coord_cartesian(xlim = xLinearRange)
+        } else if (yScale == "logicle") {
+            p <- p +
+                do.call(scale_y_logicle, args = yLogicleParams) +
+                coord_cartesian(xlim = xLinearRange,
+                                ylim = myYRange)
+        } else {
+            p <- p +
+                coord_cartesian(xlim = xLinearRange,
+                                ylim = yLinearRange)
+        }
     }
-  }
-
-  # if 2D, apply geom_hex at the end (after axis ranges)
-  # and hex fill colour palette
-  if (!is.null(yChannel)) {
-    p <- p + geom_hex(bins = bins) +
-      scale_fill_gradientn(colours = grDevices::rainbow(n = 5, end = 0.65,
-                                                        rev = TRUE,
-                                                        s = 0.8, v = 0.8))
-  }
-
-  p
+    
+    # if 2D, apply geom_hex at the end (after axis ranges)
+    # and hex fill colour palette
+    if (!is.null(yChannel)) {
+        p <- p + geom_hex(bins = bins) +
+            scale_fill_gradientn(
+                colours = grDevices::rainbow(n = 5, end = 0.65,
+                                             rev = TRUE,
+                                             s = 0.8, v = 0.8))
+    }
+    
+    p
 }
 
 
@@ -396,165 +402,162 @@ ggplotFilterEvents <- function(ffPre, ffPost,
                                xScale = c("linear", "logicle"),
                                yScale = c("linear", "logicle"),
                                xLogicleParams = list(w = 2, m = 6.42,
-                                                       a = 0, t = 262144),
+                                                     a = 0, t = 262144),
                                yLogicleParams = list(w = 2, m = 6.42,
-                                                       a = 0, t = 262144),
+                                                     a = 0, t = 262144),
                                xLinearRange = NULL,
                                yLinearRange = NULL,
                                interactive = FALSE){
-  if (!inherits(ffPre, "flowFrame")) {
-    stop("ffPre type not recognized, should be a flowFrame")
-  }
-
-  if (!inherits(ffPost, "flowFrame")) {
-    stop("ffPost type not recognized, should be a flowFrame")
-  }
-
-  # find channel and marker names to specify axis labels
-
-  #browser()
-
-  xChMk <- flowCore::getChannelMarker(ffPre, xChannel)
-  xChannel <- xChMk$name
-  xLabel <- xChannel
-  if (!is.na(xChMk$desc)) {
-    xLabel <- paste0(xLabel, " : ", xChMk$desc)
-  }
-  
-  if (!is.null(yChannel)) {
-    yChMk <- flowCore::getChannelMarker(ffPre, yChannel)
-    yChannel <- yChMk$name
-    yLabel <- yChannel
-    if (!is.na(yChMk$desc)) {
-      yLabel <- paste0(yLabel, " : ", yChMk$desc)
-    }
-  }
-
-  if (!"Original_ID" %in% flowCore::colnames(ffPre)) {
-    ffPre <- appendCellID(ffPre)
-  }
-
-  if (!"Original_ID" %in% flowCore::colnames(ffPost))
-    stop("ffPost should have Original_ID column in expression matrix for the ",
-         "filter display to work!")
-
-  df <- data.frame(x = flowCore::exprs(ffPre)[,xChannel],
-                   y = flowCore::exprs(ffPre)[,yChannel])
-
-  # perform sub-sampling if necessary
-
-  nEvents <- nrow(df)
-  if (nDisplayCells < 1) stop("n_display_cells should be strictly positive!")
-  i <- 0
-  if (nDisplayCells < nEvents) {
-    if (!is.null(seed)) {
-      withr::with_seed(seed, 
-                       i <- sample(nEvents, nDisplayCells))
-    } else {
-      i <- sample(nEvents, nDisplayCells)
+    if (!inherits(ffPre, "flowFrame")) {
+        stop("ffPre type not recognized, should be a flowFrame")
     }
     
-  } else {
-    i <- seq(nEvents)
-  }
-
-  # find axis ranges depending on scales
-
-  xScale <- match.arg(xScale)
-  yScale <- match.arg(yScale)
-
-  if (xScale == "logicle") {
-    if (is.null(xLogicleParams)) {
-      stop("x_logicle_params can't be NULL if xScale == logicle")
-    } else {
-      xAxesLimits <- c(0, xLogicleParams$m)
-      myTrans <- do.call(flowCore::logicleTransform, args = xLogicleParams)
-      myInverseTrans <- flowCore::inverseLogicleTransform(myTrans)
-      myXRange <- myInverseTrans@.Data(xAxesLimits)
+    if (!inherits(ffPost, "flowFrame")) {
+        stop("ffPost type not recognized, should be a flowFrame")
     }
-  }
-  if (yScale == "logicle") {
-    if (is.null(yLogicleParams)) {
-      stop("yLogicleParams can't be NULL if yScale == logicle")
-    } else {
-      yAxesLimits <- c(0, yLogicleParams$m)
-      myTrans <- do.call(flowCore::logicleTransform, args = yLogicleParams)
-      myInverseTrans <- flowCore::inverseLogicleTransform(myTrans)
-      myYRange <- myInverseTrans@.Data(yAxesLimits)
+    
+    # find channel and marker names to specify axis labels
+    
+    #browser()
+    
+    xChMk <- flowCore::getChannelMarker(ffPre, xChannel)
+    xChannel <- xChMk$name
+    xLabel <- xChannel
+    if (!is.na(xChMk$desc)) {
+        xLabel <- paste0(xLabel, " : ", xChMk$desc)
     }
-  }
-
-  # plot main layer
-  # following 2 statements just to allow R cmd CHECK w/o note
-  x <- NULL
-  y <- NULL
-  p <- ggplot(df[i,], aes(x = x, y = y)) +
-    geom_point(size = size,
-               color = ifelse(flowCore::exprs(ffPre)[i,"Original_ID"] %in%
-                                flowCore::exprs(ffPost)[,"Original_ID"],
-                              'blue',
-                              'red')) +
-    xlab(xLabel) +
-    ylab(yLabel) +
-    #theme_minimal() +
-    theme(legend.position = "none")
+    
+    if (!is.null(yChannel)) {
+        yChMk <- flowCore::getChannelMarker(ffPre, yChannel)
+        yChannel <- yChMk$name
+        yLabel <- yChannel
+        if (!is.na(yChMk$desc)) {
+            yLabel <- paste0(yLabel, " : ", yChMk$desc)
+        }
+    }
+    
+    if (!"Original_ID" %in% flowCore::colnames(ffPre)) {
+        ffPre <- appendCellID(ffPre)
+    }
+    
+    if (!"Original_ID" %in% flowCore::colnames(ffPost))
+        stop("ffPost should have Original_ID column in expression matrix ",
+             "for the filter display to work!")
+    
+    df <- data.frame(x = flowCore::exprs(ffPre)[,xChannel],
+                     y = flowCore::exprs(ffPre)[,yChannel])
+    
+    # perform sub-sampling if necessary
+    
+    nEvents <- nrow(df)
+    if (nDisplayCells < 1) stop("n_display_cells should be strictly positive!")
+    i <- 0
+    if (nDisplayCells < nEvents) {
+        if (!is.null(seed)) {
+            withr::with_seed(seed, 
+                             i <- sample(nEvents, nDisplayCells))
+        } else {
+            i <- sample(nEvents, nDisplayCells)
+        }
+        
+    } else {
+        i <- seq(nEvents)
+    }
+    
+    # find axis ranges depending on scales
+    
+    xScale <- match.arg(xScale)
+    yScale <- match.arg(yScale)
+    
+    if (xScale == "logicle") {
+        if (is.null(xLogicleParams)) {
+            stop("x_logicle_params can't be NULL if xScale == logicle")
+        } else {
+            xAxesLimits <- c(0, xLogicleParams$m)
+            myTrans <- 
+                do.call(flowCore::logicleTransform, args = xLogicleParams)
+            myInverseTrans <- flowCore::inverseLogicleTransform(myTrans)
+            myXRange <- myInverseTrans@.Data(xAxesLimits)
+        }
+    }
+    if (yScale == "logicle") {
+        if (is.null(yLogicleParams)) {
+            stop("yLogicleParams can't be NULL if yScale == logicle")
+        } else {
+            yAxesLimits <- c(0, yLogicleParams$m)
+            myTrans <- 
+                do.call(flowCore::logicleTransform, args = yLogicleParams)
+            myInverseTrans <- flowCore::inverseLogicleTransform(myTrans)
+            myYRange <- myInverseTrans@.Data(yAxesLimits)
+        }
+    }
+    
+    # plot main layer
+    # following 2 statements just to allow R cmd CHECK w/o note
+    x <- NULL
+    y <- NULL
+    p <- ggplot(df[i,], aes(x = x, y = y)) +
+        geom_point(size = size,
+                   color = ifelse(flowCore::exprs(ffPre)[i,"Original_ID"] %in%
+                                      flowCore::exprs(ffPost)[,"Original_ID"],
+                                  'blue',
+                                  'red')) +
+        xlab(xLabel) +
+        ylab(yLabel) +
+        #theme_minimal() +
+        theme(legend.position = "none")
     #ggtitle("my title")
-
-  # add faceting
-  #p <- p + facet_wrap(~name) +
-
-
-  # add scales for x and y, as well as axis limits
-
-  if (xScale == "logicle") {
-    xArgs <- xLogicleParams
-    if (interactive) {
-      xArgs <- c(xArgs, label=scales::scientific_format())
-    } 
-    if (is.null(yChannel)) {
-      p <- p +
-        do.call(scale_x_logicle, args = xArgs) +
-        coord_cartesian(xlim = myXRange)
-    } else if (yScale == "logicle") {
-      yArgs <- yLogicleParams
-      if (interactive) {
-        yArgs <- c(yArgs, label=scales::scientific_format())
-      } 
-      p <- p +
-        do.call(scale_x_logicle, args = xArgs) +
-        do.call(scale_y_logicle, args = yArgs) +
-        coord_cartesian(xlim = myXRange,
-                        ylim = myYRange)
+    
+    # add faceting
+    #p <- p + facet_wrap(~name) +
+    
+    
+    # add scales for x and y, as well as axis limits
+    
+    if (xScale == "logicle") {
+        xArgs <- xLogicleParams
+        if (interactive) {
+            xArgs <- c(xArgs, label=scales::scientific_format())
+        } 
+        if (is.null(yChannel)) {
+            p <- p +
+                do.call(scale_x_logicle, args = xArgs) +
+                coord_cartesian(xlim = myXRange)
+        } else if (yScale == "logicle") {
+            yArgs <- yLogicleParams
+            if (interactive) {
+                yArgs <- c(yArgs, label=scales::scientific_format())
+            } 
+            p <- p +
+                do.call(scale_x_logicle, args = xArgs) +
+                do.call(scale_y_logicle, args = yArgs) +
+                coord_cartesian(xlim = myXRange,
+                                ylim = myYRange)
+        } else {
+            p <- p +
+                do.call(scale_x_logicle, args = xArgs) +
+                coord_cartesian(xlim = myXRange,
+                                ylim = yLinearRange)
+        }
     } else {
-      p <- p +
-        do.call(scale_x_logicle, args = xArgs) +
-        coord_cartesian(xlim = myXRange,
-                        ylim = yLinearRange)
+        if (is.null(yChannel)) {
+            p <- p +
+                coord_cartesian(xlim = xLinearRange)
+        } else if (yScale == "logicle") {
+            yArgs <- yLogicleParams
+            if (interactive) {
+                yArgs <- c(yArgs, label=scales::scientific_format())
+            }  
+            p <- p +
+                do.call(scale_y_logicle, args = yArgs) +
+                coord_cartesian(xlim = xLinearRange,
+                                ylim = myYRange)
+        } else {
+            p <- p +
+                coord_cartesian(xlim = xLinearRange,
+                                ylim = yLinearRange)
+        }
     }
-  } else {
-    if (is.null(yChannel)) {
-      p <- p +
-        coord_cartesian(xlim = xLinearRange)
-    } else if (yScale == "logicle") {
-      yArgs <- yLogicleParams
-      if (interactive) {
-        yArgs <- c(yArgs, label=scales::scientific_format())
-      }  
-      p <- p +
-        do.call(scale_y_logicle, args = yArgs) +
-        coord_cartesian(xlim = xLinearRange,
-                        ylim = myYRange)
-    } else {
-      p <- p +
-        coord_cartesian(xlim = xLinearRange,
-                        ylim = yLinearRange)
-    }
-  }
-  return(p)
-
+    return(p)
+    
 }
-
-
-
-
-

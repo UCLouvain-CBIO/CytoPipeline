@@ -43,44 +43,44 @@ singletsGate <- function(ff, filterId = "Singlets",
                          channel1 = "FSC-A", channel2 = "FSC-H", nmad = 4,
                          verbose = FALSE)
 {
-  if (!inherits(ff, "flowFrame")){
-    stop("ff type not recognized, should be a flowFrame")
-  }
-  
-  ratio <- flowCore::exprs(ff)[, channel1]/(1 + flowCore::exprs(ff)[,
-                                                                    channel2])
-  
-  ratioMedian <- stats::median(ratio)
-  ratioMad <- stats::mad(ratio)
-  ch1Median <- stats::median(flowCore::exprs(ff)[, channel1])
-  ch1Min <- min(flowCore::exprs(ff)[, channel1])
-  ch1Max <- max(flowCore::exprs(ff)[, channel1])
-  ch2RefPoint <- ch1Median/ratioMedian - 1
-  ch2Min <- ch1Median/(ratioMedian + nmad * ratioMad) - 1
-  ch2Range <- ch2RefPoint - ch2Min
-  if (verbose)
-    message("Median ratio: ", ratioMedian, ", width: ", nmad * ratioMad,
-            ", Ch1 median : ", ch1Median, ", Ch 2 range : ",
-            ch2Range)
-  
-  ch2TargetAtCh1Min <- ch1Min/ratioMedian - 1
-  ch2TargetAtCh1Max <- ch1Max/ratioMedian - 1
-  
-  #browser()
-  
-  # parallelogram gate with vertical edges
-  polygonGateMatrix <- matrix(data = c(ch1Min, ch1Min, ch1Max, ch1Max,
-                                       ch2TargetAtCh1Min - ch2Range,
-                                       ch2TargetAtCh1Min + ch2Range,
-                                       ch2TargetAtCh1Max + ch2Range,
-                                       ch2TargetAtCh1Max - ch2Range),
-                              ncol = 2,
-                              dimnames = list(c(),
-                                              c(channel1, channel2)))
-  
-  
-  singletsGate <- flowCore::polygonGate(filterId = filterId,
-                                        .gate = polygonGateMatrix)
-  
-  return(singletsGate)
+    if (!inherits(ff, "flowFrame")){
+        stop("ff type not recognized, should be a flowFrame")
+    }
+    
+    ratio <- flowCore::exprs(ff)[, channel1]/(1 + flowCore::exprs(ff)[,
+                                                                      channel2])
+    
+    ratioMedian <- stats::median(ratio)
+    ratioMad <- stats::mad(ratio)
+    ch1Median <- stats::median(flowCore::exprs(ff)[, channel1])
+    ch1Min <- min(flowCore::exprs(ff)[, channel1])
+    ch1Max <- max(flowCore::exprs(ff)[, channel1])
+    ch2RefPoint <- ch1Median/ratioMedian - 1
+    ch2Min <- ch1Median/(ratioMedian + nmad * ratioMad) - 1
+    ch2Range <- ch2RefPoint - ch2Min
+    if (verbose)
+        message("Median ratio: ", ratioMedian, ", width: ", nmad * ratioMad,
+                ", Ch1 median : ", ch1Median, ", Ch 2 range : ",
+                ch2Range)
+    
+    ch2TargetAtCh1Min <- ch1Min/ratioMedian - 1
+    ch2TargetAtCh1Max <- ch1Max/ratioMedian - 1
+    
+    #browser()
+    
+    # parallelogram gate with vertical edges
+    polygonGateMatrix <- matrix(data = c(ch1Min, ch1Min, ch1Max, ch1Max,
+                                         ch2TargetAtCh1Min - ch2Range,
+                                         ch2TargetAtCh1Min + ch2Range,
+                                         ch2TargetAtCh1Max + ch2Range,
+                                         ch2TargetAtCh1Max - ch2Range),
+                                ncol = 2,
+                                dimnames = list(c(),
+                                                c(channel1, channel2)))
+    
+    
+    singletsGate <- flowCore::polygonGate(filterId = filterId,
+                                          .gate = polygonGateMatrix)
+    
+    return(singletsGate)
 }
