@@ -1,13 +1,13 @@
-# CytoPipeline - Copyright (C) <2022> 
+# CytoPipeline - Copyright (C) <2022>
 # <Université catholique de Louvain (UCLouvain), Belgique>
-#   
+#
 #   Description and complete License: see LICENSE file.
-# 
-# This program (CytoPipeline) is free software: 
+#
+# This program (CytoPipeline) is free software:
 #   you can redistribute it and/or modify it under the terms of the GNU General
-# Public License as published by the Free Software Foundation, 
+# Public License as published by the Free Software Foundation,
 # either version 3 of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,53 +19,55 @@
 #' @param sampleFiles a vector of character path to sample files
 #' @param whichSamples either 'all' if all sample files need to be read, or
 #' a vector of indexes pointing to the sampleFiles vector
-#' @param ... additional parameters passed to flowCore file reading functions. 
+#' @param ... additional parameters passed to flowCore file reading functions.
 #'
-#' @return either a flowCore::flowSet or a flowCore::flowFrame if 
+#' @return either a flowCore::flowSet or a flowCore::flowFrame if
 #' length(sampleFiles) == 1
 #' @export
 #'
 readSampleFiles <- function(sampleFiles,
-                            whichSamples = "all", ...){
-    
+                            whichSamples = "all", ...) {
     if (whichSamples == "all") {
-        # do nothing : sampleFiles should contain all the input sample files 
+        # do nothing : sampleFiles should contain all the input sample files
         # already
     } else if (is.numeric(whichSamples)) {
         sampleFiles <- sampleFiles[whichSamples]
-    } else stop("'whichSamples' should be either 'all', or a vector of indexes")
-    
+    } else {
+        stop("'whichSamples' should be either 'all', or a vector of indexes")
+    }
+
     if (length(sampleFiles) == 1) {
         res <- flowCore::read.FCS(sampleFiles, ...)
-        #Add a column with Cell ID
+        # Add a column with Cell ID
         res <- appendCellID(res)
     } else {
-        res  <- flowCore::read.flowSet(sampleFiles, ...)
-        #Add a column with Cell ID
-        res <- flowCore::fsApply(x = res,
-                                 FUN = function(ff){
-                                     appendCellID(ff)
-                                 })
+        res <- flowCore::read.flowSet(sampleFiles, ...)
+        # Add a column with Cell ID
+        res <- flowCore::fsApply(
+            x = res,
+            FUN = function(ff) {
+                appendCellID(ff)
+            }
+        )
     }
 }
 
 
 #' @title remove margin events using PeacoQC
-#' @description Wrapper around PeacoQC::RemoveMargins(). 
+#' @description Wrapper around PeacoQC::RemoveMargins().
 #' Also pre-selects the channels to be handled (=> all signal channels)
 #' If input is a flowSet, it applies removeMargins() to each flowFrame of the
 #' flowSet.
 #' @param x a flowCore::flowSet or a flowCore::flowFrame
 #' @param ... additional parameters passed to PeacoQC::RemoveMargins()
 #'
-#' @return either a flowCore::flowSet or a flowCore::flowFrame depending on 
+#' @return either a flowCore::flowSet or a flowCore::flowFrame depending on
 #' the input.
 #' @importFrom flowCore exprs
 #' @export
-#' 
+#'
 removeMarginsPeacoQC <- function(x, ...) {
-    
-    myFunc <- function(ff){
+    myFunc <- function(ff) {
         channel4Margins <-
             flowCore::colnames(ff)[areSignalCols(ff)]
         ffOut <- PeacoQC::RemoveMargins(ff, channels = channel4Margins)
@@ -76,21 +78,23 @@ removeMarginsPeacoQC <- function(x, ...) {
     } else if (inherits(x, "flowSet")) {
         fsOut <- flowCore::fsApply(x, FUN = myFunc, simplify = TRUE)
         return(fsOut)
-    } else stop("x should be a flowCore::flowFrame or a flowCore::flowSet")
+    } else {
+        stop("x should be a flowCore::flowFrame or a flowCore::flowSet")
+    }
 }
 
 ### FUNCTIONS for pre-processing / compensation ###
 
 #' @title extract compensation matrix from a flowCore::flowFrame
-#' @description helper function retrieving the compensation matrix stored 
+#' @description helper function retrieving the compensation matrix stored
 #' in fcs file (if any). It scans the following keywords: $SPILL, $spillover
 #' and $SPILLOVER
 #' @param ff a flowCore::flowFrame
 #'
 #' @return the found compensation matrix
 #' @export
-#' 
-getAcquiredCompensationMatrix <- function(ff){
+#'
+getAcquiredCompensationMatrix <- function(ff) {
     res <- flowCore::spillover(ff)
     if (!is.null(res$SPILL)) {
         compensationMatrix <- res$SPILL
@@ -100,8 +104,10 @@ getAcquiredCompensationMatrix <- function(ff){
         compensationMatrix <- res$`$SPILLOVER`
     } else {
         fileId <- flowCore::identifier(ff)
-        stop("Issue retrieving compensation matrix for file ",
-             fileId, " : slot is NULL!")
+        stop(
+            "Issue retrieving compensation matrix for file ",
+            fileId, " : slot is NULL!"
+        )
     }
     return(compensationMatrix)
 }
@@ -109,26 +115,25 @@ getAcquiredCompensationMatrix <- function(ff){
 #' @title compensation of fcs file(s) from matrix
 #' @description executes the classical compensation function on a flowSet or
 #' flowFrame, given a compensation matrix. The matrix can be either retrieved
-#' in the fcs files themselves or provided as a csv file. 
+#' in the fcs files themselves or provided as a csv file.
 #' @param x a flowCore::flowSet or a flowCore::flowFrame
-#' @param matrixSource if "fcs", the compensation matrix will be fetched from 
-#' the fcs files (different compensation matrices can then be applied by fcs 
+#' @param matrixSource if "fcs", the compensation matrix will be fetched from
+#' the fcs files (different compensation matrices can then be applied by fcs
 #' file)
 #' if "import", uses matrixPath to read the matrix (should be a csv file)
 #' @param matrixPath if matrixSource == "import", will be used as the input csv
 #' file path
-#' @param updateChannelNames if TRUE, updates the fluo channel names by 
+#' @param updateChannelNames if TRUE, updates the fluo channel names by
 #' prefixing them with "comp-"
 #' @param ... additional arguments (not used)
 #' @return the compensated flowSet or flowFrame
 #' @export
-#' 
+#'
 compensateFromMatrix <- function(x,
                                  matrixSource = c("fcs", "import"),
                                  matrixPath = NULL,
                                  updateChannelNames = TRUE,
-                                 ...
-){
+                                 ...) {
     myFunc <- function(ff, matrixSource = c("fcs", "import"),
                        matrixPath = NULL) {
         matrixSource <- match.arg(matrixSource)
@@ -141,106 +146,115 @@ compensateFromMatrix <- function(x,
             if (is.null(matrixPath)) {
                 stop("No path specified for compensation matrix!")
             }
-            if (!file.exists(matrixPath)) 
+            if (!file.exists(matrixPath)) {
                 stop("Compensation matrix file not found!")
-            compensationMatrix <- 
-                utils:: read.csv(matrixPath,
-                                 check.names = FALSE,
-                                 row.names = 1)
-            
+            }
+            compensationMatrix <-
+                utils::read.csv(matrixPath,
+                    check.names = FALSE,
+                    row.names = 1
+                )
         }
-        
-        ffOut <- runCompensation(ff, 
-                                 compensationMatrix,
-                                 updateChannelNames = updateChannelNames)
-        
+
+        ffOut <- runCompensation(ff,
+            compensationMatrix,
+            updateChannelNames = updateChannelNames
+        )
+
         return(ffOut)
     }
-    
+
     if (inherits(x, "flowFrame")) {
         return(myFunc(x, matrixSource = matrixSource, matrixPath = matrixPath))
     } else if (inherits(x, "flowSet")) {
         fsOut <- flowCore::fsApply(x, FUN = myFunc, simplify = TRUE)
         return(fsOut)
-    } else stop("x should be a flowCore::flowFrame or a flowCore::flowSet")
+    } else {
+        stop("x should be a flowCore::flowFrame or a flowCore::flowSet")
+    }
 }
 
 
 ### FUNCTIONS FOR DOUBLETS REMOVAL ###
 
 #' @title remove doublets from a flowFrame, using PeacoQC
-#' @description wrapper around PeacoQC::RemoveDoublets(). 
-#' Can apply the PeacoQC function subsequently on several channel pairs, 
+#' @description wrapper around PeacoQC::RemoveDoublets().
+#' Can apply the PeacoQC function subsequently on several channel pairs,
 #' e.g. (FSC-A, FSC-H) and (SSC-A, SSC-H)
 #' @param ff a flowCore::flowFrame
 #' @param areaChannels a character vector containing the name of the 'area type'
 #' channels one wants to use
-#' @param heightChannels a character vector containing the name of the 
+#' @param heightChannels a character vector containing the name of the
 #' 'height type' channels one wants to use
 #' @param nmads a numeric vector with the bandwidth above the ratio allowed, per
-#' channels pair (cells are kept if the ratio between -A channel\[i\] and 
+#' channels pair (cells are kept if the ratio between -A channel\[i\] and
 #' -H channel\[i\] is smaller than the median ratio + nmad\[i\] times the median
 #' absolute deviation of the ratios). Default is 4, for all channel pairs.
-#' @param verbose If set to TRUE, the median ratio and width will be printed. 
+#' @param verbose If set to TRUE, the median ratio and width will be printed.
 #' @param ... additional parameters passed to PeacoQC::RemoveDoublets()
 #'
 #' @return a flowCore::flowFrame with removed doublets events from the input
 #' @export
-#' 
+#'
 removeDoubletsPeacoQC <- function(ff,
                                   areaChannels,
                                   heightChannels,
                                   nmads = rep(4, length(areaChannels)),
                                   verbose = TRUE,
                                   ...) {
-    
+
     # if not present already, add a column with Cell ID
     ff <- appendCellID(ff)
-    
+
     # validate common scatter channel parameters
     nScatterFilters <- length(areaChannels)
     if (nScatterFilters < 1 || nScatterFilters > 2) {
-        stop("nb of scatter channels for doublets removal ",
-             "should be either 1 or 2!")
+        stop(
+            "nb of scatter channels for doublets removal ",
+            "should be either 1 or 2!"
+        )
     }
     if (length(heightChannels) != nScatterFilters) {
-        stop("inconsistency between length of area and ",
-             "height channel vectors!")
+        stop(
+            "inconsistency between length of area and ",
+            "height channel vectors!"
+        )
     }
-    
+
     if (length(nmads) != nScatterFilters) {
         stop("inconsistency between length of area channel and nMAD vectors!")
     }
-    for (i in seq_len(nScatterFilters)){
+    for (i in seq_len(nScatterFilters)) {
         ff <-
             PeacoQC::RemoveDoublets(ff,
-                                    channel1 = areaChannels[i],
-                                    channel2 = heightChannels[i],
-                                    nmad = nmads[i],
-                                    verbose = verbose)
+                channel1 = areaChannels[i],
+                channel2 = heightChannels[i],
+                nmad = nmads[i],
+                verbose = verbose
+            )
     }
-    
+
     return(ff)
 }
 
 
 
 #' @title remove doublets from a flowFrame, using flowStats
-#' @description Wrapper around flowStats::singletGate(). 
-#' Can apply the flowStats function subsequently on several channel pairs, 
+#' @description Wrapper around flowStats::singletGate().
+#' Can apply the flowStats function subsequently on several channel pairs,
 #' e.g. (FSC-A, FSC-H) and (SSC-A, SSC-H)
 #' @param ff a flowCore::flowFrame
 #' @param areaChannels a character vector containing the name of the 'area type'
 #' channels one wants to use
-#' @param heightChannels a character vector containing the name of the 
+#' @param heightChannels a character vector containing the name of the
 #' 'height type' channels one wants to use
-#' @param widerGate a boolean as wider_gate parameter to 
+#' @param widerGate a boolean as wider_gate parameter to
 #' flowStats::singletGate()
 #' @param ... additional parameters passed to flowStats::singletGate()
 #'
 #' @return a flowCore::flowFrame with removed doublets events from the input
 #' @export
-#' 
+#'
 removeDoubletsFlowStats <- function(ff,
                                     areaChannels,
                                     heightChannels,
@@ -248,59 +262,66 @@ removeDoubletsFlowStats <- function(ff,
                                     ...) {
     # if not present already, add a column with Cell ID
     ff <- appendCellID(ff)
-    
+
     # validate common scatter channel parameters
     nScatterFilters <- length(areaChannels)
     if (nScatterFilters < 1 || nScatterFilters > 2) {
-        stop("nb of scatter channels for doublets removal ",
-             "should be either 1 or 2!")
+        stop(
+            "nb of scatter channels for doublets removal ",
+            "should be either 1 or 2!"
+        )
     }
     if (length(heightChannels) != nScatterFilters) {
-        stop("inconsistency between length of area ",
-             "and height channel vectors!")
+        stop(
+            "inconsistency between length of area ",
+            "and height channel vectors!"
+        )
     }
-    
-    for (i in seq_len(nScatterFilters)){
+
+    for (i in seq_len(nScatterFilters)) {
         currentSingletGate <-
             flowStats::singletGate(ff,
-                                   filterId = paste0("Singlets_",
-                                                     areaChannels[i]),
-                                   area = areaChannels[i],
-                                   height = heightChannels[i],
-                                   wider_gate = widerGate)
-        
-        if (i==1) {
+                filterId = paste0(
+                    "Singlets_",
+                    areaChannels[i]
+                ),
+                area = areaChannels[i],
+                height = heightChannels[i],
+                wider_gate = widerGate
+            )
+
+        if (i == 1) {
             singletGateCombined <- currentSingletGate
         } else {
             singletGateCombined <- singletGateCombined & currentSingletGate
         }
     }
-    
+
     fltSinglet <- flowCore::filter(ff, singletGateCombined)
-    
+
     ff <- ff[fltSinglet@subSet, ]
-    
+
     return(ff)
 }
 
 #' @title remove doublets from a flowFrame, using CytoPipeline custom algorithm
-#' @description Wrapper around CytoPipeline::singletGate(). 
-#' Can apply the flowStats function subsequently on several channel pairs, 
+#' @description Wrapper around CytoPipeline::singletGate().
+#' Can apply the flowStats function subsequently on several channel pairs,
 #' e.g. (FSC-A, FSC-H) and (SSC-A, SSC-H)
 #' @param ff a flowCore::flowFrame
 #' @param areaChannels a character vector containing the name of the 'area type'
 #' channels one wants to use
-#' @param heightChannels a character vector containing the name of the 
+#' @param heightChannels a character vector containing the name of the
 #' 'height type' channels one wants to use
 #' @param nmads a numeric vector with the bandwidth above the ratio allowed, per
-#' channels pair (cells are kept if the ratio between -A channel\[i\] and 
+#' channels pair (cells are kept if the ratio between -A channel\[i\] and
 #' -H channel\[i\] is smaller than the median ratio + nmad\[i\] times the median
 #' absolute deviation of the ratios). Default is 4, for all channel pairs.
 #' @param ... additional parameters passed to CytoPipeline::singletGate()
 #'
 #' @return a flowCore::flowFrame with removed doublets events from the input
 #' @export
-#' 
+#'
 removeDoubletsCytoPipeline <- function(ff,
                                        areaChannels,
                                        heightChannels,
@@ -308,43 +329,49 @@ removeDoubletsCytoPipeline <- function(ff,
                                        ...) {
     # if not present already, add a column with Cell ID
     ff <- CytoPipeline::appendCellID(ff)
-    
+
     # validate common scatter channel parameters
     nScatterFilters <- length(areaChannels)
     if (nScatterFilters < 1 || nScatterFilters > 2) {
-        stop("nb of scatter channels for doublets removal ",
-             "should be either 1 or 2!")
+        stop(
+            "nb of scatter channels for doublets removal ",
+            "should be either 1 or 2!"
+        )
     }
     if (length(heightChannels) != nScatterFilters) {
-        stop("inconsistency between length of area ", 
-             "and height channel vectors!")
+        stop(
+            "inconsistency between length of area ",
+            "and height channel vectors!"
+        )
     }
-    
+
     if (length(nmads) != nScatterFilters) {
         stop("inconsistency between length of area channel and nMAD vectors!")
     }
-    for (i in seq_len(nScatterFilters)){
-        
+    for (i in seq_len(nScatterFilters)) {
         currentSingletGate <-
             singletsGate(ff,
-                         filterId = paste0("Singlets_",
-                                           areaChannels[i]),
-                         channel1 = areaChannels[i],
-                         channel2 = heightChannels[i],
-                         nmad = nmads[i])
-        
-        
-        if (i==1) {
+                filterId = paste0(
+                    "Singlets_",
+                    areaChannels[i]
+                ),
+                channel1 = areaChannels[i],
+                channel2 = heightChannels[i],
+                nmad = nmads[i]
+            )
+
+
+        if (i == 1) {
             singletGateCombined <- currentSingletGate
         } else {
             singletGateCombined <- singletGateCombined & currentSingletGate
         }
     }
-    
+
     fltSinglet <- flowCore::filter(ff, singletGateCombined)
-    
+
     ff <- ff[fltSinglet@subSet, ]
-    
+
     return(ff)
 }
 
@@ -353,21 +380,21 @@ removeDoubletsCytoPipeline <- function(ff,
 
 #' @title remove debris from a flowFrame using manual gating
 #' @description remove debris from a flowFrame, using manual gating in the
-#' FSC-A, SSC-A 2D representation. The function internally uses 
+#' FSC-A, SSC-A 2D representation. The function internally uses
 #' flowCore::polygonGate()
 #' @param ff a flowCore::flowFrame
-#' @param FSCChannel a character containing the exact name of the forward 
+#' @param FSCChannel a character containing the exact name of the forward
 #' scatter channel
 #' @param SSCChannel a character containing the exact name of the side scatter
-#' channel 
+#' channel
 #' @param gateData a numerical vector containing the polygon gate coordinates
-#' first the FSC-A channel coordinates of each points of the polygon gate, 
+#' first the FSC-A channel coordinates of each points of the polygon gate,
 #' then the SSC-A channel coordinates of each points.
 #' @param ... additional parameters passed to flowCore::polygonGate()
 #'
 #' @return a flowCore::flowFrame with removed debris events from the input
 #' @export
-#' 
+#'
 removeDebrisManual <- function(ff,
                                FSCChannel,
                                SSCChannel,
@@ -375,21 +402,25 @@ removeDebrisManual <- function(ff,
                                ...) {
     # if not present already, add a column with Cell ID
     ff <- appendCellID(ff, seq_len(flowCore::nrow(ff)))
-    
-    cellsGateMatrix <- matrix(data = gateData, ncol = 2,
-                              dimnames = list(c(), c(FSCChannel, SSCChannel)))
-    
-    cellsGate <- flowCore::polygonGate(filterId = "Cells",
-                                       .gate = cellsGateMatrix,
-                                       ...)
+
+    cellsGateMatrix <- matrix(
+        data = gateData, ncol = 2,
+        dimnames = list(c(), c(FSCChannel, SSCChannel))
+    )
+
+    cellsGate <- flowCore::polygonGate(
+        filterId = "Cells",
+        .gate = cellsGateMatrix,
+        ...
+    )
     selectedCells <- flowCore::filter(ff, cellsGate)
-    
+
     ff <- ff[selectedCells@subSet, ]
 }
 
 
 #' @title remove debris from a flowFrame, using flowClust
-#' @description this function removes debris from a flowFrame, 
+#' @description this function removes debris from a flowFrame,
 #' using clustering capabilities of flowClust::tmixFilter(). The idea is to
 #' pre-select a number of clusters to be found in the (FSC,SSC) 2D view, and
 #' eliminate the cluster that is the closest to the origin.
@@ -402,53 +433,63 @@ removeDebrisManual <- function(ff,
 #'
 #' @return a flowCore::flowFrame with removed debris events from the input
 #' @export
-#' 
+#'
 removeDebrisFlowClustTmix <- function(ff,
                                       FSCChannel,
                                       SSCChannel,
                                       nClust,
                                       ...) {
-    
+
     # if not present already, add a column with Cell ID
     ff <- appendCellID(ff)
-    
+
     # handle ellipsis arguments, as 'tmixFilter' does not accept unknown args
     passedEllipsisArgs <- list(...)
     newEllipsisArgs <- list()
-    
+
     argNames <-
-        c("expName", "K", "B", "tol", "nu", "lambda", "nu.est", "trans",
-          "min.count", "max.count", "min", "max", "level", "u.cutoff", 
-          "z.cutoff", "randomStart", "B.init", "tol.init", "seed", "criterion")
-    for (argN in argNames){
+        c(
+            "expName", "K", "B", "tol", "nu", "lambda", "nu.est", "trans",
+            "min.count", "max.count", "min", "max", "level", "u.cutoff",
+            "z.cutoff", "randomStart", "B.init", "tol.init", "seed", "criterion"
+        )
+    for (argN in argNames) {
         if (!is.null(passedEllipsisArgs[[argN]])) {
             newEllipsisArgs[[argN]] <- passedEllipsisArgs[[argN]]
         }
     }
-    
+
     cellsFilter <-
         do.call(flowClust::tmixFilter,
-                args = c(list(filterId = "tmixFilter",
-                              parameters = c(FSCChannel, SSCChannel),
-                              K = nClust),
-                         newEllipsisArgs))
-    
-    
+            args = c(
+                list(
+                    filterId = "tmixFilter",
+                    parameters = c(FSCChannel, SSCChannel),
+                    K = nClust
+                ),
+                newEllipsisArgs
+            )
+        )
+
+
     resCellsFilter <- flowCore::filter(ff, cellsFilter)
-    
-    FSCMedians <- vapply(X = seq_len(nClust),
-                         FUN.VALUE = double(1),
-                         FUN = function(x, ff, flt){
-                             resCellsFltr <- flt[[x]]
-                             stats::median(flowCore::exprs(ff)[
-                                 resCellsFltr@subSet, FSCChannel],
-                                 na.rm = TRUE)
-                             
-                         },
-                         ff = ff, flt = resCellsFilter)
-    
+
+    FSCMedians <- vapply(
+        X = seq_len(nClust),
+        FUN.VALUE = double(1),
+        FUN = function(x, ff, flt) {
+            resCellsFltr <- flt[[x]]
+            stats::median(flowCore::exprs(ff)[
+                resCellsFltr@subSet, FSCChannel
+            ],
+            na.rm = TRUE
+            )
+        },
+        ff = ff, flt = resCellsFilter
+    )
+
     debrisIndex <- which.min(FSCMedians)
-    keptClustersIndexes <- setdiff(seq_len(nClust),debrisIndex)
+    keptClustersIndexes <- setdiff(seq_len(nClust), debrisIndex)
     tokeepFilter <- resCellsFilter[[keptClustersIndexes[1]]]
     if (nClust > 2) {
         for (i in keptClustersIndexes[-1]) {
@@ -457,33 +498,32 @@ removeDebrisFlowClustTmix <- function(ff,
     }
     selectedCells <- flowCore::filter(ff, tokeepFilter)
     ff <- ff[selectedCells@subSet, ]
-    
+
     return(ff)
-    
 }
 
 ### FUNCTIONS FOR DEAD CELLS REMOVAL ###
 
 #' @title remove dead cells from a flowFrame using manual gating
 #' @description remove dead cells from a flowFrame, using manual gating in the
-#' FSC-A, '(a)Live/Dead' 2D representation. The function uses 
+#' FSC-A, '(a)Live/Dead' 2D representation. The function uses
 #' flowCore::polygonGate()
 #' @param ff a flowCore::flowFrame
 #' @param preTransform boolean, if TRUE: the transList list of scale transforms
 #' will be applied first on the LD channel.
 #' @param transList applied in conjunction with preTransform == TRUE
-#' @param FSCChannel a character containing the exact name of the forward 
+#' @param FSCChannel a character containing the exact name of the forward
 #' scatter channel
-#' @param LDMarker a character containing the exact name of the marker 
-#' corresponding to (a)Live/Dead channel 
+#' @param LDMarker a character containing the exact name of the marker
+#' corresponding to (a)Live/Dead channel
 #' @param gateData a numerical vector containing the polygon gate coordinates
-#' first the FSC-A channel coordinates of each points of the polygon gate, 
+#' first the FSC-A channel coordinates of each points of the polygon gate,
 #' then the LD channel coordinates of each points (prior to scale transfom)
 #' @param ... additional parameters passed to flowCore::polygonGate()
 #'
 #' @return a flowCore::flowFrame with removed dead cells from the input
 #' @export
-#' 
+#'
 removeDeadCellsManual <- function(ff,
                                   preTransform = FALSE,
                                   transList = NULL,
@@ -493,94 +533,110 @@ removeDeadCellsManual <- function(ff,
                                   ...) {
     # if not present already, add a column with Cell ID
     ff <- appendCellID(ff)
-    
-    if (preTransform){
+
+    if (preTransform) {
         if (is.null(transList)) {
-            stop("tranformation list needs to be provided ",
-                 "if preTransform = TRUE!")
+            stop(
+                "tranformation list needs to be provided ",
+                "if preTransform = TRUE!"
+            )
         }
         ffIn <- flowCore::transform(ff, transList)
     } else {
         ffIn <- ff
     }
-    
+
     LDChannel <- getChannelNamesFromMarkers(ffIn, markers = LDMarker)
-    
-    liveGateMatrix <- matrix(data = gateData, ncol = 2,
-                             dimnames = list(c(), c(FSCChannel,
-                                                    LDChannel)))
-    
-    liveGate <- flowCore::polygonGate(filterId = "Live_Cells",
-                                      .gate = liveGateMatrix)
-    
-    
-    
+
+    liveGateMatrix <- matrix(
+        data = gateData, ncol = 2,
+        dimnames = list(c(), c(
+            FSCChannel,
+            LDChannel
+        ))
+    )
+
+    liveGate <- flowCore::polygonGate(
+        filterId = "Live_Cells",
+        .gate = liveGateMatrix
+    )
+
+
+
     selectedLive <- flowCore::filter(ffIn, liveGate)
-    
+
     ff <- ff[selectedLive@subSet, ] # note we take ff and not ffIn (no transfo)
 }
 
 #' @title remove dead cells from a flowFrame
-#' @description this function removes dead cells from a flowFrame, using a 
-#' specific '(a)live/dead' channel, and the openCyto::gate_tail() gating 
+#' @description this function removes dead cells from a flowFrame, using a
+#' specific '(a)live/dead' channel, and the openCyto::gate_tail() gating
 #' function (see doc of the openCyto package)
 
 #' @param ff a flowCore::flowFrame
-#' @param preTransform if TRUE, apply the transList scale transform prior to 
+#' @param preTransform if TRUE, apply the transList scale transform prior to
 #' running the gating algorithm
 #' @param transList applied in conjunction with preTransform == TRUE
-#' @param LDMarker a character containing the exact name of the marker 
+#' @param LDMarker a character containing the exact name of the marker
 #' corresponding to Live/Dead channel
 #' @param ... additional parameters passed to openCyto::gate_tail()
 #'
 #' @return a flowCore::flowFrame with removed dead cells from the input
 #' @export
-#' 
+#'
 removeDeadCellsGateTail <- function(ff,
                                     preTransform = FALSE,
                                     transList = NULL,
                                     LDMarker,
-                                    ...){
-    
+                                    ...) {
+
     # if not present already, add a column with Cell ID
     ff <- appendCellID(ff)
-    
-    # handle ellipsis arguments, as 'openCyto::gate_tail' 
+
+    # handle ellipsis arguments, as 'openCyto::gate_tail'
     # does not accept unknown args
     passedEllipsisArgs <- list(...)
     newEllipsisArgs <- list()
-    
+
     argNames <-
-        c("num_peaks", "ref_peak", "strict", "tol", "side", "min", "max", 
-          "bias", "positive", "deriv", "bandwidth", "adjust", "num_points", 
-          "range.x", "binned", "se", "w")
-    for (argN in argNames){
+        c(
+            "num_peaks", "ref_peak", "strict", "tol", "side", "min", "max",
+            "bias", "positive", "deriv", "bandwidth", "adjust", "num_points",
+            "range.x", "binned", "se", "w"
+        )
+    for (argN in argNames) {
         if (!is.null(passedEllipsisArgs[[argN]])) {
             newEllipsisArgs[[argN]] <- passedEllipsisArgs[[argN]]
         }
     }
-    
-    if (preTransform){
+
+    if (preTransform) {
         if (is.null(transList)) {
-            stop("tranformation list needs to be provided ",
-                 "if preTransform = TRUE!")
+            stop(
+                "tranformation list needs to be provided ",
+                "if preTransform = TRUE!"
+            )
         }
         ffIn <- flowCore::transform(ff, transList)
     } else {
         ffIn <- ff
     }
-    
+
     LDChannel <- getChannelNamesFromMarkers(ffIn, markers = LDMarker)
-    
+
     liveGate <-
         do.call(openCyto::gate_tail,
-                args = c(list(ffIn, 
-                              channel = LDChannel, 
-                              filterId = "Live_Cells"),
-                         newEllipsisArgs))
-    
+            args = c(
+                list(ffIn,
+                    channel = LDChannel,
+                    filterId = "Live_Cells"
+                ),
+                newEllipsisArgs
+            )
+        )
+
     selectedLive <- flowCore::filter(ffIn, liveGate)
-    
+
     ff <- ff[selectedLive@subSet, ] # note we take ff and not ffIn (no transfo)
     return(ff)
 }
@@ -588,21 +644,21 @@ removeDeadCellsGateTail <- function(ff,
 ### FUNCTIONS for Quality Control ###
 
 #' @title perform QC with flowAI
-#' @description this function is a wrapper around flowAI::flow_auto_qc() 
-#' function. 
+#' @description this function is a wrapper around flowAI::flow_auto_qc()
+#' function.
 #' It also pre-selects the channels to be handled (=> all signal channels)
 #' @param ff a flowCore::flowFrame
-#' @param preTransform if TRUE, apply the transList scale transform prior to 
+#' @param preTransform if TRUE, apply the transList scale transform prior to
 #' running the gating algorithm
 #' @param transList applied in conjunction with preTransform
-#' @param outputDiagnostic if TRUE, stores diagnostic files generated by 
+#' @param outputDiagnostic if TRUE, stores diagnostic files generated by
 #' flowAI in outputDir directory
 #' @param outputDir used in conjunction with outputDiagnostic
-#' @param ... additional parameters passed to flowAI::flow_auto_qc() 
+#' @param ... additional parameters passed to flowAI::flow_auto_qc()
 #'
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
-#' 
+#'
 qualityControlFlowAI <- function(ff,
                                  preTransform = FALSE,
                                  transList = NULL,
@@ -611,69 +667,75 @@ qualityControlFlowAI <- function(ff,
                                  ...) {
     # if not present already, add a column with Cell ID
     ff <- appendCellID(ff)
-    
+
     if (preTransform) {
         if (is.null(transList)) {
-            stop("tranformation list needs to be provided ", 
-                 "if preTransform = TRUE!")
+            stop(
+                "tranformation list needs to be provided ",
+                "if preTransform = TRUE!"
+            )
         }
         ffIn <- flowCore::transform(ff, transList)
     } else {
         ffIn <- ff
     }
-    
+
     channel2Exclude <-
         flowCore::colnames(ffIn)[!areSignalCols(ffIn)]
     message("Applying flowAI method...")
     if (outputDiagnostic) {
         html_report <- "_QC"
         mini_report <- "QCmini"
-        if (!is.null(outputDir))
+        if (!is.null(outputDir)) {
             folder_results <- outputDir
-        else folder_results <- "resultsQC"
+        } else {
+            folder_results <- "resultsQC"
+        }
     } else {
         html_report <- FALSE
         mini_report <- FALSE
         folder_results <- FALSE
     }
-    
+
     badEventIDs <-
-        flowAI::flow_auto_qc(fcsfiles = ffIn,
-                             output = 3,
-                             timeCh = NULL,
-                             timestep = NULL,
-                             ChExcludeFS = channel2Exclude,
-                             ChExcludeFM = channel2Exclude,
-                             html_report = html_report,
-                             mini_report = mini_report,
-                             fcs_QC = FALSE,
-                             fcs_highQ = FALSE,
-                             fcs_lowQ = FALSE,
-                             folder_results = folder_results,
-                             ...)
-    
+        flowAI::flow_auto_qc(
+            fcsfiles = ffIn,
+            output = 3,
+            timeCh = NULL,
+            timestep = NULL,
+            ChExcludeFS = channel2Exclude,
+            ChExcludeFM = channel2Exclude,
+            html_report = html_report,
+            mini_report = mini_report,
+            fcs_QC = FALSE,
+            fcs_highQ = FALSE,
+            fcs_lowQ = FALSE,
+            folder_results = folder_results,
+            ...
+        )
+
     goodEvents <- !(seq_len(flowCore::nrow(ffIn)) %in% badEventIDs)
-    ff <- ff[goodEvents,] # note we take ff and not ffIn (no transfo)
-    
+    ff <- ff[goodEvents, ] # note we take ff and not ffIn (no transfo)
+
     return(ff)
 }
 
 #' @title perform QC with PeacoQC
-#' @description this function is a wrapper around PeacoQC::PeacoQC() 
-#' function. 
+#' @description this function is a wrapper around PeacoQC::PeacoQC()
+#' function.
 #' It also pre-selects the channels to be handled (=> all signal channels)
 #' @param ff a flowCore::flowFrame
-#' @param preTransform if TRUE, apply the transList scale transform prior to 
+#' @param preTransform if TRUE, apply the transList scale transform prior to
 #' running the gating algorithm
 #' @param transList applied in conjunction with preTransform
-#' @param outputDiagnostic if TRUE, stores diagnostic files generated by 
+#' @param outputDiagnostic if TRUE, stores diagnostic files generated by
 #' PeacoQC in outputDir directory
 #' @param outputDir used in conjunction with outputDiagnostic
-#' @param ... additional parameters passed to PeacoQC::PeacoQC() 
+#' @param ... additional parameters passed to PeacoQC::PeacoQC()
 #'
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
-#' 
+#'
 qualityControlPeacoQC <- function(ff,
                                   preTransform = FALSE,
                                   transList = NULL,
@@ -682,17 +744,19 @@ qualityControlPeacoQC <- function(ff,
                                   ...) {
     # if not present already, add a column with Cell ID
     ff <- appendCellID(ff)
-    
+
     if (preTransform) {
         if (is.null(transList)) {
-            stop("tranformation list needs to be provided ", 
-                 "if preTransform = TRUE!")
+            stop(
+                "tranformation list needs to be provided ",
+                "if preTransform = TRUE!"
+            )
         }
         ffIn <- flowCore::transform(ff, transList)
     } else {
         ffIn <- ff
     }
-    
+
     # qualityControl with PeacoQC
     message("Applying PeacoQC method...")
     channel4QualityControl <-
@@ -700,44 +764,48 @@ qualityControlPeacoQC <- function(ff,
     if (outputDiagnostic) {
         plot <- TRUE
         report <- TRUE
-        if (!is.null(outputDir))
+        if (!is.null(outputDir)) {
             output_directory <- outputDir
-        else output_directory <- "."
+        } else {
+            output_directory <- "."
+        }
     } else {
         plot <- FALSE
         report <- FALSE
-        output_directory <- NULL #not used
+        output_directory <- NULL # not used
     }
-    
-    res <- PeacoQC::PeacoQC(ff = ffIn,
-                            channels = channel4QualityControl,
-                            report = report,
-                            plot = plot,
-                            save_fcs = FALSE,
-                            output_directory = output_directory,
-                            ...)
-    
-    ff <- ff[res$GoodCells,] # note we take ff and not ffIn (no transfo)
+
+    res <- PeacoQC::PeacoQC(
+        ff = ffIn,
+        channels = channel4QualityControl,
+        report = report,
+        plot = plot,
+        save_fcs = FALSE,
+        output_directory = output_directory,
+        ...
+    )
+
+    ff <- ff[res$GoodCells, ] # note we take ff and not ffIn (no transfo)
     return(ff)
 }
 
 #' @title perform QC with flowCut
-#' @description this function is a wrapper around flowCut::flowCut() 
-#' function. 
+#' @description this function is a wrapper around flowCut::flowCut()
+#' function.
 #' It also pre-selects the channels to be handled (=> all signal channels)
 #' @param ff a flowCore::flowFrame
-#' @param preTransform if TRUE, apply the transList scale transform prior to 
+#' @param preTransform if TRUE, apply the transList scale transform prior to
 #' running the gating algorithm
 #' @param transList applied in conjunction with preTransform
-#' @param outputDiagnostic if TRUE, stores diagnostic files generated by 
+#' @param outputDiagnostic if TRUE, stores diagnostic files generated by
 #' flowCut in outputDir directory
 #' @param outputDir used in conjunction with outputDiagnostic
 #' @param verbose if TRUE messages comments on the QC process
-#' @param ... additional parameters passed to flowCut::flowCut() 
+#' @param ... additional parameters passed to flowCut::flowCut()
 #'
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
-#' 
+#'
 qualityControlFlowCut <- function(ff,
                                   preTransform = FALSE,
                                   transList = NULL,
@@ -747,64 +815,70 @@ qualityControlFlowCut <- function(ff,
                                   ...) {
     # if not present already, add a column with Cell ID
     ff <- appendCellID(ff)
-    
+
     if (preTransform) {
         if (is.null(transList)) {
-            stop("tranformation list needs to be provided ",
-                 "if preTransform = TRUE!")
+            stop(
+                "tranformation list needs to be provided ",
+                "if preTransform = TRUE!"
+            )
         }
         ffIn <- flowCore::transform(ff, transList)
     } else {
         ffIn <- ff
     }
-    
+
     # qualityControl with flowCut
     message("Applying flowCut method...")
     channelsIndices <- which(CytoPipeline::areSignalCols(ffIn))
     if (outputDiagnostic) {
         Plot <- "All"
-        if (!is.null(outputDir))
+        if (!is.null(outputDir)) {
             Directory <- outputDir
-        else filePrefixWithDir <- "resultsQC"
+        } else {
+            filePrefixWithDir <- "resultsQC"
+        }
     } else {
-        Directory <- NULL #not used
+        Directory <- NULL # not used
         Plot <- "None"
     }
-    
+
     res <-
-        flowCut::flowCut(f = ffIn,
-                         Channels = channelsIndices,
-                         Directory = Directory,
-                         FileID = NULL,
-                         Plot = Plot,
-                         Verbose = verbose,
-                         ...)
-    #browser()
+        flowCut::flowCut(
+            f = ffIn,
+            Channels = channelsIndices,
+            Directory = Directory,
+            FileID = NULL,
+            Plot = Plot,
+            Verbose = verbose,
+            ...
+        )
+    # browser()
     badEventIDs <- res$ind
-    
+
     goodEvents <- !(seq_len(flowCore::nrow(ffIn)) %in% badEventIDs)
-    ff <- ff[goodEvents,] # note we take ff and not ffIn (no transfo)
-    
+    ff <- ff[goodEvents, ] # note we take ff and not ffIn (no transfo)
+
     return(ff)
 }
 
 #' @title perform QC with flowCut
-#' @description this function is a wrapper around flowClean::clean() 
-#' function. 
+#' @description this function is a wrapper around flowClean::clean()
+#' function.
 #' It also pre-selects the channels to be handled (=> all signal channels)
 #' @param ff a flowCore::flowFrame
-#' @param preTransform if TRUE, apply the transList scale transform prior to 
+#' @param preTransform if TRUE, apply the transList scale transform prior to
 #' running the gating algorithm
 #' @param transList applied in conjunction with preTransform
-#' @param outputDiagnostic if TRUE, stores diagnostic files generated by 
+#' @param outputDiagnostic if TRUE, stores diagnostic files generated by
 #' flowClean in outputDir directory
 #' @param outputDir used in conjunction with outputDiagnostic
 #' @param verbose if TRUE messages comments on the QC process
-#' @param ... additional parameters passed to flowClean::clean() 
+#' @param ... additional parameters passed to flowClean::clean()
 #'
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
-#' 
+#'
 qualityControlFlowClean <- function(ff,
                                     preTransform = FALSE,
                                     transList = NULL,
@@ -814,51 +888,57 @@ qualityControlFlowClean <- function(ff,
                                     ...) {
     # if not present already, add a column with Cell ID
     ff <- CytoPipeline::appendCellID(ff)
-    
+
     if (preTransform) {
         if (is.null(transList)) {
-            stop("tranformation list needs to be provided ", 
-                 "if preTransform = TRUE!")
+            stop(
+                "tranformation list needs to be provided ",
+                "if preTransform = TRUE!"
+            )
         }
         ffIn <- flowCore::transform(ff, transList)
     } else {
         ffIn <- ff
     }
-    
+
     # qualityControl with flowClean
     message("Applying flowClean method...")
     vectMarkers <- which(CytoPipeline::areSignalCols(ffIn))
-    
+
     if (outputDiagnostic) {
         diagnostic <- TRUE
-        if (!is.null(outputDir))
+        if (!is.null(outputDir)) {
             filePrefixWithDir <- outputDir
-        else filePrefixWithDir <- "resultsQC"
-        
-        # add original fcs file name in prefix, 
+        } else {
+            filePrefixWithDir <- "resultsQC"
+        }
+
+        # add original fcs file name in prefix,
         # as flowClean is designed to work for one fcs at the time
         filename <- basename(flowCore::keyword(ffIn, "FILENAME")$FILENAME)
         # removing extension
         filename <- sub("([^.]+)\\.[[:alnum:]]+$", "\\1", filename)
         filePrefixWithDir <- paste0(filePrefixWithDir, filename)
     } else {
-        filePrefixWithDir <- NULL #not used
+        filePrefixWithDir <- NULL # not used
         diagnostic <- FALSE
     }
-    
+
     goodVsBadVector <-
-        flowClean::clean(fF = ffIn,
-                         vectMarkers = vectMarkers,
-                         filePrefixWithDir = filePrefixWithDir,
-                         ext = ".fcs", # not used
-                         diagnostic = diagnostic,
-                         announce = verbose,
-                         returnVector = TRUE,
-                         ...)
-    
+        flowClean::clean(
+            fF = ffIn,
+            vectMarkers = vectMarkers,
+            filePrefixWithDir = filePrefixWithDir,
+            ext = ".fcs", # not used
+            diagnostic = diagnostic,
+            announce = verbose,
+            returnVector = TRUE,
+            ...
+        )
+
     areGoodEvents <- goodVsBadVector < 10000
     ff <- ffIn[areGoodEvents, ]
-    
+
     return(ff)
 }
 
@@ -868,17 +948,17 @@ qualityControlFlowClean <- function(ff,
 ##' @param ... other arguments (not used)
 ##' @return the transformed flowFrame
 ##' @export
-applyScaleTransforms <- function(ff, transList, ...){
+applyScaleTransforms <- function(ff, transList, ...) {
     ff <- flowCore::transform(ff, transList)
     return(ff)
 }
 
 #' @title estimates scale tranformations
 #' @description this function estimates the scale transformations to be applied
-#' on a flowFrame to obtain 'good behaving' distributions, i.e. the best 
+#' on a flowFrame to obtain 'good behaving' distributions, i.e. the best
 #' possible separation between + population and - population.
-#' It distinguishes between scatter channels, where either linear, or no 
-#' transform is applied, and fluo channels, where either logicle transform 
+#' It distinguishes between scatter channels, where either linear, or no
+#' transform is applied, and fluo channels, where either logicle transform
 #' - using flowCore::estimateLogicle - is estimated, or no transform is applied.
 #' The idea of linear transform of scatter channels is as follows: a reference
 #' channel (not a scatter one) is selected and a linear transform (Y = AX + B)
@@ -889,44 +969,46 @@ applyScaleTransforms <- function(ff, transList, ...){
 #' @param ff a flowCore::flowFrame
 #' @param fluoMethod method to be applied to all fluo channels
 #' @param scatterMethod method to be applied to all scatter channels
-#' @param scatterRefMarker the reference channel that is used to align the 
+#' @param scatterRefMarker the reference channel that is used to align the
 #'
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
-#' 
-estimateScaleTransforms <- function(ff, 
+#'
+estimateScaleTransforms <- function(ff,
                                     fluoMethod = c("estimateLogicle", "none"),
                                     scatterMethod = c("linear", "none"),
                                     scatterRefMarker = NULL) {
     fluoMethod <- match.arg(fluoMethod)
     scatterMethod <- match.arg(scatterMethod)
-    
+
     if (fluoMethod == "estimateLogicle") {
-        message("estimating logicle transformations ",
-                "for fluorochrome channels...")
+        message(
+            "estimating logicle transformations ",
+            "for fluorochrome channels..."
+        )
         fluoCols <- flowCore::colnames(ff)[areFluoCols(ff)]
         transList <- flowCore::estimateLogicle(ff, fluoCols)
     } # else do nothing
-    
+
     if (scatterMethod == "linear") {
-        if (is.null(scatterRefMarker))
+        if (is.null(scatterRefMarker)) {
             stop("linear scatter method requires a scatterRefMarker")
-        
-        message("Estimating linear transformation for scatter channels : ",
-                "reference marker = ",
-                scatterRefMarker,
-                "...")
+        }
+
+        message(
+            "Estimating linear transformation for scatter channels : ",
+            "reference marker = ",
+            scatterRefMarker,
+            "..."
+        )
         transList <-
             computeScatterChannelsLinearScale(
                 ff,
                 transList = transList,
                 referenceChannel = scatterRefMarker,
-                silent = FALSE)
-        
+                silent = FALSE
+            )
     } # else do nothing
-    
+
     return(transList)
 }
-
-
-

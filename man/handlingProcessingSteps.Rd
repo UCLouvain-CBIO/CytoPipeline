@@ -61,7 +61,8 @@ steps}
 }
 
 \itemize{
-\item for \code{getNbProcessingSteps}: the number of processing steps present in the target queue
+\item for \code{getNbProcessingSteps}: the number of processing steps present
+in the target queue
 }
 
 \itemize{

@@ -14,6 +14,6 @@ the found compensation matrix
 }
 \description{
 helper function retrieving the compensation matrix stored
-in fcs file (if any). It scans the following keywords: $SPILL, $spillover and
-$SPILLOVER
+in fcs file (if any). It scans the following keywords: $SPILL, $spillover
+and $SPILLOVER
 }
