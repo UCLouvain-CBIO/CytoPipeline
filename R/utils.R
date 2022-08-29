@@ -23,6 +23,9 @@
 #' @return a vector of booleans of which the dimension is equal to the number of
 #' columns in ff
 #' @export
+#' 
+#' @examples
+#' areSignalCols(OMIP021Samples[[1]])
 #'
 areSignalCols <- function(ff,
                           toRemovePatterns = c(
@@ -56,6 +59,9 @@ areSignalCols <- function(ff,
 #' @return a vector of booleans of which the dimension is equal to the number of
 #' columns in ff
 #' @export
+#' 
+#' @examples
+#' areFluoCols(OMIP021Samples[[1]])
 #'
 areFluoCols <- function(ff,
                         toRemovePatterns = c(
@@ -80,6 +86,11 @@ areFluoCols <- function(ff,
 #'
 #' @return new flowCore::flowFrame with the obtained subset of samples
 #' @export
+#' 
+#' @examples
+#' # take first sample of dataset, subsample 100 events and create new flowFrame
+#' ff <- subsample(OMIP021Samples[[1]], nSamples = 100)
+#' 
 #'
 subsample <- function(ff, nSamples, seed = NULL) {
     if (!inherits(ff, "flowFrame")) {
@@ -105,59 +116,9 @@ subsample <- function(ff, nSamples, seed = NULL) {
     }
 
     # add Original_ID as a new column if necessary
-    ff <- appendCellID(ff, seq_len(flowCore::nrow(ff)))
+    ff <- .appendCellID(ff)
 
     ff[keep, ]
-}
-
-
-#' @title append 'Original_ID' column to a flowframe
-#' @description : on a flowCore::flowFrame, append a 'Original_ID' column.
-#' This column can be used in plots comparing the events pre and post gating.
-#' If the 'Original_ID' column already exists, the function does nothing
-#' @param ff a flowCore::flowFrame
-#' @param eventIDs an integer vector containing the values to be added in
-#' as Original ID's
-#'
-#' @return new flowCore::flowFrame containing the added 'Original_ID' column
-#' @export
-appendCellID <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
-    if (!inherits(ff, "flowFrame")) {
-        stop("ff type not recognized, should be a flowFrame")
-    }
-    if (!("Original_ID" %in% colnames(flowCore::exprs(ff)))) {
-        matrixCellIds <- matrix(
-            data = eventIDs, ncol = 1,
-            dimnames = list(c(), list("Original_ID"))
-        )
-        ff <- flowCore::fr_append_cols(ff, matrixCellIds)
-    }
-    return(ff)
-}
-
-#' @title add compensation to fluo column names
-#' @description : technical utility to add "Comp-" prefix to all
-#' column names for fluorochrom channels
-#' @param ff a flowCore::flowFrame
-#' @return new flowCore::flowFrame with the new column names
-#' @export
-addCompensation2FluoChannelNames <- function(ff) {
-    if (!inherits(ff, "flowFrame")) {
-        stop("ff type not recognized, should be a flowFrame")
-    }
-    areFluoCols <- areFluoCols(ff)
-    newColNames <- flowCore::colnames(ff)
-    newColNames <-
-        mapply(
-            FUN = function(theName, need2Do) {
-                newName <- theName
-                if (need2Do) newName <- paste0("Comp-", theName)
-                newName
-            },
-            newColNames, areFluoCols
-        )
-    flowCore::colnames(ff) <- newColNames
-    return(ff)
 }
 
 #' @title compensate with additional options
@@ -175,6 +136,14 @@ addCompensation2FluoChannelNames <- function(ff) {
 #'
 #' @return a new object with compensated data, and possibly updated column names
 #' @export
+#' 
+#' @examples 
+#' ff <- OMIP021Samples[[1]]
+#' compMatrix <- flowCore::spillover(ff)$SPILL
+#' ff <- runCompensation(ff, 
+#'                       spillover = compMatrix, 
+#'                       updateChannelNames = TRUE)
+#'
 runCompensation <- function(obj, spillover, updateChannelNames = TRUE) {
     isFlowSet <- FALSE
     if (inherits(obj, "flowSet")) {
@@ -187,15 +156,13 @@ runCompensation <- function(obj, spillover, updateChannelNames = TRUE) {
     if (updateChannelNames) {
         if (isFlowSet) {
             res <-
-                flowCore::fsApply(res, FUN = addCompensation2FluoChannelNames)
+                flowCore::fsApply(res, FUN = .addCompensation2FluoChannelNames)
         } else {
-            res <- addCompensation2FluoChannelNames(res)
+            res <- .addCompensation2FluoChannelNames(res)
         }
     }
     return(res)
 }
-
-
 
 #' @title Aggregate and sample multiple flow frames of a flow set together
 #' @description Aggregate multiple flow frames in order to analyze them
@@ -223,6 +190,12 @@ runCompensation <- function(obj, spillover, updateChannelNames = TRUE) {
 #'
 #' @return returns a new flowCore::flowFrame
 #' @export
+#' 
+#' @examples 
+#' nCells <- 1000
+#' agg <- aggregateAndSample(
+#'     fs = OMIP021Samples,
+#'     nTotalEvents = nCells)
 aggregateAndSample <- function(fs,
                                nTotalEvents,
                                seed = NULL,
@@ -337,6 +310,44 @@ aggregateAndSample <- function(fs,
 #'
 #' Otherwise, NULL is returned.
 #' @export
+#' 
+#' @examples
+
+#' # set-up a hybrid transformation list :
+#' # - two channels are logicle-ly transformed with automatic param estimates
+#' # - one channel has explicit logicle transfo with default parameters
+#' # - one channel has linear transformation
+#' # - other channels have no transformation
+#' translist <- flowCore::estimateLogicle(
+#'     OMIP021Samples[[1]],
+#'     c("450/50Violet-A", "525/50Violet-A")
+#' )
+#' translist <- c(
+#'     translist,
+#'     flowCore::transformList(
+#'         "FSC-A",
+#'         flowCore::linearTransform(
+#'             a = 0.1,
+#'             b = 0
+#'        )
+#'     ),
+#'     flowCore::transformList(
+#'         "540/30Violet-A",
+#'         flowCore::logicleTransform()
+#'     )
+#' )
+#' 
+#' ret1 <- getTransfoParams(translist, channel = "FSC-A")
+#' ret1$type # "linear"
+#' ret1$paramsList # a = 0.1, b = 0.
+#' 
+#' ret2 <- getTransfoParams(translist, channel = "525/50Violet-A")
+#' ret2$type # "logicle"
+#' ret2$paramsList # a = 0., w = 0.2834, m = 4.5, t = 262143
+#' 
+#' ret3 <- getTransfoParams(translist, channel = "540/30Violet-A")
+#' ret3$type # "logicle
+#' ret3$paramsList # a = 0., w = 0.5, m = 4.5, t = 262144
 getTransfoParams <- function(transList,
                              channel) {
     if (!inherits(transList, "transformList")) {
@@ -405,6 +416,20 @@ getTransfoParams <- function(transList,
 #' @return the transList with added linear scale transformations
 #' @export
 #'
+#' @examples
+#' 
+#' ff <- OMIP021Samples[[1]]
+#' refMarker <- "APCCy7 - CD4"
+#' refChannel <- "780/60Red-A"
+
+#' transList <- flowCore::estimateLogicle(ff,
+#'                                        channels = refChannel)
+#' retTransList <-
+#'     computeScatterChannelsLinearScale(ff,
+#'                                       transList = transList,
+#'                                       referenceChannel = refMarker,
+#'                                       silent = TRUE
+#'     )
 computeScatterChannelsLinearScale <- function(ff,
                                               transList = NULL,
                                               referenceChannel,
@@ -626,6 +651,9 @@ computeScatterChannelsLinearScale <- function(ff,
 #' @return a character, name of the found channel that should be representing
 #' time. If not found, returns NULL.
 #' @export
+#' @examples 
+#' ret <- findTimeChannel(OMIP021Samples[[1]])
+#' ret # "Time"
 #'
 findTimeChannel <- function(obj, excludeChannels = c()) {
     isFlowSet <- FALSE
@@ -675,6 +703,36 @@ findTimeChannel <- function(obj, excludeChannels = c()) {
 #' channels
 #' @export
 #'
+#' @examples 
+#' # with existing markers
+#' ret <- getChannelNamesFromMarkers(
+#'     OMIP021Samples[[1]],
+#'     c(
+#'         "FSC-A",
+#'         "L/D Aqua - Viability",
+#'         "FITC - gdTCR",
+#'         "PECy5 - CD28"
+#'     ))
+#'     
+#' ret # c("FSC-A", "525/50Violet-A", "530/30Blue-A", "670/30Yellow-A")
+#' 
+#' # with boolean vector
+#' indices <- c(1, 6, 14, 18)
+#' boolInput <- rep(FALSE, 21)
+#' boolInput[indices] <- TRUE
+#' ret2 <- getChannelNamesFromMarkers(
+#'     OMIP021Samples[[1]],
+#'     boolInput)
+#'     
+#' ret2 # c("FSC-A", "525/50Violet-A", "530/30Blue-A", "670/30Yellow-A")
+#' 
+#' # with indices vector
+#' ret3 <- getChannelNamesFromMarkers(
+#'     OMIP021Samples[[1]],
+#'     indices
+#' )
+#' ret3 # c("FSC-A", "525/50Violet-A", "530/30Blue-A", "670/30Yellow-A")
+#' 
 getChannelNamesFromMarkers <- function(ff, markers) {
     if (!inherits(ff, "flowFrame")) {
         stop("ff type not recognized, should be a flowFrame")
@@ -712,4 +770,51 @@ getChannelNamesFromMarkers <- function(ff, markers) {
         }
     }
     return(unname(channelNames))
+}
+
+# #' @title append 'Original_ID' column to a flowframe
+# #' @description : on a flowCore::flowFrame, append a 'Original_ID' column.
+# #' This column can be used in plots comparing the events pre and post gating.
+# #' If the 'Original_ID' column already exists, the function does nothing
+# #' @param ff a flowCore::flowFrame
+# #' @param eventIDs an integer vector containing the values to be added in
+# #' as Original ID's
+# #' 
+# #' @return new flowCore::flowFrame containing the added 'Original_ID' column
+.appendCellID <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
+    if (!inherits(ff, "flowFrame")) {
+        stop("ff type not recognized, should be a flowFrame")
+    }
+    if (!("Original_ID" %in% colnames(flowCore::exprs(ff)))) {
+        matrixCellIds <- matrix(
+            data = eventIDs, ncol = 1,
+            dimnames = list(c(), list("Original_ID"))
+        )
+        ff <- flowCore::fr_append_cols(ff, matrixCellIds)
+    }
+    return(ff)
+}
+
+# #' @title add compensation to fluo column names
+# #' @description : technical utility to add "Comp-" prefix to all
+# #' column names for fluorochrom channels
+# #' @param ff a flowCore::flowFrame
+# #' @return new flowCore::flowFrame with the new column names
+.addCompensation2FluoChannelNames <- function(ff) {
+    if (!inherits(ff, "flowFrame")) {
+        stop("ff type not recognized, should be a flowFrame")
+    }
+    areFluoCols <- areFluoCols(ff)
+    newColNames <- flowCore::colnames(ff)
+    newColNames <-
+        mapply(
+            FUN = function(theName, need2Do) {
+                newName <- theName
+                if (need2Do) newName <- paste0("Comp-", theName)
+                newName
+            },
+            newColNames, areFluoCols
+        )
+    flowCore::colnames(ff) <- newColNames
+    return(ff)
 }

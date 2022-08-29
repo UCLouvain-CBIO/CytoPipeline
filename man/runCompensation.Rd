@@ -25,3 +25,11 @@ a new object with compensated data, and possibly updated column names
 utility, allowing to trigger an update of the fluo channel names
 with a prefix 'comp-' (as in FlowJo)
 }
+\examples{
+ff <- OMIP021Samples[[1]]
+compMatrix <- flowCore::spillover(ff)$SPILL
+ff <- runCompensation(ff, 
+                      spillover = compMatrix, 
+                      updateChannelNames = TRUE)
+
+}

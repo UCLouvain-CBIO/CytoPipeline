@@ -80,3 +80,149 @@ in 2D or 1D, mimicking FlowJo type of graph. \cr
 if 1D : geom_density will be used \cr
 if 2D : geom_hex will be used \cr
 }
+\examples{
+
+
+### 1D Examples ###
+
+# simple linear scale example
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "FSC-A",
+             xScale = "linear")
+
+# with explicit linear range
+ggplotEvents(OMIP021Samples[[1]],
+                  xChannel = "FSC-A",
+                  xScale = "linear",
+                  xLinearRange = c(0, 250000))
+
+# with linear scale, several flow frames
+ggplotEvents(OMIP021Samples, xChannel = "FSC-A", xScale = "linear")
+
+# simple logicle scale example
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "450/50Violet-A",
+             xScale = "logicle")
+
+# logicle scale, explicit parameters
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "450/50Violet-A",
+             xScale = "logicle", xLogicleParams = list(
+                 a = 1,
+                 w = 2,
+                 m = 7,
+                 t = 270000))
+
+# with sub-sampling
+ggplotEvents(OMIP021Samples[[2]],
+             xChannel = "450/50Violet-A",
+             xScale = "logicle", nDisplayCells = 5000)
+
+# tuning some plot parameters
+ggplotEvents(OMIP021Samples[[2]],
+             xChannel = "450/50Violet-A",
+             xScale = "logicle", alpha = 0.5, fill = "red")
+
+# examples that use a transformation list, estimated after compensation
+compensationMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
+
+ffC <- runCompensation(OMIP021Samples[[1]],
+                       spillover = compensationMatrix,
+                       updateChannelNames = FALSE)
+
+transList <- flowCore::estimateLogicle(
+    ffC,
+    colnames(compensationMatrix))
+
+transList <-
+    c(transList,
+      flowCore::transformList(
+          "FSC-A",
+          flowCore::linearTransform(a = 0.00001)))
+
+# linear example, without running the transformations on data
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "450/50Violet-A",
+             xScale = "linear", 
+             transList = transList,
+             runTransforms = FALSE)
+
+# linear example, now running the transformations on data
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "450/50Violet-A",
+             xScale = "linear", 
+             transList = transList,
+             runTransforms = TRUE)
+
+# logicle example, without running the transformations on data
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "FSC-A",
+             xScale = "logicle", 
+             transList = transList,
+             runTransforms = FALSE)
+
+# logicle example, now running the transformations on data
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "FSC-A",
+             xScale = "logicle", 
+             transList = transList,
+             runTransforms = TRUE)
+
+### 2D examples ###
+
+
+# simple linear example
+ggplotEvents(OMIP021Samples[[1]],
+                  xChannel = "FSC-A",
+                  xScale = "linear",
+                  yChannel = "610/20Violet-A",
+                  yScale = "logicle")
+
+# simple linear example, 2 flow frames
+ggplotEvents(OMIP021Samples,
+             xChannel = "FSC-A",
+             xScale = "linear",
+             yChannel = "SSC-A",
+             yScale = "linear")
+
+# logicle vs linear example
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "450/50Violet-A",
+             xScale = "logicle",
+             yChannel = "SSC-A",
+             yScale = "linear")
+
+# 2X logicle example
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "TETaGC",
+             xScale = "logicle",
+             yChannel = "CD27",
+             yScale = "logicle")
+
+# tuning nb of bins
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "TETaGC",
+             xScale = "logicle",
+             yChannel = "CD27",
+             yScale = "logicle",
+             bins = 128)
+
+# using transformation list, not run on data
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "TETaGC",
+             xScale = "logicle",
+             yChannel = "CD27",
+             yScale = "logicle",
+             transList = transList,
+             runTransforms = FALSE)
+
+# using transformation list, run on data                  
+ggplotEvents(OMIP021Samples[[1]],
+             xChannel = "TETaGC",
+             xScale = "logicle",
+             yChannel = "CD27",
+             yScale = "logicle",
+             transList = transList,
+             runTransforms = TRUE)
+
+}

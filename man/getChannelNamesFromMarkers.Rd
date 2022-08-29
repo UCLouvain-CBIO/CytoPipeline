@@ -23,3 +23,34 @@ channels
 \description{
 finds name of channels corresponding to user provided markers
 }
+\examples{
+# with existing markers
+ret <- getChannelNamesFromMarkers(
+    OMIP021Samples[[1]],
+    c(
+        "FSC-A",
+        "L/D Aqua - Viability",
+        "FITC - gdTCR",
+        "PECy5 - CD28"
+    ))
+    
+ret # c("FSC-A", "525/50Violet-A", "530/30Blue-A", "670/30Yellow-A")
+
+# with boolean vector
+indices <- c(1, 6, 14, 18)
+boolInput <- rep(FALSE, 21)
+boolInput[indices] <- TRUE
+ret2 <- getChannelNamesFromMarkers(
+    OMIP021Samples[[1]],
+    boolInput)
+    
+ret2 # c("FSC-A", "525/50Violet-A", "530/30Blue-A", "670/30Yellow-A")
+
+# with indices vector
+ret3 <- getChannelNamesFromMarkers(
+    OMIP021Samples[[1]],
+    indices
+)
+ret3 # c("FSC-A", "525/50Violet-A", "530/30Blue-A", "670/30Yellow-A")
+
+}

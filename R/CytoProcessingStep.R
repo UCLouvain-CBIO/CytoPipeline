@@ -44,7 +44,7 @@ setClassUnion("characterOrFunction", c("character", "function"))
 #'
 #' getName(ps)
 #'
-#' executeProcessingStep(ps, seq_len(10))
+#' executeProcessingStep(ps, 1:10)
 #'
 #' @name CytoProcessingStep
 NULL
@@ -92,6 +92,7 @@ setClass("CytoProcessingStep",
 #' @rdname CytoProcessingStep
 #'
 #' @export
+#' 
 CytoProcessingStep <- function(name = character(), FUN = character(),
                                ARGS = list()) {
     if (missing(FUN)) {

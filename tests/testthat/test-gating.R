@@ -21,7 +21,7 @@ test_that("singletsGate works", {
         mySingletsGate
     )
     ff_l <- OMIP021Samples[[1]][selectedSinglets@subSet, ]
-    ff_l <- appendCellID(ff_l, which(selectedSinglets@subSet))
+    ff_l <- .appendCellID(ff_l, which(selectedSinglets@subSet))
 
     linRange <- c(0, 250000)
     p <- ggplotFilterEvents(
@@ -41,7 +41,7 @@ test_that("singletsGate works", {
         mySingletsGate
     )
     ff_l <- OMIP021Samples[[1]][selectedSinglets@subSet, ]
-    ff_l <- appendCellID(ff_l, which(selectedSinglets@subSet))
+    ff_l <- .appendCellID(ff_l, which(selectedSinglets@subSet))
 
     p <- ggplotFilterEvents(
         ffPre = OMIP021Samples[[1]],
@@ -66,7 +66,7 @@ test_that("singletsGate works", {
         mySingletsGate
     )
     ff_l <- OMIP021Samples[[1]][selectedSinglets@subSet, ]
-    ff_l <- appendCellID(ff_l, which(selectedSinglets@subSet))
+    ff_l <- .appendCellID(ff_l, which(selectedSinglets@subSet))
 
     p <- ggplotFilterEvents(
         ffPre = OMIP021Samples[[1]],
@@ -94,7 +94,7 @@ test_that("singletsGate works", {
     )
 
     ff_l <- OMIP021Samples[[1]][selectedSinglets@subSet, ]
-    ff_l <- appendCellID(ff_l, which(selectedSinglets@subSet))
+    ff_l <- .appendCellID(ff_l, which(selectedSinglets@subSet))
 
     p1 <- ggplotFilterEvents(
         ffPre = OMIP021Samples[[1]],

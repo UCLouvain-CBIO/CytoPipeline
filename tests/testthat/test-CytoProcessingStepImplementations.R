@@ -56,7 +56,7 @@ test_that("readSampleFiles works", {
             truncate_max_range = truncateMaxRange,
             min.limit = minLimit
         )
-    fs_raw <- flowCore::fsApply(fs_raw, FUN = appendCellID)
+    fs_raw <- flowCore::fsApply(fs_raw, FUN = .appendCellID)
 
     res <- readSampleFiles(
         sampleFiles = sampleFiles,
@@ -100,7 +100,7 @@ test_that("removeMarginsPeacoQC works", {
             truncate_max_range = truncateMaxRange,
             min.limit = minLimit
         )
-    fs_raw <- flowCore::fsApply(fs_raw, FUN = appendCellID)
+    fs_raw <- flowCore::fsApply(fs_raw, FUN = .appendCellID)
 
     ff_m <-
         suppressWarnings(removeMarginsPeacoQC(x = fs_raw[[1]]))
@@ -293,7 +293,7 @@ test_that("qualityControlFlowAI works", {
             truncate_max_range = truncateMaxRange,
             min.limit = minLimit
         )
-    fs_raw <- flowCore::fsApply(fs_raw, FUN = appendCellID)
+    fs_raw <- flowCore::fsApply(fs_raw, FUN = .appendCellID)
 
     ff_QualityControl <- suppressWarnings(
         qualityControlFlowAI(fs_raw[[1]],
@@ -335,7 +335,7 @@ test_that("qualityControlFlowCut works", {
             truncate_max_range = truncateMaxRange,
             min.limit = minLimit
         )
-    fs_raw <- flowCore::fsApply(fs_raw, FUN = appendCellID)
+    fs_raw <- flowCore::fsApply(fs_raw, FUN = .appendCellID)
 
     ff_QualityControl <- suppressWarnings(
         qualityControlFlowCut(fs_raw[[1]],
@@ -379,7 +379,7 @@ test_that("qualityControlFlowClean works", {
             truncate_max_range = truncateMaxRange,
             min.limit = minLimit
         )
-    fs_raw <- flowCore::fsApply(fs_raw, FUN = appendCellID)
+    fs_raw <- flowCore::fsApply(fs_raw, FUN = .appendCellID)
 
     ff_QualityControl <- suppressWarnings(
         qualityControlFlowClean(fs_raw[[1]],

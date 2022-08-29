@@ -39,14 +39,14 @@ readSampleFiles <- function(sampleFiles,
     if (length(sampleFiles) == 1) {
         res <- flowCore::read.FCS(sampleFiles, ...)
         # Add a column with Cell ID
-        res <- appendCellID(res)
+        res <- .appendCellID(res)
     } else {
         res <- flowCore::read.flowSet(sampleFiles, ...)
         # Add a column with Cell ID
         res <- flowCore::fsApply(
             x = res,
             FUN = function(ff) {
-                appendCellID(ff)
+                .appendCellID(ff)
             }
         )
     }
@@ -204,7 +204,7 @@ removeDoubletsPeacoQC <- function(ff,
                                   ...) {
 
     # if not present already, add a column with Cell ID
-    ff <- appendCellID(ff)
+    ff <- .appendCellID(ff)
 
     # validate common scatter channel parameters
     nScatterFilters <- length(areaChannels)
@@ -261,7 +261,7 @@ removeDoubletsFlowStats <- function(ff,
                                     widerGate = FALSE,
                                     ...) {
     # if not present already, add a column with Cell ID
-    ff <- appendCellID(ff)
+    ff <- .appendCellID(ff)
 
     # validate common scatter channel parameters
     nScatterFilters <- length(areaChannels)
@@ -328,7 +328,7 @@ removeDoubletsCytoPipeline <- function(ff,
                                        nmads,
                                        ...) {
     # if not present already, add a column with Cell ID
-    ff <- CytoPipeline::appendCellID(ff)
+    ff <- .appendCellID(ff)
 
     # validate common scatter channel parameters
     nScatterFilters <- length(areaChannels)
@@ -401,7 +401,7 @@ removeDebrisManual <- function(ff,
                                gateData,
                                ...) {
     # if not present already, add a column with Cell ID
-    ff <- appendCellID(ff, seq_len(flowCore::nrow(ff)))
+    ff <- .appendCellID(ff)
 
     cellsGateMatrix <- matrix(
         data = gateData, ncol = 2,
@@ -441,7 +441,7 @@ removeDebrisFlowClustTmix <- function(ff,
                                       ...) {
 
     # if not present already, add a column with Cell ID
-    ff <- appendCellID(ff)
+    ff <- .appendCellID(ff)
 
     # handle ellipsis arguments, as 'tmixFilter' does not accept unknown args
     passedEllipsisArgs <- list(...)
@@ -532,7 +532,7 @@ removeDeadCellsManual <- function(ff,
                                   gateData,
                                   ...) {
     # if not present already, add a column with Cell ID
-    ff <- appendCellID(ff)
+    ff <- .appendCellID(ff)
 
     if (preTransform) {
         if (is.null(transList)) {
@@ -591,7 +591,7 @@ removeDeadCellsGateTail <- function(ff,
                                     ...) {
 
     # if not present already, add a column with Cell ID
-    ff <- appendCellID(ff)
+    ff <- .appendCellID(ff)
 
     # handle ellipsis arguments, as 'openCyto::gate_tail'
     # does not accept unknown args
@@ -666,7 +666,7 @@ qualityControlFlowAI <- function(ff,
                                  outputDir = NULL,
                                  ...) {
     # if not present already, add a column with Cell ID
-    ff <- appendCellID(ff)
+    ff <- .appendCellID(ff)
 
     if (preTransform) {
         if (is.null(transList)) {
@@ -743,7 +743,7 @@ qualityControlPeacoQC <- function(ff,
                                   outputDir = NULL,
                                   ...) {
     # if not present already, add a column with Cell ID
-    ff <- appendCellID(ff)
+    ff <- .appendCellID(ff)
 
     if (preTransform) {
         if (is.null(transList)) {
@@ -814,7 +814,7 @@ qualityControlFlowCut <- function(ff,
                                   verbose = TRUE,
                                   ...) {
     # if not present already, add a column with Cell ID
-    ff <- appendCellID(ff)
+    ff <- .appendCellID(ff)
 
     if (preTransform) {
         if (is.null(transList)) {
@@ -887,7 +887,7 @@ qualityControlFlowClean <- function(ff,
                                     verbose = TRUE,
                                     ...) {
     # if not present already, add a column with Cell ID
-    ff <- CytoPipeline::appendCellID(ff)
+    ff <- .appendCellID(ff)
 
     if (preTransform) {
         if (is.null(transList)) {

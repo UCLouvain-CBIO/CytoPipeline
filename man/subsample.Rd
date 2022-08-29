@@ -21,3 +21,9 @@ new flowCore::flowFrame with the obtained subset of samples
 with the specified number of samples, without replacement.
 adds also a column 'Original_ID' if not already present in flowFrame.
 }
+\examples{
+# take first sample of dataset, subsample 100 events and create new flowFrame
+ff <- subsample(OMIP021Samples[[1]], nSamples = 100)
+
+
+}

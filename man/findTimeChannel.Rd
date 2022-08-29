@@ -21,3 +21,8 @@ be the time channel. First tries to identify a channel name containing the
 'time' string, then tries to identify a single monotonically increasing
 channel.
 }
+\examples{
+ret <- findTimeChannel(OMIP021Samples[[1]])
+ret # "Time"
+
+}

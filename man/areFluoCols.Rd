@@ -22,3 +22,7 @@ columns in ff
 \description{
 : find flow frame columns that represent fluorochrome channel
 }
+\examples{
+areFluoCols(OMIP021Samples[[1]])
+
+}

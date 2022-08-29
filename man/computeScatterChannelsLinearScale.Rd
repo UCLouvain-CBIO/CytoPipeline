@@ -35,3 +35,17 @@ the transList with added linear scale transformations
 \description{
 based on a referenceChannel
 }
+\examples{
+
+ff <- OMIP021Samples[[1]]
+refMarker <- "APCCy7 - CD4"
+refChannel <- "780/60Red-A"
+transList <- flowCore::estimateLogicle(ff,
+                                       channels = refChannel)
+retTransList <-
+    computeScatterChannelsLinearScale(ff,
+                                      transList = transList,
+                                      referenceChannel = refMarker,
+                                      silent = TRUE
+    )
+}

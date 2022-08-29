@@ -53,10 +53,10 @@ test_that("subsample works", {
 })
 
 
-test_that("addCompensation2FluoChannelNames works", {
+test_that(".addCompensation2FluoChannelNames works", {
     ff <- OMIP021Samples[[1]]
 
-    ff2 <- CytoPipeline::addCompensation2FluoChannelNames(ff)
+    ff2 <- .addCompensation2FluoChannelNames(ff)
 
     expect_equal(
         flowCore::colnames(ff2),
@@ -71,7 +71,7 @@ test_that("addCompensation2FluoChannelNames works", {
         )
     )
 
-    expect_error(addCompensation2FluoChannelNames(OMIP021Samples),
+    expect_error(.addCompensation2FluoChannelNames(OMIP021Samples),
         regexp = "type not recognized"
     )
 })
@@ -360,7 +360,7 @@ test_that("getChannelNamesFromMarkers works", {
     # with indices vector
     ret <- getChannelNamesFromMarkers(
         OMIP021Samples[[1]],
-        boolInput
+        indices
     )
     expect_equal(ret, expected)
 

@@ -66,7 +66,6 @@ ps <- CytoProcessingStep("summing step", sum)
 
 getName(ps)
 
-executeProcessingStep(ps, seq_len(10))
-
+executeProcessingStep(ps, 1:10)
 
 }

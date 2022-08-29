@@ -69,3 +69,55 @@ in 2D, showing the impact of applying a filter between :
 \item a 'pre' flowframe
 }
 }
+\examples{
+
+ffPre <- OMIP021Samples[[1]]
+
+# creating a manual polygon gate filter based on channels L/D and FSC-A
+
+LDMarker <- "L/D Aqua - Viability"
+
+LDChannel <- getChannelNamesFromMarkers(ffPre, markers = LDMarker)
+liveGateMatrix <- matrix(
+    data = c(
+        50000, 50000, 100000, 200000, 200000,
+        100, 1000, 2000, 2000, 1
+    ),
+    ncol = 2,
+    dimnames = list(
+        c(),
+        c("FSC-A", LDChannel)
+    )
+)
+
+liveGate <- flowCore::polygonGate(
+    filterId = "Live",
+    .gate = liveGateMatrix
+)
+
+selectedLive <- flowCore::filter(ffPre, liveGate)
+ffL <- ffPre[selectedLive@subSet, ]
+
+
+# show the results
+
+# subsample 5000 points    
+ggplotFilterEvents(
+    ffPre = ffPre,
+    ffPost = ffL,
+    nDisplayCells = 5000,
+    xChannel = "FSC-A", xScale = "linear",
+    yChannel = LDMarker, yScale = "logicle") +
+    ggplot2::ggtitle("Live gate filter")
+
+# with all points
+ggplotFilterEvents(
+    ffPre = ffPre,
+    ffPost = ffL,
+    nDisplayCells = Inf,
+    xChannel = "FSC-A", xScale = "linear",
+    yChannel = LDMarker, yScale = "logicle") +
+    ggplot2::ggtitle("Live gate filter")
+
+
+}

@@ -28,6 +28,21 @@ NULL
 #' @import ggplot2
 #' @export
 #'
+#' @examples 
+#' 
+#' 
+#' # single flowFrame plot
+#' ggplotFlowRate(OMIP021Samples[[1]])
+#' 
+#' # two flowFrames plot 
+#' ggplotFlowRate(OMIP021Samples)
+#' 
+#' # single plot with title
+#' ggplotFlowRate(OMIP021Samples[[1]], title = "Test Flow Rate plot")
+#' 
+#' # explicit time unit
+#' ggplotFlowRate(OMIP021Samples[[1]], timeUnit = 50)
+#' 
 ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100) {
     isFlowSet <- FALSE
     if (inherits(obj, "flowSet")) {
@@ -132,6 +147,151 @@ ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100) {
 #' @importFrom ggcyto scale_y_logicle
 #' @export
 #'
+#' @examples 
+#' 
+#' 
+#' ### 1D Examples ###
+#' 
+#' # simple linear scale example
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "FSC-A",
+#'              xScale = "linear")
+#' 
+#' # with explicit linear range
+#' ggplotEvents(OMIP021Samples[[1]],
+#'                   xChannel = "FSC-A",
+#'                   xScale = "linear",
+#'                   xLinearRange = c(0, 250000))
+#' 
+#' # with linear scale, several flow frames
+#' ggplotEvents(OMIP021Samples, xChannel = "FSC-A", xScale = "linear")
+#' 
+#' # simple logicle scale example
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "450/50Violet-A",
+#'              xScale = "logicle")
+#' 
+#' # logicle scale, explicit parameters
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "450/50Violet-A",
+#'              xScale = "logicle", xLogicleParams = list(
+#'                  a = 1,
+#'                  w = 2,
+#'                  m = 7,
+#'                  t = 270000))
+#' 
+#' # with sub-sampling
+#' ggplotEvents(OMIP021Samples[[2]],
+#'              xChannel = "450/50Violet-A",
+#'              xScale = "logicle", nDisplayCells = 5000)
+#' 
+#' # tuning some plot parameters
+#' ggplotEvents(OMIP021Samples[[2]],
+#'              xChannel = "450/50Violet-A",
+#'              xScale = "logicle", alpha = 0.5, fill = "red")
+#' 
+#' # examples that use a transformation list, estimated after compensation
+#' compensationMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
+#' 
+#' ffC <- runCompensation(OMIP021Samples[[1]],
+#'                        spillover = compensationMatrix,
+#'                        updateChannelNames = FALSE)
+#' 
+#' transList <- flowCore::estimateLogicle(
+#'     ffC,
+#'     colnames(compensationMatrix))
+#' 
+#' transList <-
+#'     c(transList,
+#'       flowCore::transformList(
+#'           "FSC-A",
+#'           flowCore::linearTransform(a = 0.00001)))
+#' 
+#' # linear example, without running the transformations on data
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "450/50Violet-A",
+#'              xScale = "linear", 
+#'              transList = transList,
+#'              runTransforms = FALSE)
+#' 
+#' # linear example, now running the transformations on data
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "450/50Violet-A",
+#'              xScale = "linear", 
+#'              transList = transList,
+#'              runTransforms = TRUE)
+#' 
+#' # logicle example, without running the transformations on data
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "FSC-A",
+#'              xScale = "logicle", 
+#'              transList = transList,
+#'              runTransforms = FALSE)
+#' 
+#' # logicle example, now running the transformations on data
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "FSC-A",
+#'              xScale = "logicle", 
+#'              transList = transList,
+#'              runTransforms = TRUE)
+#' 
+#' ### 2D examples ###
+#' 
+#' 
+#' # simple linear example
+#' ggplotEvents(OMIP021Samples[[1]],
+#'                   xChannel = "FSC-A",
+#'                   xScale = "linear",
+#'                   yChannel = "610/20Violet-A",
+#'                   yScale = "logicle")
+#' 
+#' # simple linear example, 2 flow frames
+#' ggplotEvents(OMIP021Samples,
+#'              xChannel = "FSC-A",
+#'              xScale = "linear",
+#'              yChannel = "SSC-A",
+#'              yScale = "linear")
+#' 
+#' # logicle vs linear example
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "450/50Violet-A",
+#'              xScale = "logicle",
+#'              yChannel = "SSC-A",
+#'              yScale = "linear")
+#' 
+#' # 2X logicle example
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "TETaGC",
+#'              xScale = "logicle",
+#'              yChannel = "CD27",
+#'              yScale = "logicle")
+#' 
+#' # tuning nb of bins
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "TETaGC",
+#'              xScale = "logicle",
+#'              yChannel = "CD27",
+#'              yScale = "logicle",
+#'              bins = 128)
+#' 
+#' # using transformation list, not run on data
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "TETaGC",
+#'              xScale = "logicle",
+#'              yChannel = "CD27",
+#'              yScale = "logicle",
+#'              transList = transList,
+#'              runTransforms = FALSE)
+#' 
+#' # using transformation list, run on data                  
+#' ggplotEvents(OMIP021Samples[[1]],
+#'              xChannel = "TETaGC",
+#'              xScale = "logicle",
+#'              yChannel = "CD27",
+#'              yScale = "logicle",
+#'              transList = transList,
+#'              runTransforms = TRUE)
+#' 
 ggplotEvents <- function(obj,
                          xChannel,
                          yChannel = NULL,
@@ -422,6 +582,57 @@ ggplotEvents <- function(obj,
 #' @importFrom ggcyto scale_y_logicle
 #' @export
 #'
+#' @examples 
+#' 
+#' ffPre <- OMIP021Samples[[1]]
+#' 
+#' # creating a manual polygon gate filter based on channels L/D and FSC-A
+#' 
+#' LDMarker <- "L/D Aqua - Viability"
+#' 
+#' LDChannel <- getChannelNamesFromMarkers(ffPre, markers = LDMarker)
+#' liveGateMatrix <- matrix(
+#'     data = c(
+#'         50000, 50000, 100000, 200000, 200000,
+#'         100, 1000, 2000, 2000, 1
+#'     ),
+#'     ncol = 2,
+#'     dimnames = list(
+#'         c(),
+#'         c("FSC-A", LDChannel)
+#'     )
+#' )
+#' 
+#' liveGate <- flowCore::polygonGate(
+#'     filterId = "Live",
+#'     .gate = liveGateMatrix
+#' )
+#' 
+#' selectedLive <- flowCore::filter(ffPre, liveGate)
+#' ffL <- ffPre[selectedLive@subSet, ]
+#' 
+#' 
+#' # show the results
+#' 
+#' # subsample 5000 points    
+#' ggplotFilterEvents(
+#'     ffPre = ffPre,
+#'     ffPost = ffL,
+#'     nDisplayCells = 5000,
+#'     xChannel = "FSC-A", xScale = "linear",
+#'     yChannel = LDMarker, yScale = "logicle") +
+#'     ggplot2::ggtitle("Live gate filter - 5000 points")
+#' 
+#' # with all points
+#' ggplotFilterEvents(
+#'     ffPre = ffPre,
+#'     ffPost = ffL,
+#'     nDisplayCells = Inf,
+#'     xChannel = "FSC-A", xScale = "linear",
+#'     yChannel = LDMarker, yScale = "logicle") +
+#'     ggplot2::ggtitle("Live gate filter - all points")
+#'
+#' 
 ggplotFilterEvents <- function(ffPre, ffPost,
                                xChannel,
                                yChannel,
@@ -470,7 +681,7 @@ ggplotFilterEvents <- function(ffPre, ffPost,
     }
 
     if (!"Original_ID" %in% flowCore::colnames(ffPre)) {
-        ffPre <- appendCellID(ffPre)
+        ffPre <- .appendCellID(ffPre)
     }
 
     if (!"Original_ID" %in% flowCore::colnames(ffPost)) {
