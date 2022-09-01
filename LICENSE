@@ -1,4 +1,4 @@
-﻿CytoPipeline Licensing
+CytoPipeline Licensing
 ============================================
 
 This file attempts to include all licenses that apply within CytoPipeline (this program) source tree, in particular any that are supposed to be exposed to the end user for credit requirements for instance. 
@@ -6,7 +6,7 @@ This file attempts to include all licenses that apply within CytoPipeline (this 
 CytoPipeline is a R package for automating and visualizating flow cytometry data analysis pipelines.
 
 Copyright (C) <2022> <Université catholique de Louvain (UCLouvain), Belgique>
-The list of the contributors to the development of CytoPipeline is given in the DESCRIPTION file (all authors are or were affiliate to the Université catholique de Louvain, UCLouvain, when they developed CytoPipeline).
+The list of the contributors to the development of CytoPipeline is given in the DESCRIPTION file.
 
 
 CytoPipeline General
