@@ -1,9 +1,7 @@
 ## Automation and visualization of flow cytometry data analysis pipelines
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-[![license](https://img.shields.io/badge/license-GPL3.0-blue)
-
-https://img.shields.io/badge/<LABEL>-<MESSAGE>-<COLOR>
+[![license](https://img.shields.io/badge/license-GPL3.0-blue)](https://opensource.org/licenses/GPL-3.0)
 
 `CytoPipeline` is a package that provides support for automation and 
 visualization of flow cytometry data analysis pipelines. In the current 
