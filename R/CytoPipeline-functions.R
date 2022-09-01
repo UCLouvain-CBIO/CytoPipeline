@@ -958,7 +958,7 @@ buildCytoPipelineFromCache <- function(experimentName, path = ".") {
 checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
     stopifnot(inherits(x, "CytoPipeline"))
 
-    # browser()
+    #browser()
     ret <- list(isConsistent = TRUE, inconsistencyMsg = character(0))
 
     nScaleTransformSteps <- length(x@scaleTransformProcessingQueue)
@@ -1052,15 +1052,15 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
                 whichQueue = "scale transform",
                 index = j
             )
+            argsComparison <- all.equal(getCPSARGS(pS), getCPSARGS(pS2))
             if (identical(getCPSName(pS), getCPSName(pS2)) &&
                 identical(getCPSFUN(pS), getCPSFUN(pS2)) &&
-                all.equal(getCPSARGS(pS), getCPSARGS(pS2))){
+                is.logical(argsComparison) && argsComparison) {
                 ret$scaleTransformStepStatus[j] <- "run"
                 ret$scaleTransformStepOutputClasses[j] <-
                     as.character(stepsInfos[j, "outputClass"])
                 ret$scaleTransformStepOutputObjNames[j] <-
                     as.character(stepsInfos[j, "outputObjectName"])
-
                 # and continue...
             } else {
                 ret$scaleTransformStepStatus[j] <- "inconsistent"
@@ -1142,6 +1142,7 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
             stepsInfos <- stepsInfos[order(stepsInfos$stepNb), ]
 
             for (j in seq_len(nStepsInCache)) {
+                #browser()
                 pS <- from.json.CytoProcessingStep(
                     as.character(stepsInfos[j, "stepJsonSerialize"])
                 )
@@ -1149,9 +1150,10 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
                     whichQueue = "pre-processing",
                     index = j
                 )
+                argsComparison <- all.equal(getCPSARGS(pS), getCPSARGS(pS2))
                 if (identical(getCPSName(pS), getCPSName(pS2)) &&
                     identical(getCPSFUN(pS), getCPSFUN(pS2)) &&
-                    all.equal(getCPSARGS(pS), getCPSARGS(pS2))) {
+                    is.logical(argsComparison) && argsComparison) {
                     ret$preProcessingStepStatus[j, sampleFile] <- "run"
                     ret$preProcessingStepOutputClasses[j] <-
                         as.character(stepsInfos[j, "outputClass"])
