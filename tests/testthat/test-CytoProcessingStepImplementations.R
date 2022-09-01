@@ -26,9 +26,12 @@ test_that("estimateScaleTransforms work", {
             scatterRefMarker = "BV785 - CD3"
         ))
 
-    refTransList <- readRDS(test_path("fixtures", "OMIP021_TransList.rds"))
+    transListPath <- paste0(system.file("extdata", 
+                                        package = "CytoPipeline"),
+                            "/OMIP021_TransList.rds")
+    refTransList <- readRDS(transListPath)
 
-    # saveRDS(transList, test_path("fixtures", "OMIP021_TransList.rds"))
+    # saveRDS(transList, transListPath)
 
     refFF <- flowCore::transform(ff_c, refTransList)
     thisFF <- flowCore::transform(ff_c, transList)
@@ -222,7 +225,10 @@ test_that("removeDebrisFlowClustTmix works", {
 test_that("removeDeadCellsGateTail works", {
     ref_ff_cells <- readRDS(test_path("fixtures", "ff_cells.rds"))
 
-    refTransList <- readRDS(test_path("fixtures", "OMIP021_TransList.rds"))
+    transListPath <- paste0(system.file("extdata", 
+                                        package = "CytoPipeline"),
+                            "/OMIP021_TransList.rds")
+    refTransList <- readRDS(transListPath)
 
     ff_lcells <-
         removeDeadCellsGateTail(ref_ff_cells,
@@ -248,7 +254,10 @@ test_that("removeDeadCellsGateTail works", {
 test_that("qualityControlPeacoQC", {
     ref_ff_lcells <- readRDS(test_path("fixtures", "ff_lcells.rds"))
 
-    refTransList <- readRDS(test_path("fixtures", "OMIP021_TransList.rds"))
+    transListPath <- paste0(system.file("extdata", 
+                                        package = "CytoPipeline"),
+                            "/OMIP021_TransList.rds")
+    refTransList <- readRDS(transListPath)
 
     suppressWarnings(ff_QualityControl <-
         qualityControlPeacoQC(

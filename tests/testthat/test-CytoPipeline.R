@@ -27,7 +27,9 @@ test_that("Cytopipeline add/remove/clean processing step works", {
     sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
         pattern = "sample_"
     ))
-    transListPath <- test_path("fixtures", "OMIP021_TransList.rds")
+    transListPath <- paste0(system.file("extdata", 
+                                        package = "CytoPipeline"),
+                            "/OMIP021_TransList.rds")
 
     # main parameters : sample files and experiment name
     pipelineParams <- list()
@@ -101,7 +103,9 @@ test_that("CytoPipeline with reading scale transfo only raises no error", {
             sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
                 pattern = "sample_"
             ))
-            transListPath <- test_path("fixtures", "OMIP021_TransList.rds")
+            transListPath <- paste0(system.file("extdata", 
+                                                package = "CytoPipeline"),
+                                    "/OMIP021_TransList.rds")
 
             # main parameters : sample files and output files
             pipelineParams <- list()
@@ -337,13 +341,14 @@ test_that("CytoPipeline with complex flows raises no error", {
 test_that("CytoPipeline with json input raises no error", {
     expect_error(
         {
-            jsonPath <- test_path("fixtures", "pipelineParams.json")
+            jsonDir <- system.file("extdata", package = "CytoPipeline")
+            jsonPath <- paste0(jsonDir, "/pipelineParams.json")
 
             pipL2 <- CytoPipeline(jsonPath)
-            suppressWarnings(execute(pipL2,
-                rmCache = FALSE,
-                path = outputDir
-            ))
+            withr::with_dir(new = jsonDir, {
+                suppressWarnings(execute(pipL2, 
+                                         rmCache = FALSE, 
+                                         path = outputDir))})
         },
         NA
     )
