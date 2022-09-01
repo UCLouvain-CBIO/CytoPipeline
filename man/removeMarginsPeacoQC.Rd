@@ -21,3 +21,21 @@ Also pre-selects the channels to be handled (=> all signal channels)
 If input is a flowSet, it applies removeMargins() to each flowFrame of the
 flowSet.
 }
+\examples{
+
+rawDataDir <- 
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <- 
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+fsRaw <- readSampleFiles(sampleFiles, 
+                         truncate_max_range = truncateMaxRange,
+                         min.limit = minLimit)
+ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+ggplotFilterEvents(ffPre = fsRaw[[2]],
+                   ffPost = ff_m,
+                   xChannel = "FSC-A",
+                   yChannel = "SSC-A")
+}

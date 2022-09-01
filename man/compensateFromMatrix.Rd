@@ -36,3 +36,29 @@ executes the classical compensation function on a flowSet or
 flowFrame, given a compensation matrix. The matrix can be either retrieved
 in the fcs files themselves or provided as a csv file.
 }
+\examples{
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <-
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+
+# create flowCore::flowSet with all samples of a dataset
+fsRaw <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = "all",
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+
+ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+    
+ff_c <-
+    compensateFromMatrix(ff_m,
+                         matrixSource = "fcs")        
+
+ff_c            
+ 
+}

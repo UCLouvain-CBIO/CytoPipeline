@@ -40,11 +40,23 @@ setClassUnion("characterOrFunction", c("character", "function"))
 #' @examples
 #'
 #' ## Create a simple processing step object
-#' ps <- CytoProcessingStep("summing step", sum)
+#' ps1 <- CytoProcessingStep("summing step", sum)
 #'
-#' getName(ps)
+#' getCPSName(ps1)
+#' 
+#' getCPSFUN(ps1)
+#' 
+#' getCPSARGS(ps1)
 #'
-#' executeProcessingStep(ps, 1:10)
+#' executeProcessingStep(ps1, 1:10)
+#'
+#' as.list(ps1)
+#' 
+#' js_str <- as.json.CytoProcessingStep(ps1)
+#' 
+#' ps2 <- from.json.CytoProcessingStep(js_str)
+#' 
+#' identical(ps1, ps2)
 #'
 #' @name CytoProcessingStep
 NULL
@@ -151,11 +163,35 @@ executeProcessingStep <- function(x, ...) {
 #' @rdname CytoProcessingStep
 #'
 #' @export
-getName <- function(x) {
+getCPSName <- function(x) {
     if (!methods::is(x, "CytoProcessingStep")) {
         stop("'x' should be a 'CytoProcessingStep' object!")
     }
     return(x@name)
+}
+
+#' @param x a `CytoProcessingStep` object.
+#'
+#' @rdname CytoProcessingStep
+#'
+#' @export
+getCPSFUN <- function(x) {
+    if (!methods::is(x, "CytoProcessingStep")) {
+        stop("'x' should be a 'CytoProcessingStep' object!")
+    }
+    return(x@FUN)
+}
+
+#' @param x a `CytoProcessingStep` object.
+#'
+#' @rdname CytoProcessingStep
+#'
+#' @export
+getCPSARGS <- function(x) {
+    if (!methods::is(x, "CytoProcessingStep")) {
+        stop("'x' should be a 'CytoProcessingStep' object!")
+    }
+    return(x@ARGS)
 }
 
 #' @param x a `CytoProcessingStep` object.
@@ -168,9 +204,27 @@ as.list.CytoProcessingStep <- function(x, ...) {
     if (!methods::is(x, "CytoProcessingStep")) {
         stop("'x' should be a 'CytoProcessingStep' object!")
     }
+    
     ll <- list()
     ll$name <- x@name
-    ll$FUN <- x@FUN
+    
+    if (is.character(x@FUN)) {
+        ll$FUN <- x@FUN
+    } else if (utils::isS3stdGeneric(x@FUN) ||
+        is.primitive(x@FUN)) {
+        getFun <- function(fun){
+            fun <- deparse(fun)
+            chunk <- utils::tail(fun, 1)
+            words <- strsplit(chunk, "\"")[[1]]
+            return(words[2])
+        }
+        ll$FUN <- getFun(x@FUN)
+    } else {
+        stop("export of CytoProcessingStep as a list or json does not work ",
+             "(yet) if FUN is a non primitive, non generic function\n",
+             "=> use function name as character instead of function object")
+    }
+    
     ll$ARGS <- x@ARGS
     return(ll)
 }

@@ -26,3 +26,36 @@ using clustering capabilities of flowClust::tmixFilter(). The idea is to
 pre-select a number of clusters to be found in the (FSC,SSC) 2D view, and
 eliminate the cluster that is the closest to the origin.
 }
+\examples{
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <-
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+
+# create flowCore::flowSet with all samples of a dataset
+fsRaw <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = "all",
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+
+ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+    
+ff_c <-
+    compensateFromMatrix(ff_m,
+                         matrixSource = "fcs")        
+
+
+ff_cells <-
+    removeDebrisFlowClustTmix(ff_c,
+                              FSCChannel = "FSC-A",
+                              SSCChannel = "SSC-A",
+                              nClust = 3,
+                              level = 0.97,
+                              B = 100)
+
+}

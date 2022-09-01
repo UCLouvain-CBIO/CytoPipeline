@@ -36,3 +36,34 @@ this function is a wrapper around flowAI::flow_auto_qc()
 function.
 It also pre-selects the channels to be handled (=> all signal channels)
 }
+\examples{
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <-
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+
+# create flowCore::flowSet with all samples of a dataset
+fsRaw <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = "all",
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+
+ff_QualityControl <- 
+    qualityControlFlowAI(fsRaw[[2]],
+                         remove_from = "all", # all default
+                         second_fractionFR = 0.1,
+                         deviationFR = "MAD",
+                         alphaFR = 0.01,
+                         decompFR = TRUE,
+                         outlier_binsFS = FALSE,
+                         pen_valueFS = 500,
+                         max_cptFS = 3,
+                         sideFM = "both",
+                         neg_valuesFM = 1)
+
+}

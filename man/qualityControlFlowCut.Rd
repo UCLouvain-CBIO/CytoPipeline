@@ -39,3 +39,36 @@ this function is a wrapper around flowCut::flowCut()
 function.
 It also pre-selects the channels to be handled (=> all signal channels)
 }
+\examples{
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <-
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+
+# create flowCore::flowSet with all samples of a dataset
+fsRaw <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = "all",
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+
+ff_QualityControl <-
+    qualityControlFlowCut(
+        fsRaw[[2]],
+        MaxContin = 0.1,
+        MeanOfMeans = 0.13,
+        MaxOfMeans = 0.15,
+        MaxValleyHgt = 0.1,
+        MaxPercCut = 0.3,
+        LowDensityRemoval = 0.1,
+        RemoveMultiSD = 7,
+        AlwaysClean = FALSE,
+        IgnoreMonotonic = FALSE,
+        MonotonicFix = NULL,
+        Measures = c(1:8))
+      
+}

@@ -22,3 +22,32 @@ length(sampleFiles) == 1
 Wrapper around flowCore::read.fcs() or flowCore::read.flowSet().
 Also adds a "Cell_ID" additional column, used in flowFrames comparison
 }
+\examples{
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <-
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+
+# create flowCore::flowSet with all samples of a dataset
+res <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = "all",
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+
+res
+
+# create a flowCore::flowFrame with one single sample
+res2 <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = 2,
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+
+res2
+
+}

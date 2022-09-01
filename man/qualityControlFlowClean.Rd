@@ -2,7 +2,7 @@
 % Please edit documentation in R/CytoProcessingStepImplementations.R
 \name{qualityControlFlowClean}
 \alias{qualityControlFlowClean}
-\title{perform QC with flowCut}
+\title{perform QC with flowClean}
 \usage{
 qualityControlFlowClean(
   ff,
@@ -38,4 +38,30 @@ a flowCore::flowFrame with removed low quality events from the input
 this function is a wrapper around flowClean::clean()
 function.
 It also pre-selects the channels to be handled (=> all signal channels)
+}
+\examples{
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <-
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+
+# create flowCore::flowSet with all samples of a dataset
+fsRaw <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = "all",
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+
+ff_QualityControl <- 
+    qualityControlFlowClean(fsRaw[[2]],
+                            binSize = 0.01, # default
+                            nCellCutoff = 500, # default
+                            cutoff = "median", # default
+                            fcMax = 1.3, # default
+                            nstable = 5)
+
 }

@@ -609,7 +609,7 @@ ggplotEvents <- function(obj,
 #' )
 #' 
 #' selectedLive <- flowCore::filter(ffPre, liveGate)
-#' ffL <- ffPre[selectedLive@subSet, ]
+#' ffL <- flowCore::Subset(ffPre, selectedLive)
 #' 
 #' 
 #' # show the results

@@ -6,7 +6,9 @@
 \alias{characterOrFunction-class}
 \alias{show,CytoProcessingStep-method}
 \alias{executeProcessingStep}
-\alias{getName}
+\alias{getCPSName}
+\alias{getCPSFUN}
+\alias{getCPSARGS}
 \alias{as.list.CytoProcessingStep}
 \alias{as.json.CytoProcessingStep}
 \alias{from.json.CytoProcessingStep}
@@ -18,7 +20,11 @@ CytoProcessingStep(name = character(), FUN = character(), ARGS = list())
 
 executeProcessingStep(x, ...)
 
-getName(x)
+getCPSName(x)
+
+getCPSFUN(x)
+
+getCPSARGS(x)
 
 \method{as.list}{CytoProcessingStep}(x, ...)
 
@@ -62,10 +68,22 @@ step, i.e. the function and all of its arguments to be applied to the data.
 \examples{
 
 ## Create a simple processing step object
-ps <- CytoProcessingStep("summing step", sum)
+ps1 <- CytoProcessingStep("summing step", sum)
 
-getName(ps)
+getCPSName(ps1)
 
-executeProcessingStep(ps, 1:10)
+getCPSFUN(ps1)
+
+getCPSARGS(ps1)
+
+executeProcessingStep(ps1, 1:10)
+
+as.list(ps1)
+
+js_str <- as.json.CytoProcessingStep(ps1)
+
+ps2 <- from.json.CytoProcessingStep(js_str)
+
+identical(ps1, ps2)
 
 }

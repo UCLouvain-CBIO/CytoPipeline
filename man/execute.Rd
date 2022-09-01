@@ -31,3 +31,229 @@ pre-processed flowFrame is assumed to be generated.
 No change is made on the input CytoPipeline object, all results are stored in
 the cache.
 }
+\examples{
+
+### *** EXAMPLE 1: building CytoPipeline step by step *** ###
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+experimentName <- "OMIP021_PeacoQC"
+sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+                                             pattern = "sample_"))
+                                             
+outputDir <- withr::local_tempdir()
+
+# main parameters : sample files and output files
+pipelineParams <- list()
+pipelineParams$experimentName <- experimentName
+pipelineParams$sampleFiles <- sampleFiles
+pipL <- CytoPipeline(pipelineParams)
+
+### SCALE TRANSFORMATION STEPS ###
+
+pipL <-
+    addProcessingStep(pipL,
+                      whichQueue = "scale transform",
+                      CytoProcessingStep(
+                          name = "flowframe_read",
+                          FUN = "readSampleFiles",
+                          ARGS = list(
+                              whichSamples = "all",
+                              truncate_max_range = FALSE,
+                              min.limit = NULL
+                          )
+                      )
+    )
+
+pipL <-
+    addProcessingStep(pipL,
+                      whichQueue = "scale transform",
+                      CytoProcessingStep(
+                          name = "remove_margins",
+                          FUN = "removeMarginsPeacoQC",
+                          ARGS = list()
+                     )
+    )
+
+pipL <-
+    addProcessingStep(pipL,
+                      whichQueue = "scale transform",
+                      CytoProcessingStep(
+                          name = "compensate",
+                          FUN = "compensateFromMatrix",
+                          ARGS = list(matrixSource = "fcs")
+                      )
+    )
+
+pipL <-
+    addProcessingStep(pipL,
+                      whichQueue = "scale transform",
+                      CytoProcessingStep(
+                          name = "flowframe_aggregate",
+                          FUN = "aggregateAndSample",
+                          ARGS = list(
+                              nTotalEvents = 10000,
+                              seed = 0
+                          )
+                      )
+    )
+
+pipL <-
+    addProcessingStep(pipL,
+                      whichQueue = "scale transform",
+                      CytoProcessingStep(
+                          name = "scale_transform_estimate",
+                          FUN = "estimateScaleTransforms",
+                          ARGS = list(
+                              fluoMethod = "estimateLogicle",
+                              scatterMethod = "linear",
+                              scatterRefMarker = "BV785 - CD3"
+                          )
+                      )
+    )
+
+### PRE-PROCESSING STEPS ###
+
+pipL <-
+    addProcessingStep(pipL,
+                      whichQueue = "pre-processing",
+                      CytoProcessingStep(
+                          name = "flowframe_read",
+                          FUN = "readSampleFiles",
+                          ARGS = list(
+                              truncate_max_range = FALSE,
+                              min.limit = NULL
+                          )
+                      )
+    )
+
+pipL <-
+    addProcessingStep(pipL,
+                      whichQueue = "pre-processing",
+                      CytoProcessingStep(
+                          name = "remove_margins",
+                          FUN = "removeMarginsPeacoQC",
+                          ARGS = list()
+                      )
+    )
+
+pipL <-
+    addProcessingStep(pipL,
+                      whichQueue = "pre-processing",
+                      CytoProcessingStep(
+                          name = "compensate",
+                          FUN = "compensateFromMatrix",
+                          ARGS = list(matrixSource = "fcs")
+                      )
+    )
+
+pipL <-
+    addProcessingStep(
+        pipL,
+        whichQueue = "pre-processing",
+        CytoProcessingStep(
+            name = "remove_doublets",
+            FUN = "removeDoubletsFlowStats",
+            ARGS = list(
+                areaChannels = c("FSC-A", "SSC-A"),
+                heightChannels = c("FSC-H", "SSC-H"),
+                wider_gate = TRUE
+            )
+        )
+    )
+
+pipL <-
+    addProcessingStep(pipL,
+                      whichQueue = "pre-processing",
+                      CytoProcessingStep(
+                          name = "remove_debris",
+                          FUN = "removeDebrisFlowClustTmix",
+                          ARGS = list(
+                              FSCChannel = c("FSC-A"),
+                              SSCChannel = c("SSC-A"),
+                              nClust = 3,
+                              level = 0.97,
+                              B = 100,
+                              verbose = TRUE
+                          )
+                      )
+    )
+
+pipL <-
+    addProcessingStep(pipL,
+                      whichQueue = "pre-processing",
+                      CytoProcessingStep(
+                          name = "remove_dead_cells",
+                          FUN = "removeDeadCellsGateTail",
+                          ARGS = list(
+                              FSCChannel = c("FSC-A"),
+                              LDMarker = "L/D Aqua - Viability",
+                              num_peaks = 2,
+                              ref_peak = 2,
+                              strict = FALSE,
+                              positive = FALSE
+                          )
+                      )
+    )
+
+pipL <-
+    addProcessingStep(
+        pipL,
+        whichQueue = "pre-processing",
+        CytoProcessingStep(
+            name = "perform_QC",
+            FUN = "qualityControlPeacoQC",
+            ARGS = list(
+                preTransform = TRUE,
+                min_cells = 150, # default
+                max_bins = 500, # default
+                step = 500, # default,
+                MAD = 6, # default
+                IT_limit = 0.55, # default
+                force_IT = 150, # default
+                peak_removal = 0.3333, # default
+                min_nr_bins_peakdetection = 10 # default
+            )
+        )
+    )
+
+pipL <-
+    addProcessingStep(pipL,
+                      whichQueue = "pre-processing",
+                      CytoProcessingStep(
+                          name = "transform",
+                          FUN = "applyScaleTransforms",
+                          ARGS = list()
+                      )
+    )
+
+# execute pipeline, remove cache if existing with the same experiment name
+execute(pipL, rmCache = TRUE, path = outputDir)
+
+# re-execute as is without removing cache => all results found in cache!
+execute(pipL, rmCache = FALSE, path = outputDir)
+
+### *** EXAMPLE 2: building CytoPipeline from JSON file *** ###
+
+jsonDir <- system.file("extdata", package = "CytoPipeline")
+jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+
+pipL2 <- CytoPipeline(jsonPath)
+
+# note we temporarily set working directory into package root directory
+# needed as json path mentions "./" path for sample files
+withr::with_dir(new = jsonDir, {
+     execute(pipL2, rmCache = TRUE, path = outputDir)})
+
+### *** EXAMPLE 3: building CytoPipeline from cache (previously run) *** ###
+
+experimentName <- "OMIP021_PeacoQC"
+pipL3 <- buildCytoPipelineFromCache(
+    experimentName = experimentName,
+    path = outputDir)
+
+execute(pipL3,
+        rmCache = FALSE,
+        path = outputDir)
+
+}

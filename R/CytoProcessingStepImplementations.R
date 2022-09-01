@@ -13,6 +13,79 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
+#' @title estimates scale tranformations
+#' @description this function estimates the scale transformations to be applied
+#' on a flowFrame to obtain 'good behaving' distributions, i.e. the best
+#' possible separation between + population and - population.
+#' It distinguishes between scatter channels, where either linear, or no
+#' transform is applied, and fluo channels, where either logicle transform
+#' - using flowCore::estimateLogicle - is estimated, or no transform is applied.
+#' The idea of linear transform of scatter channels is as follows: a reference
+#' channel (not a scatter one) is selected and a linear transform (Y = AX + B)
+#' is applied to all scatter channel, as to align their 5 and 95 percentiles to
+#' those of the reference channel
+#' For the estimateLogicle function, see flowCore documentation.
+
+#' @param ff a flowCore::flowFrame
+#' @param fluoMethod method to be applied to all fluo channels
+#' @param scatterMethod method to be applied to all scatter channels
+#' @param scatterRefMarker the reference channel that is used to align the
+#'
+#' @return a flowCore::flowFrame with removed low quality events from the input
+#' @export
+#'
+#' @examples
+#' 
+#' compMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
+#' ff_c <- runCompensation(OMIP021Samples[[1]], spillover = compMatrix)
+#' 
+#' transList <- 
+#'     estimateScaleTransforms(        
+#'         ff = ff_c,
+#'         fluoMethod = "estimateLogicle",
+#'         scatterMethod = "linear",
+#'         scatterRefMarker = "BV785 - CD3")
+#' 
+estimateScaleTransforms <- function(ff,
+                                    fluoMethod = c("estimateLogicle", "none"),
+                                    scatterMethod = c("linear", "none"),
+                                    scatterRefMarker = NULL) {
+    fluoMethod <- match.arg(fluoMethod)
+    scatterMethod <- match.arg(scatterMethod)
+    
+    if (fluoMethod == "estimateLogicle") {
+        message(
+            "estimating logicle transformations ",
+            "for fluorochrome channels..."
+        )
+        fluoCols <- flowCore::colnames(ff)[areFluoCols(ff)]
+        transList <- flowCore::estimateLogicle(ff, fluoCols)
+    } # else do nothing
+    
+    if (scatterMethod == "linear") {
+        if (is.null(scatterRefMarker)) {
+            stop("linear scatter method requires a scatterRefMarker")
+        }
+        
+        message(
+            "Estimating linear transformation for scatter channels : ",
+            "reference marker = ",
+            scatterRefMarker,
+            "..."
+        )
+        transList <-
+            computeScatterChannelsLinearScale(
+                ff,
+                transList = transList,
+                referenceChannel = scatterRefMarker,
+                silent = FALSE
+            )
+    } # else do nothing
+    
+    return(transList)
+}
+
+
 #' @title Read fcs sample files
 #' @description Wrapper around flowCore::read.fcs() or flowCore::read.flowSet().
 #' Also adds a "Cell_ID" additional column, used in flowFrames comparison
@@ -24,7 +97,35 @@
 #' @return either a flowCore::flowSet or a flowCore::flowFrame if
 #' length(sampleFiles) == 1
 #' @export
+#' 
+#' @examples
 #'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' res <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' res
+#' 
+#' # create a flowCore::flowFrame with one single sample
+#' res2 <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = 2,
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' res2
+#' 
 readSampleFiles <- function(sampleFiles,
                             whichSamples = "all", ...) {
     if (whichSamples == "all") {
@@ -66,6 +167,23 @@ readSampleFiles <- function(sampleFiles,
 #' @importFrom flowCore exprs
 #' @export
 #'
+#' @examples
+#' 
+#' rawDataDir <- 
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <- 
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' fsRaw <- readSampleFiles(sampleFiles, 
+#'                          truncate_max_range = truncateMaxRange,
+#'                          min.limit = minLimit)
+#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#' ggplotFilterEvents(ffPre = fsRaw[[2]],
+#'                    ffPost = ff_m,
+#'                    xChannel = "FSC-A",
+#'                    yChannel = "SSC-A")
 removeMarginsPeacoQC <- function(x, ...) {
     myFunc <- function(ff) {
         channel4Margins <-
@@ -94,7 +212,29 @@ removeMarginsPeacoQC <- function(x, ...) {
 #' @return the found compensation matrix
 #' @export
 #'
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' compensationMatrix <- getAcquiredCompensationMatrix(fsRaw[[2]])
+#' compensationMatrix
+#' 
 getAcquiredCompensationMatrix <- function(ff) {
+    
+    stopifnot (inherits(ff, "flowFrame"))
+    
     res <- flowCore::spillover(ff)
     if (!is.null(res$SPILL)) {
         compensationMatrix <- res$SPILL
@@ -129,6 +269,31 @@ getAcquiredCompensationMatrix <- function(ff) {
 #' @return the compensated flowSet or flowFrame
 #' @export
 #'
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#'     
+#' ff_c <-
+#'     compensateFromMatrix(ff_m,
+#'                          matrixSource = "fcs")        
+#' 
+#' ff_c            
+#'  
 compensateFromMatrix <- function(x,
                                  matrixSource = c("fcs", "import"),
                                  matrixPath = NULL,
@@ -196,6 +361,34 @@ compensateFromMatrix <- function(x,
 #' @return a flowCore::flowFrame with removed doublets events from the input
 #' @export
 #'
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#'     
+#' ff_c <-
+#'     compensateFromMatrix(ff_m,
+#'                          matrixSource = "fcs")        
+#'
+#' ff_s <-
+#'     removeDoubletsPeacoQC(ff_c,
+#'                           areaChannels = c("FSC-A", "SSC-A"),
+#'                           heightChannels = c("FSC-H", "SSC-H"),
+#'                           nmads = c(3, 5))                            
 removeDoubletsPeacoQC <- function(ff,
                                   areaChannels,
                                   heightChannels,
@@ -255,6 +448,35 @@ removeDoubletsPeacoQC <- function(ff,
 #' @return a flowCore::flowFrame with removed doublets events from the input
 #' @export
 #'
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#'     
+#' ff_c <-
+#'     compensateFromMatrix(ff_m,
+#'                          matrixSource = "fcs")        
+#' 
+#' ff_s <-
+#'     removeDoubletsFlowStats(ff_c,
+#'                             areaChannels = c("FSC-A", "SSC-A"),
+#'                             heightChannels = c("FSC-H", "SSC-H"),
+#'                             widerGate = TRUE)
+#'                             
 removeDoubletsFlowStats <- function(ff,
                                     areaChannels,
                                     heightChannels,
@@ -299,7 +521,8 @@ removeDoubletsFlowStats <- function(ff,
 
     fltSinglet <- flowCore::filter(ff, singletGateCombined)
 
-    ff <- ff[fltSinglet@subSet, ]
+    ff <- flowCore::Subset(ff, fltSinglet)
+    #ff <- ff[fltSinglet@subSet, ]
 
     return(ff)
 }
@@ -322,6 +545,35 @@ removeDoubletsFlowStats <- function(ff,
 #' @return a flowCore::flowFrame with removed doublets events from the input
 #' @export
 #'
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#'     
+#' ff_c <-
+#'     compensateFromMatrix(ff_m,
+#'                          matrixSource = "fcs")        
+#' 
+#' ff_s <-
+#'     removeDoubletsCytoPipeline(ff_c,
+#'                                areaChannels = c("FSC-A", "SSC-A"),
+#'                                heightChannels = c("FSC-H", "SSC-H"),
+#'                                nmads = c(3, 5))
+#'                             
 removeDoubletsCytoPipeline <- function(ff,
                                        areaChannels,
                                        heightChannels,
@@ -370,7 +622,8 @@ removeDoubletsCytoPipeline <- function(ff,
 
     fltSinglet <- flowCore::filter(ff, singletGateCombined)
 
-    ff <- ff[fltSinglet@subSet, ]
+    ff <- flowCore::Subset(ff, fltSinglet)
+    #ff <- ff[fltSinglet@subSet, ]
 
     return(ff)
 }
@@ -395,11 +648,11 @@ removeDoubletsCytoPipeline <- function(ff,
 #' @return a flowCore::flowFrame with removed debris events from the input
 #' @export
 #'
-removeDebrisManual <- function(ff,
-                               FSCChannel,
-                               SSCChannel,
-                               gateData,
-                               ...) {
+removeDebrisManualGate <- function(ff,
+                                   FSCChannel,
+                                   SSCChannel,
+                                   gateData,
+                                   ...) {
     # if not present already, add a column with Cell ID
     ff <- .appendCellID(ff)
 
@@ -415,7 +668,8 @@ removeDebrisManual <- function(ff,
     )
     selectedCells <- flowCore::filter(ff, cellsGate)
 
-    ff <- ff[selectedCells@subSet, ]
+    ff <- flowCore::Subset(ff, selectedCells)
+    #ff <- ff[selectedCells@subSet, ]
 }
 
 
@@ -433,7 +687,39 @@ removeDebrisManual <- function(ff,
 #'
 #' @return a flowCore::flowFrame with removed debris events from the input
 #' @export
+#' 
+#' @examples
 #'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#'     
+#' ff_c <-
+#'     compensateFromMatrix(ff_m,
+#'                          matrixSource = "fcs")        
+#' 
+#' 
+#' ff_cells <-
+#'     removeDebrisFlowClustTmix(ff_c,
+#'                               FSCChannel = "FSC-A",
+#'                               SSCChannel = "SSC-A",
+#'                               nClust = 3,
+#'                               level = 0.97,
+#'                               B = 100)
+#' 
 removeDebrisFlowClustTmix <- function(ff,
                                       FSCChannel,
                                       SSCChannel,
@@ -479,11 +765,15 @@ removeDebrisFlowClustTmix <- function(ff,
         FUN.VALUE = double(1),
         FUN = function(x, ff, flt) {
             resCellsFltr <- flt[[x]]
-            stats::median(flowCore::exprs(ff)[
-                resCellsFltr@subSet, FSCChannel
-            ],
-            na.rm = TRUE
-            )
+            # stats::median(flowCore::exprs(ff)[
+            #     resCellsFltr@subSet, FSCChannel
+            # ],
+            # na.rm = TRUE
+            # )
+            stats::median(
+                flowCore::exprs(
+                    flowCore::Subset(ff, resCellsFltr))[, FSCChannel],
+                na.rm = TRUE)
         },
         ff = ff, flt = resCellsFilter
     )
@@ -497,7 +787,8 @@ removeDebrisFlowClustTmix <- function(ff,
         }
     }
     selectedCells <- flowCore::filter(ff, tokeepFilter)
-    ff <- ff[selectedCells@subSet, ]
+    ff <- flowCore::Subset(ff, selectedCells)
+    #ff <- ff[selectedCells@subSet, ]
 
     return(ff)
 }
@@ -524,13 +815,13 @@ removeDebrisFlowClustTmix <- function(ff,
 #' @return a flowCore::flowFrame with removed dead cells from the input
 #' @export
 #'
-removeDeadCellsManual <- function(ff,
-                                  preTransform = FALSE,
-                                  transList = NULL,
-                                  FSCChannel,
-                                  LDMarker,
-                                  gateData,
-                                  ...) {
+removeDeadCellsManualGate <- function(ff,
+                                      preTransform = FALSE,
+                                      transList = NULL,
+                                      FSCChannel,
+                                      LDMarker,
+                                      gateData,
+                                      ...) {
     # if not present already, add a column with Cell ID
     ff <- .appendCellID(ff)
 
@@ -565,7 +856,9 @@ removeDeadCellsManual <- function(ff,
 
     selectedLive <- flowCore::filter(ffIn, liveGate)
 
-    ff <- ff[selectedLive@subSet, ] # note we take ff and not ffIn (no transfo)
+    # note we take ff and not ffIn (no transfo)
+    ff <- flowCore::Subset(ff, selectedLive)
+    #ff <- ff[selectedLive@subSet, ] 
 }
 
 #' @title remove dead cells from a flowFrame
@@ -584,6 +877,46 @@ removeDeadCellsManual <- function(ff,
 #' @return a flowCore::flowFrame with removed dead cells from the input
 #' @export
 #'
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#'     
+#' ff_c <-
+#'     compensateFromMatrix(ff_m,
+#'                          matrixSource = "fcs")        
+#'
+#' transList <- 
+#'     estimateScaleTransforms(        
+#'         ff = ff_c,
+#'         fluoMethod = "estimateLogicle",
+#'         scatterMethod = "linear",
+#'         scatterRefMarker = "BV785 - CD3")
+#' 
+#' ff_lcells <-
+#'     removeDeadCellsGateTail(ff_c,
+#'                             preTransform = TRUE,
+#'                             transList = transList,
+#'                             LDMarker = "L/D Aqua - Viability",
+#'                             num_peaks = 2,
+#'                             ref_peak = 2,
+#'                             strict = FALSE,
+#'                             positive = FALSE)
+#'                             
 removeDeadCellsGateTail <- function(ff,
                                     preTransform = FALSE,
                                     transList = NULL,
@@ -637,7 +970,9 @@ removeDeadCellsGateTail <- function(ff,
 
     selectedLive <- flowCore::filter(ffIn, liveGate)
 
-    ff <- ff[selectedLive@subSet, ] # note we take ff and not ffIn (no transfo)
+    # note we take ff and not ffIn (no transfo)
+    ff <- flowCore::Subset(ff, selectedLive)
+    #ff <- ff[selectedLive@subSet, ] 
     return(ff)
 }
 
@@ -659,6 +994,36 @@ removeDeadCellsGateTail <- function(ff,
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
 #'
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' ff_QualityControl <- 
+#'     qualityControlFlowAI(fsRaw[[2]],
+#'                          remove_from = "all", # all default
+#'                          second_fractionFR = 0.1,
+#'                          deviationFR = "MAD",
+#'                          alphaFR = 0.01,
+#'                          decompFR = TRUE,
+#'                          outlier_binsFS = FALSE,
+#'                          pen_valueFS = 500,
+#'                          max_cptFS = 3,
+#'                          sideFM = "both",
+#'                          neg_valuesFM = 1)
+#' 
 qualityControlFlowAI <- function(ff,
                                  preTransform = FALSE,
                                  transList = NULL,
@@ -736,6 +1101,50 @@ qualityControlFlowAI <- function(ff,
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
 #'
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#'     
+#' ff_c <-
+#'     compensateFromMatrix(ff_m,
+#'                          matrixSource = "fcs")        
+#'
+#' transList <- 
+#'     estimateScaleTransforms(        
+#'         ff = ff_c,
+#'         fluoMethod = "estimateLogicle",
+#'         scatterMethod = "linear",
+#'         scatterRefMarker = "BV785 - CD3")
+#'
+#'
+#' ff_QualityControl <-
+#'     qualityControlPeacoQC(
+#'         ff_c,
+#'         preTransform = TRUE,
+#'         transList = transList,
+#'         min_cells = 150,
+#'         max_bins = 500,
+#'         MAD = 6,
+#'         IT_limit = 0.55,
+#'         force_IT = 150, 
+#'         peak_removal = (1/3),
+#'         min_nr_bins_peakdetection = 10) 
+#'         
 qualityControlPeacoQC <- function(ff,
                                   preTransform = FALSE,
                                   transList = NULL,
@@ -806,6 +1215,39 @@ qualityControlPeacoQC <- function(ff,
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
 #'
+#'
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#'
+#' ff_QualityControl <-
+#'     qualityControlFlowCut(
+#'         fsRaw[[2]],
+#'         MaxContin = 0.1,
+#'         MeanOfMeans = 0.13,
+#'         MaxOfMeans = 0.15,
+#'         MaxValleyHgt = 0.1,
+#'         MaxPercCut = 0.3,
+#'         LowDensityRemoval = 0.1,
+#'         RemoveMultiSD = 7,
+#'         AlwaysClean = FALSE,
+#'         IgnoreMonotonic = FALSE,
+#'         MonotonicFix = NULL,
+#'         Measures = c(1:8))
+#'       
 qualityControlFlowCut <- function(ff,
                                   preTransform = FALSE,
                                   transList = NULL,
@@ -862,7 +1304,7 @@ qualityControlFlowCut <- function(ff,
     return(ff)
 }
 
-#' @title perform QC with flowCut
+#' @title perform QC with flowClean
 #' @description this function is a wrapper around flowClean::clean()
 #' function.
 #' It also pre-selects the channels to be handled (=> all signal channels)
@@ -879,6 +1321,32 @@ qualityControlFlowCut <- function(ff,
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
 #'
+#'
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#'
+#' ff_QualityControl <- 
+#'     qualityControlFlowClean(fsRaw[[2]],
+#'                             binSize = 0.01, # default
+#'                             nCellCutoff = 500, # default
+#'                             cutoff = "median", # default
+#'                             fcMax = 1.3, # default
+#'                             nstable = 5)
+#' 
 qualityControlFlowClean <- function(ff,
                                     preTransform = FALSE,
                                     transList = NULL,
@@ -953,62 +1421,3 @@ applyScaleTransforms <- function(ff, transList, ...) {
     return(ff)
 }
 
-#' @title estimates scale tranformations
-#' @description this function estimates the scale transformations to be applied
-#' on a flowFrame to obtain 'good behaving' distributions, i.e. the best
-#' possible separation between + population and - population.
-#' It distinguishes between scatter channels, where either linear, or no
-#' transform is applied, and fluo channels, where either logicle transform
-#' - using flowCore::estimateLogicle - is estimated, or no transform is applied.
-#' The idea of linear transform of scatter channels is as follows: a reference
-#' channel (not a scatter one) is selected and a linear transform (Y = AX + B)
-#' is applied to all scatter channel, as to align their 5 and 95 percentiles to
-#' those of the reference channel
-#' For the estimateLogicle function, see flowCore documentation.
-
-#' @param ff a flowCore::flowFrame
-#' @param fluoMethod method to be applied to all fluo channels
-#' @param scatterMethod method to be applied to all scatter channels
-#' @param scatterRefMarker the reference channel that is used to align the
-#'
-#' @return a flowCore::flowFrame with removed low quality events from the input
-#' @export
-#'
-estimateScaleTransforms <- function(ff,
-                                    fluoMethod = c("estimateLogicle", "none"),
-                                    scatterMethod = c("linear", "none"),
-                                    scatterRefMarker = NULL) {
-    fluoMethod <- match.arg(fluoMethod)
-    scatterMethod <- match.arg(scatterMethod)
-
-    if (fluoMethod == "estimateLogicle") {
-        message(
-            "estimating logicle transformations ",
-            "for fluorochrome channels..."
-        )
-        fluoCols <- flowCore::colnames(ff)[areFluoCols(ff)]
-        transList <- flowCore::estimateLogicle(ff, fluoCols)
-    } # else do nothing
-
-    if (scatterMethod == "linear") {
-        if (is.null(scatterRefMarker)) {
-            stop("linear scatter method requires a scatterRefMarker")
-        }
-
-        message(
-            "Estimating linear transformation for scatter channels : ",
-            "reference marker = ",
-            scatterRefMarker,
-            "..."
-        )
-        transList <-
-            computeScatterChannelsLinearScale(
-                ff,
-                transList = transList,
-                referenceChannel = scatterRefMarker,
-                silent = FALSE
-            )
-    } # else do nothing
-
-    return(transList)
-}

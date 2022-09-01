@@ -44,8 +44,7 @@ showProcessingSteps(x, whichQueue = c("scale transform", "pre-processing"))
 \item{x}{a CytoPipeline object}
 
 \item{whichQueue}{selects the processing queue for which we manage the
-processing
-steps}
+processing steps}
 
 \item{newPS}{the new processing step to be added (CytoProcessingStep object)}
 
@@ -110,3 +109,73 @@ or both processing queues, returns the modified CytoPipeline object
 processing queue
 }}
 
+\examples{
+
+rawDataDir <- paste0(system.file("extdata", package = "CytoPipeline"), "/")
+experimentName <- "OMIP021_PeacoQC"
+sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+                                             pattern = "sample_"))
+transListPath <- 
+    paste0(system.file("extdata", package = "CytoPipeline"), 
+            "/OMIP021_TransList.rds")
+
+# main parameters : sample files and experiment name
+pipelineParams <- list()
+pipelineParams$experimentName <- experimentName
+pipelineParams$sampleFiles <- sampleFiles
+
+# create CytoPipeline object (no step defined yet)
+pipL <- CytoPipeline(pipelineParams)
+
+# add a processing step in scale tranformation queue
+pipL <- addProcessingStep(pipL,
+                          whichQueue = "scale transform",
+                          CytoProcessingStep(
+                              name = "scale_transform_read",
+                              FUN = "readRDS",
+                              ARGS = list(file = transListPath)
+                          ))
+
+getNbProcessingSteps(pipL, "scale transform") # returns 1
+
+# add another processing step in scale transformation queue
+pipL <- addProcessingStep(pipL,
+                          whichQueue = "scale transform",
+                          CytoProcessingStep(
+                              name = "scale_transform_sum",
+                              FUN = "sum",
+                              ARGS = list()
+                          )
+)
+
+getNbProcessingSteps(pipL, "scale transform") # returns 2
+
+getProcessingStepNames(pipL, whichQueue = "scale transform")
+
+# removes second processing step in scale transformation queue
+pipL <- removeProcessingStep(pipL,
+                             whichQueue = "scale transform",
+                             index = 2)
+
+# get processing step object
+pS <- getProcessingStep(pipL, whichQueue = "scale transform", index = 1)
+getCPSName(pS) #"scale_transform_read"
+
+# add a processing step in pre-processing queue
+pipL <- addProcessingStep(pipL,
+                          whichQueue = "pre-processing",
+                          CytoProcessingStep(
+                              name = "pre-processing_sum",
+                              FUN = "sum",
+                              ARGS = list()
+                          ))
+getNbProcessingSteps(pipL, "scale transform") # returns 1
+getNbProcessingSteps(pipL, "pre-processing") # returns also 1
+
+showProcessingSteps(pipL, whichQueue = "scale transform")
+showProcessingSteps(pipL, whichQueue = "pre-processing")
+
+# cleans both processing queues
+pipL <- cleanProcessingSteps(pipL)
+pipL
+}

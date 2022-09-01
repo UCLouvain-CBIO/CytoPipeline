@@ -96,7 +96,7 @@ liveGate <- flowCore::polygonGate(
 )
 
 selectedLive <- flowCore::filter(ffPre, liveGate)
-ffL <- ffPre[selectedLive@subSet, ]
+ffL <- flowCore::Subset(ffPre, selectedLive)
 
 
 # show the results
@@ -108,7 +108,7 @@ ggplotFilterEvents(
     nDisplayCells = 5000,
     xChannel = "FSC-A", xScale = "linear",
     yChannel = LDMarker, yScale = "logicle") +
-    ggplot2::ggtitle("Live gate filter")
+    ggplot2::ggtitle("Live gate filter - 5000 points")
 
 # with all points
 ggplotFilterEvents(
@@ -117,7 +117,7 @@ ggplotFilterEvents(
     nDisplayCells = Inf,
     xChannel = "FSC-A", xScale = "linear",
     yChannel = LDMarker, yScale = "logicle") +
-    ggplot2::ggtitle("Live gate filter")
+    ggplot2::ggtitle("Live gate filter - all points")
 
 
 }

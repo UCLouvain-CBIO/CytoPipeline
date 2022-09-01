@@ -45,3 +45,53 @@ PeacoQC::removeDoublets(), which leads to a semi-conic gate,
 we apply a parallelogram shaped gate, by keeping a constant range of channel
 2 intensity, based on the target ratio range at the mid value of channel 1.
 }
+\examples{
+
+# simple example with one single singlets gate filter 
+# FSC-A and FSC-H channels are used by default
+
+mySingletsGate <- singletsGate(OMIP021Samples[[1]], nmad = 3)
+
+selectedSinglets <- flowCore::filter(
+    OMIP021Samples[[1]],
+    mySingletsGate)
+
+ff_l <- flowCore::Subset(OMIP021Samples[[1]], selectedSinglets)
+
+linRange <- c(0, 250000)
+
+ggplotFilterEvents(
+    ffPre = OMIP021Samples[[1]],
+    ffPost = ff_l,
+    xChannel = "FSC-A", xLinearRange = linRange,
+    yChannel = "FSC-H", yLinearRange = linRange)
+
+# application of two singlets gates one after the other
+
+singletsGate1 <- singletsGate(OMIP021Samples[[1]], nmad = 3)
+singletsGate2 <- singletsGate(OMIP021Samples[[1]],
+                              channel1 = "SSC-A",
+                              channel2 = "SSC-H",
+                              filterId = "Singlets2")
+
+singletCombinedGate <- singletsGate1 & singletsGate2
+
+selectedSinglets <- flowCore::filter(
+    OMIP021Samples[[1]],
+    singletCombinedGate)
+
+ff_l <- flowCore::Subset(OMIP021Samples[[1]], selectedSinglets)
+
+ggplotFilterEvents(
+    ffPre = OMIP021Samples[[1]],
+    ffPost = ff_l,
+    xChannel = "FSC-A", xLinearRange = linRange,
+    yChannel = "FSC-H", yLinearRange = linRange)
+
+ggplotFilterEvents(
+    ffPre = OMIP021Samples[[1]],
+    ffPost = ff_l,
+    xChannel = "SSC-A", xLinearRange = linRange,
+    yChannel = "SSC-H", yLinearRange = linRange)
+
+}

@@ -55,3 +55,39 @@ between the processing steps described in a CytoPipeline object,
 and what is stored in the file cache
 }}
 
+\examples{
+
+# preliminary run:
+# build CytoPipeline object using json input, run and store results in cache
+jsonDir <- system.file("extdata", package = "CytoPipeline")
+jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+outputDir <- withr::local_tempdir()
+pipL <- CytoPipeline(jsonPath)
+
+# note we temporarily set working directory into package root directory
+# needed as json path mentions "./" path for sample files
+withr::with_dir(new = jsonDir, {
+     execute(pipL, rmCache = TRUE, path = outputDir)})
+     
+
+# rebuild CytoPipeline from stored results in cache, for a specific 
+# experiment
+
+experimentName <- "OMIP021_PeacoQC"
+pipL2 <- buildCytoPipelineFromCache(
+    experimentName = experimentName,
+    path = outputDir)
+
+
+# checking consistency between CytoPipeline object and cache
+res <- checkCytoPipelineConsistencyWithCache(pipL2)
+res
+
+execute(pipL2, rmCache = FALSE, path = outputDir) 
+# (everything is already stored in cache)
+
+# deleting cache related to a specific experiment
+pipL3 <- CytoPipeline(experimentName = experimentName)
+deleteCytoPipelineCache(pipL3, path = outputDir)
+
+}

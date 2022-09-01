@@ -30,3 +30,33 @@ Wrapper around CytoPipeline::singletGate().
 Can apply the flowStats function subsequently on several channel pairs,
 e.g. (FSC-A, FSC-H) and (SSC-A, SSC-H)
 }
+\examples{
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <-
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+
+# create flowCore::flowSet with all samples of a dataset
+fsRaw <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = "all",
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+
+ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+    
+ff_c <-
+    compensateFromMatrix(ff_m,
+                         matrixSource = "fcs")        
+
+ff_s <-
+    removeDoubletsCytoPipeline(ff_c,
+                               areaChannels = c("FSC-A", "SSC-A"),
+                               heightChannels = c("FSC-H", "SSC-H"),
+                               nmads = c(3, 5))
+                            
+}

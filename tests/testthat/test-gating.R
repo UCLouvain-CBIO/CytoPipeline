@@ -20,8 +20,7 @@ test_that("singletsGate works", {
         OMIP021Samples[[1]],
         mySingletsGate
     )
-    ff_l <- OMIP021Samples[[1]][selectedSinglets@subSet, ]
-    ff_l <- .appendCellID(ff_l, which(selectedSinglets@subSet))
+    ff_l <- flowCore::Subset(OMIP021Samples[[1]], selectedSinglets)
 
     linRange <- c(0, 250000)
     p <- ggplotFilterEvents(
@@ -40,8 +39,7 @@ test_that("singletsGate works", {
         OMIP021Samples[[1]],
         mySingletsGate
     )
-    ff_l <- OMIP021Samples[[1]][selectedSinglets@subSet, ]
-    ff_l <- .appendCellID(ff_l, which(selectedSinglets@subSet))
+    ff_l <- flowCore::Subset(OMIP021Samples[[1]], selectedSinglets)
 
     p <- ggplotFilterEvents(
         ffPre = OMIP021Samples[[1]],
@@ -65,8 +63,7 @@ test_that("singletsGate works", {
         OMIP021Samples[[1]],
         mySingletsGate
     )
-    ff_l <- OMIP021Samples[[1]][selectedSinglets@subSet, ]
-    ff_l <- .appendCellID(ff_l, which(selectedSinglets@subSet))
+    ff_l <- flowCore::Subset(OMIP021Samples[[1]], selectedSinglets)
 
     p <- ggplotFilterEvents(
         ffPre = OMIP021Samples[[1]],
@@ -93,8 +90,7 @@ test_that("singletsGate works", {
         singletCombinedGate
     )
 
-    ff_l <- OMIP021Samples[[1]][selectedSinglets@subSet, ]
-    ff_l <- .appendCellID(ff_l, which(selectedSinglets@subSet))
+    ff_l <- flowCore::Subset(OMIP021Samples[[1]], selectedSinglets)
 
     p1 <- ggplotFilterEvents(
         ffPre = OMIP021Samples[[1]],

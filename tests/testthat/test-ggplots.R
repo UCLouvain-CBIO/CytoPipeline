@@ -276,8 +276,8 @@ test_that("ggplotFilterEvents works", {
     )
 
     selectedLive <- flowCore::filter(ffPre, liveGate)
-    ffL <- ffPre[selectedLive@subSet, ]
-    ffL <- .appendCellID(ffL, which(selectedLive@subSet))
+    ffL <- flowCore::Subset(ffPre, selectedLive)
+    #ffL <- .appendCellID(ffL, which(selectedLive@subSet))
 
     p <- ggplotFilterEvents(
         ffPre = ffPre,

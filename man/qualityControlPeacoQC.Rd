@@ -36,3 +36,48 @@ this function is a wrapper around PeacoQC::PeacoQC()
 function.
 It also pre-selects the channels to be handled (=> all signal channels)
 }
+\examples{
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <-
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+
+# create flowCore::flowSet with all samples of a dataset
+fsRaw <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = "all",
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+
+ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+    
+ff_c <-
+    compensateFromMatrix(ff_m,
+                         matrixSource = "fcs")        
+
+transList <- 
+    estimateScaleTransforms(        
+        ff = ff_c,
+        fluoMethod = "estimateLogicle",
+        scatterMethod = "linear",
+        scatterRefMarker = "BV785 - CD3")
+
+
+ff_QualityControl <-
+    qualityControlPeacoQC(
+        ff_c,
+        preTransform = TRUE,
+        transList = transList,
+        min_cells = 150,
+        max_bins = 500,
+        MAD = 6,
+        IT_limit = 0.55,
+        force_IT = 150, 
+        peak_removal = (1/3),
+        min_nr_bins_peakdetection = 10) 
+        
+}

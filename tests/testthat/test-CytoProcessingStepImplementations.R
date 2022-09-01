@@ -160,7 +160,7 @@ test_that("removeDoubletsPeacoQC works", {
     ref_ff_c <- readRDS(test_path("fixtures", "ff_c.rds"))
 
     ff_s2 <-
-        removeDoubletsFlowStats(ref_ff_c,
+        removeDoubletsPeacoQC(ref_ff_c,
             areaChannels = c("FSC-A", "SSC-A"),
             heightChannels = c("FSC-H", "SSC-H"),
             nmads = c(3, 5)
@@ -168,7 +168,7 @@ test_that("removeDoubletsPeacoQC works", {
 
     ref_ff_s2 <- readRDS(test_path("fixtures", "ff_s2.rds"))
 
-    # saveRDS(ff_s2, test_path("fixtures", "ff_s2.rds"))
+    #saveRDS(ff_s2, test_path("fixtures", "ff_s2.rds"))
 
     expect_equal(
         flowCore::exprs(ff_s2),

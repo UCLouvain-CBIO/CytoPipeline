@@ -38,3 +38,16 @@ those of the reference channel
 For the estimateLogicle function, see flowCore documentation.
 }
 }
+\examples{
+
+compMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
+ff_c <- runCompensation(OMIP021Samples[[1]], spillover = compMatrix)
+
+transList <- 
+    estimateScaleTransforms(        
+        ff = ff_c,
+        fluoMethod = "estimateLogicle",
+        scatterMethod = "linear",
+        scatterRefMarker = "BV785 - CD3")
+
+}

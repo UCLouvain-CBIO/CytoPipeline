@@ -39,6 +39,55 @@
 #' @return This function returns a flowCore::polygonGate.
 #' @export
 #'
+#' @examples
+#'
+#' # simple example with one single singlets gate filter 
+#' # FSC-A and FSC-H channels are used by default
+#' 
+#' mySingletsGate <- singletsGate(OMIP021Samples[[1]], nmad = 3)
+#' 
+#' selectedSinglets <- flowCore::filter(
+#'     OMIP021Samples[[1]],
+#'     mySingletsGate)
+#' 
+#' ff_l <- flowCore::Subset(OMIP021Samples[[1]], selectedSinglets)
+#' 
+#' linRange <- c(0, 250000)
+#' 
+#' ggplotFilterEvents(
+#'     ffPre = OMIP021Samples[[1]],
+#'     ffPost = ff_l,
+#'     xChannel = "FSC-A", xLinearRange = linRange,
+#'     yChannel = "FSC-H", yLinearRange = linRange)
+#' 
+#' # application of two singlets gates one after the other
+#' 
+#' singletsGate1 <- singletsGate(OMIP021Samples[[1]], nmad = 3)
+#' singletsGate2 <- singletsGate(OMIP021Samples[[1]],
+#'                               channel1 = "SSC-A",
+#'                               channel2 = "SSC-H",
+#'                               filterId = "Singlets2")
+#' 
+#' singletCombinedGate <- singletsGate1 & singletsGate2
+#' 
+#' selectedSinglets <- flowCore::filter(
+#'     OMIP021Samples[[1]],
+#'     singletCombinedGate)
+#' 
+#' ff_l <- flowCore::Subset(OMIP021Samples[[1]], selectedSinglets)
+#' 
+#' ggplotFilterEvents(
+#'     ffPre = OMIP021Samples[[1]],
+#'     ffPost = ff_l,
+#'     xChannel = "FSC-A", xLinearRange = linRange,
+#'     yChannel = "FSC-H", yLinearRange = linRange)
+#' 
+#' ggplotFilterEvents(
+#'     ffPre = OMIP021Samples[[1]],
+#'     ffPost = ff_l,
+#'     xChannel = "SSC-A", xLinearRange = linRange,
+#'     yChannel = "SSC-H", yLinearRange = linRange)
+#' 
 singletsGate <- function(ff, filterId = "Singlets",
                          channel1 = "FSC-A", channel2 = "FSC-H", nmad = 4,
                          verbose = FALSE) {

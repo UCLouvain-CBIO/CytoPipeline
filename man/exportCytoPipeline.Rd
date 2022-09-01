@@ -27,3 +27,21 @@ formats
 to a JSON file (writing the file = side effect)
 }}
 
+\examples{
+
+outputDir <- withr::local_tempdir()
+
+# build CytoPipeline object using json input
+jsonPath <- paste0(system.file("extdata", package = "CytoPipeline"), 
+                  "/pipelineParams.json")
+  
+pipL <- CytoPipeline(jsonPath)
+
+# remove the last pre-processing step
+nPreProcessing <- getNbProcessingSteps(pipL, whichQueue = "pre-processing")
+pipL <- removeProcessingStep(pipL, whichQueue = "pre-processing", 
+                                   index = nPreProcessing)
+
+# export back to json file    
+export2JSONFile(pipL, path = paste0(outputDir, "/newFile.json"))                               
+}

@@ -29,7 +29,7 @@ test_that("Cytopipeline add/remove/clean processing step works", {
     ))
     transListPath <- test_path("fixtures", "OMIP021_TransList.rds")
 
-    # main parameters : sample files and output files
+    # main parameters : sample files and experiment name
     pipelineParams <- list()
     pipelineParams$experimentName <- experimentName
     pipelineParams$sampleFiles <- sampleFiles
@@ -839,3 +839,4 @@ test_that("getCytoPipelineObject works", {
         NA
     )
 })
+

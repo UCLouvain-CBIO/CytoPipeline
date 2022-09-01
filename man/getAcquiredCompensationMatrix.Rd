@@ -17,3 +17,23 @@ helper function retrieving the compensation matrix stored
 in fcs file (if any). It scans the following keywords: $SPILL, $spillover
 and $SPILLOVER
 }
+\examples{
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <-
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+
+# create flowCore::flowSet with all samples of a dataset
+fsRaw <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = "all",
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+compensationMatrix <- getAcquiredCompensationMatrix(fsRaw[[2]])
+compensationMatrix
+
+}

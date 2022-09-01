@@ -1,6 +1,6 @@
 {
   "experimentName": ["OMIP021_PeacoQC"],
-  "sampleFiles": ["C:/CBIO/cytophil/inst/extdata/sample_Donor1.fcs", "C:/CBIO/cytophil/inst/extdata/sample_Donor2.fcs"],
+  "sampleFiles": ["./inst/extdata/sample_Donor1.fcs", "./inst/extdata/sample_Donor2.fcs"],
   "savePreprocessedFiles": [false],
   "savePlotsInFiles": [false],
   "saveScaleTransform": [false],

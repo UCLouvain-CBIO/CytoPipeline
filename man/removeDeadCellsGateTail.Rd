@@ -33,3 +33,44 @@ this function removes dead cells from a flowFrame, using a
 specific '(a)live/dead' channel, and the openCyto::gate_tail() gating
 function (see doc of the openCyto package)
 }
+\examples{
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <-
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+
+# create flowCore::flowSet with all samples of a dataset
+fsRaw <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = "all",
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+
+ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+    
+ff_c <-
+    compensateFromMatrix(ff_m,
+                         matrixSource = "fcs")        
+
+transList <- 
+    estimateScaleTransforms(        
+        ff = ff_c,
+        fluoMethod = "estimateLogicle",
+        scatterMethod = "linear",
+        scatterRefMarker = "BV785 - CD3")
+
+ff_lcells <-
+    removeDeadCellsGateTail(ff_c,
+                            preTransform = TRUE,
+                            transList = transList,
+                            LDMarker = "L/D Aqua - Viability",
+                            num_peaks = 2,
+                            ref_peak = 2,
+                            strict = FALSE,
+                            positive = FALSE)
+                            
+}
