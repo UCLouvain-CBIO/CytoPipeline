@@ -538,18 +538,40 @@ test_that("Check consistency with cache works", {
     )),
     regexp = "inconsistent pre-processing step"
     )
-
+    
+    pipL5_bad2 <- pipL5 
+    pipL5_bad2@flowFramesPreProcessingQueue[[1]]@ARGS$truncate_max_range <- 
+        TRUE
+    res <- checkCytoPipelineConsistencyWithCache(pipL5_bad2,
+                                                 path = outputDir
+    )
+    expect_equal(res$isConsistent, FALSE)
+    expect_equal(
+        res$inconsistencyMsg,
+        paste0(
+            "inconsistent pre-processing step #1 for sample file ",
+            "sample_Donor1.fcs (different in cache)"
+        )
+    )
+    expect_equal(unname(res$scaleTransformStepStatus[1]), "run")
+    expect_equal(unname(res$preProcessingStepStatus[1, 1]), "inconsistent")
+    expect_equal(unname(res$preProcessingStepStatus[2, 1]), "not_run")
+    
+    
     pipL5 <- removeProcessingStep(pipL5,
         whichQueue = "pre-processing",
         index = 2
+    )
+    
+    res <- checkCytoPipelineConsistencyWithCache(pipL5,
+                                                 path = outputDir
     )
 
     expect_equal(res$isConsistent, FALSE)
     expect_equal(
         res$inconsistencyMsg,
         paste0(
-            "inconsistent pre-processing step #2 for sample file ",
-            "sample_Donor1.fcs (different in cache)"
+            "more pre-processing steps in cache than in CytoPipeline object"
         )
     )
 })

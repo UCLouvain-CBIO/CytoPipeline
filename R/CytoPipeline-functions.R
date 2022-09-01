@@ -1075,7 +1075,7 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
         }
     }
 
-    # browser()
+    #browser()
 
     # now check pre-processing steps consistency
     # take only steps with pre-processing type
