@@ -194,7 +194,7 @@ pipL <- CytoPipeline(jsonPath)
 # note we temporarily set working directory into package root directory
 # needed as json path mentions "./" path for sample files
 withr::with_dir(new = jsonDir, {
-     execute(pipL, rmCache = TRUE, path = outputDir)})
+     suppressWarnings(execute(pipL, rmCache = TRUE, path = outputDir))})
      
 
 # get a list of all stored experiments in a specific path taken as root dir

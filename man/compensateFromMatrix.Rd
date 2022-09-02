@@ -53,7 +53,7 @@ fsRaw <- readSampleFiles(
     truncate_max_range = truncateMaxRange,
     min.limit = minLimit)
 
-ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
     
 ff_c <-
     compensateFromMatrix(ff_m,

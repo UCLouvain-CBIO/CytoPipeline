@@ -67,7 +67,7 @@ pipL <- CytoPipeline(jsonPath)
 # note we temporarily set working directory into package root directory
 # needed as json path mentions "./" path for sample files
 withr::with_dir(new = jsonDir, {
-     execute(pipL, rmCache = TRUE, path = outputDir)})
+     suppressWarnings(execute(pipL, rmCache = TRUE, path = outputDir))})
      
 
 # rebuild CytoPipeline from stored results in cache, for a specific 
@@ -83,7 +83,7 @@ pipL2 <- buildCytoPipelineFromCache(
 res <- checkCytoPipelineConsistencyWithCache(pipL2)
 res
 
-execute(pipL2, rmCache = FALSE, path = outputDir) 
+suppressWarnings(execute(pipL2, rmCache = FALSE, path = outputDir))
 # (everything is already stored in cache)
 
 # deleting cache related to a specific experiment

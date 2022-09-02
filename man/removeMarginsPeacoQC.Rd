@@ -33,7 +33,7 @@ minLimit <- NULL
 fsRaw <- readSampleFiles(sampleFiles, 
                          truncate_max_range = truncateMaxRange,
                          min.limit = minLimit)
-ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
 ggplotFilterEvents(ffPre = fsRaw[[2]],
                    ffPost = ff_m,
                    xChannel = "FSC-A",

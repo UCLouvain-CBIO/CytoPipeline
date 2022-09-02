@@ -56,12 +56,12 @@ fsRaw <- readSampleFiles(
     truncate_max_range = truncateMaxRange,
     min.limit = minLimit)
 
-ff_QualityControl <- 
+ff_QualityControl <- suppressWarnings(
     qualityControlFlowClean(fsRaw[[2]],
                             binSize = 0.01, # default
                             nCellCutoff = 500, # default
                             cutoff = "median", # default
                             fcMax = 1.3, # default
-                            nstable = 5)
+                            nstable = 5))
 
 }

@@ -53,7 +53,7 @@ fsRaw <- readSampleFiles(
     truncate_max_range = truncateMaxRange,
     min.limit = minLimit)
 
-ff_QualityControl <- 
+suppressWarnings(ff_QualityControl <- 
     qualityControlFlowAI(fsRaw[[2]],
                          remove_from = "all", # all default
                          second_fractionFR = 0.1,
@@ -64,6 +64,6 @@ ff_QualityControl <-
                          pen_valueFS = 500,
                          max_cptFS = 3,
                          sideFM = "both",
-                         neg_valuesFM = 1)
+                         neg_valuesFM = 1))
 
 }

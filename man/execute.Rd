@@ -228,10 +228,10 @@ pipL <-
     )
 
 # execute pipeline, remove cache if existing with the same experiment name
-execute(pipL, rmCache = TRUE, path = outputDir)
+suppressWarnings(execute(pipL, rmCache = TRUE, path = outputDir))
 
 # re-execute as is without removing cache => all results found in cache!
-execute(pipL, rmCache = FALSE, path = outputDir)
+suppressWarnings(execute(pipL, rmCache = FALSE, path = outputDir))
 
 ### *** EXAMPLE 2: building CytoPipeline from JSON file *** ###
 
@@ -243,7 +243,7 @@ pipL2 <- CytoPipeline(jsonPath)
 # note we temporarily set working directory into package root directory
 # needed as json path mentions "./" path for sample files
 withr::with_dir(new = jsonDir, {
-     execute(pipL2, rmCache = TRUE, path = outputDir)})
+     suppressWarnings(execute(pipL2, rmCache = TRUE, path = outputDir))})
 
 ### *** EXAMPLE 3: building CytoPipeline from cache (previously run) *** ###
 
@@ -252,8 +252,8 @@ pipL3 <- buildCytoPipelineFromCache(
     experimentName = experimentName,
     path = outputDir)
 
-execute(pipL3,
+suppressWarnings(execute(pipL3,
         rmCache = FALSE,
-        path = outputDir)
+        path = outputDir))
 
 }

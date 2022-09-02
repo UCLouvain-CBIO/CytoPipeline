@@ -179,7 +179,7 @@ readSampleFiles <- function(sampleFiles,
 #' fsRaw <- readSampleFiles(sampleFiles, 
 #'                          truncate_max_range = truncateMaxRange,
 #'                          min.limit = minLimit)
-#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#' suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
 #' ggplotFilterEvents(ffPre = fsRaw[[2]],
 #'                    ffPost = ff_m,
 #'                    xChannel = "FSC-A",
@@ -286,7 +286,7 @@ getAcquiredCompensationMatrix <- function(ff) {
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #' 
-#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#' suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
 #'     
 #' ff_c <-
 #'     compensateFromMatrix(ff_m,
@@ -378,7 +378,7 @@ compensateFromMatrix <- function(x,
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #' 
-#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#' suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
 #'     
 #' ff_c <-
 #'     compensateFromMatrix(ff_m,
@@ -465,7 +465,7 @@ removeDoubletsPeacoQC <- function(ff,
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #' 
-#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#' suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
 #'     
 #' ff_c <-
 #'     compensateFromMatrix(ff_m,
@@ -562,7 +562,7 @@ removeDoubletsFlowStats <- function(ff,
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #' 
-#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#' suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
 #'     
 #' ff_c <-
 #'     compensateFromMatrix(ff_m,
@@ -705,7 +705,7 @@ removeDebrisManualGate <- function(ff,
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #' 
-#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#' suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
 #'     
 #' ff_c <-
 #'     compensateFromMatrix(ff_m,
@@ -894,7 +894,7 @@ removeDeadCellsManualGate <- function(ff,
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #' 
-#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#' suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
 #'     
 #' ff_c <-
 #'     compensateFromMatrix(ff_m,
@@ -1011,7 +1011,7 @@ removeDeadCellsGateTail <- function(ff,
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #' 
-#' ff_QualityControl <- 
+#' suppressWarnings(ff_QualityControl <- 
 #'     qualityControlFlowAI(fsRaw[[2]],
 #'                          remove_from = "all", # all default
 #'                          second_fractionFR = 0.1,
@@ -1022,7 +1022,7 @@ removeDeadCellsGateTail <- function(ff,
 #'                          pen_valueFS = 500,
 #'                          max_cptFS = 3,
 #'                          sideFM = "both",
-#'                          neg_valuesFM = 1)
+#'                          neg_valuesFM = 1))
 #' 
 qualityControlFlowAI <- function(ff,
                                  preTransform = FALSE,
@@ -1118,7 +1118,7 @@ qualityControlFlowAI <- function(ff,
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #' 
-#' ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+#' suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
 #'     
 #' ff_c <-
 #'     compensateFromMatrix(ff_m,
@@ -1132,7 +1132,7 @@ qualityControlFlowAI <- function(ff,
 #'         scatterRefMarker = "BV785 - CD3")
 #'
 #'
-#' ff_QualityControl <-
+#' ff_QualityControl <- suppressWarnings(
 #'     qualityControlPeacoQC(
 #'         ff_c,
 #'         preTransform = TRUE,
@@ -1143,7 +1143,7 @@ qualityControlFlowAI <- function(ff,
 #'         IT_limit = 0.55,
 #'         force_IT = 150, 
 #'         peak_removal = (1/3),
-#'         min_nr_bins_peakdetection = 10) 
+#'         min_nr_bins_peakdetection = 10))
 #'         
 qualityControlPeacoQC <- function(ff,
                                   preTransform = FALSE,
@@ -1339,13 +1339,13 @@ qualityControlFlowCut <- function(ff,
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #'
-#' ff_QualityControl <- 
+#' ff_QualityControl <- suppressWarnings(
 #'     qualityControlFlowClean(fsRaw[[2]],
 #'                             binSize = 0.01, # default
 #'                             nCellCutoff = 500, # default
 #'                             cutoff = "median", # default
 #'                             fcMax = 1.3, # default
-#'                             nstable = 5)
+#'                             nstable = 5))
 #' 
 qualityControlFlowClean <- function(ff,
                                     preTransform = FALSE,

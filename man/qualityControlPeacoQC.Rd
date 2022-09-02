@@ -53,7 +53,7 @@ fsRaw <- readSampleFiles(
     truncate_max_range = truncateMaxRange,
     min.limit = minLimit)
 
-ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]])
+suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
     
 ff_c <-
     compensateFromMatrix(ff_m,
@@ -67,7 +67,7 @@ transList <-
         scatterRefMarker = "BV785 - CD3")
 
 
-ff_QualityControl <-
+ff_QualityControl <- suppressWarnings(
     qualityControlPeacoQC(
         ff_c,
         preTransform = TRUE,
@@ -78,6 +78,6 @@ ff_QualityControl <-
         IT_limit = 0.55,
         force_IT = 150, 
         peak_removal = (1/3),
-        min_nr_bins_peakdetection = 10) 
+        min_nr_bins_peakdetection = 10))
         
 }
