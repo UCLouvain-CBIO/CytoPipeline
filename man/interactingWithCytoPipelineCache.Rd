@@ -23,7 +23,7 @@ checkCytoPipelineConsistencyWithCache(x, path = ".")
 disk}
 }
 \value{
-for \code{deleteCytoPipelineCache}: nothing\cr
+for \code{deleteCytoPipelineCache}: TRUE if successfully removed\cr
 for \code{buildCytoPipelineCache}: the built CytoPipeline object\cr
 for \code{checkCytoPipelineConsistencyWithCache}: a list with the following
 values:

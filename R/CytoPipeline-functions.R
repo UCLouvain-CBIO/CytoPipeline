@@ -787,7 +787,7 @@ execute <- function(x,
 #' @param experimentName the experimentName used to select the file cache on
 #' disk
 #' @return
-#' for `deleteCytoPipelineCache`: nothing\cr
+#' for `deleteCytoPipelineCache`: TRUE if successfully removed\cr
 #' for `buildCytoPipelineCache`: the built CytoPipeline object\cr
 #' for `checkCytoPipelineConsistencyWithCache`: a list with the following
 #' values:

@@ -1354,6 +1354,7 @@ qualityControlFlowClean <- function(ff,
                                     outputDir = NULL,
                                     verbose = TRUE,
                                     ...) {
+    #browser()
     # if not present already, add a column with Cell ID
     ff <- .appendCellID(ff)
 
@@ -1392,7 +1393,9 @@ qualityControlFlowClean <- function(ff,
         diagnostic <- FALSE
     }
 
-    goodVsBadVector <-
+    # note we call it using returnVector = FALSE and extract 
+    # the goodVsBadVector later to work around a flowClean bug (to be corrected)
+    tempDF <-
         flowClean::clean(
             fF = ffIn,
             vectMarkers = vectMarkers,
@@ -1400,11 +1403,11 @@ qualityControlFlowClean <- function(ff,
             ext = ".fcs", # not used
             diagnostic = diagnostic,
             announce = verbose,
-            returnVector = TRUE,
+            returnVector = FALSE,
             ...
         )
 
-    areGoodEvents <- goodVsBadVector < 10000
+    areGoodEvents <- tempDF[, "GoodVsBad"] < 10000
     ff <- ffIn[areGoodEvents, ]
 
     return(ff)
