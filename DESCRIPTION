@@ -74,6 +74,8 @@ Suggests:
     vdiffr,
     diffviewer,
     knitr,
-    rmarkdown
+    rmarkdown,
+    BiocStyle,
+    CytoPipelineGUI
 VignetteBuilder: knitr
 Config/testthat/edition: 3

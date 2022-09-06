@@ -1,0 +1,115 @@
+{
+  "experimentName": ["OMIP021_PeacoQC"],
+  "sampleFiles": ["./sample_Donor1.fcs", 
+				  "./sample_Donor2.fcs"],
+  "flowFramesPreProcessingSteps": [
+    {
+      "name": ["flowframe_read"],
+      "FUN": ["readSampleFiles"],
+      "ARGS": {
+        "truncate_max_range": [false],
+        "min.limit": null
+      }
+    },
+    {
+      "name": ["remove_margins"],
+      "FUN": ["removeMarginsPeacoQC"],
+      "ARGS": []
+    },
+    {
+      "name": ["compensate"],
+      "FUN": ["compensateFromMatrix"],
+      "ARGS": {
+        "matrixSource": ["fcs"]
+      }
+    },
+	{
+      "name": ["perform_QC"],
+      "FUN": ["qualityControlPeacoQC"],
+      "ARGS": {
+        "preTransform": [true],
+        "min_cells": [150],
+        "max_bins": [500],
+        "step": [500],
+        "MAD": [6],
+        "IT_limit": [0.55],
+        "force_IT": [150],
+        "peak_removal": [0.3333],
+        "min_nr_bins_peakdetection": [10]
+      }
+    },
+    {
+      "name": ["remove_doublets"],
+      "FUN": ["removeDoubletsFlowStats"],
+      "ARGS": {
+        "areaChannels": ["FSC-A", "SSC-A"],
+        "heightChannels": ["FSC-H", "SSC-H"],
+        "wider_gate": [true]
+      }
+    },
+    {
+      "name": ["remove_debris"],
+      "FUN": ["removeDebrisFlowClustTmix"],
+      "ARGS": {
+        "FSCChannel": ["FSC-A"],
+        "SSCChannel": ["SSC-A"],
+        "nClust": [3],
+        "level": [0.97],
+        "B": [100],
+        "verbose": [true]
+      }
+    },
+    {
+      "name": ["remove_dead_cells"],
+      "FUN": ["removeDeadCellsGateTail"],
+      "ARGS": {
+        "FSCChannel": ["FSC-A"],
+        "LDMarker": ["L/D Aqua - Viability"],
+        "num_peaks": [2],
+        "ref_peak": [2],
+        "strict": [false],
+        "positive": [false]
+      }
+    }
+  ],
+  "scaleTransformProcessingSteps": [
+    {
+      "name": ["flowframe_read"],
+      "FUN": ["readSampleFiles"],
+      "ARGS": {
+        "whichSamples": ["all"],
+        "truncate_max_range": [false],
+        "min.limit": null
+      }
+    },
+    {
+      "name": ["remove_margins"],
+      "FUN": ["removeMarginsPeacoQC"],
+      "ARGS": []
+    },
+    {
+      "name": ["compensate"],
+      "FUN": ["compensateFromMatrix"],
+      "ARGS": {
+        "matrixSource": ["fcs"]
+      }
+    },
+    {
+      "name": ["flowframe_aggregate"],
+      "FUN": ["aggregateAndSample"],
+      "ARGS": {
+        "nTotalEvents": [10000],
+        "seed": [0]
+      }
+    },
+    {
+      "name": ["scale_transform_estimate"],
+      "FUN": ["estimateScaleTransforms"],
+      "ARGS": {
+        "fluoMethod": ["estimateLogicle"],
+        "scatterMethod": ["linear"],
+        "scatterRefMarker": ["BV785 - CD3"]
+      }
+    }
+  ]
+}

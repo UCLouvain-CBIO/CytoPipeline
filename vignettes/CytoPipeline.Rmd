@@ -1,0 +1,191 @@
+---
+title: "Automation and Visualization of Flow Cytometry Data Analysis Pipelines"
+author:
+- name: Philippe Hauchamps
+package: CytoPipeline
+abstract: >
+ This vignette describes the functionality implemented in the CytoPipeline
+ package. Cytopipeline provides support for automation and visualization of 
+ flow cytometry data analysis pipelines. In the current state, the package 
+ focuses on the preprocessing and quality control part. 
+output:
+  BiocStyle::html_document:
+    toc_float: true
+bibliography: CytoPipeline.bib
+vignette: >
+  %\VignetteIndexEntry{Automation and Visualization of Flow Cytometry Data 
+  Analysis Pipelines}
+  %\VignetteEngine{knitr::rmarkdown}
+  %%\VignetteKeywords{FlowCytometry, Preprocessing, QualityControl, 
+  WorkflowStep, ImmunoOncology, Software, Visualization }
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r style, echo = FALSE, results = 'asis'}
+BiocStyle::markdown()
+```
+
+```{r env, message = FALSE, warning = FALSE, echo = FALSE}
+library("CytoPipeline")
+```
+
+
+# Introduction
+
+The `CytoPipeline` package provides infrastructure to support definition, run
+and standardized visualization of pre-processing and quality control pipelines 
+for flow cytometry data. This infrastructure consists of two main S4 classes, 
+i.e. `CytoPipeline` and `CytoProcessingStep`, as well as dedicated wrapper 
+functions around selected third-party package methods often used to implement 
+the main pre-processing steps.
+
+In the following sections, we are going to demonstrate how to create a 
+`CytoPipeline` object implementing a simple pre-processing pipeline, how to run
+it and how to retrieve and visualize the results after each step. 
+
+# Example dataset
+The example dataset that will be used throughout this vignette is derived from 
+a reference public dataset accompanying the OMIP-021 (Optimized Multicolor 
+Immunofluorescence Panel 021) article [@Gherardin2014-pj].  
+
+A subsampling of this public dataset is built-in in the `CytoPipeline` 
+package, as the OMIP021 dataset.  
+See `./scripts/MakeOMIP021Sample.R` for more details on how the `OMIP021` 
+dataset was created.  
+
+# Example pre-processing and QC pipelines
+Let's assume that we want to pre-process the two samples of the `OMIP021` 
+dataset, using two different QC methods (for comparison). In the first 
+pre-processing pipeline, we will use the flowAI QC method [Monaco2016-vo], 
+while in the second pipeline, we will use the PeacoQC method [Emmaneel2021-xy]. 
+
+
+
+fig workflow FlowAI
+
+fig workflow PeacoQC
+
+# Preliminaries
+
+## paths definition
+
+```{r pathsDef}
+# external data
+extDataDir <- system.file("extdata", package = "CytoPipeline")
+# output file
+workDir <- suppressMessages(withr::local_tempdir())
+```
+
+# Building the CytoPipeline
+
+
+## step by step, using CytoPipeline methods
+
+```{r CytoPipelineSteps}
+
+```
+
+
+## in one go, using json file input 
+
+```{r CytoPiplineJson}
+
+# creation on CytoPipeline object,
+# using json file as input
+pipL_PeacoQC <-
+  CytoPipeline(paste0(extDataDir, "/OMIP021_peacoQC_pipeline.json"))
+```
+
+# Running pipelines
+
+```{r}
+# execute pipeline
+withr::with_dir(extDataDir, execute(pipL_PeacoQC, 
+                                    rmCache = TRUE,
+                                    path = workDir))
+```
+
+
+# Visualization
+
+## Plotting processing queues as workflow graphs
+
+```{r plotWorkFlows}
+
+# plot work flow graphs
+plotCytoPipelineProcessingQueue(
+  pipL_PeacoQC,
+  whichQueue = "scale transform",
+  path = workDir)
+
+
+
+plotCytoPipelineProcessingQueue(
+  pipL_PeacoQC,
+  whichQueue = "pre-processing",
+  sampleFile = 1,
+  path = workDir)
+
+```
+
+## Obtaining information about pipeline generated objects
+
+```{r gettingObjectInfos}
+getCytoPipelineObjectInfos(pipL_PeacoQC, 
+                           path = workDir,
+                           whichQueue = "scale transform")
+                                  
+getCytoPipelineObjectInfos(pipL_PeacoQC, 
+                           path = workDir,
+                           whichQueue = "pre-processing",
+                           sampleFile = sampleFiles(pipL_PeacoQC)[1])
+```
+
+## Retrieving flow frames at different steps and plotting them
+
+
+```{r plotFlowFrames}
+# example of retrieving a flow frame
+# at a given step
+ff <- getCytoPipelineFlowFrame(
+  pipL_PeacoQC,
+  whichQueue = "pre-processing",
+  sampleFile = 1,
+  objectName = "remove_doublets_obj",
+  path = workDir)
+
+#
+ff2 <- getCytoPipelineFlowFrame(
+  pipL_PeacoQC,
+  whichQueue = "pre-processing",
+  sampleFile = 1,
+  objectName = "remove_debris_obj",
+  path = workDir)
+
+ggplotEvents(ff, xChannel = "FSC-A")
+ggplotEvents(ff, xChannel = "FSC-A", yChannel = "SSC-A")
+ggplotFilterEvents(ff, ff2, xChannel = "FSC-A", yChannel = "SSC-A")
+```
+
+
+
+
+
+
+
+
+# example of retrieving a transformList
+
+# example of retrieving another object
+
+
+
+
+# Session information {-}
+
+```{r sessioninfo, echo=FALSE}
+sessionInfo()
+```
+
+
+# References {-}

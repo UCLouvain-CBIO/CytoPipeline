@@ -1,0 +1,112 @@
+{
+  "experimentName": ["OMIP021_flowAI"],
+  "sampleFiles": ["./sample_Donor1.fcs", 
+				  "./sample_Donor2.fcs"],
+  "scaleTransformProcessingSteps": [
+    {
+      "name": ["flowframe_read"],
+      "FUN": ["readSampleFiles"],
+      "ARGS": {
+        "whichSamples": ["all"],
+        "truncate_max_range": [false],
+        "min.limit": null
+      }
+    },
+    {
+      "name": ["remove_margins"],
+      "FUN": ["removeMarginsPeacoQC"],
+      "ARGS": []
+    },
+    {
+      "name": ["compensate"],
+      "FUN": ["compensateFromMatrix"],
+      "ARGS": {
+        "matrixSource": ["fcs"]
+      }
+    },
+    {
+      "name": ["flowframe_aggregate"],
+      "FUN": ["aggregateAndSample"],
+      "ARGS": {
+        "nTotalEvents": [10000],
+        "seed": [0]
+      }
+    },
+    {
+      "name": ["scale_transform_estimate"],
+      "FUN": ["estimateScaleTransforms"],
+      "ARGS": {
+        "fluoMethod": ["estimateLogicle"],
+        "scatterMethod": ["linear"],
+        "scatterRefMarker": ["BV785 - CD3"]
+      }
+    }
+  ],
+  "flowFramesPreProcessingSteps": [
+    {
+      "name": ["flowframe_read"],
+      "FUN": ["readSampleFiles"],
+      "ARGS": {
+        "truncate_max_range": [false],
+        "min.limit": null
+      }
+    },
+    {
+      "name": ["perform_QC"],
+      "FUN": ["qualityControlFlowAI"],
+      "ARGS": {		  
+        "preTransform": [false],
+        "remove_from": ["all"],
+        "second_fractionFR": [0.1],
+        "deviationFR": ["MAD"],
+        "alphaFR": [0.01],
+        "decompFR": [true],
+        "outlier_binsFS": [false],
+        "pen_valueFS": [200],
+        "max_cptFS": [3],
+		"sideFM": ["both"],
+		"neg_valuesFM": [1]
+      }
+    },
+    {
+      "name": ["compensate"],
+      "FUN": ["compensateFromMatrix"],
+      "ARGS": {
+        "matrixSource": ["fcs"]
+      }
+    },
+    {
+      "name": ["remove_doublets"],
+      "FUN": ["removeDoubletsFlowStats"],
+      "ARGS": {
+        "areaChannels": ["FSC-A", "SSC-A"],
+        "heightChannels": ["FSC-H", "SSC-H"],
+        "wider_gate": [true]
+      }
+    },
+    {
+      "name": ["remove_debris"],
+      "FUN": ["removeDebrisFlowClustTmix"],
+      "ARGS": {
+        "FSCChannel": ["FSC-A"],
+        "SSCChannel": ["SSC-A"],
+        "nClust": [3],
+        "level": [0.97],
+        "B": [100],
+        "verbose": [true]
+      }
+    },
+    {
+      "name": ["remove_dead_cells"],
+      "FUN": ["removeDeadCellsGateTail"],
+      "ARGS": {
+        "FSCChannel": ["FSC-A"],
+        "LDMarker": ["L/D Aqua - Viability"],
+        "num_peaks": [2],
+        "ref_peak": [2],
+        "strict": [false],
+        "positive": [false]
+      }
+    }
+  ]
+}
