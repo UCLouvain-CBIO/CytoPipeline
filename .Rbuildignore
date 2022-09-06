@@ -1,4 +1,5 @@
 ^CytoPipeline\.Rproj$
 ^\.Rproj\.user$
 ^\.git$
+^\.github$
 ^data-raw$

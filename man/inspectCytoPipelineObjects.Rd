@@ -51,6 +51,7 @@ getCytoPipelineScaleTransform(
 plotCytoPipelineProcessingQueue(
   x,
   whichQueue = c("pre-processing", "scale transform"),
+  purpose = c("run status", "description"),
   sampleFile = NULL,
   path = ".",
   title = TRUE,
@@ -86,6 +87,17 @@ defaulted to the first one belonging to the experiment
 }}
 
 \item{objectName}{(character) which object name to look for}
+
+\item{purpose}{purpose of the workflow plot
+\itemize{
+\item if "run status" (default), the disk cache will be inspected and the
+box colours will be set according to run status (green = run,
+orange = not run, red = definition not consistent with cache). Moreover, the
+object classes and names will be filled in if found in the cache.
+\item if "description", the workflow will be obtained from the step definition
+in the \code{x} object, not from the disk cache. As a result, all boxes will be
+coloured in black, and no object class and name will be provided.
+}}
 
 \item{title}{if TRUE, adds a title to the plot}
 

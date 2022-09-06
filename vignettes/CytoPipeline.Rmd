@@ -13,8 +13,7 @@ output:
     toc_float: true
 bibliography: CytoPipeline.bib
 vignette: >
-  %\VignetteIndexEntry{Automation and Visualization of Flow Cytometry Data 
-  Analysis Pipelines}
+  %\VignetteIndexEntry{Automation and Visualization of Flow Cytometry Data Analysis Pipelines}
   %\VignetteEngine{knitr::rmarkdown}
   %%\VignetteKeywords{FlowCytometry, Preprocessing, QualityControl, 
   WorkflowStep, ImmunoOncology, Software, Visualization }
@@ -48,26 +47,40 @@ The example dataset that will be used throughout this vignette is derived from
 a reference public dataset accompanying the OMIP-021 (Optimized Multicolor 
 Immunofluorescence Panel 021) article [@Gherardin2014-pj].  
 
-A subsampling of this public dataset is built-in in the `CytoPipeline` 
+A sub-sample of this public dataset is built-in in the `CytoPipeline` 
 package, as the OMIP021 dataset.  
 See `./scripts/MakeOMIP021Sample.R` for more details on how the `OMIP021` 
 dataset was created.  
 
+Note that in the `CytoPipeline`package, as in the current vignette, 
+matrices of flow cytometry events intensities are stored as 
+`flowCore::flowFrame` objects [@flowCore]. 
+
 # Example pre-processing and QC pipelines
 Let's assume that we want to pre-process the two samples of the `OMIP021` 
 dataset, using two different QC methods (for comparison). In the first 
-pre-processing pipeline, we will use the flowAI QC method [Monaco2016-vo], 
-while in the second pipeline, we will use the PeacoQC method [Emmaneel2021-xy]. 
+pre-processing pipeline, we will use the flowAI QC method [@Monaco2016-vo], 
+while in the second pipeline, we will use the PeacoQC method [@Emmaneel2021-xy]. 
+
+In both pipelines, the first part consists in estimating appropriate scale
+transformation functions for all channels present in the sample `flowFrame`.
+In order to do this, we propose the following processing step sequence (see
+figure below):   
+
+- reading the two samples fcs files
+- removing the margin events from each file
+- applying compensation for each file
+- aggregating and sub-sampling from each file
+- estimating the scale transformations from the aggregated and sub-sampled data   
+
+```{r scaleTransformWFDisplay, results='markup', fig.cap="Scale transform workflow", echo=FALSE, out.width='50%', fig.align='center', fig.wide = TRUE}
+knitr::include_graphics("./figs/scaleTransformWF.png", error = FALSE)
+```
 
 
+# Building the CytoPipeline
 
-fig workflow FlowAI
-
-fig workflow PeacoQC
-
-# Preliminaries
-
-## paths definition
+## preliminaries: paths definition
 
 ```{r pathsDef}
 # external data
@@ -75,9 +88,6 @@ extDataDir <- system.file("extdata", package = "CytoPipeline")
 # output file
 workDir <- suppressMessages(withr::local_tempdir())
 ```
-
-# Building the CytoPipeline
-
 
 ## step by step, using CytoPipeline methods
 
@@ -115,9 +125,23 @@ withr::with_dir(extDataDir, execute(pipL_PeacoQC,
 # plot work flow graphs
 plotCytoPipelineProcessingQueue(
   pipL_PeacoQC,
+  purpose = "description",
+  whichQueue = "scale transform",
+  title = FALSE)
+
+# plot work flow graphs
+plotCytoPipelineProcessingQueue(
+  pipL_PeacoQC,
   whichQueue = "scale transform",
   path = workDir)
 
+plotCytoPipelineProcessingQueue(
+  pipL_PeacoQC,
+  purpose = "description",
+  whichQueue = "pre-processing",
+  sampleFile = 1,
+  path = workDir,
+  title = FALSE)
 
 
 plotCytoPipelineProcessingQueue(
@@ -168,16 +192,23 @@ ggplotFilterEvents(ff, ff2, xChannel = "FSC-A", yChannel = "SSC-A")
 ```
 
 
+# example of retrieving another type of object
 
+We now provide an example on how to retrieve an object from the cache, that
+is not specifically a `flowCore::flowFrame`.  
 
+Here we retrieve a `flowCore::flowSet` object, which represents a set of  
+`flowCore::flowFrame`objects, that was obtained after the compensation step 
+of the scale transformation processing queue, prior to aggregating the 
+two samples.
 
-
-
-
-# example of retrieving a transformList
-
-# example of retrieving another object
-
+```{r cacheObjectRetrieve}
+obj <- getCytoPipelineObjectFromCache(pipL_PeacoQC,
+                                      path = workDir,
+                                      whichQueue = "scale transform",
+                                      objectName = "compensate_obj")
+show(obj)
+```
 
 
 
