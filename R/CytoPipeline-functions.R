@@ -1233,6 +1233,14 @@ export2JSONFile <- function(x, path) {
 #' @param ignore.case (TRUE/FALSE) used in pattern matching (grepl)
 #' @param fixed (TRUE/FALSE) used in pattern matching (grepl)
 #' @param title if TRUE, adds a title to the plot
+#' @param purpose purpose of the workflow plot
+#' - if "run status" (default), the disk cache will be inspected and the
+#' box colours will be set according to run status (green = run, 
+#' orange = not run, red = definition not consistent with cache). Moreover, the 
+#' object classes and names will be filled in if found in the cache.
+#' - if "description", the workflow will be obtained from the step definition 
+#' in the `x` object, not from the disk cache. As a result, all boxes will be
+#' coloured in black, and no object class and name will be provided.
 #' @param box.type shape of label box (rect, ellipse, diamond,
 #' round, hexa, multi)
 #' @param lwd default line width of arrow and box (one numeric value)
@@ -1612,6 +1620,7 @@ getCytoPipelineScaleTransform <-
 plotCytoPipelineProcessingQueue <-
     function(x,
              whichQueue = c("pre-processing", "scale transform"),
+             purpose = c("run status", "description"),
              sampleFile = NULL,
              path = ".",
              title = TRUE,
@@ -1629,92 +1638,103 @@ plotCytoPipelineProcessingQueue <-
         stopifnot(inherits(x, "CytoPipeline"))
 
         whichQueue <- match.arg(whichQueue)
-
+        purpose <- match.arg(purpose)
+        
+        nSteps <- getNbProcessingSteps(x, whichQueue = whichQueue)
+        steps <- getProcessingStepNames(x, whichQueue = whichQueue)
+        names <- c("raw data", steps)
+        
         sampleFileIndex <- 0
-        if (whichQueue == "pre-processing") {
-            if (is.null(sampleFile) && length(x@sampleFiles) > 0) {
-                message(
-                    "no sample file passed as argument ",
-                    "=> defaulting to first sample file"
-                )
-                sampleFileIndex <- 1
-            } else if (is.numeric(sampleFile)) {
-                if (sampleFile > 0 && sampleFile <= length(x@sampleFiles)) {
-                    sampleFileIndex <- sampleFile
+        
+        if (purpose == "description") {
+            box.lcol <- rep("black", nSteps+1)
+            
+        } else {
+            if (whichQueue == "pre-processing") {
+                if (is.null(sampleFile) && length(x@sampleFiles) > 0) {
+                    message(
+                        "no sample file passed as argument ",
+                        "=> defaulting to first sample file"
+                    )
+                    sampleFileIndex <- 1
+                } else if (is.numeric(sampleFile)) {
+                    if (sampleFile > 0 && sampleFile <= length(x@sampleFiles)) {
+                        sampleFileIndex <- sampleFile
+                    } else {
+                        stop("sampleFile out of bounds")
+                    }
                 } else {
-                    stop("sampleFile out of bounds")
+                    sampleFileIndex <-
+                        which(basename(x@sampleFiles) == basename(sampleFile))
+                    if (length(sampleFileIndex) == 0) {
+                        stop("sampleFile not found in CytoPipeline")
+                    } else if (length(sampleFileIndex) > 1) {
+                        stop(
+                            "sampleFile found multiple times in CytoPipeline ",
+                            "(unexpected inconsistency)"
+                        )
+                    }
                 }
             } else {
-                sampleFileIndex <-
-                    which(basename(x@sampleFiles) == basename(sampleFile))
-                if (length(sampleFileIndex) == 0) {
-                    stop("sampleFile not found in CytoPipeline")
-                } else if (length(sampleFileIndex) > 1) {
-                    stop(
-                        "sampleFile found multiple times in CytoPipeline ",
-                        "(unexpected inconsistency)"
+                if (!is.null(sampleFile)) {
+                    message(
+                        "sample file passed but not taken into account as the ",
+                        "processing queue is 'scale transform'"
                     )
                 }
             }
-        } else {
-            if (!is.null(sampleFile)) {
-                message(
-                    "sample file passed but not taken into account as the ",
-                    "processing queue is 'scale transform'"
+            
+            
+            box.lcol <- c("black", rep("orange", nSteps))
+            
+            res <- checkCytoPipelineConsistencyWithCache(x, path = path)
+            if (!res$isConsistent) {
+                warning(
+                    "CytoPipeline object not consistent with cache: ",
+                    res$inconsistencyMsg
                 )
-            }
-        }
-
-        nSteps <- getNbProcessingSteps(x, whichQueue = whichQueue)
-        steps <- getProcessingStepNames(x, whichQueue = whichQueue)
-        names <- c("raw data", rep(" ", nSteps))
-        box.lcol <- c("black", rep("orange", nSteps))
-
-        res <- checkCytoPipelineConsistencyWithCache(x, path = path)
-        if (!res$isConsistent) {
-            warning(
-                "CytoPipeline object not consistent with cache: ",
-                res$inconsistencyMsg
-            )
-            box.lcol <- c("black", rep("red", nSteps))
-        } else if (sampleFileIndex == 0 && whichQueue == "pre-processing") {
-            warning("No sample file in CytoPipeline object")
-            box.lcol <- c("black", rep("red", nSteps))
-        } else if (nSteps > 0) {
-            for (i in seq_len(nSteps)) {
-                stepStatus <- ""
-                if (whichQueue == "pre-processing") {
-                    if (unname(res$preProcessingStepStatus[i, sampleFileIndex])
-                    == "run") {
-                        box.lcol[i + 1] <- "green"
-                    }
-                    if (res$preProcessingStepOutputObjNames[i] != "unknown") {
-                        names[i + 1] <- res$preProcessingStepOutputObjNames[i]
-                        if (res$preProcessingStepOutputClasses[i] !=
-                            "unknown") {
-                            names[i + 1] <- paste0(
-                                names[i + 1], "\n(",
-                                res$preProcessingStepOutputClasses[i], ")"
-                            )
+                box.lcol <- c("black", rep("red", nSteps))
+            } else if (sampleFileIndex == 0 && whichQueue == "pre-processing") {
+                warning("No sample file in CytoPipeline object")
+                box.lcol <- c("black", rep("red", nSteps))
+            } else if (nSteps > 0) {
+                for (i in seq_len(nSteps)) {
+                    stepStatus <- ""
+                    if (whichQueue == "pre-processing") {
+                        if (unname(res$preProcessingStepStatus[i, sampleFileIndex])
+                            == "run") {
+                            box.lcol[i + 1] <- "green"
                         }
-                    }
-                } else {
-                    if (unname(res$scaleTransformStepStatus[i]) == "run") {
-                        box.lcol[i + 1] <- "green"
-                    }
-                    if (res$scaleTransformStepOutputObjNames[i] != "unknown") {
-                        names[i + 1] <- res$scaleTransformStepOutputObjNames[i]
-                        if (res$scaleTransformStepOutputClasses[i] !=
-                            "unknown") {
-                            names[i + 1] <- paste0(
-                                names[i + 1], "\n(",
-                                res$scaleTransformStepOutputClasses[i], ")"
-                            )
+                        if (res$preProcessingStepOutputObjNames[i] != "unknown") {
+                            names[i + 1] <- res$preProcessingStepOutputObjNames[i]
+                            if (res$preProcessingStepOutputClasses[i] !=
+                                "unknown") {
+                                names[i + 1] <- paste0(
+                                    names[i + 1], "\n(",
+                                    res$preProcessingStepOutputClasses[i], ")"
+                                )
+                            }
+                        }
+                    } else {
+                        if (unname(res$scaleTransformStepStatus[i]) == "run") {
+                            box.lcol[i + 1] <- "green"
+                        }
+                        if (res$scaleTransformStepOutputObjNames[i] != "unknown") {
+                            names[i + 1] <- res$scaleTransformStepOutputObjNames[i]
+                            if (res$scaleTransformStepOutputClasses[i] !=
+                                "unknown") {
+                                names[i + 1] <- paste0(
+                                    names[i + 1], "\n(",
+                                    res$scaleTransformStepOutputClasses[i], ")"
+                                )
+                            }
                         }
                     }
                 }
             }
         }
+
+        
 
         # browser()
 
