@@ -20,10 +20,11 @@
 library(flowCore)
 library(CytoPipeline)
 
-# replace following statement by the foldercontaining the dataset downloaded
-# from FlowRepository.org
-# automatic download API does not work anymore for the time being (May 2022)
-datasetDir <- "C:/CBIO/2021-phd-philippe-hauchamps/Datasets/OMIP-021/"
+# in the following statement, specify the folder containing the dataset 
+# manually downloaded from FlowRepository.org
+# note that automatic download API for FlowRepository does not work anymore 
+# for the time being (May 2022)
+datasetDir <- "./Datasets/OMIP-021/"
 
 datasetPath <- paste0(datasetDir, "FlowRepository_FR-FCM-ZZ9H_files")
 
