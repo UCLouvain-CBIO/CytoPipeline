@@ -8,6 +8,7 @@ abstract: >
  package. Cytopipeline provides support for automation and visualization of 
  flow cytometry data analysis pipelines. In the current state, the package 
  focuses on the preprocessing and quality control part. 
+ This vignette is distributed under a CC BY-SA 4.0 license.
 output:
   BiocStyle::html_document:
     toc_float: true
