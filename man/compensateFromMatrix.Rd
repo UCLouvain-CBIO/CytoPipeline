@@ -58,7 +58,4 @@ suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
 ff_c <-
     compensateFromMatrix(ff_m,
                          matrixSource = "fcs")        
-
-ff_c            
- 
 }

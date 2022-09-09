@@ -229,8 +229,6 @@ removeMarginsPeacoQC <- function(x, ...) {
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #' compensationMatrix <- getAcquiredCompensationMatrix(fsRaw[[2]])
-#' compensationMatrix
-#' 
 getAcquiredCompensationMatrix <- function(ff) {
     
     stopifnot (inherits(ff, "flowFrame"))
@@ -291,9 +289,6 @@ getAcquiredCompensationMatrix <- function(ff) {
 #' ff_c <-
 #'     compensateFromMatrix(ff_m,
 #'                          matrixSource = "fcs")        
-#' 
-#' ff_c            
-#'  
 compensateFromMatrix <- function(x,
                                  matrixSource = c("fcs", "import"),
                                  matrixPath = NULL,

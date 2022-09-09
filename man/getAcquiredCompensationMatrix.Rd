@@ -34,6 +34,4 @@ fsRaw <- readSampleFiles(
     truncate_max_range = truncateMaxRange,
     min.limit = minLimit)
 compensationMatrix <- getAcquiredCompensationMatrix(fsRaw[[2]])
-compensationMatrix
-
 }
