@@ -103,7 +103,7 @@ workDir <- suppressMessages(withr::local_tempdir())
 # creation on CytoPipeline object,
 # using json file as input
 pipL_PeacoQC <-
-  CytoPipeline(paste0(extDataDir, "/OMIP021_peacoQC_pipeline.json"))
+  CytoPipeline(paste0(extDataDir, "/OMIP021_PeacoQC_pipeline.json"))
 ```
 
 # Running pipelines
