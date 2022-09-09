@@ -179,19 +179,24 @@ jobs:
 
           ## Pass #1 at installing dependencies
           message(paste('****', Sys.time(), 'pass number 1 at installing dependencies: local dependencies ****'))
-          remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE)
+          local_deps <- remotes::local_package_deps(dependencies = TRUE)
+          deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
+          BiocManager::install(local_deps[local_deps %in% deps$package[deps$diff != 0]])
+
           ## Pass #2 at installing dependencies
           message(paste('****', Sys.time(), 'pass number 2 at installing dependencies: any remaining dependencies ****'))
-          remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE)
+          deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
+          BiocManager::install(deps$package[deps$diff != 0])
 
-          ## Manually install required packages as needed
-          ## BiocManager::install("", ask = FALSE, update = FALSE)
-
-          # BiocManager::install(c("devtools", "usethis", "vdiffr"), dependencies = TRUE, ask = FALSE, update = FALSE)
           ## For running the checks
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
           remotes::install_cran("rcmdcheck")
           BiocManager::install("BiocCheck")
+        shell: Rscript {0}
+        
+      ## Fix error: The magick package is required to crop "...png" but not available.
+      - name: Manually install magick
+        run: BiocManager::install("magick")
         shell: Rscript {0}
 
       - name: Install BiocGenerics
