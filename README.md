@@ -25,8 +25,7 @@ plots of obtained flowFrames at various steps of the pipeline.
 
 ### License
 
-The `CytoPipeline` code is provided under [GPL 
-license](https://opensource.org/licenses/GPL-3.0). The
-documentation, including the manual pages and the vignettes, are
-distributed under a [CC BY-SA 4.0
-license](https://creativecommons.org/licenses/by-sa/4.0/).
+The `CytoPipeline` code is provided under [GPL license version 3.0 or 
+higher](https://opensource.org/licenses/GPL-3.0). The documentation, 
+including the manual pages and the vignettes, are distributed under a [CC BY-SA 
+4.0 license](https://creativecommons.org/licenses/by-sa/4.0/).
