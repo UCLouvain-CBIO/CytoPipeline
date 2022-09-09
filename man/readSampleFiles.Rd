@@ -39,7 +39,7 @@ res <- readSampleFiles(
     truncate_max_range = truncateMaxRange,
     min.limit = minLimit)
 
-res
+#res
 
 # create a flowCore::flowFrame with one single sample
 res2 <- readSampleFiles(
@@ -48,6 +48,6 @@ res2 <- readSampleFiles(
     truncate_max_range = truncateMaxRange,
     min.limit = minLimit)
 
-res2
+#res2
 
 }

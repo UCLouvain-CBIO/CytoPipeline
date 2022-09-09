@@ -115,7 +115,7 @@ estimateScaleTransforms <- function(ff,
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #' 
-#' res
+#' #res
 #' 
 #' # create a flowCore::flowFrame with one single sample
 #' res2 <- readSampleFiles(
@@ -124,7 +124,7 @@ estimateScaleTransforms <- function(ff,
 #'     truncate_max_range = truncateMaxRange,
 #'     min.limit = minLimit)
 #' 
-#' res2
+#' #res2
 #' 
 readSampleFiles <- function(sampleFiles,
                             whichSamples = "all", ...) {

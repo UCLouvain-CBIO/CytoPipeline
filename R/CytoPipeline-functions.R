@@ -825,7 +825,7 @@ execute <- function(x,
 #' 
 #' # checking consistency between CytoPipeline object and cache
 #' res <- checkCytoPipelineConsistencyWithCache(pipL2)
-#' res
+#' #res
 #' 
 #' suppressWarnings(execute(pipL2, rmCache = FALSE, path = outputDir))
 #' # (everything is already stored in cache)
