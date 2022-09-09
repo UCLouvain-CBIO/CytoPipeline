@@ -1299,7 +1299,6 @@ export2JSONFile <- function(x, path) {
 #'                                objectName = "remove_doublets_obj",
 #'                                path = outputDir,
 #'                                sampleFile = sampleFiles(pipL2)[1])
-#' ff
 #' 
 #' # get any object (output of one step)
 #' obj <-
