@@ -1,7 +1,8 @@
 ---
 title: "Automation and Visualization of Flow Cytometry Data Analysis Pipelines"
 author:
-- name: Philippe Hauchamps
+    - name: Philippe Hauchamps
+    - name: Laurent Gatto
 package: CytoPipeline
 abstract: >
  This vignette describes the functionality implemented in the `CytoPipeline`
