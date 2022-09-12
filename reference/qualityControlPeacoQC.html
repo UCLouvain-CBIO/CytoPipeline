@@ -25,6 +25,9 @@ It also pre-selects the channels to be handled (=&amp;gt; all signal channels)">
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav"><li>
+  <a href="../articles/CytoPipeline.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -120,7 +123,7 @@ PeacoQC in outputDir directory</p></dd>
 <span class="r-in"><span>    truncate_max_range <span class="op">=</span> <span class="va">truncateMaxRange</span>,</span></span>
 <span class="r-in"><span>    min.limit <span class="op">=</span> <span class="va">minLimit</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ff_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="removeMarginsPeacoQC.html">removeMarginsPeacoQC</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">fsRaw</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="va">ff_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="removeMarginsPeacoQC.html">removeMarginsPeacoQC</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">fsRaw</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    </span></span>
 <span class="r-in"><span><span class="va">ff_c</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="compensateFromMatrix.html">compensateFromMatrix</a></span><span class="op">(</span><span class="va">ff_m</span>,</span></span>
@@ -146,7 +149,7 @@ PeacoQC in outputDir directory</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> applying SSC-A linear transformation for SSC-H channel...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ff_QualityControl</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span><span class="va">ff_QualityControl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu">qualityControlPeacoQC</span><span class="op">(</span></span></span>
 <span class="r-in"><span>        <span class="va">ff_c</span>,</span></span>
 <span class="r-in"><span>        preTransform <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
@@ -157,12 +160,10 @@ PeacoQC in outputDir directory</p></dd>
 <span class="r-in"><span>        IT_limit <span class="op">=</span> <span class="fl">0.55</span>,</span></span>
 <span class="r-in"><span>        force_IT <span class="op">=</span> <span class="fl">150</span>, </span></span>
 <span class="r-in"><span>        peak_removal <span class="op">=</span> <span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        min_nr_bins_peakdetection <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> </span></span>
+<span class="r-in"><span>        min_nr_bins_peakdetection <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There is an inconsistancy in the time channel.  It seems that not all the cells are ordered according to time in the flowframe.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are not enough bins for a robust isolation tree analysis.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 1.6% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 1.6% of the measurements</span>
 <span class="r-in"><span>        </span></span>
@@ -180,7 +181,7 @@ PeacoQC in outputDir directory</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

@@ -33,6 +33,9 @@ the cache."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav"><li>
+  <a href="../articles/CytoPipeline.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -297,13 +300,12 @@ directory corresponding to the experiment</p></dd>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># execute pipeline, remove cache if existing with the same experiment name</span></span></span>
-<span class="r-in"><span><span class="fu">execute</span><span class="op">(</span><span class="va">pipL</span>, rmCache <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">execute</span><span class="op">(</span><span class="va">pipL</span>, rmCache <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ### running SCALE TRANSFORMATION processing steps ###</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>More than 10.3 % is considered as a margin event in file sample_Donor1.fcs . This should be verified.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 3 [compensate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [flowframe_aggregate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [scale_transform_estimate] ...</span>
@@ -320,29 +322,25 @@ directory corresponding to the experiment</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> a = 1.41e-05 ; b = -1.92e-01</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> applying SSC-A linear transformation for SSC-H channel...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE /home/lgatto/disk/R/x86_64-pc-linux-gnu-library/4.2/CytoPipeline/extdata/sample_Donor1.fcs...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE /__w/_temp/Library/CytoPipeline/extdata/sample_Donor1.fcs...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>More than 10.3 % is considered as a margin event in file sample_Donor1.fcs . This should be verified.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 3 [compensate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [remove_doublets] ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import ‘flowViz::contour’ by ‘graphics::contour’ when loading ‘flowStats’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [remove_debris] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The prior specification has no effect when usePrior=no</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using the serial version of flowClust</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There is an inconsistancy in the time channel.  It seems that not all the cells are ordered according to time in the flowframe.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are not enough bins for a robust isolation tree analysis.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 0.91% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 0.91% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE /home/lgatto/disk/R/x86_64-pc-linux-gnu-library/4.2/CytoPipeline/extdata/sample_Donor2.fcs...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE /__w/_temp/Library/CytoPipeline/extdata/sample_Donor2.fcs...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
@@ -354,16 +352,14 @@ directory corresponding to the experiment</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There is an inconsistancy in the time channel.  It seems that not all the cells are ordered according to time in the flowframe.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are not enough bins for a robust isolation tree analysis.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 0% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 0% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># re-execute as is without removing cache =&gt; all results found in cache!</span></span></span>
-<span class="r-in"><span><span class="fu">execute</span><span class="op">(</span><span class="va">pipL</span>, rmCache <span class="op">=</span> <span class="cn">FALSE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">execute</span><span class="op">(</span><span class="va">pipL</span>, rmCache <span class="op">=</span> <span class="cn">FALSE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ### running SCALE TRANSFORMATION processing steps ###</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
@@ -373,7 +369,7 @@ directory corresponding to the experiment</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [flowframe_aggregate]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [scale_transform_estimate]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE /home/lgatto/disk/R/x86_64-pc-linux-gnu-library/4.2/CytoPipeline/extdata/sample_Donor1.fcs...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE /__w/_temp/Library/CytoPipeline/extdata/sample_Donor1.fcs...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins]: found in cache!</span>
@@ -384,7 +380,7 @@ directory corresponding to the experiment</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE /home/lgatto/disk/R/x86_64-pc-linux-gnu-library/4.2/CytoPipeline/extdata/sample_Donor2.fcs...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE /__w/_temp/Library/CytoPipeline/extdata/sample_Donor2.fcs...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins]: found in cache!</span>
@@ -405,14 +401,12 @@ directory corresponding to the experiment</p></dd>
 <span class="r-in"><span><span class="co"># note we temporarily set working directory into package root directory</span></span></span>
 <span class="r-in"><span><span class="co"># needed as json path mentions "./" path for sample files</span></span></span>
 <span class="r-in"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span>new <span class="op">=</span> <span class="va">jsonDir</span>, <span class="op">{</span></span></span>
-<span class="r-in"><span>     <span class="fu">execute</span><span class="op">(</span><span class="va">pipL2</span>, rmCache <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Found a previous cache with experiment name OMIP021_PeacoQC =&gt; removed it</span>
+<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">execute</span><span class="op">(</span><span class="va">pipL2</span>, rmCache <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ### running SCALE TRANSFORMATION processing steps ###</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>More than 10.3 % is considered as a margin event in file sample_Donor1.fcs . This should be verified.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 3 [compensate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [flowframe_aggregate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [scale_transform_estimate] ...</span>
@@ -433,7 +427,6 @@ directory corresponding to the experiment</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>More than 10.3 % is considered as a margin event in file sample_Donor1.fcs . This should be verified.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 3 [compensate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [remove_doublets] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [remove_debris] ...</span>
@@ -442,10 +435,8 @@ directory corresponding to the experiment</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There is an inconsistancy in the time channel.  It seems that not all the cells are ordered according to time in the flowframe.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are not enough bins for a robust isolation tree analysis.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 0.91% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 0.91% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
@@ -462,10 +453,8 @@ directory corresponding to the experiment</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There is an inconsistancy in the time channel.  It seems that not all the cells are ordered according to time in the flowframe.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are not enough bins for a robust isolation tree analysis.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 0% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 0% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
@@ -477,9 +466,9 @@ directory corresponding to the experiment</p></dd>
 <span class="r-in"><span>    experimentName <span class="op">=</span> <span class="va">experimentName</span>,</span></span>
 <span class="r-in"><span>    path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">execute</span><span class="op">(</span><span class="va">pipL3</span>,</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">execute</span><span class="op">(</span><span class="va">pipL3</span>,</span></span>
 <span class="r-in"><span>        rmCache <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>        path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span></span></span>
+<span class="r-in"><span>        path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ### running SCALE TRANSFORMATION processing steps ###</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
@@ -525,7 +514,7 @@ directory corresponding to the experiment</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

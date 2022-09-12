@@ -25,6 +25,9 @@ internal function for the time being"><!-- mathjax --><script src="https://cdnjs
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav"><li>
+  <a href="../articles/CytoPipeline.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -98,6 +101,7 @@ formats</p>
 <span><span class="fu">plotCytoPipelineProcessingQueue</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pre-processing"</span>, <span class="st">"scale transform"</span><span class="op">)</span>,</span>
+<span>  purpose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"run status"</span>, <span class="st">"description"</span><span class="op">)</span>,</span>
 <span>  sampleFile <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -148,6 +152,17 @@ defaulted to the first one belonging to the experiment</p></li>
 
 <dt>objectName</dt>
 <dd><p>(character) which object name to look for</p></dd>
+
+
+<dt>purpose</dt>
+<dd><p>purpose of the workflow plot</p><ul><li><p>if "run status" (default), the disk cache will be inspected and the
+box colours will be set according to run status (green = run,
+orange = not run, red = definition not consistent with cache). Moreover, the
+object classes and names will be filled in if found in the cache.</p></li>
+<li><p>if "description", the workflow will be obtained from the step definition
+in the <code>x</code> object, not from the disk cache. As a result, all boxes will be
+coloured in black, and no object class and name will be provided.</p></li>
+</ul></dd>
 
 
 <dt>title</dt>
@@ -250,13 +265,12 @@ set of boxes appears in red</p></li>
 <span class="r-in"><span><span class="co"># note we temporarily set working directory into package root directory</span></span></span>
 <span class="r-in"><span><span class="co"># needed as json path mentions "./" path for sample files</span></span></span>
 <span class="r-in"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span>new <span class="op">=</span> <span class="va">jsonDir</span>, <span class="op">{</span></span></span>
-<span class="r-in"><span>     <span class="fu"><a href="execute.html">execute</a></span><span class="op">(</span><span class="va">pipL</span>, rmCache <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="execute.html">execute</a></span><span class="op">(</span><span class="va">pipL</span>, rmCache <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ### running SCALE TRANSFORMATION processing steps ###</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>More than 10.3 % is considered as a margin event in file sample_Donor1.fcs . This should be verified.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 3 [compensate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [flowframe_aggregate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [scale_transform_estimate] ...</span>
@@ -277,7 +291,6 @@ set of boxes appears in red</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>More than 10.3 % is considered as a margin event in file sample_Donor1.fcs . This should be verified.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 3 [compensate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [remove_doublets] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [remove_debris] ...</span>
@@ -286,10 +299,8 @@ set of boxes appears in red</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There is an inconsistancy in the time channel.  It seems that not all the cells are ordered according to time in the flowframe.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are not enough bins for a robust isolation tree analysis.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 0.91% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 0.91% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
@@ -306,10 +317,8 @@ set of boxes appears in red</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There is an inconsistancy in the time channel.  It seems that not all the cells are ordered according to time in the flowframe.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are not enough bins for a robust isolation tree analysis.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 0% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 0% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
@@ -350,22 +359,6 @@ set of boxes appears in red</p></li>
 <span class="r-in"><span>                               objectName <span class="op">=</span> <span class="st">"remove_doublets_obj"</span>,</span></span>
 <span class="r-in"><span>                               path <span class="op">=</span> <span class="va">outputDir</span>,</span></span>
 <span class="r-in"><span>                               sampleFile <span class="op">=</span> <span class="fu"><a href="CytoPipeline.html">sampleFiles</a></span><span class="op">(</span><span class="va">pipL2</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ff</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> flowFrame object 'Donor1.fcs'</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> with 16508 cells and 22 observables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     name           desc     range  minRange  maxRange</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P1                FSC-A             NA    262144         0    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P2                FSC-H             NA    262144         0    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P3                SSC-A             NA    262144         0    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P4                SSC-H             NA    262144         0    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P5  Comp-450/50Violet-A BV421 - TETaGC    262144      -111    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ...                  ...            ...       ...       ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P18 Comp-670/30Yellow-A   PECy5 - CD28    262144   -111.00    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P19 Comp-710/50Yellow-A          EMPTY    262144      0.00    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P20 Comp-780/60Yellow-A   PECy7 - CCR7    262144   -105.78    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P21                Time             NA    262144      0.00    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P22         Original_ID             NA    354629      0.00    354628</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 307 keywords are stored in the 'description' slot</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># get any object (output of one step)</span></span></span>
 <span class="r-in"><span><span class="va">obj</span> <span class="op">&lt;-</span></span></span>
@@ -391,7 +384,7 @@ set of boxes appears in red</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

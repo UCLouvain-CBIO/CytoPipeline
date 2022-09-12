@@ -25,6 +25,9 @@ and $SPILLOVER"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/l
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav"><li>
+  <a href="../articles/CytoPipeline.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -91,37 +94,6 @@ and $SPILLOVER</p>
 <span class="r-in"><span>    truncate_max_range <span class="op">=</span> <span class="va">truncateMaxRange</span>,</span></span>
 <span class="r-in"><span>    min.limit <span class="op">=</span> <span class="va">minLimit</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">compensationMatrix</span> <span class="op">&lt;-</span> <span class="fu">getAcquiredCompensationMatrix</span><span class="op">(</span><span class="va">fsRaw</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">compensationMatrix</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       450/50Violet-A 525/50Violet-A 540/30Violet-A 585/15Violet-A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]       1.000000       0.034000       0.007000       0.001000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]       0.450000       1.000000       0.750000       0.050000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]       0.029012       0.002021       1.000000       0.150003</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]       0.102023       0.007052       0.380440       1.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]       0.035031       0.002068       0.000000       0.024005</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]       0.168002       0.010035       0.003030       0.003013</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       610/20Violet-A 670/30Violet-A 670/14Red-A 730//45Red-A 780/60Red-A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]       0.000000       0.000000    0.000000     0.000000    0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]       0.040000       0.000000    0.000000     0.000000    0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]       0.191003       0.010016    0.000000     0.000000    0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]       1.386501       0.059000    0.213004     0.174002    0.017029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]       1.000000       0.079000    0.005003     0.298002    0.035008</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]       0.062016       1.000000    0.000000     0.021022    0.117032</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       530/30Blue-A 710/50Blue-A 582/15Yellow-A 610/20Yellow-A 670/30Yellow-A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]      0.00000     0.000000          0.000              0       0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]      0.00000     0.000000          0.000              0       0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]      0.00000     0.021001          0.080              0       0.091001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]      0.00000     0.029004          0.000              0       0.169706</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]      0.00000     0.160006          0.000              0       0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]      0.00000     0.000000          0.000              0       0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       710/50Yellow-A 780/60Yellow-A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]              0       0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]              0       0.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]              0       0.011003</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]              0       0.026007</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]              0       0.008003</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]              0       0.057024</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [ reached getOption("max.print") -- omitted 10 rows ]</span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -136,7 +108,7 @@ and $SPILLOVER</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

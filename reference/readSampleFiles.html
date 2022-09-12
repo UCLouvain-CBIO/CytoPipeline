@@ -24,6 +24,9 @@ Also adds a "Cell_ID" additional column, used in flowFrames comparison'><!-- mat
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav"><li>
+  <a href="../articles/CytoPipeline.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -99,11 +102,7 @@ length(sampleFiles) == 1</p>
 <span class="r-in"><span>    truncate_max_range <span class="op">=</span> <span class="va">truncateMaxRange</span>,</span></span>
 <span class="r-in"><span>    min.limit <span class="op">=</span> <span class="va">minLimit</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">res</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A flowSet with 2 experiments.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> column names(22): FSC-A FSC-H ... Time Original_ID</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="co">#res</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create a flowCore::flowFrame with one single sample</span></span></span>
 <span class="r-in"><span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu">readSampleFiles</span><span class="op">(</span></span></span>
@@ -112,22 +111,7 @@ length(sampleFiles) == 1</p>
 <span class="r-in"><span>    truncate_max_range <span class="op">=</span> <span class="va">truncateMaxRange</span>,</span></span>
 <span class="r-in"><span>    min.limit <span class="op">=</span> <span class="va">minLimit</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">res2</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> flowFrame object 'Donor2.fcs'</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> with 20000 cells and 22 observables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                name           desc     range  minRange  maxRange</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P1           FSC-A             NA    262144         0    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P2           FSC-H             NA    262144         0    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P3           SSC-A             NA    262144         0    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P4           SSC-H             NA    262144         0    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P5  450/50Violet-A BV421 - TETaGC    262144      -111    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ...             ...            ...       ...       ...       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P18 670/30Yellow-A   PECy5 - CD28    262144      -111    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P19 710/50Yellow-A          EMPTY    262144         0    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P20 780/60Yellow-A   PECy7 - CCR7    262144      -111    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P21           Time             NA    262144         0    262144</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $P22    Original_ID             NA    564429         0    564428</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 307 keywords are stored in the 'description' slot</span>
+<span class="r-in"><span><span class="co">#res2</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -143,7 +127,7 @@ length(sampleFiles) == 1</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

@@ -24,6 +24,9 @@ object and the file cache on disk"><!-- mathjax --><script src="https://cdnjs.cl
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav"><li>
+  <a href="../articles/CytoPipeline.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -82,7 +85,7 @@ disk</p></dd>
     <h2>Value</h2>
     
 
-<p>for <code>deleteCytoPipelineCache</code>: nothing<br></p>
+<p>for <code>deleteCytoPipelineCache</code>: TRUE if successfully removed<br></p>
 
 
 <p>for <code>buildCytoPipelineCache</code>: the built CytoPipeline object<br></p>
@@ -123,13 +126,12 @@ and what is stored in the file cache</p></li>
 <span class="r-in"><span><span class="co"># note we temporarily set working directory into package root directory</span></span></span>
 <span class="r-in"><span><span class="co"># needed as json path mentions "./" path for sample files</span></span></span>
 <span class="r-in"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span>new <span class="op">=</span> <span class="va">jsonDir</span>, <span class="op">{</span></span></span>
-<span class="r-in"><span>     <span class="fu"><a href="execute.html">execute</a></span><span class="op">(</span><span class="va">pipL</span>, rmCache <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="execute.html">execute</a></span><span class="op">(</span><span class="va">pipL</span>, rmCache <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ### running SCALE TRANSFORMATION processing steps ###</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>More than 10.3 % is considered as a margin event in file sample_Donor1.fcs . This should be verified.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 3 [compensate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [flowframe_aggregate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [scale_transform_estimate] ...</span>
@@ -150,7 +152,6 @@ and what is stored in the file cache</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>More than 10.3 % is considered as a margin event in file sample_Donor1.fcs . This should be verified.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 3 [compensate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [remove_doublets] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [remove_debris] ...</span>
@@ -159,10 +160,8 @@ and what is stored in the file cache</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There is an inconsistancy in the time channel.  It seems that not all the cells are ordered according to time in the flowframe.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are not enough bins for a robust isolation tree analysis.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 0.91% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 0.91% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
@@ -179,10 +178,8 @@ and what is stored in the file cache</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There is an inconsistancy in the time channel.  It seems that not all the cells are ordered according to time in the flowframe.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are not enough bins for a robust isolation tree analysis.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 0% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 0% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
@@ -199,46 +196,9 @@ and what is stored in the file cache</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># checking consistency between CytoPipeline object and cache</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">checkCytoPipelineConsistencyWithCache</span><span class="op">(</span><span class="va">pipL2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">res</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $isConsistent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $inconsistencyMsg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $scaleTransformStepStatus</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           flowframe_read           remove_margins               compensate </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                "not_run"                "not_run"                "not_run" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      flowframe_aggregate scale_transform_estimate </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                "not_run"                "not_run" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $scaleTransformStepOutputObjNames</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "unknown" "unknown" "unknown" "unknown" "unknown"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $scaleTransformStepOutputClasses</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "unknown" "unknown" "unknown" "unknown" "unknown"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $preProcessingStepStatus</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   sample_Donor1.fcs sample_Donor2.fcs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> flowframe_read    "not_run"         "not_run"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> remove_margins    "not_run"         "not_run"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> compensate        "not_run"         "not_run"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> remove_doublets   "not_run"         "not_run"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> remove_debris     "not_run"         "not_run"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> remove_dead_cells "not_run"         "not_run"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> perform_QC        "not_run"         "not_run"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> transform         "not_run"         "not_run"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $preProcessingStepOutputObjNames</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "unknown" "unknown" "unknown" "unknown" "unknown" "unknown" "unknown"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [8] "unknown"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $preProcessingStepOutputClasses</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "unknown" "unknown" "unknown" "unknown" "unknown" "unknown" "unknown"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [8] "unknown"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="co">#res</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="execute.html">execute</a></span><span class="op">(</span><span class="va">pipL2</span>, rmCache <span class="op">=</span> <span class="cn">FALSE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span> </span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="execute.html">execute</a></span><span class="op">(</span><span class="va">pipL2</span>, rmCache <span class="op">=</span> <span class="cn">FALSE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ### running SCALE TRANSFORMATION processing steps ###</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
@@ -290,7 +250,7 @@ and what is stored in the file cache</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>
