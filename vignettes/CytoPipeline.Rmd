@@ -4,10 +4,10 @@ author:
 - name: Philippe Hauchamps
 package: CytoPipeline
 abstract: >
- This vignette describes the functionality implemented in the CytoPipeline
- package. Cytopipeline provides support for automation and visualization of 
+ This vignette describes the functionality implemented in the `CytoPipeline`
+ package. `CytoPipeline` provides support for automation and visualization of 
  flow cytometry data analysis pipelines. In the current state, the package 
- focuses on the preprocessing and quality control part. 
+ focuses on the pre-processing and quality control part. 
  This vignette is distributed under a CC BY-SA 4.0 license.
 output:
   BiocStyle::html_document:
@@ -32,16 +32,16 @@ library("CytoPipeline")
 
 # Introduction
 
-The `CytoPipeline` package provides infrastructure to support definition, run
-and standardized visualization of pre-processing and quality control pipelines 
-for flow cytometry data. This infrastructure consists of two main S4 classes, 
-i.e. `CytoPipeline` and `CytoProcessingStep`, as well as dedicated wrapper 
-functions around selected third-party package methods often used to implement 
-the main pre-processing steps.
+The `CytoPipeline` package provides infrastructure to support the definition, 
+run and standardized visualization of pre-processing and quality control 
+pipelines for flow cytometry data. This infrastructure consists of two main S4 
+classes, i.e. `CytoPipeline` and `CytoProcessingStep`, as well as dedicated 
+wrapper functions around selected third-party package methods often used to 
+implement these pre-processing steps.
 
-In the following sections, we are going to demonstrate how to create a 
-`CytoPipeline` object implementing a simple pre-processing pipeline, how to run
-it and how to retrieve and visualize the results after each step. 
+In the following sections, we demonstrate how to create a `CytoPipeline` object 
+implementing a simple pre-processing pipeline, how to run it and how to retrieve 
+and visualize the results after each step. 
 
 # Example dataset
 The example dataset that will be used throughout this vignette is derived from 
@@ -49,86 +49,355 @@ a reference public dataset accompanying the OMIP-021 (Optimized Multicolor
 Immunofluorescence Panel 021) article [@Gherardin2014-pj].  
 
 A sub-sample of this public dataset is built-in in the `CytoPipeline` 
-package, as the OMIP021 dataset.  
-See `./scripts/MakeOMIP021Sample.R` for more details on how the `OMIP021` 
-dataset was created.  
+package, as the OMIP021 dataset. See `./scripts/MakeOMIP021Sample.R` for more 
+details on how the `OMIP021` dataset was created.  
 
 Note that in the `CytoPipeline`package, as in the current vignette, 
 matrices of flow cytometry events intensities are stored as 
 `flowCore::flowFrame` objects [@flowCore]. 
 
-# Example pre-processing and QC pipelines
+# Example of pre-processing and QC pipelines
 Let's assume that we want to pre-process the two samples of the `OMIP021` 
-dataset, using two different QC methods (for comparison). In the first 
-pre-processing pipeline, we will use the flowAI QC method [@Monaco2016-vo], 
-while in the second pipeline, we will use the PeacoQC method [@Emmaneel2021-xy]. 
+dataset, and let's assume that we want to compare what we would obtain when
+pre-processing these files using two different QC methods.    
+
+In the first pre-processing pipeline, we will use the flowAI QC method 
+[@Monaco2016-vo], while in the second pipeline, we will use the PeacoQC method 
+[@Emmaneel2021-xy]. Note that when we here refer to QC method, we mean the 
+algorithm used to ensure stability (stationarity) of the channel signals in time.
 
 In both pipelines, the first part consists in estimating appropriate scale
 transformation functions for all channels present in the sample `flowFrame`.
-In order to do this, we propose the following processing step sequence (see
-figure below):   
+In order to do this, we propose the following *scale transformation processing 
+queue* (Fig. 1):   
 
-- reading the two samples fcs files
+- reading the two samples `.fcs` files
 - removing the margin events from each file
 - applying compensation for each file
 - aggregating and sub-sampling from each file
 - estimating the scale transformations from the aggregated and sub-sampled data   
 
-```{r scaleTransformWFDisplay, results='markup', fig.cap="Scale transform workflow", echo=FALSE, out.width='50%', fig.align='center', fig.wide = TRUE}
-knitr::include_graphics("./figs/scaleTransformWF.png", error = FALSE)
+```{r scaleTransformQueueDisplay, results='markup', fig.cap="Scale transform processing queue", echo=FALSE, out.width='75%', fig.align='center', fig.wide = TRUE}
+knitr::include_graphics("./figs/scaleTransformQueue.png", error = FALSE)
+```
+
+When this first part is done, one can apply pre-processing for each file 
+one by one. However, depending on the choice of QC method, the order of steps 
+needs to be slightly different:
+
+- when using flowAI, it is advised to eliminate the 'bad events' starting from
+raw data (see [@Monaco2016-vo])
+- when using PeacoQC, it is advised to eliminate the 'bad events' from already
+compensated and scale transformed data (see [@Emmaneel2021-xy])
+
+Therefore, we propose the following *pre-processing queues* represented in 
+Fig. 2.
+
+```{r preProcessingQueueDisplay, results='markup', fig.cap="Pre-processing queue for two different pipeline settings", echo=FALSE, out.width='100%', fig.align='center', fig.wide = TRUE}
+knitr::include_graphics("./figs/preProcessingQueues.png", error = FALSE)
 ```
 
 
 # Building the CytoPipeline
 
+`CytoPipeline` is the central S4 class used in the `CytoPipeline` package to 
+represent a flow cytometry pre-processing pipeline. The main slots of
+`CytoPipeline` objects are :    
+
+- an `experimentName`, which gives a name to a particular user definition 
+of a pre-processing pipeline. The *experiment* here, is not related to an assay
+experiment, but refers to a specific way to design a pipeline. For example, in
+the current use case, we will define two `experimentName`s, one to refer to the
+flowAI pipeline, and another one to refer to the PeacoQC pipeline 
+(see previous section);   
+
+- a vector of `sampleFiles`, which are `.fcs` raw data files on which one need 
+to run the pre-processing pipeline;  
+
+- two processing queues, i.e. a `scaleTransformProcessingQueue`, and a 
+`flowFramesPreProcessingQueue`, which correspond to the two parts described in 
+previous section. Each of these queues are composed of one or several 
+`CytoProcessingStep` objects, will be processed in linear sequence, the output 
+of one step being the input of the next step.   
+
+Note there are important differences between the two processing queues. 
+On the one hand, the `scaleTransformProcessingQueue` takes the vector of all 
+sample files as an input, and will be run first by convention, and only once. 
+On the other hand, the `flowFramesPreProcessingQueue` will be run after the 
+scale transformation, on each sample file one after the other, in a loop. 
+The final output of the `scaleTransformProcessingQueue`, which should be a 
+`flowCore::tranformList`, is also provided as input to the 
+`flowFramesPreProcessingQueue`, by convention.      
+
+In the next subsections, we show the different steps involved in creating a
+`CytoPipeline` object.
+
 ## preliminaries: paths definition
 
+In the following code, `rawDataDir` refers to the directory in which the `.fcs`
+raw data files are stored. `workDir` will be used as root directory to store 
+the disk cache. Indeed, when running the `CytoPipeline` objects, all the 
+different step outputs will be store in a `BiocFileCache` instance, in a 
+sub-directory that will be created in `workDir`and of which the name will be 
+set to the pipeline `experimentName`.
+
 ```{r pathsDef}
-# external data
-extDataDir <- system.file("extdata", package = "CytoPipeline")
-# output file
+# raw data
+rawDataDir <- system.file("extdata", package = "CytoPipeline")
+# output files
 workDir <- suppressMessages(withr::local_tempdir())
 ```
 
-## step by step, using CytoPipeline methods
+## first method: step by step, using CytoPipeline methods
+
+In this sub-section, we build a `CytoPipeline` object by successively adding 
+`CytoProcessingStep` objects to the two different processing queues. We do this
+for the PeacoQC pipeline.
 
 ```{r CytoPipelineSteps}
 
+# main parameters : sample files and output files
+
+experimentName <- "OMIP021_PeacoQC"
+sampleFiles <- paste0(rawDataDir, "/", list.files(rawDataDir,
+                                             pattern = "sample_"))
+
+pipelineParams <- list()
+pipelineParams$experimentName <- experimentName
+pipelineParams$sampleFiles <- sampleFiles
+pipL_PeacoQC <- CytoPipeline(pipelineParams)
+
+### SCALE TRANSFORMATION STEPS ###
+
+pipL_PeacoQC <-
+    addProcessingStep(pipL_PeacoQC,
+        whichQueue = "scale transform",
+        CytoProcessingStep(
+            name = "flowframe_read",
+            FUN = "readSampleFiles",
+            ARGS = list(
+                whichSamples = "all",
+                truncate_max_range = FALSE,
+                min.limit = NULL
+            )
+        )
+    )
+
+pipL_PeacoQC <-
+    addProcessingStep(pipL_PeacoQC,
+        whichQueue = "scale transform",
+        CytoProcessingStep(
+            name = "remove_margins",
+            FUN = "removeMarginsPeacoQC",
+            ARGS = list()
+        )
+    )
+
+pipL_PeacoQC <-
+    addProcessingStep(pipL_PeacoQC,
+        whichQueue = "scale transform",
+        CytoProcessingStep(
+            name = "compensate",
+            FUN = "compensateFromMatrix",
+            ARGS = list(matrixSource = "fcs")
+        )
+    )
+
+pipL_PeacoQC <-
+    addProcessingStep(pipL_PeacoQC,
+        whichQueue = "scale transform",
+        CytoProcessingStep(
+            name = "flowframe_aggregate",
+            FUN = "aggregateAndSample",
+            ARGS = list(
+                nTotalEvents = 10000,
+                seed = 0
+            )
+        )
+    )
+
+pipL_PeacoQC <-
+    addProcessingStep(pipL_PeacoQC,
+        whichQueue = "scale transform",
+        CytoProcessingStep(
+            name = "scale_transform_estimate",
+            FUN = "estimateScaleTransforms",
+            ARGS = list(
+                fluoMethod = "estimateLogicle",
+                scatterMethod = "linear",
+                scatterRefMarker = "BV785 - CD3"
+            )
+        )
+    )
+
+### FLOW FRAME PRE-PROCESSING STEPS ###
+
+pipL_PeacoQC <-
+    addProcessingStep(pipL_PeacoQC,
+        whichQueue = "pre-processing",
+        CytoProcessingStep(
+            name = "flowframe_read",
+            FUN = "readSampleFiles",
+            ARGS = list(
+                truncate_max_range = FALSE,
+                min.limit = NULL
+            )
+        )
+    )
+
+
+pipL_PeacoQC <-
+    addProcessingStep(pipL_PeacoQC,
+        whichQueue = "pre-processing",
+        CytoProcessingStep(
+            name = "remove_margins",
+            FUN = "removeMarginsPeacoQC",
+            ARGS = list()
+        )
+    )
+
+pipL_PeacoQC <-
+    addProcessingStep(pipL_PeacoQC,
+        whichQueue = "pre-processing",
+        CytoProcessingStep(
+            name = "compensate",
+            FUN = "compensateFromMatrix",
+            ARGS = list(matrixSource = "fcs")
+        )
+    )
+
+pipL_PeacoQC <-
+    addProcessingStep(
+        pipL_PeacoQC,
+        whichQueue = "pre-processing",
+        CytoProcessingStep(
+            name = "perform_QC",
+            FUN = "qualityControlPeacoQC",
+            ARGS = list(
+                preTransform = TRUE,
+                min_cells = 150, # default
+                max_bins = 500, # default
+                step = 500, # default,
+                MAD = 6, # default
+                IT_limit = 0.55, # default
+                force_IT = 150, # default
+                peak_removal = 0.3333, # default
+                min_nr_bins_peakdetection = 10 # default
+            )
+        )
+    )
+
+pipL_PeacoQC <-
+    addProcessingStep(
+        pipL_PeacoQC,
+        whichQueue = "pre-processing",
+        CytoProcessingStep(
+            name = "remove_doublets",
+            FUN = "removeDoubletsFlowStats",
+            ARGS = list(
+                areaChannels = c("FSC-A", "SSC-A"),
+                heightChannels = c("FSC-H", "SSC-H"),
+                wider_gate = TRUE
+            )
+        )
+    )
+
+pipL_PeacoQC <-
+    addProcessingStep(pipL_PeacoQC,
+        whichQueue = "pre-processing",
+        CytoProcessingStep(
+            name = "remove_debris",
+            FUN = "removeDebrisFlowClustTmix",
+            ARGS = list(
+                FSCChannel = c("FSC-A"),
+                SSCChannel = c("SSC-A"),
+                nClust = 3,
+                level = 0.97,
+                B = 100,
+                verbose = TRUE
+            )
+        )
+    )
+
+pipL_PeacoQC <-
+    addProcessingStep(pipL_PeacoQC,
+        whichQueue = "pre-processing",
+        CytoProcessingStep(
+            name = "remove_dead_cells",
+            FUN = "removeDeadCellsGateTail",
+            ARGS = list(
+                FSCChannel = c("FSC-A"),
+                LDMarker = "L/D Aqua - Viability",
+                num_peaks = 2,
+                ref_peak = 2,
+                strict = FALSE,
+                positive = FALSE
+            )
+        )
+    )
+
+
 ```
 
 
-## in one go, using json file input 
+## second method: in one go, using JSON file input 
 
-```{r CytoPiplineJson}
+In this sub-section, we build the flowAI pipeline, this time using a JSON
+file as an input. Note that the `experimentName` is here specified in the JSON
+file itself.
+
+```{r CytoPipelineJson}
+
+jsonDir <- rawDataDir
 
 # creation on CytoPipeline object,
 # using json file as input
-pipL_PeacoQC <-
-  CytoPipeline(paste0(extDataDir, "/OMIP021_PeacoQC_pipeline.json"))
+pipL_flowAI <-
+  CytoPipeline(paste0(jsonDir, "/OMIP021_flowAI_pipeline.json"))
 ```
 
-# Running pipelines
+# Executing pipelines
 
-```{r}
-# execute pipeline
-withr::with_dir(extDataDir, execute(pipL_PeacoQC, 
-                                    rmCache = TRUE,
-                                    path = workDir))
+```{r executePeacoQC}
+# execute PeacoQC pipeline
+execute(pipL_PeacoQC, path = workDir)
+```
+
+```{r executeFlowAI }
+# execute flowAI pipeline
+withr::with_dir(jsonDir, execute(pipL_flowAI,
+                                 path = workDir))
 ```
 
 
-# Visualization
+# Inspecting results and visualization
 
 ## Plotting processing queues as workflow graphs
 
 ```{r plotWorkFlows}
 
-# plot work flow graphs
-plotCytoPipelineProcessingQueue(
-  pipL_PeacoQC,
-  purpose = "description",
-  whichQueue = "scale transform",
-  title = FALSE)
+# # plot work flow graphs
+# plotCytoPipelineProcessingQueue(
+#   pipL_PeacoQC,
+#   purpose = "description",
+#   whichQueue = "scale transform",
+#   title = FALSE)
+# 
+# par(mfrow = c(1,2))
+# 
+# # plot work flow graphs
+# plotCytoPipelineProcessingQueue(
+#   pipL_PeacoQC,
+#   purpose = "description",
+#   whichQueue = "pre-processing",
+#   title = TRUE)
+# 
+# # plot work flow graphs
+# plotCytoPipelineProcessingQueue(
+#   pipL_flowAI,
+#   purpose = "description",
+#   whichQueue = "pre-processing",
+#   title = TRUE)
 
 # plot work flow graphs
 plotCytoPipelineProcessingQueue(
@@ -136,17 +405,21 @@ plotCytoPipelineProcessingQueue(
   whichQueue = "scale transform",
   path = workDir)
 
+
 plotCytoPipelineProcessingQueue(
   pipL_PeacoQC,
-  purpose = "description",
   whichQueue = "pre-processing",
   sampleFile = 1,
-  path = workDir,
-  title = FALSE)
+  path = workDir)
+
+plotCytoPipelineProcessingQueue(
+  pipL_flowAI,
+  whichQueue = "scale transform",
+  path = workDir)
 
 
 plotCytoPipelineProcessingQueue(
-  pipL_PeacoQC,
+  pipL_flowAI,
   whichQueue = "pre-processing",
   sampleFile = 1,
   path = workDir)
@@ -193,7 +466,7 @@ ggplotFilterEvents(ff, ff2, xChannel = "FSC-A", yChannel = "SSC-A")
 ```
 
 
-# example of retrieving another type of object
+## example of retrieving another type of object
 
 We now provide an example on how to retrieve an object from the cache, that
 is not specifically a `flowCore::flowFrame`.  

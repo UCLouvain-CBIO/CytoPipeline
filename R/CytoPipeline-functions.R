@@ -1647,6 +1647,7 @@ plotCytoPipelineProcessingQueue <-
         
         if (purpose == "description") {
             box.lcol <- rep("black", nSteps+1)
+            names <- c("raw data", paste0("output ", seq_len(nSteps)))
             
         } else {
             if (whichQueue == "pre-processing") {
