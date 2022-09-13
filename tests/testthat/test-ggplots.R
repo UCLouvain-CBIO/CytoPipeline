@@ -15,17 +15,26 @@
 
 
 
+# obtain OMIP021UTSamples, light-weight version used specifically for these 
+# unit tests
+path <- system.file("scripts",
+                    package = "CytoPipeline"
+)
+
+source(paste0(path,"/MakeOMIP021UTSamples.R"))
+
+
 test_that("ggplotFlowRate works", {
-    p <- ggplotFlowRate(OMIP021Samples[[1]])
+    p <- ggplotFlowRate(OMIP021UTSamples[[1]])
     vdiffr::expect_doppelganger("ggplotFlowRate single", fig = p)
 
-    p <- ggplotFlowRate(OMIP021Samples)
+    p <- ggplotFlowRate(OMIP021UTSamples)
     vdiffr::expect_doppelganger("ggplotFlowRate double", fig = p)
 
-    p <- ggplotFlowRate(OMIP021Samples[[1]], title = "Test Flow Rate plot")
+    p <- ggplotFlowRate(OMIP021UTSamples[[1]], title = "Test Flow Rate plot")
     vdiffr::expect_doppelganger("ggplotFlowRate single with title", fig = p)
 
-    p <- ggplotFlowRate(OMIP021Samples[[1]], timeUnit = 50)
+    p <- ggplotFlowRate(OMIP021UTSamples[[1]], timeUnit = 50)
     vdiffr::expect_doppelganger(
         "ggplotFlowRate single with time unit",
         fig = p
@@ -35,20 +44,20 @@ test_that("ggplotFlowRate works", {
 
 
 test_that("ggplotEvents with 1D works", {
-    expect_error(ggplotEvents(OMIP021Samples[[1]],
+    expect_error(ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "450/50Violet-A",
         xScale = "bi-exponential"
     ),
     regexp = "should be one of"
     )
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "FSC-A",
         xScale = "linear"
     )
     vdiffr::expect_doppelganger("ggplotEvents 1D linear single", fig = p)
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "FSC-A",
         xScale = "linear",
         xLinearRange = c(0, 250000)
@@ -58,16 +67,16 @@ test_that("ggplotEvents with 1D works", {
         fig = p
     )
 
-    p <- ggplotEvents(OMIP021Samples, xChannel = "FSC-A", xScale = "linear")
+    p <- ggplotEvents(OMIP021UTSamples, xChannel = "FSC-A", xScale = "linear")
     vdiffr::expect_doppelganger("ggplotEvents 1D linear double", fig = p)
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "450/50Violet-A",
         xScale = "logicle"
     )
     vdiffr::expect_doppelganger("ggplotEvents 1D logicle single", fig = p)
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "450/50Violet-A",
         xScale = "logicle", xLogicleParams = list(
             a = 1,
@@ -81,23 +90,23 @@ test_that("ggplotEvents with 1D works", {
         fig = p
     )
 
-    p <- ggplotEvents(OMIP021Samples[[2]],
+    p <- ggplotEvents(OMIP021UTSamples[[2]],
         xChannel = "450/50Violet-A",
-        xScale = "logicle", nDisplayCells = 5000, seed = 1
+        xScale = "logicle", nDisplayCells = 500, seed = 1
     )
 
     vdiffr::expect_doppelganger("ggplotEvents 1D sub-sampling", fig = p)
 
-    p <- ggplotEvents(OMIP021Samples[[2]],
+    p <- ggplotEvents(OMIP021UTSamples[[2]],
         xChannel = "450/50Violet-A",
         xScale = "logicle", alpha = 0.5, fill = "red"
     )
 
     vdiffr::expect_doppelganger("ggplotEvents 1D fill and color", fig = p)
 
-    compensationMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
+    compensationMatrix <- flowCore::spillover(OMIP021UTSamples[[1]])$SPILL
 
-    ffC <- runCompensation(OMIP021Samples[[1]],
+    ffC <- runCompensation(OMIP021UTSamples[[1]],
         spillover = compensationMatrix,
         updateChannelNames = FALSE
     )
@@ -116,7 +125,7 @@ test_that("ggplotEvents with 1D works", {
             )
         )
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "450/50Violet-A",
         xScale = "linear", transList = transList,
         runTransforms = FALSE
@@ -126,7 +135,7 @@ test_that("ggplotEvents with 1D works", {
         fig = p
     )
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "450/50Violet-A",
         xScale = "linear", transList = transList,
         runTransforms = TRUE
@@ -135,7 +144,7 @@ test_that("ggplotEvents with 1D works", {
         fig = p
     )
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "FSC-A",
         xScale = "logicle", transList = transList,
         runTransforms = FALSE
@@ -145,7 +154,7 @@ test_that("ggplotEvents with 1D works", {
         fig = p
     )
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "FSC-A",
         xScale = "logicle", transList = transList,
         runTransforms = TRUE
@@ -156,7 +165,7 @@ test_that("ggplotEvents with 1D works", {
 })
 
 test_that("ggplotEvents with 2D works", {
-    p <- ggplotEvents(OMIP021Samples,
+    p <- ggplotEvents(OMIP021UTSamples,
         xChannel = "FSC-A",
         xScale = "linear",
         yChannel = "SSC-A",
@@ -164,7 +173,7 @@ test_that("ggplotEvents with 2D works", {
     )
     vdiffr::expect_doppelganger("ggplotEvents 2D linear double", fig = p)
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "FSC-A",
         xScale = "linear",
         yChannel = "610/20Violet-A",
@@ -172,7 +181,7 @@ test_that("ggplotEvents with 2D works", {
     )
     vdiffr::expect_doppelganger("ggplotEvents 2D x linear y logicle", fig = p)
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "450/50Violet-A",
         xScale = "logicle",
         yChannel = "SSC-A",
@@ -180,7 +189,7 @@ test_that("ggplotEvents with 2D works", {
     )
     vdiffr::expect_doppelganger("ggplotEvents 2D x logicle y linear", fig = p)
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "TETaGC",
         xScale = "logicle",
         yChannel = "CD27",
@@ -191,7 +200,7 @@ test_that("ggplotEvents with 2D works", {
         fig = p
     )
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "TETaGC",
         xScale = "logicle",
         yChannel = "CD27",
@@ -204,9 +213,9 @@ test_that("ggplotEvents with 2D works", {
     )
 
 
-    compensationMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
+    compensationMatrix <- flowCore::spillover(OMIP021UTSamples[[1]])$SPILL
 
-    ffC <- runCompensation(OMIP021Samples[[1]],
+    ffC <- runCompensation(OMIP021UTSamples[[1]],
         spillover = compensationMatrix,
         updateChannelNames = FALSE
     )
@@ -225,7 +234,7 @@ test_that("ggplotEvents with 2D works", {
             )
         )
 
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "TETaGC",
         xScale = "logicle",
         yChannel = "CD27",
@@ -237,7 +246,7 @@ test_that("ggplotEvents with 2D works", {
         "ggplotEvents 2D x logicle y logicle transList not run",
         fig = p
     )
-    p <- ggplotEvents(OMIP021Samples[[1]],
+    p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "TETaGC",
         xScale = "logicle",
         yChannel = "CD27",
@@ -253,7 +262,7 @@ test_that("ggplotEvents with 2D works", {
 
 
 test_that("ggplotFilterEvents works", {
-    ffPre <- OMIP021Samples[[1]]
+    ffPre <- OMIP021UTSamples[[1]]
 
     LDMarker <- "L/D Aqua - Viability"
 
@@ -282,7 +291,7 @@ test_that("ggplotFilterEvents works", {
     p <- ggplotFilterEvents(
         ffPre = ffPre,
         ffPost = ffL,
-        nDisplayCells = 20000,
+        nDisplayCells = 1000,
         xChannel = "FSC-A", xScale = "linear",
         yChannel = LDMarker, yScale = "logicle"
     ) +
@@ -295,7 +304,7 @@ test_that("ggplotFilterEvents works", {
     p <- ggplotFilterEvents(
         ffPre = ffPre,
         ffPost = ffL,
-        nDisplayCells = 20000,
+        nDisplayCells = 1000,
         xChannel = "FSC-A", xScale = "linear",
         yChannel = LDMarker, yScale = "logicle",
         interactive = TRUE
@@ -309,7 +318,7 @@ test_that("ggplotFilterEvents works", {
     p <- ggplotFilterEvents(
         ffPre = ffPre,
         ffPost = ffL,
-        nDisplayCells = 5000,
+        nDisplayCells = 500,
         seed = 1,
         xChannel = "FSC-A", xScale = "linear",
         yChannel = LDMarker, yScale = "logicle"

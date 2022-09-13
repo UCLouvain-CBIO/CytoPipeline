@@ -14,6 +14,14 @@
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
 
+# obtain OMIP021UTSamples, light-weight version used specifically for these 
+# unit tests
+path <- system.file("scripts",
+                    package = "CytoPipeline"
+)
+
+source(paste0(path,"/MakeOMIP021UTSamples.R"))
+
 test_that("CytoProcessingStep basics works", {
     ps <- CytoProcessingStep("summing step", sum)
     
@@ -53,16 +61,16 @@ test_that("CytoProcessingStep exports and imports work", {
     # other case
     ps <- CytoProcessingStep("compensate step", "compensateFromMatrix")
     
-    ff <- executeProcessingStep(ps, OMIP021Samples[[1]])
+    ff <- executeProcessingStep(ps, OMIP021UTSamples[[1]])
     res <- sum(flowCore::exprs(ff)[,"FSC-A"])
-    expect_equal(res, 2368624365)
+    expect_equal(res, 118628119)
     
     js_str <- as.json.CytoProcessingStep(ps)
     ps2 <- from.json.CytoProcessingStep(js_str)
      
-    ff <- executeProcessingStep(ps2, OMIP021Samples[[1]])
+    ff <- executeProcessingStep(ps2, OMIP021UTSamples[[1]])
     res <- sum(flowCore::exprs(ff)[,"FSC-A"])
-    expect_equal(res, 2368624365)
+    expect_equal(res, 118628119)
     
     # not yet implemented case (non generic, non primitive function as object)
     ps <- CytoProcessingStep("compensate step", compensateFromMatrix)

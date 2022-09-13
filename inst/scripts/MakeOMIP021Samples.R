@@ -14,7 +14,7 @@
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
 
-## code to prepare `DATASET` dataset goes here
+## code to prepare `OMIP021` dataset
 
 # flow cytometry core librairies
 library(flowCore)
@@ -24,9 +24,7 @@ library(CytoPipeline)
 # manually downloaded from FlowRepository.org
 # note that automatic download API for FlowRepository does not work anymore 
 # for the time being (May 2022)
-datasetDir <- "./Datasets/OMIP-021/"
-
-datasetPath <- paste0(datasetDir, "FlowRepository_FR-FCM-ZZ9H_files")
+datasetPath <- "/Datasets/OMIP-021/FlowRepository_FR-FCM-ZZ9H_files"
 
 files <- list.files(datasetPath, pattern = "Donor", recursive = TRUE)
 
@@ -49,7 +47,7 @@ OMIP021Samples <- read.flowSet(
 pData(OMIP021Samples)$Donor <- paste0("Donor_", seq(nDonors))
 
 # sub-sample equal nb of events in each fcs
-sampleSize <- 20000
+sampleSize <- 10000
 OMIP021Samples <- fsApply(
     x = OMIP021Samples,
     FUN = function(ff) {
