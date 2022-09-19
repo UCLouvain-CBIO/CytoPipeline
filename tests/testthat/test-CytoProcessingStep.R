@@ -63,14 +63,14 @@ test_that("CytoProcessingStep exports and imports work", {
     
     ff <- executeProcessingStep(ps, OMIP021UTSamples[[1]])
     res <- sum(flowCore::exprs(ff)[,"FSC-A"])
-    expect_equal(res, 118628119)
+    expect_equal(res, 12553542.8)
     
     js_str <- as.json.CytoProcessingStep(ps)
     ps2 <- from.json.CytoProcessingStep(js_str)
      
     ff <- executeProcessingStep(ps2, OMIP021UTSamples[[1]])
     res <- sum(flowCore::exprs(ff)[,"FSC-A"])
-    expect_equal(res, 118628119)
+    expect_equal(res, 12553542.8)
     
     # not yet implemented case (non generic, non primitive function as object)
     ps <- CytoProcessingStep("compensate step", compensateFromMatrix)

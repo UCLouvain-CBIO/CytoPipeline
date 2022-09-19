@@ -39,7 +39,7 @@ test_that("estimateScaleTransforms work", {
                             "/OMIP021_TransList.rds")
     refTransList <- readRDS(transListPath)
 
-    #saveRDS(transList, transListPath)
+    # saveRDS(transList, transListPath)
 
     refFF <- flowCore::transform(ff_c, refTransList)
     thisFF <- flowCore::transform(ff_c, transList)
@@ -265,7 +265,7 @@ test_that("qualityControlPeacoQC", {
             force_IT = 150, # default
             peak_removal = (1 / 3), # default
             min_nr_bins_peakdetection = 10 # default
-    )), regexp = "need at least four unique")
+    )), regexp = "must be strictly positive and finite")
 
 
     # ref_ff_qualityControl <-

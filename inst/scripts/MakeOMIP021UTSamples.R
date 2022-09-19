@@ -22,7 +22,7 @@ library(CytoPipeline)
 data(OMIP021Samples)
 
 # sub-sample equal nb of events in each fcs
-sampleSize <- 1000
+sampleSize <- 100
 OMIP021UTSamples <- fsApply(
     x = OMIP021Samples,
     FUN = function(ff) {

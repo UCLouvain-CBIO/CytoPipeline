@@ -14,17 +14,8 @@
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
 
-
-# obtain OMIP021UTSamples, light-weight version used specifically for these 
-# unit tests
-path <- system.file("scripts",
-                    package = "CytoPipeline"
-)
-
-source(paste0(path,"/MakeOMIP021UTSamples.R"))
-
 test_that("areSignalCols works", {
-    ff <- OMIP021UTSamples[[1]]
+    ff <- OMIP021Samples[[1]]
 
     expectedRes <- c(rep(TRUE, times = 20), FALSE, FALSE)
 
@@ -33,7 +24,7 @@ test_that("areSignalCols works", {
 })
 
 test_that("areFluoCols works", {
-    ff <- OMIP021UTSamples[[1]]
+    ff <- OMIP021Samples[[1]]
 
     expectedRes <- c(
         rep(FALSE, times = 4),
@@ -48,14 +39,14 @@ test_that("areFluoCols works", {
 
 
 test_that("subsample works", {
-    ff <- OMIP021UTSamples[[1]]
+    ff <- OMIP021Samples[[1]]
 
-    nSamples <- 500
+    nSamples <- 50
     ffSub <- subsample(ff, nSamples)
     expect_equal(flowCore::nrow(ffSub), nSamples)
 
-    # subsample with more samples than original nrow (1000)
-    ffSub <- subsample(ff, 2000)
+    # subsample with more samples than original nrow (5000)
+    ffSub <- subsample(ff, 10000)
 
     nOriginal <- flowCore::nrow(ff)
     expect_equal(flowCore::nrow(ffSub), nOriginal)
@@ -63,7 +54,7 @@ test_that("subsample works", {
 
 
 test_that(".addCompensation2FluoChannelNames works", {
-    ff <- OMIP021UTSamples[[1]]
+    ff <- OMIP021Samples[[1]]
 
     ff2 <- .addCompensation2FluoChannelNames(ff)
 
@@ -80,13 +71,13 @@ test_that(".addCompensation2FluoChannelNames works", {
         )
     )
 
-    expect_error(.addCompensation2FluoChannelNames(OMIP021UTSamples),
+    expect_error(.addCompensation2FluoChannelNames(OMIP021Samples),
         regexp = "type not recognized"
     )
 })
 
 test_that("runCompensation works", {
-    ff <- OMIP021UTSamples[[1]]
+    ff <- OMIP021Samples[[1]]
 
     compMatrix <- flowCore::spillover(ff)$SPILL
     ff1 <- flowCore::compensate(ff, spillover = compMatrix)
@@ -113,10 +104,10 @@ test_that("runCompensation works", {
         )
     )
 
-    fs <- runCompensation(OMIP021UTSamples,
+    fs <- runCompensation(OMIP021Samples,
         spillover = compMatrix
     )
-    ff3 <- flowCore::compensate(OMIP021UTSamples[[1]],
+    ff3 <- flowCore::compensate(OMIP021Samples[[1]],
         spillover = compMatrix
     )
     # the following avoids comparing name attributes
@@ -138,7 +129,7 @@ test_that("runCompensation works", {
 test_that("aggregateAndSample works", {
     nCells <- 100
     agg <- aggregateAndSample(
-        fs = OMIP021UTSamples,
+        fs = OMIP021Samples,
         nTotalEvents = nCells,
         seed = 1
     )
@@ -158,7 +149,7 @@ test_that("getTransfoParams works", {
     # - one channel has linear transformation
     # - other channels have no transformation
     translist <- flowCore::estimateLogicle(
-        OMIP021UTSamples[[1]],
+        OMIP021Samples[[1]],
         c("450/50Violet-A", "525/50Violet-A")
     )
     translist <- c(
@@ -187,7 +178,7 @@ test_that("getTransfoParams works", {
     ret <- getTransfoParams(translist, channel = "525/50Violet-A")
     expect_equal(ret$type, "logicle")
     expect_equal(ret$paramsList$a, 0.)
-    myW <- 0.22223584
+    myW <- 0.26281575
     expect_equal(ret$paramsList$w, myW)
     expect_equal(ret$paramsList$m, 4.5)
     expect_equal(ret$paramsList$t, 262143)
@@ -213,21 +204,21 @@ test_that("getTransfoParams works", {
 })
 
 test_that("computeScatterChannelsLinearScale works", {
-    ff <- OMIP021UTSamples[[1]]
+    ff <- OMIP021Samples[[1]]
     refMarker <- "APCCy7 - CD4"
     refChannel <- "780/60Red-A"
 
     targetFSCA <- list()
     targetFSCA$type <- "linear"
     targetFSCA$paramsList <- list()
-    targetFSCA$paramsList$a <- 1.36587176e-05
-    targetFSCA$paramsList$b <- 0.40767028
+    targetFSCA$paramsList$a <- 1.3504601e-05
+    targetFSCA$paramsList$b <- 0.41438898
 
     targetSSCA <- list()
     targetSSCA$type <- "linear"
     targetSSCA$paramsList <- list()
-    targetSSCA$paramsList$a <- 1.11386376e-05
-    targetSSCA$paramsList$b <- 0.36378986
+    targetSSCA$paramsList$a <- 1.07290554e-05
+    targetSSCA$paramsList$b <- 0.38032844
 
     transList <- flowCore::estimateLogicle(ff,
         channels = refChannel
@@ -272,10 +263,10 @@ test_that("computeScatterChannelsLinearScale works", {
 
     # test with a NULL transList
 
-    targetFSCA$paramsList$a <- 0.047466192
-    targetFSCA$paramsList$b <- -451.98065
-    targetSSCA$paramsList$a <- 0.038708518
-    targetSSCA$paramsList$b <- -604.47202
+    targetFSCA$paramsList$a <- 0.047610702
+    targetFSCA$paramsList$b <- -491.62068
+    targetSSCA$paramsList$a <- 0.037825469
+    targetSSCA$paramsList$b <- -611.70173
     retTransList <-
         computeScatterChannelsLinearScale(ff,
             transList = NULL,
@@ -325,15 +316,15 @@ test_that("computeScatterChannelsLinearScale works", {
 
 test_that("findTimeChannel works", {
     # with flow set
-    ret <- findTimeChannel(OMIP021UTSamples)
+    ret <- findTimeChannel(OMIP021Samples)
     expect_equal(ret, "Time")
 
     # with flow frame
-    ret2 <- findTimeChannel(OMIP021UTSamples[[1]])
+    ret2 <- findTimeChannel(OMIP021Samples[[1]])
     expect_equal(ret2, "Time")
 
     # test exclude channels parameter
-    ret3 <- findTimeChannel(OMIP021UTSamples[[1]],
+    ret3 <- findTimeChannel(OMIP021Samples[[1]],
         excludeChannels = "Time"
     )
     expect_null(ret3)
@@ -342,7 +333,7 @@ test_that("findTimeChannel works", {
 test_that("getChannelNamesFromMarkers works", {
     # with existing markers
     ret <- getChannelNamesFromMarkers(
-        OMIP021UTSamples[[1]],
+        OMIP021Samples[[1]],
         c(
             "FSC-A",
             "L/D Aqua - Viability",
@@ -359,7 +350,7 @@ test_that("getChannelNamesFromMarkers works", {
     boolInput <- rep(FALSE, 21)
     boolInput[indices] <- TRUE
     ret <- getChannelNamesFromMarkers(
-        OMIP021UTSamples[[1]],
+        OMIP021Samples[[1]],
         boolInput
     )
 
@@ -368,7 +359,7 @@ test_that("getChannelNamesFromMarkers works", {
 
     # with indices vector
     ret <- getChannelNamesFromMarkers(
-        OMIP021UTSamples[[1]],
+        OMIP021Samples[[1]],
         indices
     )
     expect_equal(ret, expected)
@@ -377,7 +368,7 @@ test_that("getChannelNamesFromMarkers works", {
     missingInput <- c("CD4")
 
     expect_error(getChannelNamesFromMarkers(
-        OMIP021UTSamples[[1]],
+        OMIP021Samples[[1]],
         missingInput
     ),
     regexp = "could not be found"
