@@ -377,29 +377,6 @@ withr::with_dir(jsonDir, execute(pipL_flowAI,
 
 ```{r plotWorkFlows}
 
-# # plot work flow graphs
-# plotCytoPipelineProcessingQueue(
-#   pipL_PeacoQC,
-#   purpose = "description",
-#   whichQueue = "scale transform",
-#   title = FALSE)
-# 
-# par(mfrow = c(1,2))
-# 
-# # plot work flow graphs
-# plotCytoPipelineProcessingQueue(
-#   pipL_PeacoQC,
-#   purpose = "description",
-#   whichQueue = "pre-processing",
-#   title = TRUE)
-# 
-# # plot work flow graphs
-# plotCytoPipelineProcessingQueue(
-#   pipL_flowAI,
-#   purpose = "description",
-#   whichQueue = "pre-processing",
-#   title = TRUE)
-
 # plot work flow graphs
 plotCytoPipelineProcessingQueue(
   pipL_PeacoQC,
@@ -483,6 +460,21 @@ obj <- getCytoPipelineObjectFromCache(pipL_PeacoQC,
                                       whichQueue = "scale transform",
                                       objectName = "compensate_obj")
 show(obj)
+```
+
+
+## interactive visualization
+
+Using the `CytoPipelineGUI` package, it is possible to interactively inspect
+results at the different steps of the pipeline, either in the form of 
+`flowCore::flowFrame` objects, or `flowCore::transformList`. 
+To do this, set the `showShiny` variable to `TRUE` in the following code: 
+
+```{r launchShinyApp}
+showShiny = FALSE
+if (showShiny) {
+    CytoPipelineGUI::CytoPipelineCheckApp(dir = workDir)
+}
 ```
 
 
