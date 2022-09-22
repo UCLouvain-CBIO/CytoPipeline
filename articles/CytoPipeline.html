@@ -593,30 +593,7 @@ specified in the JSON file itself.</p>
 <h3 id="plotting-processing-queues-as-workflow-graphs">Plotting processing queues as workflow graphs<a class="anchor" aria-label="anchor" href="#plotting-processing-queues-as-workflow-graphs"></a>
 </h3>
 <div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># # plot work flow graphs</span></span>
-<span><span class="co"># plotCytoPipelineProcessingQueue(</span></span>
-<span><span class="co">#   pipL_PeacoQC,</span></span>
-<span><span class="co">#   purpose = "description",</span></span>
-<span><span class="co">#   whichQueue = "scale transform",</span></span>
-<span><span class="co">#   title = FALSE)</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># par(mfrow = c(1,2))</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># # plot work flow graphs</span></span>
-<span><span class="co"># plotCytoPipelineProcessingQueue(</span></span>
-<span><span class="co">#   pipL_PeacoQC,</span></span>
-<span><span class="co">#   purpose = "description",</span></span>
-<span><span class="co">#   whichQueue = "pre-processing",</span></span>
-<span><span class="co">#   title = TRUE)</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># # plot work flow graphs</span></span>
-<span><span class="co"># plotCytoPipelineProcessingQueue(</span></span>
-<span><span class="co">#   pipL_flowAI,</span></span>
-<span><span class="co">#   purpose = "description",</span></span>
-<span><span class="co">#   whichQueue = "pre-processing",</span></span>
-<span><span class="co">#   title = TRUE)</span></span>
-<span></span>
-<span><span class="co"># plot work flow graphs</span></span>
+<code class="sourceCode R"><span><span class="co"># plot work flow graphs</span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_PeacoQC</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
@@ -719,6 +696,22 @@ aggregating the two samples.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## column names(22): FSC-A FSC-H ... Time Original_ID</span></span></code></pre>
 </div>
+<div class="section level3">
+<h3 id="interactive-visualization">interactive visualization<a class="anchor" aria-label="anchor" href="#interactive-visualization"></a>
+</h3>
+<p>Using the <code>CytoPipelineGUI</code> package, it is possible to
+interactively inspect results at the different steps of the pipeline,
+either in the form of <code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-class.html" class="external-link">flowCore::flowFrame</a></code> objects, or
+<code><a href="https://rdrr.io/pkg/flowCore/man/transformList-class.html" class="external-link">flowCore::transformList</a></code>. To do this, install the
+<code>CytoPipelineGUI</code> package, and set the <code>showShiny</code>
+variable to <code>TRUE</code> in the following code:</p>
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#devtools::install_github("https://github.com/UCLouvain-CBIO/CytoPipelineGUI")</span></span>
+<span><span class="va">showShiny</span> <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="va">showShiny</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">CytoPipelineGUI</span><span class="fu">::</span><span class="fu">CytoPipelineCheckApp</span><span class="op">(</span>dir <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
@@ -759,7 +752,7 @@ aggregating the two samples.</p>
 <span><span class="co">##  [31] rappdirs_0.3.3        rrcov_1.7-1           textshaping_0.3.6    </span></span>
 <span><span class="co">##  [34] xfun_0.33             dplyr_1.0.10          crayon_1.5.1         </span></span>
 <span><span class="co">##  [37] RCurl_1.98-1.8        jsonlite_1.8.0        hexbin_1.28.2        </span></span>
-<span><span class="co">##  [40] graph_1.75.0          zoo_1.8-10            iterators_1.0.14     </span></span>
+<span><span class="co">##  [40] graph_1.75.0          zoo_1.8-11            iterators_1.0.14     </span></span>
 <span><span class="co">##  [43] glue_1.6.2            flowClust_3.35.0      gtable_0.3.1         </span></span>
 <span><span class="co">##  [46] zlibbioc_1.43.0       GetoptLong_1.0.5      ggcyto_1.25.1        </span></span>
 <span><span class="co">##  [49] IDPmisc_1.1.20        Rgraphviz_2.41.1      shape_1.4.6          </span></span>
@@ -793,7 +786,7 @@ aggregating the two samples.</p>
 <span><span class="co">## [133] IRanges_2.31.2        codetools_0.2-18      gtools_3.9.3         </span></span>
 <span><span class="co">## [136] MASS_7.3-58.1         assertthat_0.2.1      rprojroot_2.0.3      </span></span>
 <span><span class="co">## [139] rjson_0.2.21          withr_2.5.0           mnormt_2.1.0         </span></span>
-<span><span class="co">## [142] S4Vectors_0.35.3      parallel_4.2.1        ncdfFlow_2.43.1      </span></span>
+<span><span class="co">## [142] S4Vectors_0.35.4      parallel_4.2.1        ncdfFlow_2.43.1      </span></span>
 <span><span class="co">## [145] grid_4.2.1            rmarkdown_2.16        Biobase_2.57.1       </span></span>
 <span><span class="co">## [148] base64enc_0.1-3       interp_1.1-3</span></span></code></pre>
 </div>
