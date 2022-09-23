@@ -628,7 +628,7 @@ execute <- function(x,
             # browser()
             if (s == 1) {
                 # try runnning with adding sampleFiles parameters
-                # if complain => run with
+                # if complain => run without sampleFiles
                 
                 res <- try(executeProcessingStep(
                     x@scaleTransformProcessingQueue[[s]],

@@ -468,15 +468,12 @@ show(obj)
 Using the `CytoPipelineGUI` package, it is possible to interactively inspect
 results at the different steps of the pipeline, either in the form of 
 `flowCore::flowFrame` objects, or `flowCore::transformList`. 
-To do this, install the `CytoPipelineGUI` package, and set the `showShiny` 
-variable to `TRUE` in the following code: 
+To do this, install the `CytoPipelineGUI` package, and uncomment 
+the following code: 
 
 ```{r launchShinyApp}
 #devtools::install_github("https://github.com/UCLouvain-CBIO/CytoPipelineGUI")
-showShiny = FALSE
-if (showShiny) {
-    CytoPipelineGUI::CytoPipelineCheckApp(dir = workDir)
-}
+#CytoPipelineGUI::CytoPipelineCheckApp(dir = workDir)
 ```
 
 

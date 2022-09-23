@@ -142,6 +142,14 @@ test_that("aggregateAndSample works", {
     expect_equal(nrow(flowCore::exprs(agg)[ind2, ]), nCells / 2)
 })
 
+test_that("aggregateAndSample still works with flow frame", {
+    nCells <- 100
+    agg <- aggregateAndSample(fs = OMIP021Samples[[1]],
+                              nTotalEvents = nCells,
+                              seed = 1)
+    expect_equal(nrow(flowCore::exprs(agg)), nCells)
+})
+
 test_that("getTransfoParams works", {
     # hybrid transformation list :
     # - two channels are logicle-ly transformed with automatic param estimates

@@ -186,6 +186,8 @@ readSampleFiles <- function(sampleFiles,
 #'                    yChannel = "SSC-A")
 removeMarginsPeacoQC <- function(x, ...) {
     myFunc <- function(ff) {
+        message(paste0("Removing margins from file : ", 
+                       flowCore::identifier(ff)))
         channel4Margins <-
             flowCore::colnames(ff)[areSignalCols(ff)]
         ffOut <- PeacoQC::RemoveMargins(ff, channels = channel4Margins)
@@ -296,6 +298,7 @@ compensateFromMatrix <- function(x,
                                  ...) {
     myFunc <- function(ff, matrixSource = c("fcs", "import"),
                        matrixPath = NULL) {
+        message(paste0("Compensating file : ", flowCore::identifier(ff)))
         matrixSource <- match.arg(matrixSource)
         if (matrixSource == "fcs") {
             # obtains compensation matrix

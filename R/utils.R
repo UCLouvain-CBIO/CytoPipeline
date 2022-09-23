@@ -204,8 +204,12 @@ aggregateAndSample <- function(fs,
                                outputFile = "aggregate.fcs",
                                keepOrder = FALSE) {
     # browser()
+    if (inherits(fs, "flowFrame")) {
+        fs <- flowCore::flowSet(fs)
+    }
     if (!inherits(fs, "flowSet")) {
-        stop("fs object type not recognized, should be flowCore::flowSet")
+        stop("fs object type not recognized, should be flowCore::flowSet,",
+             " or flowCore::flowFrame")
     }
 
 
