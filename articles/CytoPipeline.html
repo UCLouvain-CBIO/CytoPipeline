@@ -449,10 +449,14 @@ specified in the JSON file itself.</p>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 1 [flowframe_read] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 2 [remove_margins] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Removing margins from file : sample_Donor1.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Warning in PeacoQC::RemoveMargins(ff, channels = channel4Margins): More than</span></span>
 <span><span class="co">## 10.12 % is considered as a margin event in file sample_Donor1.fcs . This should</span></span>
 <span><span class="co">## be verified.</span></span></code></pre>
+<pre><code><span><span class="co">## Removing margins from file : sample_Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Compensating file : sample_Donor1.fcs</span></span></code></pre>
+<pre><code><span><span class="co">## Compensating file : sample_Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [flowframe_aggregate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [scale_transform_estimate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## estimating logicle transformations for fluorochrome channels...</span></span></code></pre>
@@ -472,10 +476,12 @@ specified in the JSON file itself.</p>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 1 [flowframe_read] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 2 [remove_margins] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Removing margins from file : Donor1.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Warning in PeacoQC::RemoveMargins(ff, channels = channel4Margins): More than</span></span>
 <span><span class="co">## 10.12 % is considered as a margin event in file sample_Donor1.fcs . This should</span></span>
 <span><span class="co">## be verified.</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Compensating file : Donor1.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [perform_QC] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Applying PeacoQC method...</span></span></code></pre>
 <pre><code><span><span class="co">## Warning in CheckInputSignalStability(ff, channels, determine_good_cells, : There</span></span>
@@ -502,7 +508,9 @@ specified in the JSON file itself.</p>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 1 [flowframe_read] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 2 [remove_margins] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Removing margins from file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Compensating file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [perform_QC] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Applying PeacoQC method...</span></span></code></pre>
 <pre><code><span><span class="co">## Warning in CheckInputSignalStability(ff, channels, determine_good_cells, : There</span></span>
@@ -522,7 +530,7 @@ specified in the JSON file itself.</p>
 <pre><code><span><span class="co">## The prior specification has no effect when usePrior=no</span></span></code></pre>
 <pre><code><span><span class="co">## Using the serial version of flowClust</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 7 [remove_dead_cells] ...</span></span></code></pre>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># execute flowAI pipeline</span></span>
 <span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">jsonDir</span>, <span class="fu"><a href="../reference/execute.html">execute</a></span><span class="op">(</span><span class="va">pipL_flowAI</span>,</span>
 <span>                                 path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -531,10 +539,14 @@ specified in the JSON file itself.</p>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 1 [flowframe_read] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 2 [remove_margins] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Removing margins from file : sample_Donor1.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Warning in PeacoQC::RemoveMargins(ff, channels = channel4Margins): More than</span></span>
 <span><span class="co">## 10.12 % is considered as a margin event in file sample_Donor1.fcs . This should</span></span>
 <span><span class="co">## be verified.</span></span></code></pre>
+<pre><code><span><span class="co">## Removing margins from file : sample_Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Compensating file : sample_Donor1.fcs</span></span></code></pre>
+<pre><code><span><span class="co">## Compensating file : sample_Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [flowframe_aggregate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [scale_transform_estimate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## estimating logicle transformations for fluorochrome channels...</span></span></code></pre>
@@ -562,6 +574,7 @@ specified in the JSON file itself.</p>
 <span><span class="co">## 0% of anomalous cells detected in signal acquisition check. </span></span>
 <span><span class="co">## 0.12% of anomalous cells detected in the dynamic range check.</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Compensating file : Donor1.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [remove_doublets] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [remove_debris] ...</span></span></code></pre>
 <pre><code><span><span class="co">## The prior specification has no effect when usePrior=no</span></span></code></pre>
@@ -580,6 +593,7 @@ specified in the JSON file itself.</p>
 <span><span class="co">## 0% of anomalous cells detected in signal acquisition check. </span></span>
 <span><span class="co">## 0.1% of anomalous cells detected in the dynamic range check.</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Compensating file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [remove_doublets] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [remove_debris] ...</span></span></code></pre>
 <pre><code><span><span class="co">## The prior specification has no effect when usePrior=no</span></span></code></pre>
@@ -592,27 +606,27 @@ specified in the JSON file itself.</p>
 <div class="section level3">
 <h3 id="plotting-processing-queues-as-workflow-graphs">Plotting processing queues as workflow graphs<a class="anchor" aria-label="anchor" href="#plotting-processing-queues-as-workflow-graphs"></a>
 </h3>
-<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot work flow graphs</span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_PeacoQC</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotWorkFlows-1.png" width="700"></p>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_PeacoQC</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
 <span>  sampleFile <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotWorkFlows-2.png" width="700"></p>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_flowAI</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotWorkFlows-3.png" width="700"></p>
-<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_flowAI</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
@@ -623,7 +637,7 @@ specified in the JSON file itself.</p>
 <div class="section level3">
 <h3 id="obtaining-information-about-pipeline-generated-objects">Obtaining information about pipeline generated objects<a class="anchor" aria-label="anchor" href="#obtaining-information-about-pipeline-generated-objects"></a>
 </h3>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectInfos</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>, </span>
 <span>                           path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                           whichQueue <span class="op">=</span> <span class="st">"scale transform"</span><span class="op">)</span></span></code></pre></div>
@@ -633,7 +647,7 @@ specified in the JSON file itself.</p>
 <span><span class="co">## 3               compensate_obj       flowSet</span></span>
 <span><span class="co">## 4      flowframe_aggregate_obj     flowFrame</span></span>
 <span><span class="co">## 5 scale_transform_estimate_obj transformList</span></span></code></pre>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectInfos</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>, </span>
 <span>                           path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                           whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
@@ -650,7 +664,7 @@ specified in the JSON file itself.</p>
 <div class="section level3">
 <h3 id="retrieving-flow-frames-at-different-steps-and-plotting-them">Retrieving flow frames at different steps and plotting them<a class="anchor" aria-label="anchor" href="#retrieving-flow-frames-at-different-steps-and-plotting-them"></a>
 </h3>
-<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># example of retrieving a flow frame</span></span>
 <span><span class="co"># at a given step</span></span>
 <span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineFlowFrame</a></span><span class="op">(</span></span>
@@ -670,10 +684,10 @@ specified in the JSON file itself.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotFlowFrames-1.png" width="700"></p>
-<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span>, yChannel <span class="op">=</span> <span class="st">"SSC-A"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotFlowFrames-2.png" width="700"></p>
-<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotFilterEvents.html">ggplotFilterEvents</a></span><span class="op">(</span><span class="va">ff</span>, <span class="va">ff2</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span>, yChannel <span class="op">=</span> <span class="st">"SSC-A"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotFlowFrames-3.png" width="700"></p>
 </div>
@@ -686,7 +700,7 @@ cache, that is not specifically a <code><a href="https://rdrr.io/pkg/flowCore/ma
 represents a set of<br><code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-class.html" class="external-link">flowCore::flowFrame</a></code>objects, that was obtained after the
 compensation step of the scale transformation processing queue, prior to
 aggregating the two samples.</p>
-<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectFromCache</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>,</span>
 <span>                                      path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                                      whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
@@ -703,14 +717,11 @@ aggregating the two samples.</p>
 interactively inspect results at the different steps of the pipeline,
 either in the form of <code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-class.html" class="external-link">flowCore::flowFrame</a></code> objects, or
 <code><a href="https://rdrr.io/pkg/flowCore/man/transformList-class.html" class="external-link">flowCore::transformList</a></code>. To do this, install the
-<code>CytoPipelineGUI</code> package, and set the <code>showShiny</code>
-variable to <code>TRUE</code> in the following code:</p>
-<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
+<code>CytoPipelineGUI</code> package, and uncomment the following
+code:</p>
+<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#devtools::install_github("https://github.com/UCLouvain-CBIO/CytoPipelineGUI")</span></span>
-<span><span class="va">showShiny</span> <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="va">showShiny</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">CytoPipelineGUI</span><span class="fu">::</span><span class="fu">CytoPipelineCheckApp</span><span class="op">(</span>dir <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<span><span class="co">#CytoPipelineGUI::CytoPipelineCheckApp(dir = workDir)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
