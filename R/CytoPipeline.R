@@ -305,11 +305,8 @@ sampleFiles <- function(x) {
         is.list(params)
     ))
 
-    mandatory <- c("experimentName", "sampleFiles")
-    optional <- c(
-        "saveScaleTransform", "scaleTransformFile",
-        "", ""
-    )
+    mandatory <- c("experimentName")
+    optional <- c("sampleFiles", "saveScaleTransform", "scaleTransformFile")
 
     for (m in mandatory) {
         if (is.null(params[[m]])) {

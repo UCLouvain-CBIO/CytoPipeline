@@ -34,9 +34,14 @@ test_that("Cytopipeline add/remove/clean processing step works", {
     # main parameters : sample files and experiment name
     pipelineParams <- list()
     pipelineParams$experimentName <- experimentName
+    
+    pipL <- CytoPipeline(pipelineParams)
+    expect_error(show(pipL), NA)
+    
     pipelineParams$sampleFiles <- sampleFiles
 
     pipL <- CytoPipeline(pipelineParams)
+    expect_error(show(pipL), NA)
 
     pipL <- addProcessingStep(pipL,
         whichQueue = "scale transform",
@@ -57,7 +62,6 @@ test_that("Cytopipeline add/remove/clean processing step works", {
             ARGS = list()
         )
     )
-
 
     expect_equal(getNbProcessingSteps(pipL, "scale transform"), 2)
 
@@ -92,6 +96,10 @@ test_that("Cytopipeline add/remove/clean processing step works", {
     pipL <- cleanProcessingSteps(pipL)
     expect_equal(getNbProcessingSteps(pipL, "scale transform"), 0)
     expect_equal(getNbProcessingSteps(pipL, "pre-processing"), 0)
+    
+    newExp <- "newExperiment"
+    experimentName(pipL) <- newExp
+    expect_equal(experimentName(pipL), newExp)
 })
 
 test_that("CytoPipeline with reading scale transfo only raises no error", {
@@ -354,6 +362,18 @@ test_that("CytoPipeline with json input raises no error", {
     )
 })
 
+test_that("CytoPipeline export as list works", {
+    jsonDir <- system.file("extdata", package = "CytoPipeline")
+    jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+    
+    pipL1 <- CytoPipeline(jsonPath)
+    pipList <- as.list(pipL1)
+    
+    pipL2 <- CytoPipeline(pipList)
+    expect_identical(pipL1, pipL2)
+    
+})
+
 test_that("CytoPipeline rebuilt from cache raises no error", {
     expect_error(
         {
@@ -370,6 +390,7 @@ test_that("CytoPipeline rebuilt from cache raises no error", {
         NA
     )
 })
+
 
 test_that("CytoPipeline not in cache with warning", {
     expect_warning(
