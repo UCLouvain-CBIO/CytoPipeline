@@ -465,17 +465,20 @@ ggplotEvents <- function(obj,
             data = obj,
             mapping = aes_q(x = as.symbol(xChannel))
         ) +
-            geom_density(fill = fill, alpha = alpha) +
+            geom_density(fill = fill, alpha = alpha, na.rm = TRUE) +
             xlab(xLabel)
     } else {
         p <- ggplot(
             data = obj,
             mapping = aes_q(
                 x = as.symbol(xChannel),
-                y = as.symbol(yChannel)
-            )
-        ) +
-            # geom_hex(bins = bins) + # will apply geom_hex after coord_cartesian
+                y = as.symbol(yChannel))) +
+            geom_hex(bins = bins, na.rm = TRUE) +
+            scale_fill_gradientn(
+            colours = grDevices::rainbow(
+                n = 5, end = 0.65,
+                rev = TRUE,
+                s = 0.8, v = 0.8)) + 
             xlab(xLabel) +
             ylab(yLabel)
     }
@@ -490,56 +493,59 @@ ggplotEvents <- function(obj,
 
     if (xScale == "logicle") {
         if (is.null(yChannel)) {
+            theArgs <- xLogicleParams
+            theArgs$limits <- myXRange
             p <- p +
-                do.call(scale_x_logicle, args = xLogicleParams) +
-                coord_cartesian(xlim = myXRange)
+                do.call(scale_x_logicle, args = theArgs) #+
+                #coord_cartesian(xlim = myXRange)
         } else if (yScale == "logicle") {
+            theArgs <- xLogicleParams
+            theArgs$limits <- myXRange
             p <- p +
-                do.call(scale_x_logicle, args = xLogicleParams) +
-                do.call(scale_y_logicle, args = yLogicleParams) +
-                coord_cartesian(
-                    xlim = myXRange,
-                    ylim = myYRange
-                )
+                do.call(scale_x_logicle, args = theArgs)
+            theArgs <- yLogicleParams
+            theArgs$limits <- myYRange
+            p <- p + 
+                do.call(scale_y_logicle, args = theArgs) #+
+                # coord_cartesian(
+                #     xlim = myXRange,
+                #     ylim = myYRange
+                # )
         } else {
+            theArgs <- xLogicleParams
+            theArgs$limits <- myXRange
             p <- p +
-                do.call(scale_x_logicle, args = xLogicleParams) +
-                coord_cartesian(
-                    xlim = myXRange,
-                    ylim = yLinearRange
-                )
+                do.call(scale_x_logicle, args = theArgs) + 
+                scale_y_continuous(limits = yLinearRange)
+                # coord_cartesian(
+                #     xlim = myXRange,
+                #     ylim = yLinearRange
+                # )
         }
     } else {
         if (is.null(yChannel)) {
             p <- p +
-                coord_cartesian(xlim = xLinearRange)
+                scale_x_continuous(limits = xLinearRange)
+                #coord_cartesian(xlim = xLinearRange)
         } else if (yScale == "logicle") {
+            theArgs <- yLogicleParams
+            theArgs$limits <- myYRange
             p <- p +
-                do.call(scale_y_logicle, args = yLogicleParams) +
-                coord_cartesian(
-                    xlim = xLinearRange,
-                    ylim = myYRange
-                )
+                do.call(scale_y_logicle, args = theArgs) +
+                scale_x_continuous(limits = xLinearRange)
+                # coord_cartesian(
+                #     xlim = xLinearRange,
+                #     ylim = myYRange
+                # )
         } else {
             p <- p +
-                coord_cartesian(
-                    xlim = xLinearRange,
-                    ylim = yLinearRange
-                )
+                scale_x_continuous(limits = xLinearRange) + 
+                scale_y_continuous(limits = yLinearRange)
+                # coord_cartesian(
+                #     xlim = xLinearRange,
+                #     ylim = yLinearRange
+                # )
         }
-    }
-
-    # if 2D, apply geom_hex at the end (after axis ranges)
-    # and hex fill colour palette
-    if (!is.null(yChannel)) {
-        p <- p + geom_hex(bins = bins) +
-            scale_fill_gradientn(
-                colours = grDevices::rainbow(
-                    n = 5, end = 0.65,
-                    rev = TRUE,
-                    s = 0.8, v = 0.8
-                )
-            )
     }
 
     p
