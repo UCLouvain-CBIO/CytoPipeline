@@ -63,6 +63,7 @@ jobs:
       VDIFFR_RUN_TESTS: false
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      CODECOV_TOKEN: 'f726ac0c-aee0-4b48-9ee0-a40acd0fac44'
 
     steps:
 
@@ -227,17 +228,17 @@ jobs:
           sessioninfo::session_info(pkgs, include_base = TRUE)
         shell: Rscript {0}
 
-      - name: Run CMD check
-        env:
-          _R_CHECK_CRAN_INCOMING_: false
-        run: |
-          rcmdcheck::rcmdcheck(
-              args = c("--no-build-vignettes", "--no-manual", "--timings"),
-              build_args = c("--no-manual", "--no-resave-data"),
-              error_on = "warning",
-              check_dir = "check"
-          )
-        shell: Rscript {0}
+      # - name: Run CMD check
+      #   env:
+      #     _R_CHECK_CRAN_INCOMING_: false
+      #   run: |
+      #     rcmdcheck::rcmdcheck(
+      #         args = c("--no-build-vignettes", "--no-manual", "--timings"),
+      #         build_args = c("--no-manual", "--no-resave-data"),
+      #         error_on = "warning",
+      #         check_dir = "check"
+      #     )
+      #   shell: Rscript {0}
 
       ## Might need an to add this to the if:  && runner.os == 'Linux'
       - name: Reveal testthat details
@@ -265,7 +266,7 @@ jobs:
         #if: github.ref == 'refs/heads/master' && env.run_covr == 'true' && runner.os == 'Linux'
         if: env.run_covr == 'true' && runner.os == 'Linux'
         run: |
-          covr::codecov()
+          covr::codecov(quiet = FALSE)
         shell: Rscript {0}
 
       - name: Install package
