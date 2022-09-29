@@ -217,6 +217,29 @@ test_that("removeDebrisFlowClustTmix works", {
     )
 })
 
+test_that("removeDebrisManualGate works", {
+    ref_ff_s <- readRDS(test_path("fixtures", "ff_s.rds"))
+    
+    remDebrisGateData <- c(73615, 110174, 213000, 201000, 126000,
+                           47679, 260500, 260500, 113000, 35000)
+    
+    ff_cells <-
+        removeDebrisManualGate(ref_ff_s,
+                               FSCChannel = "FSC-A",
+                               SSCChannel = "SSC-A",
+                               gateData = remDebrisGateData
+        )
+    
+    ref_ff_cells <- readRDS(test_path("fixtures", "ff_cells_manual_gate.rds"))
+    
+    #saveRDS(ff_cells, test_path("fixtures", "ff_cells_manual_gate.rds"))
+    
+    expect_equal(
+        flowCore::exprs(ff_cells),
+        flowCore::exprs(ref_ff_cells)
+    )
+})
+
 test_that("removeDeadCellsGateTail works", {
     ref_ff_cells <- readRDS(test_path("fixtures", "ff_cells.rds"))
 
@@ -240,6 +263,28 @@ test_that("removeDeadCellsGateTail works", {
 
     # saveRDS(ff_lcells, test_path("fixtures", "ff_lcells.rds"))
 
+    expect_equal(
+        flowCore::exprs(ff_lcells),
+        flowCore::exprs(ref_ff_lcells)
+    )
+})
+
+test_that("removeDeadCellsManualGate works", {
+    ref_ff_cells <- readRDS(test_path("fixtures", "ff_cells.rds"))
+    
+    remDeadCellsGateData <- c(0, 0, 250000, 250000,
+                              0, 650, 650, 0)
+    
+    ff_lcells <-
+        removeDeadCellsManualGate(ref_ff_cells,
+                                  FSCChannel = "FSC-A",
+                                  LDMarker = "L/D Aqua - Viability",
+                                  gateData = remDeadCellsGateData)
+    
+    ref_ff_lcells <- readRDS(test_path("fixtures", "ff_lcells_manual_gate.rds"))
+    
+    # saveRDS(ff_lcells, test_path("fixtures", "ff_lcells_manual_gate.rds"))
+    
     expect_equal(
         flowCore::exprs(ff_lcells),
         flowCore::exprs(ref_ff_lcells)

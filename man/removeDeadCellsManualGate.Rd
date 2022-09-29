@@ -29,8 +29,8 @@ scatter channel}
 corresponding to (a)Live/Dead channel}
 
 \item{gateData}{a numerical vector containing the polygon gate coordinates
-first the FSC-A channel coordinates of each points of the polygon gate,
-then the LD channel coordinates of each points (prior to scale transfom)}
+first the \code{FSCChannel} channel coordinates of each points of the polygon gate,
+then the LD channel coordinates of each points (prior to scale transform)}
 
 \item{...}{additional parameters passed to flowCore::polygonGate()}
 }
@@ -41,4 +41,44 @@ a flowCore::flowFrame with removed dead cells from the input
 remove dead cells from a flowFrame, using manual gating in the
 FSC-A, '(a)Live/Dead' 2D representation. The function uses
 flowCore::polygonGate()
+}
+\examples{
+
+rawDataDir <-
+    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+sampleFiles <-
+    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+
+truncateMaxRange <- FALSE
+minLimit <- NULL
+
+# create flowCore::flowSet with all samples of a dataset
+fsRaw <- readSampleFiles(
+    sampleFiles = sampleFiles,
+    whichSamples = "all",
+    truncate_max_range = truncateMaxRange,
+    min.limit = minLimit)
+
+suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
+    
+ff_c <-
+    compensateFromMatrix(ff_m,
+                         matrixSource = "fcs")        
+
+transList <- 
+    estimateScaleTransforms(        
+        ff = ff_c,
+        fluoMethod = "estimateLogicle",
+        scatterMethod = "linear",
+        scatterRefMarker = "BV785 - CD3")
+
+    remDeadCellsGateData <- c(0, 0, 250000, 250000,
+                              0, 650, 650, 0)
+
+ff_lcells <-
+   removeDeadCellsManualGate(ref_ff_cells,
+                             FSCChannel = "FSC-A",
+                             LDMarker = "L/D Aqua - Viability",
+                             gateData = remDeadCellsGateData)
+   
 }

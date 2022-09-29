@@ -639,12 +639,46 @@ removeDoubletsCytoPipeline <- function(ff,
 #' @param SSCChannel a character containing the exact name of the side scatter
 #' channel
 #' @param gateData a numerical vector containing the polygon gate coordinates
-#' first the FSC-A channel coordinates of each points of the polygon gate,
-#' then the SSC-A channel coordinates of each points.
+#' first the `FSCChannel` channel coordinates of each points of the polygon gate,
+#' then the `SSCChannel` channel coordinates of each points.
 #' @param ... additional parameters passed to flowCore::polygonGate()
 #'
 #' @return a flowCore::flowFrame with removed debris events from the input
 #' @export
+#' 
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
+#'     
+#' ff_c <-
+#'     compensateFromMatrix(ff_m,
+#'                          matrixSource = "fcs")        
+#' 
+#' 
+#' remDebrisGateData <- c(73615, 110174, 213000, 201000, 126000,
+#'                        47679, 260500, 260500, 113000, 35000)
+#' 
+#' ff_cells <-
+#'     removeDebrisManualGate(ff_c,
+#'                            FSCChannel = "FSC-A",
+#'                            SSCChannel = "SSC-A",
+#'                            gateData = remDebrisGateData)
+#' 
 #'
 removeDebrisManualGate <- function(ff,
                                    FSCChannel,
@@ -806,13 +840,52 @@ removeDebrisFlowClustTmix <- function(ff,
 #' @param LDMarker a character containing the exact name of the marker
 #' corresponding to (a)Live/Dead channel
 #' @param gateData a numerical vector containing the polygon gate coordinates
-#' first the FSC-A channel coordinates of each points of the polygon gate,
-#' then the LD channel coordinates of each points (prior to scale transfom)
+#' first the `FSCChannel` channel coordinates of each points of the polygon gate,
+#' then the LD channel coordinates of each points (prior to scale transform)
 #' @param ... additional parameters passed to flowCore::polygonGate()
 #'
 #' @return a flowCore::flowFrame with removed dead cells from the input
 #' @export
 #'
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' fsRaw <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#' 
+#' suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
+#'     
+#' ff_c <-
+#'     compensateFromMatrix(ff_m,
+#'                          matrixSource = "fcs")        
+#'
+#' transList <- 
+#'     estimateScaleTransforms(        
+#'         ff = ff_c,
+#'         fluoMethod = "estimateLogicle",
+#'         scatterMethod = "linear",
+#'         scatterRefMarker = "BV785 - CD3")
+#' 
+#'     remDeadCellsGateData <- c(0, 0, 250000, 250000,
+#'                               0, 650, 650, 0)
+#'
+#'ff_lcells <-
+#'    removeDeadCellsManualGate(ref_ff_cells,
+#'                              FSCChannel = "FSC-A",
+#'                              LDMarker = "L/D Aqua - Viability",
+#'                              gateData = remDeadCellsGateData)
+#'    
 removeDeadCellsManualGate <- function(ff,
                                       preTransform = FALSE,
                                       transList = NULL,
