@@ -21,7 +21,7 @@ running the gating algorithm}
 \item{transList}{applied in conjunction with preTransform == TRUE}
 
 \item{LDMarker}{a character containing the exact name of the marker
-corresponding to Live/Dead channel}
+corresponding to Live/Dead channel, or the Live/Dead channel name itself}
 
 \item{...}{additional parameters passed to openCyto::gate_tail()}
 }

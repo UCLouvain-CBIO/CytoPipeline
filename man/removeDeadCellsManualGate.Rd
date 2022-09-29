@@ -26,7 +26,7 @@ will be applied first on the LD channel.}
 scatter channel}
 
 \item{LDMarker}{a character containing the exact name of the marker
-corresponding to (a)Live/Dead channel}
+corresponding to (a)Live/Dead channel, or the Live/Dead channel name itself}
 
 \item{gateData}{a numerical vector containing the polygon gate coordinates
 first the \code{FSCChannel} channel coordinates of each points of the polygon gate,
@@ -63,22 +63,15 @@ suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
     
 ff_c <-
     compensateFromMatrix(ff_m,
-                         matrixSource = "fcs")        
-
-transList <- 
-    estimateScaleTransforms(        
-        ff = ff_c,
-        fluoMethod = "estimateLogicle",
-        scatterMethod = "linear",
-        scatterRefMarker = "BV785 - CD3")
-
-    remDeadCellsGateData <- c(0, 0, 250000, 250000,
-                              0, 650, 650, 0)
+                         matrixSource = "fcs")    
+                         
+remDeadCellsGateData <- c(0, 0, 250000, 250000,
+                          0, 650, 650, 0)  
 
 ff_lcells <-
-   removeDeadCellsManualGate(ref_ff_cells,
-                             FSCChannel = "FSC-A",
-                             LDMarker = "L/D Aqua - Viability",
-                             gateData = remDeadCellsGateData)
+    removeDeadCellsManualGate(ff_c,
+                              FSCChannel = "FSC-A",
+                              LDMarker = "L/D Aqua - Viability",
+                              gateData = remDeadCellsGateData)
    
 }

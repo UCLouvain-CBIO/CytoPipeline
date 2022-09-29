@@ -868,23 +868,16 @@ removeDebrisFlowClustTmix <- function(ff,
 #'     
 #' ff_c <-
 #'     compensateFromMatrix(ff_m,
-#'                          matrixSource = "fcs")        
+#'                          matrixSource = "fcs")    
+#'                          
+#' remDeadCellsGateData <- c(0, 0, 250000, 250000,
+#'                           0, 650, 650, 0)  
 #'
-#' transList <- 
-#'     estimateScaleTransforms(        
-#'         ff = ff_c,
-#'         fluoMethod = "estimateLogicle",
-#'         scatterMethod = "linear",
-#'         scatterRefMarker = "BV785 - CD3")
-#' 
-#'     remDeadCellsGateData <- c(0, 0, 250000, 250000,
-#'                               0, 650, 650, 0)
-#'
-#'ff_lcells <-
-#'    removeDeadCellsManualGate(ref_ff_cells,
-#'                              FSCChannel = "FSC-A",
-#'                              LDMarker = "L/D Aqua - Viability",
-#'                              gateData = remDeadCellsGateData)
+#' ff_lcells <-
+#'     removeDeadCellsManualGate(ff_c,
+#'                               FSCChannel = "FSC-A",
+#'                               LDMarker = "L/D Aqua - Viability",
+#'                               gateData = remDeadCellsGateData)
 #'    
 removeDeadCellsManualGate <- function(ff,
                                       preTransform = FALSE,
