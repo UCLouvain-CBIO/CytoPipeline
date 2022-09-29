@@ -81,8 +81,8 @@ channel</p></dd>
 
 <dt>gateData</dt>
 <dd><p>a numerical vector containing the polygon gate coordinates
-first the FSC-A channel coordinates of each points of the polygon gate,
-then the SSC-A channel coordinates of each points.</p></dd>
+first the <code>FSCChannel</code> channel coordinates of each points of the polygon gate,
+then the <code>SSCChannel</code> channel coordinates of each points.</p></dd>
 
 
 <dt>...</dt>
@@ -96,6 +96,45 @@ then the SSC-A channel coordinates of each points.</p></dd>
 <p>a flowCore::flowFrame with removed debris events from the input</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">rawDataDir</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"CytoPipeline"</span><span class="op">)</span>, <span class="st">"/"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sampleFiles</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">rawDataDir</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">rawDataDir</span>, pattern <span class="op">=</span> <span class="st">"sample_"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">truncateMaxRange</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="va">minLimit</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create flowCore::flowSet with all samples of a dataset</span></span></span>
+<span class="r-in"><span><span class="va">fsRaw</span> <span class="op">&lt;-</span> <span class="fu"><a href="readSampleFiles.html">readSampleFiles</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    sampleFiles <span class="op">=</span> <span class="va">sampleFiles</span>,</span></span>
+<span class="r-in"><span>    whichSamples <span class="op">=</span> <span class="st">"all"</span>,</span></span>
+<span class="r-in"><span>    truncate_max_range <span class="op">=</span> <span class="va">truncateMaxRange</span>,</span></span>
+<span class="r-in"><span>    min.limit <span class="op">=</span> <span class="va">minLimit</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="va">ff_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="removeMarginsPeacoQC.html">removeMarginsPeacoQC</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">fsRaw</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing margins from file : sample_Donor2.fcs</span>
+<span class="r-in"><span>    </span></span>
+<span class="r-in"><span><span class="va">ff_c</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="compensateFromMatrix.html">compensateFromMatrix</a></span><span class="op">(</span><span class="va">ff_m</span>,</span></span>
+<span class="r-in"><span>                         matrixSource <span class="op">=</span> <span class="st">"fcs"</span><span class="op">)</span>        </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Compensating file : sample_Donor2.fcs</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">remDebrisGateData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">73615</span>, <span class="fl">110174</span>, <span class="fl">213000</span>, <span class="fl">201000</span>, <span class="fl">126000</span>,</span></span>
+<span class="r-in"><span>                       <span class="fl">47679</span>, <span class="fl">260500</span>, <span class="fl">260500</span>, <span class="fl">113000</span>, <span class="fl">35000</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ff_cells</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>    <span class="fu">removeDebrisManualGate</span><span class="op">(</span><span class="va">ff_c</span>,</span></span>
+<span class="r-in"><span>                           FSCChannel <span class="op">=</span> <span class="st">"FSC-A"</span>,</span></span>
+<span class="r-in"><span>                           SSCChannel <span class="op">=</span> <span class="st">"SSC-A"</span>,</span></span>
+<span class="r-in"><span>                           gateData <span class="op">=</span> <span class="va">remDebrisGateData</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
