@@ -34,6 +34,8 @@ test_that("CytoProcessingStep basics works", {
     psARGS <- getCPSARGS(ps)
     expect_identical(psARGS, list())
     
+    expect_error(show(ps), NA)
+    
     res <- executeProcessingStep(ps, 1:10)
     expect_equal(res, 55)
 })
