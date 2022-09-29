@@ -267,6 +267,23 @@ test_that("removeDeadCellsGateTail works", {
         flowCore::exprs(ff_lcells),
         flowCore::exprs(ref_ff_lcells)
     )
+    
+    # same with channel name instead of marker for L/D
+    ff_lcells2 <-
+        removeDeadCellsGateTail(ref_ff_cells,
+                                preTransform = TRUE,
+                                transList = refTransList,
+                                LDMarker = "Comp-525/50Violet-A",
+                                num_peaks = 2,
+                                ref_peak = 2,
+                                strict = FALSE,
+                                positive = FALSE
+        )
+    
+    expect_equal(
+        flowCore::exprs(ff_lcells2),
+        flowCore::exprs(ref_ff_lcells)
+    )
 })
 
 test_that("removeDeadCellsManualGate works", {
@@ -289,6 +306,19 @@ test_that("removeDeadCellsManualGate works", {
         flowCore::exprs(ff_lcells),
         flowCore::exprs(ref_ff_lcells)
     )
+    
+    # same with channel name instead of marker for L/D
+    ff_lcells2 <-
+        removeDeadCellsManualGate(ref_ff_cells,
+                                  FSCChannel = "FSC-A",
+                                  LDMarker = "Comp-525/50Violet-A",
+                                  gateData = remDeadCellsGateData)
+    
+    expect_equal(
+        flowCore::exprs(ff_lcells2),
+        flowCore::exprs(ref_ff_lcells)
+    )
+    
 })
 
 test_that("qualityControlPeacoQC", {

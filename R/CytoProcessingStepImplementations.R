@@ -838,7 +838,7 @@ removeDebrisFlowClustTmix <- function(ff,
 #' @param FSCChannel a character containing the exact name of the forward
 #' scatter channel
 #' @param LDMarker a character containing the exact name of the marker
-#' corresponding to (a)Live/Dead channel
+#' corresponding to (a)Live/Dead channel, or the Live/Dead channel name itself
 #' @param gateData a numerical vector containing the polygon gate coordinates
 #' first the `FSCChannel` channel coordinates of each points of the polygon gate,
 #' then the LD channel coordinates of each points (prior to scale transform)
@@ -908,7 +908,12 @@ removeDeadCellsManualGate <- function(ff,
         ffIn <- ff
     }
 
-    LDChannel <- getChannelNamesFromMarkers(ffIn, markers = LDMarker)
+    
+    if (LDMarker %in% flowCore::colnames(ff)) {
+        LDChannel <- LDMarker
+    } else {
+        LDChannel <- getChannelNamesFromMarkers(ffIn, markers = LDMarker)
+    }
 
     liveGateMatrix <- matrix(
         data = gateData, ncol = 2,
@@ -942,7 +947,7 @@ removeDeadCellsManualGate <- function(ff,
 #' running the gating algorithm
 #' @param transList applied in conjunction with preTransform == TRUE
 #' @param LDMarker a character containing the exact name of the marker
-#' corresponding to Live/Dead channel
+#' corresponding to Live/Dead channel, or the Live/Dead channel name itself
 #' @param ... additional parameters passed to openCyto::gate_tail()
 #'
 #' @return a flowCore::flowFrame with removed dead cells from the input
@@ -1026,7 +1031,11 @@ removeDeadCellsGateTail <- function(ff,
         ffIn <- ff
     }
 
-    LDChannel <- getChannelNamesFromMarkers(ffIn, markers = LDMarker)
+    if (LDMarker %in% flowCore::colnames(ff)) {
+        LDChannel <- LDMarker
+    } else {
+        LDChannel <- getChannelNamesFromMarkers(ffIn, markers = LDMarker)
+    }
 
     liveGate <-
         do.call(openCyto::gate_tail,
