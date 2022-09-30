@@ -127,8 +127,8 @@ test_that("CytoPipeline with reading scale transfo only raises no error", {
                     whichQueue = "scale transform",
                     CytoProcessingStep(
                         name = "scale_transform_read",
-                        FUN = "readRDS",
-                        ARGS = list(file = transListPath)
+                        FUN = "readRDSObject",
+                        ARGS = list(RDSFile = transListPath)
                     )
                 )
 

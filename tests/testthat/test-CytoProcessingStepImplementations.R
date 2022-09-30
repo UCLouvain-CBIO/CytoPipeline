@@ -440,3 +440,40 @@ test_that("qualityControlFlowClean works", {
         flowCore::exprs(ref_ff_qualityControl_flowClean)
     )
 })
+
+test_that("readRDSObject works", {
+    expect_error(readRDSObject("dummyPath.rds"),
+                 regexp = "file dummyPath.rds does not exist")
+    transListPath <- paste0(system.file("extdata", 
+                                        package = "CytoPipeline"),
+                            "/OMIP021_TransList.rds")   
+    obj <- readRDSObject(transListPath)
+    
+    refTransList <- readRDS(transListPath)
+    
+    expect_identical(obj, refTransList)
+})
+
+test_that("applyScaleTransform works", {
+    transListPath <- paste0(system.file("extdata", 
+                                        package = "CytoPipeline"),
+                            "/OMIP021_TransList.rds") 
+    ff_c <- readRDS(test_path("fixtures", "ff_c.rds"))
+    transList <- readRDS(transListPath)
+    
+    refFF <- flowCore::transform(ff_c, transList)
+    thisFF <- applyScaleTransforms(ff_c, transList)
+    
+    expect_equal(
+        flowCore::exprs(thisFF),
+        flowCore::exprs(refFF)
+    )
+})
+
+
+
+# saveRDS(transList, transListPath)
+
+
+
+

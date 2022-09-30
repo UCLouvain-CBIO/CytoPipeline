@@ -1394,7 +1394,6 @@ qualityControlFlowCut <- function(ff,
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
 #'
-#'
 #' @examples
 #'
 #' rawDataDir <-
@@ -1486,12 +1485,57 @@ qualityControlFlowClean <- function(ff,
     return(ff)
 }
 
+##' @title read RDS object 
+##' @description wrapper around readRDS, which discards any additional 
+##' parameters passed in (...)
+##' @param RDSFile a RDS file containing a R object
+##' object
+##' @param ... other arguments (not used)
+##' @return the read R object
+##' @export
+##' 
+##' @examples
+##' 
+##' transListPath <- paste0(system.file("extdata", 
+##'                                     package = "CytoPipeline"),
+##'                         "/OMIP021_TransList.rds") 
+##' 
+##' transList <- readRDSObject(transListPath)
+##' 
+##' ff_c <- compensateFromMatrix(OMIP021Samples[[1]],
+##'                              matrixSource = "fcs")  
+##' 
+##' ff_t <- applyScaleTransforms(ff_c, transList = transList)
+##' 
+readRDSObject <- function(RDSFile, ...) {
+    if (!file.exists(RDSFile)) {
+        stop("file ", RDSFile, " does not exist")
+    }
+    obj <- readRDS(file = RDSFile)
+}
+
 ##' @title apply scale transforms
+##' @description wrapper around flowCore::transform() that discards any 
+##' additional parameter passed in (...)
 ##' @param ff a flowCore::flowFrame
 ##' @param transList a flowCore::transformList
 ##' @param ... other arguments (not used)
 ##' @return the transformed flowFrame
 ##' @export
+##' 
+##' @examples
+##' 
+##' transListPath <- paste0(system.file("extdata", 
+##'                                     package = "CytoPipeline"),
+##'                         "/OMIP021_TransList.rds") 
+##' 
+##' transList <- readRDSObject(transListPath)
+##' 
+##' ff_c <- compensateFromMatrix(OMIP021Samples[[1]],
+##'                              matrixSource = "fcs")  
+##' 
+##' ff_t <- applyScaleTransforms(ff_c, transList = transList)
+##' 
 applyScaleTransforms <- function(ff, transList, ...) {
     ff <- flowCore::transform(ff, transList)
     return(ff)
