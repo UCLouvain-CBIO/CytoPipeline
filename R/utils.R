@@ -737,6 +737,7 @@ findTimeChannel <- function(obj, excludeChannels = c()) {
 #' )
 #' ret3 # c("FSC-A", "525/50Violet-A", "530/30Blue-A", "670/30Yellow-A")
 #' 
+#' 
 getChannelNamesFromMarkers <- function(ff, markers) {
     if (!inherits(ff, "flowFrame")) {
         stop("ff type not recognized, should be a flowFrame")
