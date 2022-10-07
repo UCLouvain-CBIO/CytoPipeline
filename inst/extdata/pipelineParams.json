@@ -91,7 +91,6 @@
       "name": ["remove_dead_cells"],
       "FUN": ["removeDeadCellsGateTail"],
       "ARGS": {
-        "FSCChannel": ["FSC-A"],
         "LDMarker": ["L/D Aqua - Viability"],
         "num_peaks": [2],
         "ref_peak": [2],

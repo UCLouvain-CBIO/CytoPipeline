@@ -296,7 +296,6 @@ test_that("CytoPipeline with complex flows raises no error", {
                         name = "remove_dead_cells",
                         FUN = "removeDeadCellsGateTail",
                         ARGS = list(
-                            FSCChannel = c("FSC-A"),
                             LDMarker = "L/D Aqua - Viability",
                             num_peaks = 2,
                             ref_peak = 2,
