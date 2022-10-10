@@ -164,7 +164,7 @@ readSampleFiles <- function(sampleFiles,
 #'
 #' @return either a flowCore::flowSet or a flowCore::flowFrame depending on
 #' the input.
-#' @importFrom flowCore exprs
+#' 
 #' @export
 #'
 #' @examples
@@ -945,6 +945,7 @@ removeDeadCellsManualGate <- function(ff,
 #'
 #' @return a flowCore::flowFrame with removed dead cells from the input
 #' @export
+#' 
 #'
 #' @examples
 #'
@@ -991,15 +992,13 @@ removeDeadCellsGateTail <- function(ff,
                                     transList = NULL,
                                     LDMarker,
                                     ...) {
-
-    # if not present already, add a column with Cell ID
-    ff <- .appendCellID(ff)
-
+    
     # handle ellipsis arguments, as 'openCyto::gate_tail'
     # does not accept unknown args
     passedEllipsisArgs <- list(...)
-    newEllipsisArgs <- list()
-
+    
+    newArgs <- list()
+    
     argNames <-
         c(
             "num_peaks", "ref_peak", "strict", "tol", "side", "min", "max",
@@ -1008,10 +1007,19 @@ removeDeadCellsGateTail <- function(ff,
         )
     for (argN in argNames) {
         if (!is.null(passedEllipsisArgs[[argN]])) {
-            newEllipsisArgs[[argN]] <- passedEllipsisArgs[[argN]]
+            newArgs[[argN]] <- passedEllipsisArgs[[argN]]
         }
     }
-
+    
+    # will be needed by openCyto::gate_tail to support BiocParallel::SnowParams
+    require(flowCore, include.only = c("exprs", "rectangleGate"))
+    
+    message(paste0("Removing Dead Cells Gate Tail events from file : ", 
+                   flowCore::identifier(ff)))
+    
+    # if not present already, add a column with Cell ID
+    ff <- .appendCellID(ff)
+    
     if (preTransform) {
         if (is.null(transList)) {
             stop(
@@ -1023,30 +1031,38 @@ removeDeadCellsGateTail <- function(ff,
     } else {
         ffIn <- ff
     }
-
+    
     if (LDMarker %in% flowCore::colnames(ff)) {
         LDChannel <- LDMarker
     } else {
         LDChannel <- getChannelNamesFromMarkers(ffIn, markers = LDMarker)
     }
-
+    
+    
+    
     liveGate <-
         do.call(openCyto::gate_tail,
-            args = c(
-                list(ffIn,
-                    channel = LDChannel,
-                    filterId = "Live_Cells"
-                ),
-                newEllipsisArgs
-            )
+                args = c(
+                    list(ffIn,
+                         channel = LDChannel,
+                         filterId = "Live_Cells"
+                    ),
+                    newArgs
+                )
         )
-
+    
     selectedLive <- flowCore::filter(ffIn, liveGate)
-
+    
     # note we take ff and not ffIn (no transfo)
     ff <- flowCore::Subset(ff, selectedLive)
-    #ff <- ff[selectedLive@subSet, ] 
+    
     return(ff)
+        
+    
+    
+    
+    
+
 }
 
 ### FUNCTIONS for Quality Control ###

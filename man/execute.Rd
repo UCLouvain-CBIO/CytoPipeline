@@ -4,7 +4,7 @@
 \alias{execute}
 \title{executing CytoPipeline object}
 \usage{
-execute(x, path = ".", rmCache = FALSE)
+execute(x, path = ".", rmCache = FALSE, bp = BiocParallel::SerialParam())
 }
 \arguments{
 \item{x}{CytoPipeline object}

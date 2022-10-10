@@ -559,7 +559,8 @@ showProcessingSteps <- function(x,
 #'
 execute <- function(x,
                     path = ".",
-                    rmCache = FALSE) {
+                    rmCache = FALSE,
+                    bp = BiocParallel::SerialParam()) {
     stopifnot(inherits(x, "CytoPipeline"))
 
     #browser()
@@ -697,14 +698,15 @@ execute <- function(x,
             )
         }
     }
-
-
-    for (file in x@sampleFiles) {
+    
+    invisible(BiocParallel::bplapply(x@sampleFiles, 
+                                     BPPARAM = bp, 
+                                     FUN = function(file){
         # browser()
         message("#####################################################")
         message("### NOW PRE-PROCESSING FILE ", file, "...")
         message("#####################################################")
-
+        
         for (s in seq_along(x@flowFramesPreProcessingQueue)) {
             stepName <- getCPSName(x@flowFramesPreProcessingQueue[[s]])
             cacheResourceName <- paste0(
@@ -713,9 +715,9 @@ execute <- function(x,
                 "_step", s, "_",
                 stepName
             )
-
+            
             msg <- paste0("Proceeding with step ", s, " [", stepName, "]")
-
+            
             if (cacheResourceName %in% BiocFileCache::bfcinfo(bfc)$rname) {
                 message(msg, ": found in cache!")
                 cacheResourceFile <-
@@ -747,7 +749,7 @@ execute <- function(x,
                 cacheResourceFile <-
                     BiocFileCache::bfcnew(bfc, cacheResourceName)
                 saveRDS(res, unname(cacheResourceFile))
-
+                
                 # add one entry in cache meta data tables
                 outputClass <- class(res)
                 outputObjectName <- paste0(stepName, "_obj")
@@ -770,17 +772,18 @@ execute <- function(x,
                         rid = names(cacheResourceFile),
                         fcsfile = basename(file)
                     ))
-
+                
                 BiocFileCache::bfcmeta(bfc, name = "generic", append = TRUE) <-
                     genericMeta
                 BiocFileCache::bfcmeta(
                     bfc,
                     name = "preprocessing", append = TRUE
-                ) <-
-                    preprocessingMeta
+                ) <- preprocessingMeta
             } # if (newResource)
         } # end loop on steps
-    } # end loop on sample files
+    }))
+    
+    
 }
 
 #' @name interactingWithCytoPipelineCache

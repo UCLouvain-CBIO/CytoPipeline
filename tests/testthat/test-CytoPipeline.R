@@ -361,6 +361,23 @@ test_that("CytoPipeline with json input raises no error", {
     )
 })
 
+test_that("CytoPipeline with Biocparallel::Snowparam raises no error", {
+    expect_error(
+        {
+            jsonDir <- system.file("extdata", package = "CytoPipeline")
+            jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+
+            pipL2 <- CytoPipeline(jsonPath)
+            experimentName(pipL2) <- "BPSNOW_Experiment"
+            sampleFiles(pipL2) <- paste0(jsonDir, "/", basename(sampleFiles(pipL2)))
+            bp <- BiocParallel::SnowParam(workers = 2)
+
+            suppressWarnings(execute(pipL2, path = getwd(), bp = bp))
+        },
+        NA
+    )
+})
+
 test_that("CytoPipeline export as list works", {
     jsonDir <- system.file("extdata", package = "CytoPipeline")
     jsonPath <- paste0(jsonDir, "/pipelineParams.json")
