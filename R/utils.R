@@ -677,9 +677,9 @@ findTimeChannel <- function(obj, excludeChannels = c()) {
     )[1]
     if (is.na(time)) {
         if (isFlowSet) {
-            xx <- exprs(obj[[1]])[, includedChannels]
+            xx <- flowCore::exprs(obj[[1]])[, includedChannels]
         } else if (methods::is(obj, "flowFrame")) {
-            xx <- exprs(obj)[, includedChannels]
+            xx <- flowCore::exprs(obj)[, includedChannels]
         }
         cont <- apply(xx, 2, function(y) {
             all(sign(diff(y)) >=

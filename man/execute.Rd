@@ -4,7 +4,13 @@
 \alias{execute}
 \title{executing CytoPipeline object}
 \usage{
-execute(x, path = ".", rmCache = FALSE, bp = BiocParallel::SerialParam())
+execute(
+  x,
+  path = ".",
+  rmCache = FALSE,
+  useBiocParallel = FALSE,
+  BPPARAM = BiocParallel::bpparam()
+)
 }
 \arguments{
 \item{x}{CytoPipeline object}
@@ -14,6 +20,14 @@ be created to store the output data, in particular the experiment cache}
 
 \item{rmCache}{if TRUE, starts by removing the already existing cache
 directory corresponding to the experiment}
+
+\item{useBiocParallel}{if TRUE, use BiocParallel for computation of the
+sample file pre-processing in parallel (one file per worker at a time).
+Note the BiocParallel function used is \code{bplapply()}}
+
+\item{BPPARAM}{if \code{useBiocParallel} is TRUE, sets the BPPARAM back-end to
+be used for the computation. If not provided, will use the top back-end on
+the \code{BiocParallel::registered()} stack.}
 }
 \value{
 nothing

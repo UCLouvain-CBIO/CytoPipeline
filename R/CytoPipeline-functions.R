@@ -329,6 +329,12 @@ showProcessingSteps <- function(x,
 #' be created to store the output data, in particular the experiment cache
 #' @param rmCache if TRUE, starts by removing the already existing cache
 #' directory corresponding to the experiment
+#' @param useBiocParallel if TRUE, use BiocParallel for computation of the
+#' sample file pre-processing in parallel (one file per worker at a time).
+#' Note the BiocParallel function used is `bplapply()`
+#' @param BPPARAM if `useBiocParallel` is TRUE, sets the BPPARAM back-end to
+#' be used for the computation. If not provided, will use the top back-end on 
+#' the `BiocParallel::registered()` stack.
 #' @returns nothing
 #' @export
 #' 
@@ -560,7 +566,8 @@ showProcessingSteps <- function(x,
 execute <- function(x,
                     path = ".",
                     rmCache = FALSE,
-                    bp = BiocParallel::SerialParam()) {
+                    useBiocParallel = FALSE,
+                    BPPARAM = BiocParallel::bpparam()) {
     stopifnot(inherits(x, "CytoPipeline"))
 
     #browser()
@@ -699,9 +706,7 @@ execute <- function(x,
         }
     }
     
-    invisible(BiocParallel::bplapply(x@sampleFiles, 
-                                     BPPARAM = bp, 
-                                     FUN = function(file){
+    preProcessOneFile <- function(file) {
         # browser()
         message("#####################################################")
         message("### NOW PRE-PROCESSING FILE ", file, "...")
@@ -781,9 +786,21 @@ execute <- function(x,
                 ) <- preprocessingMeta
             } # if (newResource)
         } # end loop on steps
-    }))
+    }
     
-    
+    if (useBiocParallel) {
+        # apparently the below is needed to make sure not only CytoPipeline, 
+        # but also flowCore gets visible from the workers in case we use 
+        # SnowParams
+        bpOpt <- BiocParallel::bpoptions(packages = c("flowCore"))
+        
+        invisible(BiocParallel::bplapply(x@sampleFiles, 
+                                         BPPARAM = BPPARAM,
+                                         BPOPTIONS = bpOpt, 
+                                         FUN = preProcessOneFile))
+    } else {
+        invisible(lapply(x@sampleFiles, FUN = preProcessOneFile))
+    }
 }
 
 #' @name interactingWithCytoPipelineCache

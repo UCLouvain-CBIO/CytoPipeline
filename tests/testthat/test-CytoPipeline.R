@@ -354,14 +354,31 @@ test_that("CytoPipeline with json input raises no error", {
             pipL2 <- CytoPipeline(jsonPath)
             withr::with_dir(new = jsonDir, {
                 suppressWarnings(execute(pipL2, 
-                                         rmCache = FALSE, 
+                                         rmCache = TRUE, 
                                          path = outputDir))})
         },
         NA
     )
 })
 
-test_that("CytoPipeline with Biocparallel::Snowparam raises no error", {
+test_that("CytoPipeline with Biocparallel::Serial (by default) raises no error", {
+    expect_error(
+        {
+            jsonDir <- system.file("extdata", package = "CytoPipeline")
+            jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+            
+            pipL2 <- CytoPipeline(jsonPath)
+            experimentName(pipL2) <- "BPSerial_Experiment"
+            sampleFiles(pipL2) <- paste0(jsonDir, "/", basename(sampleFiles(pipL2)))
+            bp <- BiocParallel::SerialParam()
+            BiocParallel::register(bp, default = TRUE)
+            suppressWarnings(execute(pipL2, path = outputDir, useBiocParallel = TRUE))
+        },
+        NA
+    )
+})
+
+test_that("CytoPipeline with Biocparallel::SnowParam raises no error", {
     expect_error(
         {
             jsonDir <- system.file("extdata", package = "CytoPipeline")
@@ -371,8 +388,8 @@ test_that("CytoPipeline with Biocparallel::Snowparam raises no error", {
             experimentName(pipL2) <- "BPSNOW_Experiment"
             sampleFiles(pipL2) <- paste0(jsonDir, "/", basename(sampleFiles(pipL2)))
             bp <- BiocParallel::SnowParam(workers = 2)
-
-            suppressWarnings(execute(pipL2, path = getwd(), bp = bp))
+            suppressWarnings(execute(pipL2, path = outputDir, useBiocParallel = TRUE, 
+                                     BPPARAM = bp))
         },
         NA
     )

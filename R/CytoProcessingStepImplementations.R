@@ -946,6 +946,7 @@ removeDeadCellsManualGate <- function(ff,
 #' @return a flowCore::flowFrame with removed dead cells from the input
 #' @export
 #' 
+#' @importFrom flowCore exprs
 #'
 #' @examples
 #'
@@ -1012,7 +1013,8 @@ removeDeadCellsGateTail <- function(ff,
     }
     
     # will be needed by openCyto::gate_tail to support BiocParallel::SnowParams
-    require(flowCore, include.only = c("exprs", "rectangleGate"))
+    #requireNamespace("flowCore")
+    #require(flowCore, include.only = c("exprs", "rectangleGate"))
     
     message(paste0("Removing Dead Cells Gate Tail events from file : ", 
                    flowCore::identifier(ff)))
