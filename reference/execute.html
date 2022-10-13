@@ -76,7 +76,13 @@ the cache.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">execute</span><span class="op">(</span><span class="va">x</span>, path <span class="op">=</span> <span class="st">"."</span>, rmCache <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">execute</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  path <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  rmCache <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useBiocParallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">bpparam</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -93,6 +99,18 @@ be created to store the output data, in particular the experiment cache</p></dd>
 <dt>rmCache</dt>
 <dd><p>if TRUE, starts by removing the already existing cache
 directory corresponding to the experiment</p></dd>
+
+
+<dt>useBiocParallel</dt>
+<dd><p>if TRUE, use BiocParallel for computation of the
+sample file pre-processing in parallel (one file per worker at a time).
+Note the BiocParallel function used is <code>bplapply()</code></p></dd>
+
+
+<dt>BPPARAM</dt>
+<dd><p>if <code>useBiocParallel</code> is TRUE, sets the BPPARAM back-end to
+be used for the computation. If not provided, will use the top back-end on
+the <code><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">BiocParallel::registered()</a></code> stack.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -338,6 +356,7 @@ directory corresponding to the experiment</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The prior specification has no effect when usePrior=no</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using the serial version of flowClust</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells Gate Tail events from file : Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor1.fcs</span>
@@ -358,6 +377,7 @@ directory corresponding to the experiment</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The prior specification has no effect when usePrior=no</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using the serial version of flowClust</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells Gate Tail events from file : Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor2.fcs</span>
@@ -447,6 +467,7 @@ directory corresponding to the experiment</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The prior specification has no effect when usePrior=no</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using the serial version of flowClust</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells Gate Tail events from file : Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor1.fcs</span>
@@ -467,6 +488,7 @@ directory corresponding to the experiment</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The prior specification has no effect when usePrior=no</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using the serial version of flowClust</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells Gate Tail events from file : Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor2.fcs</span>
