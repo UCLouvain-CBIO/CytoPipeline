@@ -15,11 +15,9 @@ output:
     toc_float: true
 bibliography: CytoPipeline.bib
 vignette: >
-  %\VignetteIndexEntry{Automation and Visualization of Flow Cytometry 
-  Data Analysis Pipelines}
+  %\VignetteIndexEntry{Automation and Visualization of Flow Cytometry Data Analysis Pipelines}
   %\VignetteEngine{knitr::rmarkdown}
-  %%\VignetteKeywords{FlowCytometry, Preprocessing, QualityControl, 
-  WorkflowStep, ImmunoOncology, Software, Visualization }
+  %%\VignetteKeywords{FlowCytometry, Preprocessing, QualityControl, WorkflowStep, ImmunoOncology, Software, Visualization}
   %\VignetteEncoding{UTF-8}
 ---
 
