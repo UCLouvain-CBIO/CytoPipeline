@@ -87,28 +87,28 @@ of CytoPipeline objects
 }
 \section{Functions}{
 \itemize{
-\item \code{addProcessingStep}: adds a processing step in one of the
+\item \code{addProcessingStep()}: adds a processing step in one of the
 processing queues (at the end), returns the modified CytoPipeline object
 
-\item \code{removeProcessingStep}: removes a processing step from one of
+\item \code{removeProcessingStep()}: removes a processing step from one of
 the processing queues, returns the modified CytoPipeline object
 
-\item \code{getNbProcessingSteps}: gets the number of processing
+\item \code{getNbProcessingSteps()}: gets the number of processing
 steps in a processing queue
 
-\item \code{getProcessingStep}: gets a processing step at a
+\item \code{getProcessingStep()}: gets a processing step at a
 specific index of a processing queue
 
-\item \code{getProcessingStepNames}: gets a character vector of all
+\item \code{getProcessingStepNames()}: gets a character vector of all
 processing step names of a specific processing queue
 
-\item \code{cleanProcessingSteps}: deletes all processing steps in one
+\item \code{cleanProcessingSteps()}: deletes all processing steps in one
 or both processing queues, returns the modified CytoPipeline object
 
-\item \code{showProcessingSteps}: shows all processing steps in a
+\item \code{showProcessingSteps()}: shows all processing steps in a
 processing queue
-}}
 
+}}
 \examples{
 
 rawDataDir <- paste0(system.file("extdata", package = "CytoPipeline"), "/")

@@ -29,8 +29,10 @@ scatter channel}
 corresponding to (a)Live/Dead channel, or the Live/Dead channel name itself}
 
 \item{gateData}{a numerical vector containing the polygon gate coordinates
-first the \code{FSCChannel} channel coordinates of each points of the polygon gate,
-then the LD channel coordinates of each points (prior to scale transform)}
+first the \code{FSCChannel} channel coordinates
+of each points of the polygon gate,
+then the LD channel coordinates of each points
+(prior to scale transform)}
 
 \item{...}{additional parameters passed to flowCore::polygonGate()}
 }

@@ -58,8 +58,10 @@ The \code{CytoProcessingStep} function returns and object of type
 Class containing the function and arguments to be applied in a lazy-execution
 framework.
 
-Objects of this class are created using the \code{CytoProcessingStep()} function.
-The processing step is executed with the \code{executeProcessingStep()} function.
+Objects of this class are created using the \code{CytoProcessingStep()}
+function.
+The processing step is executed with the \code{executeProcessingStep()}
+function.
 }
 \details{
 This object contains all relevant information of a data analysis processing

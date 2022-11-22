@@ -127,8 +127,8 @@ a vector of character containing found experiment names
 
 \itemize{
 \item for \code{getCytoPipelineObjectFromCache}:
-the found object (or stops with an error message if the
-target object is not found)
+the found object (or stops with an error message
+if the target object is not found)
 }
 
 \itemize{
@@ -163,26 +163,32 @@ internal function for the time being
 }
 \section{Functions}{
 \itemize{
-\item \code{getCytoPipelineExperimentNames}: This function looks into a path for stored file caches and gets the
-corresponding experiment names
+\item \code{getCytoPipelineExperimentNames()}: This function
+looks into a path for stored file caches
+and gets the corresponding experiment names
 
-\item \code{getCytoPipelineObjectFromCache}: Given a CytoPipeline object, this function retrieves
+\item \code{getCytoPipelineObjectFromCache()}: Given a CytoPipeline object,
+this function retrieves
 a specific object in the corresponding file cache
 
-\item \code{getCytoPipelineObjectInfos}: Given a CytoPipeline object, this function retrieves
-the information related to a specific object name, i.e.
-object name and object class
+\item \code{getCytoPipelineObjectInfos()}: Given a CytoPipeline object,
+this function retrieves
+the information related to a specific object name,
+i.e. object name and object class
 
-\item \code{getCytoPipelineFlowFrame}: Given a CytoPipeline object, this function retrieves
-a specific flowCore::flowFrame object in the corresponding file cache
-object name and object class
+\item \code{getCytoPipelineFlowFrame()}: Given a CytoPipeline object,
+this function retrieves
+a specific flowCore::flowFrame object in the corresponding
+file cache object name and object class
 
-\item \code{getCytoPipelineScaleTransform}: Given a CytoPipeline object, this function retrieves
+\item \code{getCytoPipelineScaleTransform()}: Given a CytoPipeline object,
+this function retrieves
 a specific flowCore::transformList object in the corresponding
 file cache
 
-\item \code{plotCytoPipelineProcessingQueue}: This functions displays a plot of a processing
-queue of a CytoPipeline object, using diagram::plotmat().
+\item \code{plotCytoPipelineProcessingQueue()}: This functions displays
+a plot of a processing queue of a CytoPipeline object,
+using diagram::plotmat().
 \itemize{
 \item If a step is in run state for all sample files, the
 corresponding box appears in green
@@ -191,8 +197,8 @@ the corresponding box appears in orange
 \item If at least one step is not consistent with cache, the whole
 set of boxes appears in red
 }
-}}
 
+}}
 \examples{
 
 
@@ -227,7 +233,7 @@ plotCytoPipelineProcessingQueue(pipL2, whichQueue = "scale transform",
 # get object infos for a specific queue
 df <- getCytoPipelineObjectInfos(pipL2, whichQueue = "pre-processing",
                                  path = outputDir,
-                                 sampleFile = sampleFiles(pipL2)[1])                                
+                                 sampleFile = sampleFiles(pipL2)[1]) 
                                 
 # get transform list (output of one step)
 trans <-

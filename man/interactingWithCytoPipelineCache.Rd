@@ -29,12 +29,15 @@ for \code{checkCytoPipelineConsistencyWithCache}: a list with the following
 values:
 \itemize{
 \item \code{isConsistent} (TRUE/FALSE)
-\item \code{inconsistencyMsg}: character filled in by an inconsistency message in
-case the cache and CytoPipeline object are not consistent with each other
-\item \code{scaleTransformStepStatus}: a character vector, containing, for each scale
-transform step, a status from c("run", "not run", "inconsistent")
-\item \code{preProcessingStepStatus}: a character matrix, containing, for each
-pre-processing step (rows), for each sample file (columns), a status from
+\item \code{inconsistencyMsg}: character filled in
+by an inconsistency message in case the cache and
+CytoPipeline object are not consistent with each other
+\item \code{scaleTransformStepStatus}: a character vector,
+containing, for each scale transform step, a status
+from c("run", "not run", "inconsistent")
+\item \code{preProcessingStepStatus}: a character matrix,
+containing, for each pre-processing step (rows),
+for each sample file (columns), a status from
 c("run", "not run", "inconsistent")
 }
 }
@@ -44,17 +47,18 @@ object and the file cache on disk
 }
 \section{Functions}{
 \itemize{
-\item \code{deleteCytoPipelineCache}: delete the whole disk cache
+\item \code{deleteCytoPipelineCache()}: delete the whole disk cache
 corresponding to the experiment of a CytoPipeline object
 
-\item \code{buildCytoPipelineFromCache}: builds a new CytoPipeline
-object, based on the information stored in the file cache
+\item \code{buildCytoPipelineFromCache()}: builds a new CytoPipeline
+object,
+based on the information stored in the file cache
 
-\item \code{checkCytoPipelineConsistencyWithCache}: check the consistency
+\item \code{checkCytoPipelineConsistencyWithCache()}: check the consistency
 between the processing steps described in a CytoPipeline object,
 and what is stored in the file cache
-}}
 
+}}
 \examples{
 
 # preliminary run:

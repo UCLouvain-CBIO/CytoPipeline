@@ -16,7 +16,8 @@ scatter channel}
 channel}
 
 \item{gateData}{a numerical vector containing the polygon gate coordinates
-first the \code{FSCChannel} channel coordinates of each points of the polygon gate,
+first the \code{FSCChannel} channel coordinates
+of each points of the polygon gate,
 then the \code{SSCChannel} channel coordinates of each points.}
 
 \item{...}{additional parameters passed to flowCore::polygonGate()}

@@ -23,10 +23,10 @@ formats
 }
 \section{Functions}{
 \itemize{
-\item \code{export2JSONFile}: exports a CytoPipeline object
+\item \code{export2JSONFile()}: exports a CytoPipeline object
 to a JSON file (writing the file = side effect)
-}}
 
+}}
 \examples{
 
 outputDir <- withr::local_tempdir()
@@ -43,5 +43,5 @@ pipL <- removeProcessingStep(pipL, whichQueue = "pre-processing",
                                    index = nPreProcessing)
 
 # export back to json file    
-export2JSONFile(pipL, path = paste0(outputDir, "/newFile.json"))                               
+export2JSONFile(pipL, path = paste0(outputDir, "/newFile.json")) 
 }

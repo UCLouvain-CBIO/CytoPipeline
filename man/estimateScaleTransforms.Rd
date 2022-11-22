@@ -30,13 +30,15 @@ possible separation between + population and - population.
 It distinguishes between scatter channels, where either linear, or no
 transform is applied, and fluo channels, where either logicle transform
 \itemize{
-\item using flowCore::estimateLogicle - is estimated, or no transform is applied.
+\item using flowCore::estimateLogicle - is estimated, or no transform
+is applied.
+}
+
 The idea of linear transform of scatter channels is as follows: a reference
 channel (not a scatter one) is selected and a linear transform (Y = AX + B)
 is applied to all scatter channel, as to align their 5 and 95 percentiles to
 those of the reference channel
 For the estimateLogicle function, see flowCore documentation.
-}
 }
 \examples{
 

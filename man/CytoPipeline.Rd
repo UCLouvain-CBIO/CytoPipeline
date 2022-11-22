@@ -68,19 +68,26 @@ transformations per channel
 \section{Slots}{
 
 \describe{
-\item{\code{scaleTransformProcessingQueue}}{A \code{list()} of CytoProcessingStep objects
-containing the steps for obtaining the scale transformations per channel}
+\item{\code{scaleTransformProcessingQueue}}{A \code{list()} of
+CytoProcessingStep objects containing the steps
+for obtaining the scale transformations per channel}
 
-\item{\code{flowFramesPreProcessingQueue}}{A \code{list()} of CytoProcessingStep objects
-containing the steps for pre-processing of the samples flow frames}
+\item{\code{flowFramesPreProcessingQueue}}{A \code{list()} of
+CytoProcessingStep objects containing the steps
+for pre-processing of the samples flow frames}
 
-\item{\code{experimentName}}{A \code{character()} containing the experiment (run) name}
+\item{\code{experimentName}}{A \code{character()} containing
+the experiment (run) name}
 
-\item{\code{sampleFiles}}{A \code{character()} vector storing all fcs files to be
-run into the pipeline}
+\item{\code{sampleFiles}}{A \code{character()} vector storing
+all fcs files to be run into the pipeline}
 
-\item{\code{saveScaleTransform}}{if TRUE, will save rds object storing scale}
+\item{\code{saveScaleTransform}}{if TRUE,
+will save rds object storing scale transformation
+list generated}
 
-\item{\code{scaleTransformFile}}{basename of the file to use to save the scale}
+\item{\code{scaleTransformFile}}{basename of the file
+to use to save the scale transformation list
+(if 'saveScaleTransform' == TRUE)}
 }}
 

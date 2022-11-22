@@ -85,6 +85,7 @@ test_that("ggplotEvents with 1D works", {
             t = 270000
         )
     )
+
     vdiffr::expect_doppelganger(
         "ggplotEvents 1D logicle with explicit params - single",
         fig = p

@@ -15,6 +15,7 @@
 
 
 outputDir <- withr::local_tempdir()
+
 if (!interactive()) pdf(NULL)
 
 test_that("CytoPipeline default creation raises no error", {
@@ -27,17 +28,17 @@ test_that("Cytopipeline add/remove/clean processing step works", {
     sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
         pattern = "sample_"
     ))
-    transListPath <- paste0(system.file("extdata", 
+    transListPath <- paste0(system.file("extdata",
                                         package = "CytoPipeline"),
                             "/OMIP021_TransList.rds")
 
     # main parameters : sample files and experiment name
     pipelineParams <- list()
     pipelineParams$experimentName <- experimentName
-    
+
     pipL <- CytoPipeline(pipelineParams)
     expect_error(show(pipL), NA)
-    
+
     pipelineParams$sampleFiles <- sampleFiles
 
     pipL <- CytoPipeline(pipelineParams)
@@ -96,7 +97,7 @@ test_that("Cytopipeline add/remove/clean processing step works", {
     pipL <- cleanProcessingSteps(pipL)
     expect_equal(getNbProcessingSteps(pipL, "scale transform"), 0)
     expect_equal(getNbProcessingSteps(pipL, "pre-processing"), 0)
-    
+
     newExp <- "newExperiment"
     experimentName(pipL) <- newExp
     expect_equal(experimentName(pipL), newExp)
@@ -111,7 +112,7 @@ test_that("CytoPipeline with reading scale transfo only raises no error", {
             sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
                 pattern = "sample_"
             ))
-            transListPath <- paste0(system.file("extdata", 
+            transListPath <- paste0(system.file("extdata",
                                                 package = "CytoPipeline"),
                                     "/OMIP021_TransList.rds")
 
@@ -294,13 +295,10 @@ test_that("CytoPipeline with complex flows raises no error", {
                     whichQueue = "pre-processing",
                     CytoProcessingStep(
                         name = "remove_dead_cells",
-                        FUN = "removeDeadCellsGateTail",
+                        FUN = "removeDeadCellsDeGate",
                         ARGS = list(
-                            LDMarker = "L/D Aqua - Viability",
-                            num_peaks = 2,
-                            ref_peak = 2,
-                            strict = FALSE,
-                            positive = FALSE
+                            preTransform = TRUE,
+                            LDMarker = "L/D Aqua - Viability"
                         )
                     )
                 )
@@ -353,8 +351,8 @@ test_that("CytoPipeline with json input raises no error", {
 
             pipL2 <- CytoPipeline(jsonPath)
             withr::with_dir(new = jsonDir, {
-                suppressWarnings(execute(pipL2, 
-                                         rmCache = TRUE, 
+                suppressWarnings(execute(pipL2,
+                                         rmCache = TRUE,
                                          path = outputDir))})
         },
         NA
@@ -366,7 +364,7 @@ test_that("CytoPipeline with Biocparallel::Serial (by default) raises no error",
         {
             jsonDir <- system.file("extdata", package = "CytoPipeline")
             jsonPath <- paste0(jsonDir, "/pipelineParams.json")
-            
+
             pipL2 <- CytoPipeline(jsonPath)
             experimentName(pipL2) <- "BPSerial_Experiment"
             sampleFiles(pipL2) <- paste0(jsonDir, "/", basename(sampleFiles(pipL2)))
@@ -386,10 +384,18 @@ test_that("CytoPipeline with Biocparallel::SnowParam raises no error", {
 
             pipL2 <- CytoPipeline(jsonPath)
             experimentName(pipL2) <- "BPSNOW_Experiment"
-            sampleFiles(pipL2) <- paste0(jsonDir, "/", basename(sampleFiles(pipL2)))
-            bp <- BiocParallel::SnowParam(workers = 2)
-            suppressWarnings(execute(pipL2, path = outputDir, useBiocParallel = TRUE, 
-                                     BPPARAM = bp))
+            sampleFiles(pipL2) <- paste0(jsonDir, "/", 
+                                         basename(sampleFiles(pipL2)))
+            logDir <- paste0(outputDir, 
+                             "/BiocParallel/log")
+            suppressWarnings(dir.create(logDir, recursive = TRUE))
+            bp <- BiocParallel::SnowParam(workers = 2, log = TRUE, 
+                                          logdir = logDir,
+                                          progressbar = TRUE)
+            suppressWarnings(execute(pipL2, path = outputDir, 
+                                     useBiocParallel = TRUE, 
+                                     BPPARAM = bp, rmCache = TRUE))
+            
         },
         NA
     )
@@ -398,13 +404,13 @@ test_that("CytoPipeline with Biocparallel::SnowParam raises no error", {
 test_that("CytoPipeline export as list works", {
     jsonDir <- system.file("extdata", package = "CytoPipeline")
     jsonPath <- paste0(jsonDir, "/pipelineParams.json")
-    
+
     pipL1 <- CytoPipeline(jsonPath)
     pipList <- as.list(pipL1)
-    
+
     pipL2 <- CytoPipeline(pipList)
     expect_identical(pipL1, pipL2)
-    
+
 })
 
 test_that("CytoPipeline rebuilt from cache raises no error", {
@@ -592,9 +598,9 @@ test_that("Check consistency with cache works", {
     )),
     regexp = "inconsistent pre-processing step"
     )
-    
-    pipL5_bad2 <- pipL5 
-    pipL5_bad2@flowFramesPreProcessingQueue[[1]]@ARGS$truncate_max_range <- 
+
+    pipL5_bad2 <- pipL5
+    pipL5_bad2@flowFramesPreProcessingQueue[[1]]@ARGS$truncate_max_range <-
         TRUE
     res <- checkCytoPipelineConsistencyWithCache(pipL5_bad2,
                                                  path = outputDir
@@ -610,13 +616,13 @@ test_that("Check consistency with cache works", {
     expect_equal(unname(res$scaleTransformStepStatus[1]), "run")
     expect_equal(unname(res$preProcessingStepStatus[1, 1]), "inconsistent")
     expect_equal(unname(res$preProcessingStepStatus[2, 1]), "not_run")
-    
-    
+
+
     pipL5 <- removeProcessingStep(pipL5,
         whichQueue = "pre-processing",
         index = 2
     )
-    
+
     res <- checkCytoPipelineConsistencyWithCache(pipL5,
                                                  path = outputDir
     )

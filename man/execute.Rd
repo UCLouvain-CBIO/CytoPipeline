@@ -198,14 +198,10 @@ pipL <-
                       whichQueue = "pre-processing",
                       CytoProcessingStep(
                           name = "remove_dead_cells",
-                          FUN = "removeDeadCellsGateTail",
+                          FUN = "removeDeadCellsDeGate",
                           ARGS = list(
-                              FSCChannel = c("FSC-A"),
-                              LDMarker = "L/D Aqua - Viability",
-                              num_peaks = 2,
-                              ref_peak = 2,
-                              strict = FALSE,
-                              positive = FALSE
+                              preTransform = TRUE,
+                              LDMarker = "L/D Aqua - Viability"
                           )
                       )
     )

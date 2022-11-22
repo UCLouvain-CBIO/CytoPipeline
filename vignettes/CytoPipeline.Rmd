@@ -15,7 +15,8 @@ output:
     toc_float: true
 bibliography: CytoPipeline.bib
 vignette: >
-  %\VignetteIndexEntry{Automation and Visualization of Flow Cytometry Data Analysis Pipelines}
+  %\VignetteIndexEntry{Automation and Visualization of Flow Cytometry 
+  Data Analysis Pipelines}
   %\VignetteEngine{knitr::rmarkdown}
   %%\VignetteKeywords{FlowCytometry, Preprocessing, QualityControl, 
   WorkflowStep, ImmunoOncology, Software, Visualization }
@@ -40,9 +41,9 @@ classes, i.e. `CytoPipeline` and `CytoProcessingStep`, as well as dedicated
 wrapper functions around selected third-party package methods often used to 
 implement these pre-processing steps.
 
-In the following sections, we demonstrate how to create a `CytoPipeline` object 
-implementing a simple pre-processing pipeline, how to run it and how to retrieve 
-and visualize the results after each step. 
+In the following sections, we demonstrate how to create a `CytoPipeline` 
+object implementing a simple pre-processing pipeline, how to run it and 
+how to retrieve and visualize the results after each step. 
 
 # Example dataset
 The example dataset that will be used throughout this vignette is derived from 
@@ -65,7 +66,8 @@ pre-processing these files using two different QC methods.
 In the first pre-processing pipeline, we will use the flowAI QC method 
 [@Monaco2016-vo], while in the second pipeline, we will use the PeacoQC method 
 [@Emmaneel2021-xy]. Note that when we here refer to QC method, we mean the 
-algorithm used to ensure stability (stationarity) of the channel signals in time.
+algorithm used to ensure stability (stationarity) of the channel signals 
+in time.
 
 In both pipelines, the first part consists in estimating appropriate scale
 transformation functions for all channels present in the sample `flowFrame`.
@@ -76,9 +78,12 @@ queue* (Fig. 1):
 - removing the margin events from each file
 - applying compensation for each file
 - aggregating and sub-sampling from each file
-- estimating the scale transformations from the aggregated and sub-sampled data   
+- estimating the scale transformations from the aggregated 
+and sub-sampled data   
 
-```{r scaleTransformQueueDisplay, results='markup', fig.cap="Scale transform processing queue", echo=FALSE, out.width='75%', fig.align='center', fig.wide = TRUE}
+```{r scaleTransformQueueDisplay, results='markup', 
+fig.cap="Scale transform processing queue", echo=FALSE, out.width='75%', 
+fig.align='center', fig.wide = TRUE}
 knitr::include_graphics("./figs/scaleTransformQueue.png", error = FALSE)
 ```
 
@@ -94,7 +99,9 @@ compensated and scale transformed data (see [@Emmaneel2021-xy])
 Therefore, we propose the following *pre-processing queues* represented in 
 Fig. 2.
 
-```{r preProcessingQueueDisplay, results='markup', fig.cap="Pre-processing queue for two different pipeline settings", echo=FALSE, out.width='100%', fig.align='center', fig.wide = TRUE}
+```{r preProcessingQueueDisplay, results='markup', 
+fig.cap="Pre-processing queue for two different pipeline settings", 
+echo=FALSE, out.width='100%', fig.align='center', fig.wide = TRUE}
 knitr::include_graphics("./figs/preProcessingQueues.png", error = FALSE)
 ```
 
@@ -325,15 +332,10 @@ pipL_PeacoQC <-
         whichQueue = "pre-processing",
         CytoProcessingStep(
             name = "remove_dead_cells",
-            FUN = "removeDeadCellsGateTail",
+            FUN = "removeDeadCellsDeGate",
             ARGS = list(
-                FSCChannel = c("FSC-A"),
-                LDMarker = "L/D Aqua - Viability",
-                num_peaks = 2,
-                ref_peak = 2,
-                strict = FALSE,
-                positive = FALSE
-            )
+                preTransform = TRUE,
+                LDMarker = "L/D Aqua - Viability")
         )
     )
 

@@ -19,7 +19,9 @@
 #' possible separation between + population and - population.
 #' It distinguishes between scatter channels, where either linear, or no
 #' transform is applied, and fluo channels, where either logicle transform
-#' - using flowCore::estimateLogicle - is estimated, or no transform is applied.
+#' - using flowCore::estimateLogicle - is estimated, or no transform   
+#' is applied.   
+#' 
 #' The idea of linear transform of scatter channels is as follows: a reference
 #' channel (not a scatter one) is selected and a linear transform (Y = AX + B)
 #' is applied to all scatter channel, as to align their 5 and 95 percentiles to
@@ -186,8 +188,7 @@ readSampleFiles <- function(sampleFiles,
 #'                    yChannel = "SSC-A")
 removeMarginsPeacoQC <- function(x, ...) {
     myFunc <- function(ff) {
-        message(paste0("Removing margins from file : ", 
-                       flowCore::identifier(ff)))
+        message("Removing margins from file : ", flowCore::identifier(ff))
         channel4Margins <-
             flowCore::colnames(ff)[areSignalCols(ff)]
         ffOut <- PeacoQC::RemoveMargins(ff, channels = channel4Margins)
@@ -298,7 +299,7 @@ compensateFromMatrix <- function(x,
                                  ...) {
     myFunc <- function(ff, matrixSource = c("fcs", "import"),
                        matrixPath = NULL) {
-        message(paste0("Compensating file : ", flowCore::identifier(ff)))
+        message("Compensating file : ", flowCore::identifier(ff))
         matrixSource <- match.arg(matrixSource)
         if (matrixSource == "fcs") {
             # obtains compensation matrix
@@ -639,7 +640,8 @@ removeDoubletsCytoPipeline <- function(ff,
 #' @param SSCChannel a character containing the exact name of the side scatter
 #' channel
 #' @param gateData a numerical vector containing the polygon gate coordinates
-#' first the `FSCChannel` channel coordinates of each points of the polygon gate,
+#' first the `FSCChannel` channel coordinates   
+#' of each points of the polygon gate,   
 #' then the `SSCChannel` channel coordinates of each points.
 #' @param ... additional parameters passed to flowCore::polygonGate()
 #'
@@ -840,8 +842,10 @@ removeDebrisFlowClustTmix <- function(ff,
 #' @param LDMarker a character containing the exact name of the marker
 #' corresponding to (a)Live/Dead channel, or the Live/Dead channel name itself
 #' @param gateData a numerical vector containing the polygon gate coordinates
-#' first the `FSCChannel` channel coordinates of each points of the polygon gate,
-#' then the LD channel coordinates of each points (prior to scale transform)
+#' first the `FSCChannel` channel coordinates    
+#' of each points of the polygon gate,   
+#' then the LD channel coordinates of each points   
+#' (prior to scale transform)
 #' @param ... additional parameters passed to flowCore::polygonGate()
 #'
 #' @return a flowCore::flowFrame with removed dead cells from the input
@@ -930,25 +934,166 @@ removeDeadCellsManualGate <- function(ff,
     #ff <- ff[selectedLive@subSet, ] 
 }
 
+# @title remove dead cells from a flowFrame
+# @description this function removes dead cells from a flowFrame, using a
+# specific '(a)live/dead' channel, and the openCyto::gate_tail() gating
+# function (see doc of the openCyto package)
+
+# @param ff a flowCore::flowFrame
+# @param preTransform if TRUE, apply the transList scale transform prior to
+# running the gating algorithm
+# @param transList applied in conjunction with preTransform == TRUE
+# @param LDMarker a character containing the exact name of the marker
+# corresponding to Live/Dead channel, or the Live/Dead channel name itself
+# @param ... additional parameters passed to openCyto::gate_tail()
+#
+# @return a flowCore::flowFrame with removed dead cells from the input
+# @export
+# 
+# @importFrom flowCore exprs
+#
+# @examples
+#
+# rawDataDir <-
+#     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+# sampleFiles <-
+#     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+# 
+# truncateMaxRange <- FALSE
+# minLimit <- NULL
+# 
+# # create flowCore::flowSet with all samples of a dataset
+# fsRaw <- readSampleFiles(
+#     sampleFiles = sampleFiles,
+#     whichSamples = "all",
+#     truncate_max_range = truncateMaxRange,
+#     min.limit = minLimit)
+# 
+# suppressWarnings(ff_m <- removeMarginsPeacoQC(x = fsRaw[[2]]))
+#     
+# ff_c <-
+#     compensateFromMatrix(ff_m,
+#                          matrixSource = "fcs")        
+#
+# transList <- 
+#     estimateScaleTransforms(        
+#         ff = ff_c,
+#         fluoMethod = "estimateLogicle",
+#         scatterMethod = "linear",
+#         scatterRefMarker = "BV785 - CD3")
+# 
+# ff_lcells <-
+#     removeDeadCellsGateTail(ff_c,
+#                             preTransform = TRUE,
+#                             transList = transList,
+#                             LDMarker = "L/D Aqua - Viability",
+#                             num_peaks = 2,
+#                             ref_peak = 2,
+#                             strict = FALSE,
+#                             positive = FALSE)
+#                             
+# removeDeadCellsGateTail <- function(ff,
+#                                     preTransform = FALSE,
+#                                     transList = NULL,
+#                                     LDMarker,
+#                                     ...) {
+#     
+#     # handle ellipsis arguments, as 'openCyto::gate_tail'
+#     # does not accept unknown args
+#     passedEllipsisArgs <- list(...)
+#     
+#     newArgs <- list()
+#     
+#     argNames <-
+#         c(
+#             "num_peaks", "ref_peak", "strict", "tol", "side", "min", "max",
+#             "bias", "positive", "deriv", "bandwidth", "adjust", "num_points",
+#             "range.x", "binned", "se", "w"
+#         )
+#     for (argN in argNames) {
+#         if (!is.null(passedEllipsisArgs[[argN]])) {
+#             newArgs[[argN]] <- passedEllipsisArgs[[argN]]
+#         }
+#     }
+#     
+#     # will be needed by openCyto::gate_tail to support 
+#     # BiocParallel::SnowParams
+#     #requireNamespace("flowCore")
+#     #require(flowCore, include.only = c("exprs", "rectangleGate"))
+#     
+#     message(paste0("Removing Dead Cells Gate Tail events from file : ", 
+#                    flowCore::identifier(ff)))
+#     
+#     # if not present already, add a column with Cell ID
+#     ff <- .appendCellID(ff)
+#     
+#     if (preTransform) {
+#         if (is.null(transList)) {
+#             stop(
+#                 "tranformation list needs to be provided ",
+#                 "if preTransform = TRUE!"
+#             )
+#         }
+#         ffIn <- flowCore::transform(ff, transList)
+#     } else {
+#         ffIn <- ff
+#     }
+#     
+#     if (LDMarker %in% flowCore::colnames(ff)) {
+#         LDChannel <- LDMarker
+#     } else {
+#         LDChannel <- getChannelNamesFromMarkers(ffIn, markers = LDMarker)
+#     }
+#     
+#     
+#     
+#     liveGate <-
+#         do.call(openCyto::gate_tail,
+#                 args = c(
+#                     list(ffIn,
+#                          channel = LDChannel,
+#                          filterId = "Live_Cells"
+#                     ),
+#                     newArgs
+#                 )
+#         )
+#     
+#     selectedLive <- flowCore::filter(ffIn, liveGate)
+#     
+#     # note we take ff and not ffIn (no transfo)
+#     ff <- flowCore::Subset(ff, selectedLive)
+#     
+#     return(ff)
+#         
+#     
+#     
+#     
+#     
+# 
+# }
+
 #' @title remove dead cells from a flowFrame
 #' @description this function removes dead cells from a flowFrame, using a
-#' specific '(a)live/dead' channel, and the openCyto::gate_tail() gating
-#' function (see doc of the openCyto package)
-
+#' specific '(a)live/dead' channel, and the flowDensity::deGate() gating
+#' function (see doc of the flowDensity package)
+#'
 #' @param ff a flowCore::flowFrame
 #' @param preTransform if TRUE, apply the transList scale transform prior to
 #' running the gating algorithm
 #' @param transList applied in conjunction with preTransform == TRUE
 #' @param LDMarker a character containing the exact name of the marker
 #' corresponding to Live/Dead channel, or the Live/Dead channel name itself
-#' @param ... additional parameters passed to openCyto::gate_tail()
+#' @param keepPositivePop logical flag stating whether we want to keep, 
+#' after gating, the population that is positive for `LDMarker` (TRUE) 
+#' or negative for `LDmarker` (FALSE)  
+#' @param ... additional parameters passed to flowDensity::deGate()
 #'
 #' @return a flowCore::flowFrame with removed dead cells from the input
 #' @export
 #' 
 #' @importFrom flowCore exprs
 #'
-#' @examples
+#'@examples
 #'
 #' rawDataDir <-
 #'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
@@ -979,49 +1124,26 @@ removeDeadCellsManualGate <- function(ff,
 #'         scatterRefMarker = "BV785 - CD3")
 #' 
 #' ff_lcells <-
-#'     removeDeadCellsGateTail(ff_c,
-#'                             preTransform = TRUE,
-#'                             transList = transList,
-#'                             LDMarker = "L/D Aqua - Viability",
-#'                             num_peaks = 2,
-#'                             ref_peak = 2,
-#'                             strict = FALSE,
-#'                             positive = FALSE)
+#'     removeDeadCellsDeGate(ff_c,
+#'                           preTransform = TRUE,
+#'                           transList = transList,
+#'                           LDMarker = "L/D Aqua - Viability",
+#'                           keepPositivePop = FALSE)
 #'                             
-removeDeadCellsGateTail <- function(ff,
-                                    preTransform = FALSE,
-                                    transList = NULL,
-                                    LDMarker,
-                                    ...) {
+removeDeadCellsDeGate <- function(ff,
+                                  preTransform = FALSE,
+                                  transList = NULL,
+                                  LDMarker, 
+                                  keepPositivePop = FALSE,
+                                  ...) {
+
     
-    # handle ellipsis arguments, as 'openCyto::gate_tail'
-    # does not accept unknown args
-    passedEllipsisArgs <- list(...)
-    
-    newArgs <- list()
-    
-    argNames <-
-        c(
-            "num_peaks", "ref_peak", "strict", "tol", "side", "min", "max",
-            "bias", "positive", "deriv", "bandwidth", "adjust", "num_points",
-            "range.x", "binned", "se", "w"
-        )
-    for (argN in argNames) {
-        if (!is.null(passedEllipsisArgs[[argN]])) {
-            newArgs[[argN]] <- passedEllipsisArgs[[argN]]
-        }
-    }
-    
-    # will be needed by openCyto::gate_tail to support BiocParallel::SnowParams
-    #requireNamespace("flowCore")
-    #require(flowCore, include.only = c("exprs", "rectangleGate"))
-    
-    message(paste0("Removing Dead Cells Gate Tail events from file : ", 
-                   flowCore::identifier(ff)))
-    
+    message("Removing Dead Cells events (using flowDensity::deGate())", 
+            " from file : ", flowCore::identifier(ff))
+
     # if not present already, add a column with Cell ID
     ff <- .appendCellID(ff)
-    
+
     if (preTransform) {
         if (is.null(transList)) {
             stop(
@@ -1033,37 +1155,30 @@ removeDeadCellsGateTail <- function(ff,
     } else {
         ffIn <- ff
     }
-    
+
     if (LDMarker %in% flowCore::colnames(ff)) {
         LDChannel <- LDMarker
     } else {
         LDChannel <- getChannelNamesFromMarkers(ffIn, markers = LDMarker)
     }
     
+    threshold <- 
+        flowDensity::deGate(ffIn,
+                            channel = LDChannel,
+                            ...)
     
-    
-    liveGate <-
-        do.call(openCyto::gate_tail,
-                args = c(
-                    list(ffIn,
-                         channel = LDChannel,
-                         filterId = "Live_Cells"
-                    ),
-                    newArgs
-                )
-        )
-    
-    selectedLive <- flowCore::filter(ffIn, liveGate)
-    
+    if (keepPositivePop) {
+        selectedLive <- flowCore::exprs(ffIn)[, LDChannel] >= threshold    
+    } else {
+        selectedLive <- flowCore::exprs(ffIn)[, LDChannel] <= threshold
+    }
+
+
+
     # note we take ff and not ffIn (no transfo)
-    ff <- flowCore::Subset(ff, selectedLive)
-    
+    ff <- ff[selectedLive, ]
+
     return(ff)
-        
-    
-    
-    
-    
 
 }
 

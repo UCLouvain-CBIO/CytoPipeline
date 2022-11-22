@@ -106,6 +106,48 @@ ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100) {
     return(pTime)
 }
 
+# internal function to select the appropriate logicle scale to use from ggCyto
+.my_scale_logicle <- function(axis = c("x", "y"),
+                              usedScale = c("logicle", "flowjo_biexp"),
+                              logicleParams,
+                              axisRange,
+                              interactive = FALSE) {
+
+    axis <- match.arg(axis)
+    usedScale <- match.arg(usedScale)
+    
+    if (usedScale == "logicle") {
+        theArgs <- logicleParams
+    } else {
+        theArgs <- list(maxValue = logicleParams$t,
+                        widthBasis = -10^logicleParams$w,
+                        pos = logicleParams$m - logicleParams$w,
+                        neg = logicleParams$a)
+    }
+    theArgs$limits <- axisRange
+    if (interactive) {
+        theArgs$label <- scales::scientific_format()
+    }
+    
+    if (axis == "x") {
+        if (usedScale == "logicle") {
+            do.call(scale_x_logicle,
+                    args = theArgs)
+        } else {
+            do.call(scale_x_flowjo_biexp,
+                    args = theArgs)
+        }
+    } else {
+        if (usedScale == "logicle") {
+            do.call(scale_y_logicle,
+                    args = theArgs)
+        } else {
+            do.call(scale_y_flowjo_biexp,
+                    args = theArgs)
+        } 
+    }
+}
+
 #' @title plot events in 1D or 2D, using ggplot2
 #' @description  plot events of specific channels of either :
 #' flowCore::flowFrame, or flowCore::flowSet
@@ -145,6 +187,9 @@ ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100) {
 #' @import ggplot2
 #' @importFrom ggcyto scale_x_logicle
 #' @importFrom ggcyto scale_y_logicle
+#' @importFrom ggcyto scale_x_flowjo_biexp
+#' @importFrom ggcyto scale_y_flowjo_biexp
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples 
@@ -316,7 +361,8 @@ ggplotEvents <- function(obj,
                          runTransforms = FALSE) {
 
 
-    # browser()
+    #browser()
+    
 
     isFlowSet <- FALSE
     if (inherits(obj, "flowSet")) {
@@ -327,6 +373,10 @@ ggplotEvents <- function(obj,
     } else {
         stop("obj type not recognized, should be a flowFrame or flowSet")
     }
+    
+    # selection of scale_logical function to use (temporary fix due to ggcyto)
+    #used_logical_scale <- "logicle"
+    used_logical_scale <- "flowjo_biexp"
 
     # find channel and marker names to specify axis labels
 
@@ -459,20 +509,22 @@ ggplotEvents <- function(obj,
     if (yTransformed) {
         yLabel <- paste0(yLabel, " (transformed)")
     }
+    
+    # browser()
 
     if (is.null(yChannel)) {
         p <- ggplot(
             data = obj,
-            mapping = aes_q(x = as.symbol(xChannel))
+            mapping = aes(x = .data[[xChannel]])
         ) +
             geom_density(fill = fill, alpha = alpha, na.rm = TRUE) +
             xlab(xLabel)
     } else {
         p <- ggplot(
             data = obj,
-            mapping = aes_q(
-                x = as.symbol(xChannel),
-                y = as.symbol(yChannel))) +
+            mapping = aes(
+                x = .data[[xChannel]],
+                y = .data[[yChannel]])) +
             geom_hex(bins = bins, na.rm = TRUE) +
             scale_fill_gradientn(
             colours = grDevices::rainbow(
@@ -493,29 +545,32 @@ ggplotEvents <- function(obj,
 
     if (xScale == "logicle") {
         if (is.null(yChannel)) {
-            theArgs <- xLogicleParams
-            theArgs$limits <- myXRange
             p <- p +
-                do.call(scale_x_logicle, args = theArgs) #+
+                .my_scale_logicle(axis = "x", 
+                                  usedScale = used_logical_scale,
+                                  logicleParams = xLogicleParams,
+                                  axisRange = myXRange) #+
                 #coord_cartesian(xlim = myXRange)
         } else if (yScale == "logicle") {
-            theArgs <- xLogicleParams
-            theArgs$limits <- myXRange
-            p <- p +
-                do.call(scale_x_logicle, args = theArgs)
-            theArgs <- yLogicleParams
-            theArgs$limits <- myYRange
             p <- p + 
-                do.call(scale_y_logicle, args = theArgs) #+
+                .my_scale_logicle(axis = "x", 
+                                  usedScale = used_logical_scale,
+                                  logicleParams = xLogicleParams,
+                                  axisRange = myXRange) + 
+                .my_scale_logicle(axis = "y", 
+                                  usedScale = used_logical_scale,
+                                  logicleParams = yLogicleParams,
+                                  axisRange = myYRange)  #+
                 # coord_cartesian(
                 #     xlim = myXRange,
                 #     ylim = myYRange
                 # )
         } else {
-            theArgs <- xLogicleParams
-            theArgs$limits <- myXRange
             p <- p +
-                do.call(scale_x_logicle, args = theArgs) + 
+                .my_scale_logicle(axis = "x", 
+                                  usedScale = used_logical_scale,
+                                  logicleParams = xLogicleParams,
+                                  axisRange = myXRange) + 
                 scale_y_continuous(limits = yLinearRange)
                 # coord_cartesian(
                 #     xlim = myXRange,
@@ -528,11 +583,12 @@ ggplotEvents <- function(obj,
                 scale_x_continuous(limits = xLinearRange)
                 #coord_cartesian(xlim = xLinearRange)
         } else if (yScale == "logicle") {
-            theArgs <- yLogicleParams
-            theArgs$limits <- myYRange
             p <- p +
-                do.call(scale_y_logicle, args = theArgs) +
-                scale_x_continuous(limits = xLinearRange)
+                scale_x_continuous(limits = xLinearRange) + 
+                .my_scale_logicle(axis = "y", 
+                                  usedScale = used_logical_scale,
+                                  logicleParams = yLogicleParams,
+                                  axisRange = myYRange) #+
                 # coord_cartesian(
                 #     xlim = xLinearRange,
                 #     ylim = myYRange
@@ -540,7 +596,7 @@ ggplotEvents <- function(obj,
         } else {
             p <- p +
                 scale_x_continuous(limits = xLinearRange) + 
-                scale_y_continuous(limits = yLinearRange)
+                scale_y_continuous(limits = yLinearRange) # +
                 # coord_cartesian(
                 #     xlim = xLinearRange,
                 #     ylim = yLinearRange
@@ -586,6 +642,8 @@ ggplotEvents <- function(obj,
 #' @import ggplot2
 #' @importFrom ggcyto scale_x_logicle
 #' @importFrom ggcyto scale_y_logicle
+#' @importFrom ggcyto scale_x_flowjo_biexp
+#' @importFrom ggcyto scale_y_flowjo_biexp
 #' @export
 #'
 #' @examples 
@@ -665,6 +723,10 @@ ggplotFilterEvents <- function(ffPre, ffPost,
     if (!inherits(ffPost, "flowFrame")) {
         stop("ffPost type not recognized, should be a flowFrame")
     }
+    
+    # selection of scale_logical function to use (temporary fix due to ggcyto)
+    #used_logical_scale <- "logicle"
+    used_logical_scale <- "flowjo_biexp"
 
     # find channel and marker names to specify axis labels
 
@@ -774,29 +836,37 @@ ggplotFilterEvents <- function(ffPre, ffPost,
     # add scales for x and y, as well as axis limits
 
     if (xScale == "logicle") {
-        xArgs <- xLogicleParams
-        if (interactive) {
-            xArgs <- c(xArgs, label = scales::scientific_format())
-        }
         if (is.null(yChannel)) {
             p <- p +
-                do.call(scale_x_logicle, args = xArgs) +
+                .my_scale_logicle(axis = "x", 
+                                  usedScale = used_logical_scale,
+                                  logicleParams = xLogicleParams,
+                                  axisRange = myXRange,
+                                  interactive = interactive) +
                 coord_cartesian(xlim = myXRange)
         } else if (yScale == "logicle") {
-            yArgs <- yLogicleParams
-            if (interactive) {
-                yArgs <- c(yArgs, label = scales::scientific_format())
-            }
             p <- p +
-                do.call(scale_x_logicle, args = xArgs) +
-                do.call(scale_y_logicle, args = yArgs) +
+                .my_scale_logicle(axis = "x", 
+                                  usedScale = used_logical_scale,
+                                  logicleParams = xLogicleParams,
+                                  axisRange = myXRange,
+                                  interactive = interactive) +
+                .my_scale_logicle(axis = "y", 
+                                  usedScale = used_logical_scale,
+                                  logicleParams = yLogicleParams,
+                                  axisRange = myYRange,
+                                  interactive = interactive) +
                 coord_cartesian(
                     xlim = myXRange,
                     ylim = myYRange
                 )
         } else {
             p <- p +
-                do.call(scale_x_logicle, args = xArgs) +
+                .my_scale_logicle(axis = "x", 
+                                  usedScale = used_logical_scale,
+                                  logicleParams = xLogicleParams,
+                                  axisRange = myXRange,
+                                  interactive = interactive) +
                 coord_cartesian(
                     xlim = myXRange,
                     ylim = yLinearRange
@@ -807,12 +877,12 @@ ggplotFilterEvents <- function(ffPre, ffPost,
             p <- p +
                 coord_cartesian(xlim = xLinearRange)
         } else if (yScale == "logicle") {
-            yArgs <- yLogicleParams
-            if (interactive) {
-                yArgs <- c(yArgs, label = scales::scientific_format())
-            }
             p <- p +
-                do.call(scale_y_logicle, args = yArgs) +
+                .my_scale_logicle(axis = "y", 
+                                  usedScale = used_logical_scale,
+                                  logicleParams = yLogicleParams,
+                                  axisRange = myYRange,
+                                  interactive = interactive) +
                 coord_cartesian(
                     xlim = xLinearRange,
                     ylim = myYRange

@@ -240,29 +240,70 @@ test_that("removeDebrisManualGate works", {
     )
 })
 
-test_that("removeDeadCellsGateTail works", {
-    ref_ff_cells <- readRDS(test_path("fixtures", "ff_cells.rds"))
+# test_that("removeDeadCellsGateTail works", {
+#     ref_ff_cells <- readRDS(test_path("fixtures", "ff_cells.rds"))
+# 
+#     transListPath <- paste0(system.file("extdata", 
+#                                         package = "CytoPipeline"),
+#                             "/OMIP021_TransList.rds")
+#     refTransList <- readRDS(transListPath)
+# 
+#     ff_lcells <-
+#         removeDeadCellsGateTail(ref_ff_cells,
+#             preTransform = TRUE,
+#             transList = refTransList,
+#             LDMarker = "L/D Aqua - Viability",
+#             num_peaks = 2,
+#             ref_peak = 2,
+#             strict = FALSE,
+#             positive = FALSE
+#         )
+# 
+#     ref_ff_lcells <- readRDS(test_path("fixtures", "ff_lcells.rds"))
+# 
+#     # saveRDS(ff_lcells, test_path("fixtures", "ff_lcells.rds"))
+# 
+#     expect_equal(
+#         flowCore::exprs(ff_lcells),
+#         flowCore::exprs(ref_ff_lcells)
+#     )
+#     
+#     # same with channel name instead of marker for L/D
+#     ff_lcells2 <-
+#         removeDeadCellsGateTail(ref_ff_cells,
+#                                 preTransform = TRUE,
+#                                 transList = refTransList,
+#                                 LDMarker = "Comp-525/50Violet-A",
+#                                 num_peaks = 2,
+#                                 ref_peak = 2,
+#                                 strict = FALSE,
+#                                 positive = FALSE
+#         )
+#     
+#     expect_equal(
+#         flowCore::exprs(ff_lcells2),
+#         flowCore::exprs(ref_ff_lcells)
+#     )
+# })
 
+test_that("removeDeadCellsDeGate works", {
+    ref_ff_cells <- readRDS(test_path("fixtures", "ff_cells.rds"))
+    
     transListPath <- paste0(system.file("extdata", 
                                         package = "CytoPipeline"),
                             "/OMIP021_TransList.rds")
     refTransList <- readRDS(transListPath)
-
+    
     ff_lcells <-
-        removeDeadCellsGateTail(ref_ff_cells,
-            preTransform = TRUE,
-            transList = refTransList,
-            LDMarker = "L/D Aqua - Viability",
-            num_peaks = 2,
-            ref_peak = 2,
-            strict = FALSE,
-            positive = FALSE
-        )
-
+        removeDeadCellsDeGate(ref_ff_cells,
+                              preTransform = TRUE,
+                              transList = refTransList,
+                              LDMarker = "L/D Aqua - Viability")
+    
     ref_ff_lcells <- readRDS(test_path("fixtures", "ff_lcells.rds"))
-
+    
     # saveRDS(ff_lcells, test_path("fixtures", "ff_lcells.rds"))
-
+    
     expect_equal(
         flowCore::exprs(ff_lcells),
         flowCore::exprs(ref_ff_lcells)
@@ -270,14 +311,10 @@ test_that("removeDeadCellsGateTail works", {
     
     # same with channel name instead of marker for L/D
     ff_lcells2 <-
-        removeDeadCellsGateTail(ref_ff_cells,
-                                preTransform = TRUE,
-                                transList = refTransList,
-                                LDMarker = "Comp-525/50Violet-A",
-                                num_peaks = 2,
-                                ref_peak = 2,
-                                strict = FALSE,
-                                positive = FALSE
+        removeDeadCellsDeGate(ref_ff_cells,
+                              preTransform = TRUE,
+                              transList = refTransList,
+                              LDMarker = "Comp-525/50Violet-A"
         )
     
     expect_equal(

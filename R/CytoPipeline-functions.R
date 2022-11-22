@@ -491,14 +491,10 @@ showProcessingSteps <- function(x,
 #'                       whichQueue = "pre-processing",
 #'                       CytoProcessingStep(
 #'                           name = "remove_dead_cells",
-#'                           FUN = "removeDeadCellsGateTail",
+#'                           FUN = "removeDeadCellsDeGate",
 #'                           ARGS = list(
-#'                               FSCChannel = c("FSC-A"),
-#'                               LDMarker = "L/D Aqua - Viability",
-#'                               num_peaks = 2,
-#'                               ref_peak = 2,
-#'                               strict = FALSE,
-#'                               positive = FALSE
+#'                               preTransform = TRUE,
+#'                               LDMarker = "L/D Aqua - Viability"
 #'                           )
 #'                       )
 #'     )
@@ -574,14 +570,14 @@ execute <- function(x,
 
     outputDir <- paste0(path, "/", x@experimentName, "/output/")
 
-    qualityControlDir <- paste0(outputDir, "QC/")
+    # qualityControlDir <- paste0(outputDir, "QC/")
     rdsOutputDir <- paste0(outputDir, "RDS/")
-
-    for (newPath in c(qualityControlDir, rdsOutputDir)) {
-        if (!dir.exists(newPath)) {
-            dir.create(newPath, recursive = TRUE)
-        }
-    }
+    # 
+    # for (newPath in c(qualityControlDir, rdsOutputDir)) {
+    #     if (!dir.exists(newPath)) {
+    #         dir.create(newPath, recursive = TRUE)
+    #     }
+    # }
 
     # create or use local cache
     localCacheDir <- paste0(path, "/", x@experimentName, "/.cache")
@@ -697,6 +693,10 @@ execute <- function(x,
                     "'scaleTranformFile' to be set"
                 )
             }
+            
+            if (!dir.exists(rdsOutputDir)) {
+                dir.create(rdsOutputDir, recursive = TRUE)
+            }
             saveRDS(currentTransList,
                 file = paste0(
                     rdsOutputDir,
@@ -794,6 +794,8 @@ execute <- function(x,
         # SnowParams
         bpOpt <- BiocParallel::bpoptions(packages = c("flowCore"))
         
+        #browser()
+        
         invisible(BiocParallel::bplapply(x@sampleFiles, 
                                          BPPARAM = BPPARAM,
                                          BPOPTIONS = bpOpt, 
@@ -818,12 +820,15 @@ execute <- function(x,
 #' for `checkCytoPipelineConsistencyWithCache`: a list with the following
 #' values:
 #' - `isConsistent` (TRUE/FALSE)
-#' - `inconsistencyMsg`: character filled in by an inconsistency message in
-#' case the cache and CytoPipeline object are not consistent with each other
-#' - `scaleTransformStepStatus`: a character vector, containing, for each scale
-#' transform step, a status from c("run", "not run", "inconsistent")
-#' - `preProcessingStepStatus`: a character matrix, containing, for each
-#' pre-processing step (rows), for each sample file (columns), a status from
+#' - `inconsistencyMsg`: character filled in     
+#' by an inconsistency message in case the cache and     
+#' CytoPipeline object are not consistent with each other
+#' - `scaleTransformStepStatus`: a character vector,     
+#' containing, for each scale transform step, a status     
+#' from c("run", "not run", "inconsistent")
+#' - `preProcessingStepStatus`: a character matrix,     
+#' containing, for each pre-processing step (rows), 
+#' for each sample file (columns), a status from
 #' c("run", "not run", "inconsistent")
 #' @examples
 #' 
@@ -877,7 +882,8 @@ deleteCytoPipelineCache <- function(x, path = ".") {
 
 
 ##' @describeIn interactingWithCytoPipelineCache builds a new CytoPipeline
-##' object, based on the information stored in the file cache
+##' object,     
+##' based on the information stored in the file cache
 ##' @export
 ##'
 buildCytoPipelineFromCache <- function(experimentName, path = ".") {
@@ -1228,7 +1234,7 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
 #'                                    index = nPreProcessing)
 #'
 #' # export back to json file    
-#' export2JSONFile(pipL, path = paste0(outputDir, "/newFile.json"))                               
+#' export2JSONFile(pipL, path = paste0(outputDir, "/newFile.json")) 
 NULL
 
 
@@ -1311,7 +1317,7 @@ export2JSONFile <- function(x, path) {
 #' # get object infos for a specific queue
 #' df <- getCytoPipelineObjectInfos(pipL2, whichQueue = "pre-processing",
 #'                                  path = outputDir,
-#'                                  sampleFile = sampleFiles(pipL2)[1])                                
+#'                                  sampleFile = sampleFiles(pipL2)[1]) 
 #'                                 
 #' # get transform list (output of one step)
 #' trans <-
@@ -1338,8 +1344,9 @@ NULL
 
 #' @title Find CytoPipeline experiments stored in a file cache
 #' @describeIn inspectCytoPipelineObjects 
-#'   This function looks into a path for stored file caches and gets the 
-#'   corresponding experiment names
+#'   This function     
+#'   looks into a path for stored file caches     
+#'   and gets the corresponding experiment names
 #' @return - for `getCytoPipelineExperimentNames`: 
 #'   a vector of character containing found experiment names
 #' @export
@@ -1371,12 +1378,13 @@ getCytoPipelineExperimentNames <-
 
 #' @title Retrieves an object from a file cache
 #' @describeIn inspectCytoPipelineObjects 
-#'   Given a CytoPipeline object, this function retrieves
+#'   Given a CytoPipeline object,     
+#'   this function retrieves    
 #' a specific object in the corresponding file cache
 #'
 #' @returns - for `getCytoPipelineObjectFromCache`: 
-#'   the found object (or stops with an error message if the
-#'   target object is not found)  
+#'   the found object (or stops with an error message    
+#'   if the target object is not found)  
 #' @export
 #'
 getCytoPipelineObjectFromCache <-
@@ -1480,9 +1488,10 @@ getCytoPipelineObjectFromCache <-
 #' internal function for the time being
 #' @title File cache objects information
 #' @describeIn inspectCytoPipelineObjects 
-#'   Given a CytoPipeline object, this function retrieves
-#' the information related to a specific object name, i.e.
-#' object name and object class
+#'   Given a CytoPipeline object,     
+#'   this function retrieves    
+#' the information related to a specific object name,    
+#' i.e. object name and object class
 #' @returns - for `getCytoPipelineObjectInfos`:
 #'   a dataframe with the collected information about the
 #'   found objects (or stops with an error message if no target object
@@ -1559,9 +1568,10 @@ getCytoPipelineObjectInfos <-
 
 #' @title Retrieves a flowFrame object from a file cache
 #' @describeIn inspectCytoPipelineObjects 
-#'   Given a CytoPipeline object, this function retrieves
-#'   a specific flowCore::flowFrame object in the corresponding file cache
-#'   object name and object class
+#'   Given a CytoPipeline object,     
+#'   this function retrieves    
+#'   a specific flowCore::flowFrame object in the corresponding     
+#'   file cache object name and object class
 #' @returns - for `getCytoPipelineFlowFrame`: 
 #'   the found flowFrame (or stops with an error message if the
 #'   target object is not found, or if the object is no flowFrame) 
@@ -1593,8 +1603,9 @@ getCytoPipelineFlowFrame <-
 
 #' @title Retrieves a transformList object from a file cache
 #' @describeIn inspectCytoPipelineObjects 
-#'   Given a CytoPipeline object, this function retrieves
-#'   a specific flowCore::transformList object in the corresponding
+#'   Given a CytoPipeline object,     
+#'   this function retrieves    
+#'   a specific flowCore::transformList object in the corresponding    
 #'   file cache
 #' @returns - for `getCytoPipelineScaleTransform`: the found flowFrame 
 #'   (or stops with an error message if the
@@ -1629,13 +1640,15 @@ getCytoPipelineScaleTransform <-
 
 #' @title Plots a processing queue
 #' @describeIn inspectCytoPipelineObjects 
-#' This functions displays a plot of a processing
-#' queue of a CytoPipeline object, using diagram::plotmat().
-#' - If a step is in run state for all sample files, the
+#' This functions displays     
+#' a plot of a processing queue of a CytoPipeline object,     
+#' using diagram::plotmat().    
+#' 
+#' - If a step is in run state for all sample files, the    
 #' corresponding box appears in green
-#' - If a step is in non run state for at least one sample file,
+#' - If a step is in non run state for at least one sample file,    
 #' the corresponding box appears in orange
-#' - If at least one step is not consistent with cache, the whole
+#' - If at least one step is not consistent with cache, the whole    
 #' set of boxes appears in red
 #' @returns - for `plotCytoPipelineProcessingQueue`:
 #'   nothing  
@@ -1727,12 +1740,15 @@ plotCytoPipelineProcessingQueue <-
                 for (i in seq_len(nSteps)) {
                     stepStatus <- ""
                     if (whichQueue == "pre-processing") {
-                        if (unname(res$preProcessingStepStatus[i, sampleFileIndex])
+                        if (unname(
+                            res$preProcessingStepStatus[i, sampleFileIndex])
                             == "run") {
                             box.lcol[i + 1] <- "green"
                         }
-                        if (res$preProcessingStepOutputObjNames[i] != "unknown") {
-                            names[i + 1] <- res$preProcessingStepOutputObjNames[i]
+                        if (res$preProcessingStepOutputObjNames[i] 
+                            != "unknown") {
+                            names[i + 1] <- 
+                                res$preProcessingStepOutputObjNames[i]
                             if (res$preProcessingStepOutputClasses[i] !=
                                 "unknown") {
                                 names[i + 1] <- paste0(
@@ -1745,8 +1761,10 @@ plotCytoPipelineProcessingQueue <-
                         if (unname(res$scaleTransformStepStatus[i]) == "run") {
                             box.lcol[i + 1] <- "green"
                         }
-                        if (res$scaleTransformStepOutputObjNames[i] != "unknown") {
-                            names[i + 1] <- res$scaleTransformStepOutputObjNames[i]
+                        if (res$scaleTransformStepOutputObjNames[i] 
+                            != "unknown") {
+                            names[i + 1] <- 
+                                res$scaleTransformStepOutputObjNames[i]
                             if (res$scaleTransformStepOutputClasses[i] !=
                                 "unknown") {
                                 names[i + 1] <- paste0(
@@ -1764,7 +1782,10 @@ plotCytoPipelineProcessingQueue <-
 
         # browser()
 
-        M <- matrix(nrow = nSteps + 1, ncol = nSteps + 1, byrow = TRUE, data = 0)
+        M <- matrix(nrow = nSteps + 1, 
+                    ncol = nSteps + 1, 
+                    byrow = TRUE, 
+                    data = 0)
 
         if (nSteps >= 1) {
             for (j in seq_along(steps)) {

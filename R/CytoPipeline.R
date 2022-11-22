@@ -30,16 +30,19 @@
 ##' transformations per channel
 ##' - a list of CytoProcessingStep(s) for the pre-processing of flow frames
 ##'
-##' @slot scaleTransformProcessingQueue A `list()` of CytoProcessingStep objects
-##' containing the steps for obtaining the scale transformations per channel
+##' @slot scaleTransformProcessingQueue A `list()` of    
+##' CytoProcessingStep objects containing the steps   
+##' for obtaining the scale transformations per channel
 ##'
-##' @slot flowFramesPreProcessingQueue A `list()` of CytoProcessingStep objects
-##' containing the steps for pre-processing of the samples flow frames
+##' @slot flowFramesPreProcessingQueue A `list()` of     
+##' CytoProcessingStep objects containing the steps   
+##' for pre-processing of the samples flow frames
 ##'
-##' @slot experimentName A `character()` containing the experiment (run) name
+##' @slot experimentName A `character()` containing     
+##' the experiment (run) name
 ##'
-##' @slot sampleFiles A `character()` vector storing all fcs files to be
-##' run into the pipeline
+##' @slot sampleFiles A `character()` vector storing   
+##' all fcs files to be run into the pipeline
 ##'
 # @slot savePreprocessedFiles if TRUE, will save pre-processed fcs file in
 # /QC subdirectory
@@ -47,11 +50,13 @@
 # @slot savePlotsInFiles if TRUE, will save files corresponding to default
 # generated plot at each pre-processing step
 #
-##' @slot saveScaleTransform if TRUE, will save rds object storing scale
-# transformation list generated
+##' @slot saveScaleTransform if TRUE,    
+##' will save rds object storing scale transformation    
+##' list generated
 #
-##' @slot scaleTransformFile basename of the file to use to save the scale
-# transformation list (if 'saveScaleTransform' == TRUE)
+##' @slot scaleTransformFile basename of the file     
+##' to use to save the scale transformation list   
+##' (if 'saveScaleTransform' == TRUE)
 #
 ##' @exportClass CytoPipeline
 setClass("CytoPipeline",

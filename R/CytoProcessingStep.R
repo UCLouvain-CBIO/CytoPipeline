@@ -24,8 +24,10 @@ setClassUnion("characterOrFunction", c("character", "function"))
 #' Class containing the function and arguments to be applied in a lazy-execution
 #' framework.
 #'
-#' Objects of this class are created using the `CytoProcessingStep()` function.
-#' The processing step is executed with the `executeProcessingStep()` function.
+#' Objects of this class are created using the `CytoProcessingStep()`    
+#' function.
+#' The processing step is executed with the `executeProcessingStep()`     
+#' function.
 #'
 #' @details
 #'
