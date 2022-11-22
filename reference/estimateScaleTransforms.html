@@ -4,14 +4,15 @@ on a flowFrame to obtain 'good behaving' distributions, i.e. the best
 possible separation between + population and - population.
 It distinguishes between scatter channels, where either linear, or no
 transform is applied, and fluo channels, where either logicle transform
-using flowCore::estimateLogicle - is estimated, or no transform is applied.
+using flowCore::estimateLogicle - is estimated, or no transform
+is applied.
+
+
 The idea of linear transform of scatter channels is as follows: a reference
 channel (not a scatter one) is selected and a linear transform (Y = AX + B)
 is applied to all scatter channel, as to align their 5 and 95 percentiles to
 those of the reference channel
-For the estimateLogicle function, see flowCore documentation.
-
-"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+For the estimateLogicle function, see flowCore documentation."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -29,7 +30,7 @@ For the estimateLogicle function, see flowCore documentation.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.1</span>
       </span>
     </div>
 
@@ -68,13 +69,14 @@ For the estimateLogicle function, see flowCore documentation.
 on a flowFrame to obtain 'good behaving' distributions, i.e. the best
 possible separation between + population and - population.
 It distinguishes between scatter channels, where either linear, or no
-transform is applied, and fluo channels, where either logicle transform</p><ul><li><p>using flowCore::estimateLogicle - is estimated, or no transform is applied.
-The idea of linear transform of scatter channels is as follows: a reference
+transform is applied, and fluo channels, where either logicle transform</p><ul><li><p>using flowCore::estimateLogicle - is estimated, or no transform
+is applied.</p></li>
+</ul><p>The idea of linear transform of scatter channels is as follows: a reference
 channel (not a scatter one) is selected and a linear transform (Y = AX + B)
 is applied to all scatter channel, as to align their 5 and 95 percentiles to
 those of the reference channel
-For the estimateLogicle function, see flowCore documentation.</p></li>
-</ul></div>
+For the estimateLogicle function, see flowCore documentation.</p>
+    </div>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">estimateScaleTransforms</span><span class="op">(</span></span>

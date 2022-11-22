@@ -19,7 +19,7 @@ internal function for the time being"><!-- mathjax --><script src="https://cdnjs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.1</span>
       </span>
     </div>
 
@@ -210,8 +210,8 @@ round, hexa, multi)</p></dd>
 <ul><li><p>for <code>getCytoPipelineExperimentNames</code>:
 a vector of character containing found experiment names</p></li>
 </ul><ul><li><p>for <code>getCytoPipelineObjectFromCache</code>:
-the found object (or stops with an error message if the
-target object is not found)</p></li>
+the found object (or stops with an error message
+if the target object is not found)</p></li>
 </ul><ul><li><p>for <code>getCytoPipelineObjectInfos</code>:
 a dataframe with the collected information about the
 found objects (or stops with an error message if no target object
@@ -228,21 +228,27 @@ nothing</p></li>
     <div id="functions">
     <h2>Functions</h2>
     
-<ul><li><p><code>getCytoPipelineExperimentNames</code>: This function looks into a path for stored file caches and gets the
-corresponding experiment names</p></li>
-<li><p><code>getCytoPipelineObjectFromCache</code>: Given a CytoPipeline object, this function retrieves
+<ul><li><p><code>getCytoPipelineExperimentNames()</code>: This function
+looks into a path for stored file caches
+and gets the corresponding experiment names</p></li>
+<li><p><code>getCytoPipelineObjectFromCache()</code>: Given a CytoPipeline object,
+this function retrieves
 a specific object in the corresponding file cache</p></li>
-<li><p><code>getCytoPipelineObjectInfos</code>: Given a CytoPipeline object, this function retrieves
-the information related to a specific object name, i.e.
-object name and object class</p></li>
-<li><p><code>getCytoPipelineFlowFrame</code>: Given a CytoPipeline object, this function retrieves
-a specific flowCore::flowFrame object in the corresponding file cache
-object name and object class</p></li>
-<li><p><code>getCytoPipelineScaleTransform</code>: Given a CytoPipeline object, this function retrieves
+<li><p><code>getCytoPipelineObjectInfos()</code>: Given a CytoPipeline object,
+this function retrieves
+the information related to a specific object name,
+i.e. object name and object class</p></li>
+<li><p><code>getCytoPipelineFlowFrame()</code>: Given a CytoPipeline object,
+this function retrieves
+a specific flowCore::flowFrame object in the corresponding
+file cache object name and object class</p></li>
+<li><p><code>getCytoPipelineScaleTransform()</code>: Given a CytoPipeline object,
+this function retrieves
 a specific flowCore::transformList object in the corresponding
 file cache</p></li>
-<li><p><code>plotCytoPipelineProcessingQueue</code>: This functions displays a plot of a processing
-queue of a CytoPipeline object, using diagram::plotmat().</p><ul><li><p>If a step is in run state for all sample files, the
+<li><p><code>plotCytoPipelineProcessingQueue()</code>: This functions displays
+a plot of a processing queue of a CytoPipeline object,
+using diagram::plotmat().</p><ul><li><p>If a step is in run state for all sample files, the
 corresponding box appears in green</p></li>
 <li><p>If a step is in non run state for at least one sample file,
 the corresponding box appears in orange</p></li>
@@ -303,13 +309,13 @@ set of boxes appears in red</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The prior specification has no effect when usePrior=no</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using the serial version of flowClust</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells Gate Tail events from file : Donor1.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells events (using flowDensity::deGate()) from file : Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 21.76% of the measurements</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 21.76% of the measurements</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 6.72% of the measurements</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 6.72% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE ./sample_Donor2.fcs...</span>
@@ -324,13 +330,13 @@ set of boxes appears in red</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The prior specification has no effect when usePrior=no</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using the serial version of flowClust</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells Gate Tail events from file : Donor2.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells events (using flowDensity::deGate()) from file : Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 60.25% of the measurements</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 60.25% of the measurements</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 3.77% of the measurements</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 3.77% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
 <span class="r-in"><span>     </span></span>
 <span class="r-in"><span></span></span>
@@ -355,7 +361,7 @@ set of boxes appears in red</p></li>
 <span class="r-in"><span><span class="co"># get object infos for a specific queue</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">getCytoPipelineObjectInfos</span><span class="op">(</span><span class="va">pipL2</span>, whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span></span>
 <span class="r-in"><span>                                 path <span class="op">=</span> <span class="va">outputDir</span>,</span></span>
-<span class="r-in"><span>                                 sampleFile <span class="op">=</span> <span class="fu"><a href="CytoPipeline.html">sampleFiles</a></span><span class="op">(</span><span class="va">pipL2</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>                                </span></span>
+<span class="r-in"><span>                                 sampleFile <span class="op">=</span> <span class="fu"><a href="CytoPipeline.html">sampleFiles</a></span><span class="op">(</span><span class="va">pipL2</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> </span></span>
 <span class="r-in"><span>                                </span></span>
 <span class="r-in"><span><span class="co"># get transform list (output of one step)</span></span></span>
 <span class="r-in"><span><span class="va">trans</span> <span class="op">&lt;-</span></span></span>

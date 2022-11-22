@@ -23,7 +23,7 @@ a list of CytoProcessingStep(s) for the pre-processing of flow frames
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.1</span>
       </span>
     </div>
 
@@ -130,30 +130,37 @@ transformations per channel</p></li>
     
 
 <dl><dt><code>scaleTransformProcessingQueue</code></dt>
-<dd><p>A <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of CytoProcessingStep objects
-containing the steps for obtaining the scale transformations per channel</p></dd>
+<dd><p>A <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of
+CytoProcessingStep objects containing the steps
+for obtaining the scale transformations per channel</p></dd>
 
 
 <dt><code>flowFramesPreProcessingQueue</code></dt>
-<dd><p>A <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of CytoProcessingStep objects
-containing the steps for pre-processing of the samples flow frames</p></dd>
+<dd><p>A <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of
+CytoProcessingStep objects containing the steps
+for pre-processing of the samples flow frames</p></dd>
 
 
 <dt><code>experimentName</code></dt>
-<dd><p>A <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code> containing the experiment (run) name</p></dd>
+<dd><p>A <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code> containing
+the experiment (run) name</p></dd>
 
 
 <dt><code>sampleFiles</code></dt>
-<dd><p>A <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code> vector storing all fcs files to be
-run into the pipeline</p></dd>
+<dd><p>A <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code> vector storing
+all fcs files to be run into the pipeline</p></dd>
 
 
 <dt><code>saveScaleTransform</code></dt>
-<dd><p>if TRUE, will save rds object storing scale</p></dd>
+<dd><p>if TRUE,
+will save rds object storing scale transformation
+list generated</p></dd>
 
 
 <dt><code>scaleTransformFile</code></dt>
-<dd><p>basename of the file to use to save the scale</p></dd>
+<dd><p>basename of the file
+to use to save the scale transformation list
+(if 'saveScaleTransform' == TRUE)</p></dd>
 
 
 </dl></div>

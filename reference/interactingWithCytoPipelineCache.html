@@ -18,7 +18,7 @@ object and the file cache on disk"><!-- mathjax --><script src="https://cdnjs.cl
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.1</span>
       </span>
     </div>
 
@@ -93,22 +93,26 @@ disk</p></dd>
 
 <p>for <code>checkCytoPipelineConsistencyWithCache</code>: a list with the following
 values:</p><ul><li><p><code>isConsistent</code> (TRUE/FALSE)</p></li>
-<li><p><code>inconsistencyMsg</code>: character filled in by an inconsistency message in
-case the cache and CytoPipeline object are not consistent with each other</p></li>
-<li><p><code>scaleTransformStepStatus</code>: a character vector, containing, for each scale
-transform step, a status from c("run", "not run", "inconsistent")</p></li>
-<li><p><code>preProcessingStepStatus</code>: a character matrix, containing, for each
-pre-processing step (rows), for each sample file (columns), a status from
+<li><p><code>inconsistencyMsg</code>: character filled in
+by an inconsistency message in case the cache and
+CytoPipeline object are not consistent with each other</p></li>
+<li><p><code>scaleTransformStepStatus</code>: a character vector,
+containing, for each scale transform step, a status
+from c("run", "not run", "inconsistent")</p></li>
+<li><p><code>preProcessingStepStatus</code>: a character matrix,
+containing, for each pre-processing step (rows),
+for each sample file (columns), a status from
 c("run", "not run", "inconsistent")</p></li>
 </ul></div>
     <div id="functions">
     <h2>Functions</h2>
     
-<ul><li><p><code>deleteCytoPipelineCache</code>: delete the whole disk cache
+<ul><li><p><code>deleteCytoPipelineCache()</code>: delete the whole disk cache
 corresponding to the experiment of a CytoPipeline object</p></li>
-<li><p><code>buildCytoPipelineFromCache</code>: builds a new CytoPipeline
-object, based on the information stored in the file cache</p></li>
-<li><p><code>checkCytoPipelineConsistencyWithCache</code>: check the consistency
+<li><p><code>buildCytoPipelineFromCache()</code>: builds a new CytoPipeline
+object,
+based on the information stored in the file cache</p></li>
+<li><p><code>checkCytoPipelineConsistencyWithCache()</code>: check the consistency
 between the processing steps described in a CytoPipeline object,
 and what is stored in the file cache</p></li>
 </ul></div>
@@ -164,13 +168,13 @@ and what is stored in the file cache</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The prior specification has no effect when usePrior=no</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using the serial version of flowClust</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells Gate Tail events from file : Donor1.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells events (using flowDensity::deGate()) from file : Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 21.76% of the measurements</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 21.76% of the measurements</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 6.72% of the measurements</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 6.72% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE ./sample_Donor2.fcs...</span>
@@ -185,13 +189,13 @@ and what is stored in the file cache</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The prior specification has no effect when usePrior=no</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using the serial version of flowClust</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells Gate Tail events from file : Donor2.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing Dead Cells events (using flowDensity::deGate()) from file : Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 60.25% of the measurements</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 60.25% of the measurements</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 3.77% of the measurements</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 3.77% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
 <span class="r-in"><span>     </span></span>
 <span class="r-in"><span></span></span>
