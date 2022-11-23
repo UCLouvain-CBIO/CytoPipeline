@@ -79,9 +79,7 @@ queue* (Fig. 1):
 - estimating the scale transformations from the aggregated 
 and sub-sampled data   
 
-```{r scaleTransformQueueDisplay, results='markup', 
-fig.cap="Scale transform processing queue", echo=FALSE, out.width='75%', 
-fig.align='center', fig.wide = TRUE}
+```{r scaleTransformQueueDisplay, results='markup', fig.cap="Scale transform processing queue", echo=FALSE, out.width='75%', fig.align='center', fig.wide = TRUE}
 knitr::include_graphics("./figs/scaleTransformQueue.png", error = FALSE)
 ```
 
@@ -97,9 +95,7 @@ compensated and scale transformed data (see [@Emmaneel2021-xy])
 Therefore, we propose the following *pre-processing queues* represented in 
 Fig. 2.
 
-```{r preProcessingQueueDisplay, results='markup', 
-fig.cap="Pre-processing queue for two different pipeline settings", 
-echo=FALSE, out.width='100%', fig.align='center', fig.wide = TRUE}
+```{r preProcessingQueueDisplay, results='markup', fig.cap="Pre-processing queue for two different pipeline settings", echo=FALSE, out.width='100%', fig.align='center', fig.wide = TRUE}
 knitr::include_graphics("./figs/preProcessingQueues.png", error = FALSE)
 ```
 
