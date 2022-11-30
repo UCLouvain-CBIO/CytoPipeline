@@ -1524,6 +1524,14 @@ getCytoPipelineObjectInfos <-
         indexesInCache <- numeric()
         if (!is.null(sampleFile)) {
             sampleFiles <- unique(stats::na.omit(cacheInfo$fcsfile))
+            if (is.numeric(sampleFile)) {
+                sampleFileIndex <- sampleFile
+                if (sampleFileIndex < 1 || 
+                    sampleFileIndex > length(sampleFiles(x))) {
+                    stop("sampleFile (provided as index) out of bounds!")
+                }
+                sampleFile <- sampleFiles(x)[sampleFileIndex]
+            }
             sampleFile <- basename(sampleFile)
             if (!(sampleFile %in% sampleFiles)) {
                 stop(sampleFile, " not found in experiment run!")

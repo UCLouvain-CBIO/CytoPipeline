@@ -835,6 +835,7 @@ test_that("plotCytoPipelineProcessingQueue works", {
 })
 
 test_that("getCytoPipelineObject works", {
+    
     expect_error(
         {
             experimentName <- "OMIP021_PeacoQC"
@@ -860,6 +861,11 @@ test_that("getCytoPipelineObject works", {
                 whichQueue = "pre-processing",
                 sampleFile = sampleFiles[1],
                 path = outputDir
+            )
+            getCytoPipelineObjectInfos(pipL7,
+                                       whichQueue = "pre-processing",
+                                       sampleFile = 1,
+                                       path = outputDir
             )
             getCytoPipelineObjectInfos(pipL7,
                 whichQueue = "scale transform",
@@ -892,6 +898,12 @@ test_that("getCytoPipelineObject works", {
         },
         NA
     )
+    
+    expect_error(getCytoPipelineObjectInfos(pipL7,
+                                            whichQueue = "pre-processing",
+                                            sampleFile = 3,
+                                            path = outputDir),
+                 "out of bounds")
 
 
     expect_error(

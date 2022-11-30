@@ -375,8 +375,8 @@ ggplotEvents <- function(obj,
     }
     
     # selection of scale_logical function to use (temporary fix due to ggcyto)
-    used_logical_scale <- "logicle"
-    #used_logical_scale <- "flowjo_biexp"
+    #used_logical_scale <- "logicle"
+    used_logical_scale <- "flowjo_biexp"
 
     # find channel and marker names to specify axis labels
 
@@ -725,8 +725,8 @@ ggplotFilterEvents <- function(ffPre, ffPost,
     }
     
     # selection of scale_logical function to use (temporary fix due to ggcyto)
-    used_logical_scale <- "logicle"
-    #used_logical_scale <- "flowjo_biexp"
+    #used_logical_scale <- "logicle"
+    used_logical_scale <- "flowjo_biexp"
 
     # find channel and marker names to specify axis labels
 
