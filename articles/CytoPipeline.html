@@ -158,7 +158,11 @@ scale transformation functions for all channels present in the sample
 <li>estimating the scale transformations from the aggregated and
 sub-sampled data</li>
 </ul>
-<p><code>{r scaleTransformQueueDisplay, results='markup',  fig.cap="Scale transform processing queue", echo=FALSE, out.width='75%',  fig.align='center', fig.wide = TRUE} knitr::include_graphics("./figs/scaleTransformQueue.png", error = FALSE)</code></p>
+<div class="figure" style="text-align: center">
+<img src="./figs/scaleTransformQueue.png" alt="Scale transform processing queue" width="75%"><p class="caption">
+Scale transform processing queue
+</p>
+</div>
 <p>When this first part is done, one can apply pre-processing for each
 file one by one. However, depending on the choice of QC method, the
 order of steps needs to be slightly different:</p>
@@ -171,7 +175,11 @@ already compensated and scale transformed data (see <span class="citation">(Emma
 </ul>
 <p>Therefore, we propose the following <em>pre-processing queues</em>
 represented in Fig. 2.</p>
-<p><code>{r preProcessingQueueDisplay, results='markup',  fig.cap="Pre-processing queue for two different pipeline settings",  echo=FALSE, out.width='100%', fig.align='center', fig.wide = TRUE} knitr::include_graphics("./figs/preProcessingQueues.png", error = FALSE)</code></p>
+<div class="figure" style="text-align: center">
+<img src="./figs/preProcessingQueues.png" alt="Pre-processing queue for two different pipeline settings" width="100%"><p class="caption">
+Pre-processing queue for two different pipeline settings
+</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="building-the-cytopipeline">Building the CytoPipeline<a class="anchor" aria-label="anchor" href="#building-the-cytopipeline"></a>
@@ -720,7 +728,7 @@ code:</p>
 <div class="section level2">
 <h2 class="unnumbered" id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<pre><code><span><span class="co">## R Under development (unstable) (2022-11-17 r83363)</span></span>
+<pre><code><span><span class="co">## R Under development (unstable) (2022-11-23 r83380)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
 <span><span class="co">## Running under: Ubuntu 22.04.1 LTS</span></span>
 <span><span class="co">## </span></span>
@@ -751,7 +759,7 @@ code:</p>
 <span><span class="co">##   [7] XML_3.99-0.12         deSolve_1.34          lifecycle_1.0.3      </span></span>
 <span><span class="co">##  [10] doParallel_1.0.17     rprojroot_2.0.3       flowWorkspace_4.11.0 </span></span>
 <span><span class="co">##  [13] lattice_0.20-45       MASS_7.3-58.1         magrittr_2.0.3       </span></span>
-<span><span class="co">##  [16] sass_0.4.3            rmarkdown_2.18        jquerylib_0.1.4      </span></span>
+<span><span class="co">##  [16] sass_0.4.4            rmarkdown_2.18        jquerylib_0.1.4      </span></span>
 <span><span class="co">##  [19] yaml_2.3.6            spam_2.9-1            sp_1.5-1             </span></span>
 <span><span class="co">##  [22] rgeos_0.5-9           DBI_1.1.3             RColorBrewer_1.1-3   </span></span>
 <span><span class="co">##  [25] maps_3.4.1            abind_1.4-5           zlibbioc_1.45.0      </span></span>
@@ -762,16 +770,16 @@ code:</p>
 <span><span class="co">##  [40] tidyselect_1.2.0      shape_1.4.6           farver_2.1.1         </span></span>
 <span><span class="co">##  [43] viridis_0.6.2         matrixStats_0.63.0    stats4_4.3.0         </span></span>
 <span><span class="co">##  [46] BiocFileCache_2.7.0   jsonlite_1.8.3        GetoptLong_1.0.5     </span></span>
-<span><span class="co">##  [49] ks_1.13.5             flowAI_1.29.0         iterators_1.0.14     </span></span>
+<span><span class="co">##  [49] ks_1.14.0             flowAI_1.29.0         iterators_1.0.14     </span></span>
 <span><span class="co">##  [52] systemfonts_1.0.4     foreach_1.5.2         tools_4.3.0          </span></span>
-<span><span class="co">##  [55] ragg_1.2.4            MBA_0.0-9             Rcpp_1.0.9           </span></span>
+<span><span class="co">##  [55] ragg_1.2.4            MBA_0.1-0             Rcpp_1.0.9           </span></span>
 <span><span class="co">##  [58] glue_1.6.2            mnormt_2.1.1          gridExtra_2.3        </span></span>
 <span><span class="co">##  [61] xfun_0.35             dplyr_1.0.10          withr_2.5.0          </span></span>
 <span><span class="co">##  [64] BiocManager_1.30.19   fastmap_1.1.0         RPMG_2.2-3           </span></span>
 <span><span class="co">##  [67] latticeExtra_0.6-30   fansi_1.0.3           caTools_1.18.2       </span></span>
 <span><span class="co">##  [70] digest_0.6.30         R6_2.5.1              textshaping_0.3.6    </span></span>
-<span><span class="co">##  [73] colorspace_2.0-3      gtools_3.9.3          jpeg_0.1-9           </span></span>
-<span><span class="co">##  [76] RSQLite_2.2.18        flowDensity_1.33.0    utf8_1.2.2           </span></span>
+<span><span class="co">##  [73] colorspace_2.0-3      gtools_3.9.4          jpeg_0.1-10          </span></span>
+<span><span class="co">##  [76] RSQLite_2.2.19        flowDensity_1.33.0    utf8_1.2.2           </span></span>
 <span><span class="co">##  [79] generics_0.1.3        hexbin_1.28.2         data.table_1.14.6    </span></span>
 <span><span class="co">##  [82] corpcor_1.6.10        robustbase_0.95-0     httr_1.4.4           </span></span>
 <span><span class="co">##  [85] IDPmisc_1.1.20        pkgconfig_2.0.3       gtable_0.3.1         </span></span>
@@ -779,7 +787,7 @@ code:</p>
 <span><span class="co">##  [91] RProtoBufLib_2.11.0   pcaPP_2.0-3           htmltools_0.5.3      </span></span>
 <span><span class="co">##  [94] carData_3.0-5         dotCall64_1.0-2       bookdown_0.30        </span></span>
 <span><span class="co">##  [97] clue_0.3-63           scales_1.2.1          Biobase_2.59.0       </span></span>
-<span><span class="co">## [100] Rwave_2.6-5           png_0.1-7             RSEIS_4.1-4          </span></span>
+<span><span class="co">## [100] Rwave_2.6-5           png_0.1-8             RSEIS_4.1-4          </span></span>
 <span><span class="co">## [103] flowViz_1.63.0        splancs_2.01-43       knitr_1.41           </span></span>
 <span><span class="co">## [106] reshape2_1.4.4        rjson_0.2.21          curl_4.3.3           </span></span>
 <span><span class="co">## [109] cachem_1.0.6          zoo_1.8-11            GlobalOptions_0.1.2  </span></span>
