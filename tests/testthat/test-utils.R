@@ -382,3 +382,29 @@ test_that("getChannelNamesFromMarkers works", {
     regexp = "could not be found"
     )
 })
+
+test_that("updateMarkerName works", {
+    retFF <- updateMarkerName(OMIP021Samples[[1]],
+                            channel = "FSC-A",
+                            newMarkerName = "Fwd Scatter-A")
+    
+    checkMkName <- getChannelNamesFromMarkers(retFF, markers = "Fwd Scatter-A")
+    expect_equal(checkMkName, "FSC-A")
+    
+    expect_error(updateMarkerName(OMIP021Samples[[1]], channel = "FFF-A", 
+                                  newMarkerName = "whatever"), 
+                 regexp = "channel not found")
+})
+
+test_that("removeChannels works", {
+    retFF <- removeChannels(OMIP021Samples[[1]],
+                            channels = c("FSC-A", "SSC-A"))
+    nRemainingChannels <- length(flowCore::colnames(retFF))
+    expect_equal(nRemainingChannels, 20)
+    
+    expect_warning(removeChannels(OMIP021Samples[[1]],
+                                  channels = c("FSC-A", "SSC-S")),
+                   regexp = "not found in flowFrame")
+    
+    
+})

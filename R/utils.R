@@ -777,6 +777,70 @@ getChannelNamesFromMarkers <- function(ff, markers) {
     return(unname(channelNames))
 }
 
+#' @title update marker name of a given flowFrame channel
+#' @description : in a flowCore::flowFrame, update the marker name (stored in
+#' 'desc' of parameters data) of a given channel.
+#' @param ff a flowCore::flowFrame
+#' @param channel the channel for which to update the marker name
+#' @param newMarkerName the new marker name to be given to the selected channel
+#'
+#' @return a new flowCore::flowFrame with the updated marker name
+#' @export
+#' @examples
+#' retFF <- updateMarkerName(OMIP021Samples[[1]],
+#'                           channel = "FSC-A",
+#'                           newMarkerName = "Fwd Scatter-A")
+#'
+updateMarkerName <- function(ff, channel, newMarkerName) {
+    if (!inherits(ff, "flowFrame")) {
+        stop("ff type not recognized, should be a flowFrame!")
+    }
+    
+    channelIndex <- which(flowCore::colnames(ff) == channel)
+    if (length(channelIndex) == 0) {
+        stop("channel not found in flowFrame!")
+    } else {
+        channelIndex <- channelIndex[1]
+    }
+    
+    param <- flowCore::parameters(ff)
+    paramData <- flowCore::pData(param)
+    paramData[channelIndex, "desc"] <- newMarkerName
+    flowCore::pData(param) <- paramData
+    flowCore::parameters(ff) <- param
+    return(ff)
+}
+
+#' @title remove channels from a flowFrame
+#' @description : in a flowCore::flowFrame, remove the channels of the given
+#' names.
+#' @param ff a flowCore::flowFrame
+#' @param channels the channel names to be removed
+#'
+#' @return a new flowCore::flowFrame with the removed channels
+#' @export
+#' @examples
+#' retFF <- removeChannels(OMIP021Samples[[1]],
+#'                         channel = "FSC-A")
+#'
+removeChannels <- function(ff, channels) {
+    if (!inherits(ff, "flowFrame")) {
+        stop("ff type not recognized, should be a flowFrame!")
+    }    
+    keptCols <- rep(TRUE, length(flowCore::colnames(ff)))
+    for (ch in channels) {
+        channelIndex <- which(flowCore::colnames(ff) == ch)
+        if (length(channelIndex) == 0) {
+            warning("channel ", ch, " not found in flowFrame => ignoring...")
+        } else {
+            channelIndex <- channelIndex[1]
+        }
+        keptCols[channelIndex] <- FALSE
+    }
+    ff <- ff[, keptCols]
+    return(ff)
+}
+
 # #' @title append 'Original_ID' column to a flowframe
 # #' @description : on a flowCore::flowFrame, append a 'Original_ID' column.
 # #' This column can be used in plots comparing the events pre and post gating.
@@ -823,3 +887,4 @@ getChannelNamesFromMarkers <- function(ff, markers) {
     flowCore::colnames(ff) <- newColNames
     return(ff)
 }
+

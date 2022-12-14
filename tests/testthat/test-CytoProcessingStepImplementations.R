@@ -50,7 +50,36 @@ test_that("estimateScaleTransforms work", {
     )
 })
 
-
+test_that("selectRandomSamples works", {
+    rawDataDir <-
+        paste0(system.file("extdata", package = "CytoPipeline"), "/")
+    sampleFiles <-
+        paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+    
+    seed <- 2
+    nSamples <- 1
+    
+    newSampleFiles <- selectRandomSamples(sampleFiles, 
+                                          nSamples = nSamples,
+                                          seed = seed)
+    expected <- sampleFiles[1]
+    expect_equal(newSampleFiles,
+                 expected)
+    
+    newSampleFiles <- selectRandomSamples(sampleFiles, 
+                                          nSamples = 3,
+                                          seed = seed)
+    
+    expect_equal(newSampleFiles,
+                 sampleFiles)
+    
+    expect_error(selectRandomSamples(sampleFiles, 
+                                     nSamples = 0,
+                                     seed = seed),
+                 regexp = "should be a numeric >= 1")
+                                          
+        
+})
 
 
 test_that("readSampleFiles works", {
@@ -94,6 +123,57 @@ test_that("readSampleFiles works", {
     expect_equal(
         flowCore::exprs(res2),
         flowCore::exprs(fs_raw[[2]])
+    )
+})
+
+test_that("readSampleFiles with post-processing works", {
+    rawDataDir <-
+        paste0(system.file("extdata", package = "CytoPipeline"), "/")
+    sampleFiles <-
+        paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+    
+    channelMarkerFile <-
+        system.file("extdata/ChannelMarkerUsed.csv", package = "CytoPipeline")
+    
+    truncateMaxRange <- FALSE
+    minLimit <- NULL
+    
+    fs_raw <-
+        flowCore::read.flowSet(sampleFiles,
+                               truncate_max_range = truncateMaxRange,
+                               min.limit = minLimit
+        )
+    fs_raw <- flowCore::fsApply(fs_raw, FUN = .appendCellID)
+    
+    res <- readSampleFiles(
+        sampleFiles = sampleFiles,
+        whichSamples = "all",
+        truncate_max_range = truncateMaxRange,
+        min.limit = minLimit,
+        channelMarkerFile = channelMarkerFile)
+    
+    expectedMarkerNames <- 
+        flowCore::pData(flowCore::parameters(fs_raw[[1]]))$desc
+    expectedMarkerNames[6] <- "Viability"
+    expectedMarkerNames <- expectedMarkerNames[-5]
+    
+    expect_equal(
+        flowCore::pData(flowCore::parameters(res[[1]]))$desc,
+        expectedMarkerNames)
+    expect_equal(
+        flowCore::pData(flowCore::parameters(res[[2]]))$desc,
+        expectedMarkerNames)
+    
+    res2 <- readSampleFiles(
+        sampleFiles = sampleFiles,
+        whichSamples = 2,
+        truncate_max_range = truncateMaxRange,
+        min.limit = minLimit,
+        channelMarkerFile = channelMarkerFile)
+    
+    expect_equal(
+        flowCore::pData(flowCore::parameters(res2))$desc,
+        expectedMarkerNames
     )
 })
 
@@ -454,29 +534,29 @@ test_that("qualityControlFlowCut works", {
     )
 })
 
-test_that("qualityControlFlowClean works", {
-    fs_raw <- OMIP021UTSamples
-
-    ff_QualityControl <- suppressWarnings(
-        qualityControlFlowClean(fs_raw[[1]],
-            binSize = 0.01, # default
-            nCellCutoff = 500, # default
-            cutoff = "median", # default
-            fcMax = 1.3, # default
-            nstable = 5
-        )
-    )
-
-    ref_ff_qualityControl_flowClean <-
-        readRDS(test_path("fixtures", "ff_QC_flowClean.rds"))
-
-    # saveRDS(ff_QualityControl, test_path("fixtures", "ff_QC_flowClean.rds"))
-
-    expect_equal(
-        flowCore::exprs(ff_QualityControl),
-        flowCore::exprs(ref_ff_qualityControl_flowClean)
-    )
-})
+# test_that("qualityControlFlowClean works", {
+#     fs_raw <- OMIP021UTSamples
+# 
+#     ff_QualityControl <- suppressWarnings(
+#         qualityControlFlowClean(fs_raw[[1]],
+#             binSize = 0.01, # default
+#             nCellCutoff = 500, # default
+#             cutoff = "median", # default
+#             fcMax = 1.3, # default
+#             nstable = 5
+#         )
+#     )
+# 
+#     ref_ff_qualityControl_flowClean <-
+#         readRDS(test_path("fixtures", "ff_QC_flowClean.rds"))
+# 
+#     # saveRDS(ff_QualityControl, test_path("fixtures", "ff_QC_flowClean.rds"))
+# 
+#     expect_equal(
+#         flowCore::exprs(ff_QualityControl),
+#         flowCore::exprs(ref_ff_qualityControl_flowClean)
+#     )
+# })
 
 test_that("readRDSObject works", {
     expect_error(readRDSObject("dummyPath.rds"),

@@ -4,13 +4,24 @@
 \alias{readSampleFiles}
 \title{Read fcs sample files}
 \usage{
-readSampleFiles(sampleFiles, whichSamples = "all", ...)
+readSampleFiles(
+  sampleFiles,
+  whichSamples = "all",
+  channelMarkerFile = NULL,
+  ...
+)
 }
 \arguments{
 \item{sampleFiles}{a vector of character path to sample files}
 
 \item{whichSamples}{either 'all' if all sample files need to be read, or
 a vector of indexes pointing to the sampleFiles vector}
+
+\item{channelMarkerFile}{an optional path to a csv file which provides the
+mapping between channels and markers. If provided, this csv file should
+contain a \code{Channel} column, and a \code{Marker} column. Optionally a 'Used'
+column can be provided as well (TRUE/FALSE). Channels for which the 'Used'
+column is set to FALSE will not be incorporated in the created flowFrame.}
 
 \item{...}{additional parameters passed to flowCore file reading functions.}
 }

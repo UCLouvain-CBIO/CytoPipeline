@@ -87,6 +87,57 @@ estimateScaleTransforms <- function(ff,
     return(transList)
 }
 
+#' @title select a nb of sample files randomly
+#' @description Wrapper around sample(sampleFiles, nSamples).
+#' For the needs of making it a CytoProcessingStep:
+#' - takes `sampleFiles` as an explicit first parameter
+#' - can manage a seed
+#' - allow passing ... as a parameter (not used)
+#' @param sampleFiles a vector of character path to sample files
+#' @param nSamples number of samples to randomly select. If `nSamples` is
+#' higher than nb of available samples, the output will be all samples
+#' @param seed an optional seed parameters (provided to ease reproducibility).
+#' @param ... additional parameters passed (not used here).
+#'
+#' @return a subset of `sampleFiles`, randomly selected
+#' @export
+#' 
+#' @examples
+#'
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' nRandomSamples <- 1
+#' selectSampleFiles <- selectRandomSamples(sampleFiles, 
+#'                                          nSamples = nRandomSamples,
+#'                                          seed = 1)
+#'                                          
+selectRandomSamples <- function(sampleFiles,
+                                nSamples,
+                                seed = NULL,
+                                ...) {
+    
+    if (!is.numeric(nSamples) || nSamples < 1) {
+        stop("[nSamples] should be a numeric >= 1")
+    }
+    
+    nAvailableSamples <- length(sampleFiles)
+    
+    if (nSamples > nAvailableSamples) nSamples <- nAvailableSamples
+    
+    if (!is.null(seed)) {
+        # set the seed locally in the execution environment,
+        # restore it afterward
+        withr::local_seed(seed)
+    }
+    
+    outputSamples <- sample(sampleFiles, nSamples)
+    
+    outputSamples
+}
+
 
 #' @title Read fcs sample files
 #' @description Wrapper around flowCore::read.fcs() or flowCore::read.flowSet().
@@ -94,6 +145,11 @@ estimateScaleTransforms <- function(ff,
 #' @param sampleFiles a vector of character path to sample files
 #' @param whichSamples either 'all' if all sample files need to be read, or
 #' a vector of indexes pointing to the sampleFiles vector
+#' @param channelMarkerFile an optional path to a csv file which provides the 
+#' mapping between channels and markers. If provided, this csv file should 
+#' contain a `Channel` column, and a `Marker` column. Optionally a 'Used' 
+#' column can be provided as well (TRUE/FALSE). Channels for which the 'Used' 
+#' column is set to FALSE will not be incorporated in the created flowFrame. 
 #' @param ... additional parameters passed to flowCore file reading functions.
 #'
 #' @return either a flowCore::flowSet or a flowCore::flowFrame if
@@ -129,7 +185,9 @@ estimateScaleTransforms <- function(ff,
 #' #res2
 #' 
 readSampleFiles <- function(sampleFiles,
-                            whichSamples = "all", ...) {
+                            whichSamples = "all", 
+                            channelMarkerFile = NULL,
+                            ...) {
     if (whichSamples == "all") {
         # do nothing : sampleFiles should contain all the input sample files
         # already
@@ -152,9 +210,129 @@ readSampleFiles <- function(sampleFiles,
                 .appendCellID(ff)
             }
         )
+    } 
+    
+    # do we need to do any post processing to the files ?
+    # => remove channels or update marker names ? 
+    
+    if (!is.null(channelMarkerFile)) {
+        if (!file.exists(channelMarkerFile)) {
+            stop("channelMarkerFile [", channelMarkerFile, "] not found!")
+        }
+        channelMarkerMapping <- utils::read.csv(channelMarkerFile)
+        
+        if (!("Channel" %in% flowCore::colnames(channelMarkerMapping))) {
+            stop("channelMarkersMapping should contain [Channel] column!")
+        }
+        if (!("Marker" %in% flowCore::colnames(channelMarkerMapping))) {
+            stop("channelMarkersMapping should contain [Marker] column!")
+        }
+        if ("Used" %in% colnames(channelMarkerMapping)) {
+            channelMarkerMapping$Used <- as.logical(channelMarkerMapping$Used)
+            # if (!is.logical(channelMarkerMapping$Used)) {
+            #     stop("channelMarkerMapping [Used] column ",
+            #          "should be of logical type!")
+            # }
+            notUsedChannels <- 
+                channelMarkerMapping[!channelMarkerMapping$Used, "Channel"]
+            
+        } 
+        
+        postProcessing <- function(ff, channelMarkerMapping, notUsedChannels){
+            ff <- removeChannels(ff, notUsedChannels)
+            
+            channels <- 
+                channelMarkerMapping[channelMarkerMapping$Used, "Channel"]
+            markers <- 
+                channelMarkerMapping[channelMarkerMapping$Used, "Marker"]
+                
+            for (i in seq_along(channels)) {
+                if (markers[i] != "") {
+                    ff <- updateMarkerName(ff, channel = channels[i], 
+                                           newMarkerName = markers[i])
+                }
+            }
+            return(ff)
+        }
+        
+        if (length(sampleFiles) == 1) {
+            res <- postProcessing(res, channelMarkerMapping, notUsedChannels)
+        } else {
+            res <- flowCore::fsApply(
+                x = res,
+                FUN = function(ff) {
+                    postProcessing(ff, channelMarkerMapping, notUsedChannels)
+                }
+            )
+        } 
     }
+    
+    return (res)
 }
 
+
+# .updateChannelsAndMarkers <- function(ff, channelMarkersMapping) {
+#     if (!inherits(ff, "flowFrame")) {
+#         stop("ff type not recognized, should be a flowFrame!")
+#     }
+#     
+#     if (!is.data.frame(channelMarkersMapping)) {
+#         stop("channelMarkersMapping should be a dataframe!")
+#     }
+#     
+#     if (!("Channel" %%in%% colnames(channelMarkersMapping))) {
+#         stop("channelMarkersMapping should contain [Channel] column!")
+#     }
+#     if (!("Marker" %%in%% colnames(channelMarkersMapping))) {
+#         stop("channelMarkersMapping should contain [Channel] column!")
+#     }
+#     if ("Used" %%in%% colnames(channelMarkersMapping)) {
+#         if (!is.logical(channelMarkersMapping$Used)) {
+#             stop("channelMarkersMapping [Used] column ",
+#                  "should be of logical type!")
+#         }
+#     } else {
+#         # if no 'Used' column, assume all channels are used by default
+#         channelMarkersMapping$Used <- rep(TRUE, nrow(channelMarkersMapping))
+#     }
+#     
+#     rownames(channelMarkersMapping) <- channelMarkersMapping[,"Channel"]
+#     
+#     param <- flowCore::parameters(ff)
+#     paramData <- flowCore::pData(param)
+#     keptChannels <- flowCore::colnames(ff)
+#     
+#     for (ch in rownames(channelMarkersMapping)) {
+#         
+#         used <- channelMarkersMapping[ch, "Used"]
+#         
+#         if (used == "") used <- FALSE
+#         channelLine <- which(paramData[, "name"] == ch)
+#         if (length(channelLine) == 0)
+#         {
+#             stop("channel ", ch, ", mentioned in channel marker mapping file, ",
+#                  "not found in flowFrame!")
+#         } else {
+#             channelLine <- channelLine[1]
+#         }
+#         
+#         if (!used) {
+#             keptChannels <- keptChannels[-which(keptChannels == ch)]
+#         } else {
+#             marker <- channelMarkersMapping[ch, "Marker"]
+#             if (marker == "") marker <- NA
+#             
+#             paramData[channelLine, "desc"] <- marker
+#         }
+#     }
+#     
+#     flowCore::pData(param) <- paramData
+#     flowCore::parameters(ff) <- param
+#     
+#     ff <- ff[, keptChannels]
+#     
+#     return(ff)
+# } 
 
 #' @title remove margin events using PeacoQC
 #' @description Wrapper around PeacoQC::RemoveMargins().
@@ -1510,113 +1688,113 @@ qualityControlFlowCut <- function(ff,
     return(ff)
 }
 
-#' @title perform QC with flowClean
-#' @description this function is a wrapper around flowClean::clean()
-#' function.
-#' It also pre-selects the channels to be handled (=> all signal channels)
-#' @param ff a flowCore::flowFrame
-#' @param preTransform if TRUE, apply the transList scale transform prior to
-#' running the gating algorithm
-#' @param transList applied in conjunction with preTransform
-#' @param outputDiagnostic if TRUE, stores diagnostic files generated by
-#' flowClean in outputDir directory
-#' @param outputDir used in conjunction with outputDiagnostic
-#' @param verbose if TRUE messages comments on the QC process
-#' @param ... additional parameters passed to flowClean::clean()
-#'
-#' @return a flowCore::flowFrame with removed low quality events from the input
-#' @export
-#'
-#' @examples
-#'
-#' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
-#' sampleFiles <-
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
-#' 
-#' truncateMaxRange <- FALSE
-#' minLimit <- NULL
-#' 
-#' # create flowCore::flowSet with all samples of a dataset
-#' fsRaw <- readSampleFiles(
-#'     sampleFiles = sampleFiles,
-#'     whichSamples = "all",
-#'     truncate_max_range = truncateMaxRange,
-#'     min.limit = minLimit)
-#'
-#' ff_QualityControl <- suppressWarnings(
-#'     qualityControlFlowClean(fsRaw[[2]],
-#'                             binSize = 0.01, # default
-#'                             nCellCutoff = 500, # default
-#'                             cutoff = "median", # default
-#'                             fcMax = 1.3, # default
-#'                             nstable = 5))
-#' 
-qualityControlFlowClean <- function(ff,
-                                    preTransform = FALSE,
-                                    transList = NULL,
-                                    outputDiagnostic = FALSE,
-                                    outputDir = NULL,
-                                    verbose = TRUE,
-                                    ...) {
-    #browser()
-    # if not present already, add a column with Cell ID
-    ff <- .appendCellID(ff)
-
-    if (preTransform) {
-        if (is.null(transList)) {
-            stop(
-                "tranformation list needs to be provided ",
-                "if preTransform = TRUE!"
-            )
-        }
-        ffIn <- flowCore::transform(ff, transList)
-    } else {
-        ffIn <- ff
-    }
-
-    # qualityControl with flowClean
-    message("Applying flowClean method...")
-    vectMarkers <- which(CytoPipeline::areSignalCols(ffIn))
-
-    if (outputDiagnostic) {
-        diagnostic <- TRUE
-        if (!is.null(outputDir)) {
-            filePrefixWithDir <- outputDir
-        } else {
-            filePrefixWithDir <- "resultsQC"
-        }
-
-        # add original fcs file name in prefix,
-        # as flowClean is designed to work for one fcs at the time
-        filename <- basename(flowCore::keyword(ffIn, "FILENAME")$FILENAME)
-        # removing extension
-        filename <- sub("([^.]+)\\.[[:alnum:]]+$", "\\1", filename)
-        filePrefixWithDir <- paste0(filePrefixWithDir, filename)
-    } else {
-        filePrefixWithDir <- NULL # not used
-        diagnostic <- FALSE
-    }
-
-    # note we call it using returnVector = FALSE and extract 
-    # the goodVsBadVector later to work around a flowClean bug (to be corrected)
-    tempDF <-
-        flowClean::clean(
-            fF = ffIn,
-            vectMarkers = vectMarkers,
-            filePrefixWithDir = filePrefixWithDir,
-            ext = ".fcs", # not used
-            diagnostic = diagnostic,
-            announce = verbose,
-            returnVector = FALSE,
-            ...
-        )
-
-    areGoodEvents <- tempDF[, "GoodVsBad"] < 10000
-    ff <- ffIn[areGoodEvents, ]
-
-    return(ff)
-}
+# @title perform QC with flowClean
+# @description this function is a wrapper around flowClean::clean()
+#function.
+#It also pre-selects the channels to be handled (=> all signal channels)
+# @param ff a flowCore::flowFrame
+# @param preTransform if TRUE, apply the transList scale transform prior to
+# running the gating algorithm
+# @param transList applied in conjunction with preTransform
+# @param outputDiagnostic if TRUE, stores diagnostic files generated by
+# flowClean in outputDir directory
+# @param outputDir used in conjunction with outputDiagnostic
+# @param verbose if TRUE messages comments on the QC process
+# @param ... additional parameters passed to flowClean::clean()
+# 
+# @return a flowCore::flowFrame with removed low quality events from the input
+# @export
+# 
+# @examples
+# 
+# rawDataDir <-
+#     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+# sampleFiles <-
+#     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+# 
+# truncateMaxRange <- FALSE
+# minLimit <- NULL
+# 
+# # create flowCore::flowSet with all samples of a dataset
+# fsRaw <- readSampleFiles(
+#     sampleFiles = sampleFiles,
+#     whichSamples = "all",
+#     truncate_max_range = truncateMaxRange,
+#     min.limit = minLimit)
+# 
+# ff_QualityControl <- suppressWarnings(
+#     qualityControlFlowClean(fsRaw[[2]],
+#                             binSize = 0.01, # default
+#                             nCellCutoff = 500, # default
+#                             cutoff = "median", # default
+#                             fcMax = 1.3, # default
+#                             nstable = 5))
+# 
+# qualityControlFlowClean <- function(ff,
+#                                     preTransform = FALSE,
+#                                     transList = NULL,
+#                                     outputDiagnostic = FALSE,
+#                                     outputDir = NULL,
+#                                     verbose = TRUE,
+#                                     ...) {
+#     #browser()
+#     # if not present already, add a column with Cell ID
+#     ff <- .appendCellID(ff)
+# 
+#     if (preTransform) {
+#         if (is.null(transList)) {
+#             stop(
+#                 "tranformation list needs to be provided ",
+#                 "if preTransform = TRUE!"
+#             )
+#         }
+#         ffIn <- flowCore::transform(ff, transList)
+#     } else {
+#         ffIn <- ff
+#     }
+# 
+#     # qualityControl with flowClean
+#     message("Applying flowClean method...")
+#     vectMarkers <- which(CytoPipeline::areSignalCols(ffIn))
+# 
+#     if (outputDiagnostic) {
+#         diagnostic <- TRUE
+#         if (!is.null(outputDir)) {
+#             filePrefixWithDir <- outputDir
+#         } else {
+#             filePrefixWithDir <- "resultsQC"
+#         }
+# 
+#         # add original fcs file name in prefix,
+#         # as flowClean is designed to work for one fcs at the time
+#         filename <- basename(flowCore::keyword(ffIn, "FILENAME")$FILENAME)
+#         # removing extension
+#         filename <- sub("([^.]+)\\.[[:alnum:]]+$", "\\1", filename)
+#         filePrefixWithDir <- paste0(filePrefixWithDir, filename)
+#     } else {
+#         filePrefixWithDir <- NULL # not used
+#         diagnostic <- FALSE
+#     }
+# 
+#     # note we call it using returnVector = FALSE and extract 
+#     # the goodVsBadVector later to work around a flowClean bug (to be corrected)
+#     tempDF <-
+#         flowClean::clean(
+#             fF = ffIn,
+#             vectMarkers = vectMarkers,
+#             filePrefixWithDir = filePrefixWithDir,
+#             ext = ".fcs", # not used
+#             diagnostic = diagnostic,
+#             announce = verbose,
+#             returnVector = FALSE,
+#             ...
+#         )
+# 
+#     areGoodEvents <- tempDF[, "GoodVsBad"] < 10000
+#     ff <- ffIn[areGoodEvents, ]
+# 
+#     return(ff)
+# }
 
 ##' @title read RDS object 
 ##' @description wrapper around readRDS, which discards any additional 
