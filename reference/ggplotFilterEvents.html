@@ -79,6 +79,8 @@ in 2D, showing the impact of applying a filter between :</p><ul><li><p>a 'pre' f
 <span>  yLogicleParams <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>w <span class="op">=</span> <span class="fl">2</span>, m <span class="op">=</span> <span class="fl">6.42</span>, a <span class="op">=</span> <span class="fl">0</span>, t <span class="op">=</span> <span class="fl">262144</span><span class="op">)</span>,</span>
 <span>  xLinearRange <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  yLinearRange <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  transList <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  runTransforms <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -140,6 +142,21 @@ transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)</p></dd
 
 <dt>yLinearRange</dt>
 <dd><p>if (yScale == "linear"), linear range to be used</p></dd>
+
+
+<dt>transList</dt>
+<dd><p>optional list of scale transformations to be applied to each
+channel. If it is non null, 'x/yScale', 'x/yLogicleParams' and
+'x/yLinear_range' will be discarded.</p></dd>
+
+
+<dt>runTransforms</dt>
+<dd><p>(TRUE/FALSE) only taken into account if transList is
+not NULL. Will 'transList' result in data being effectively transformed ?</p><ul><li><p>If TRUE, than the data will undergo transformations prior to
+visualization.</p></li>
+<li><p>If FALSE, the axis will be scaled but the data themselves are
+not transformed.</p></li>
+</ul></dd>
 
 
 <dt>interactive</dt>
@@ -223,7 +240,7 @@ plotly::ggplotly()</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
       </footer></div>

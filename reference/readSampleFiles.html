@@ -58,7 +58,12 @@ Also adds a "Cell_ID" additional column, used in flowFrames comparison</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">readSampleFiles</span><span class="op">(</span><span class="va">sampleFiles</span>, whichSamples <span class="op">=</span> <span class="st">"all"</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">readSampleFiles</span><span class="op">(</span></span>
+<span>  <span class="va">sampleFiles</span>,</span>
+<span>  whichSamples <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  channelMarkerFile <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -70,6 +75,14 @@ Also adds a "Cell_ID" additional column, used in flowFrames comparison</p>
 <dt>whichSamples</dt>
 <dd><p>either 'all' if all sample files need to be read, or
 a vector of indexes pointing to the sampleFiles vector</p></dd>
+
+
+<dt>channelMarkerFile</dt>
+<dd><p>an optional path to a csv file which provides the
+mapping between channels and markers. If provided, this csv file should
+contain a <code>Channel</code> column, and a <code>Marker</code> column. Optionally a 'Used'
+column can be provided as well (TRUE/FALSE). Channels for which the 'Used'
+column is set to FALSE will not be incorporated in the created flowFrame.</p></dd>
 
 
 <dt>...</dt>
@@ -127,7 +140,7 @@ length(sampleFiles) == 1</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
       </footer></div>

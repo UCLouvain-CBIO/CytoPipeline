@@ -82,8 +82,9 @@ For the estimateLogicle function, see flowCore documentation.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">estimateScaleTransforms</span><span class="op">(</span></span>
 <span>  <span class="va">ff</span>,</span>
 <span>  fluoMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"estimateLogicle"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
-<span>  scatterMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
-<span>  scatterRefMarker <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  scatterMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linearQuantile"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  scatterRefMarker <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  specificScatterChannels <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -103,6 +104,11 @@ For the estimateLogicle function, see flowCore documentation.</p>
 
 <dt>scatterRefMarker</dt>
 <dd><p>the reference channel that is used to align the</p></dd>
+
+
+<dt>specificScatterChannels</dt>
+<dd><p>vector of scatter channels for which we
+still want to apply the fluo method (and not the scatter Method)</p></dd>
 
 </dl></div>
     <div id="value">
@@ -151,7 +157,7 @@ For the estimateLogicle function, see flowCore documentation.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
       </footer></div>

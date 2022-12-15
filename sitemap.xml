@@ -94,9 +94,6 @@
     <loc>/reference/qualityControlFlowAI.html</loc>
   </url>
   <url>
-    <loc>/reference/qualityControlFlowClean.html</loc>
-  </url>
-  <url>
     <loc>/reference/qualityControlFlowCut.html</loc>
   </url>
   <url>
@@ -107,6 +104,9 @@
   </url>
   <url>
     <loc>/reference/readSampleFiles.html</loc>
+  </url>
+  <url>
+    <loc>/reference/removeChannels.html</loc>
   </url>
   <url>
     <loc>/reference/removeDeadCellsDeGate.html</loc>
@@ -136,9 +136,15 @@
     <loc>/reference/runCompensation.html</loc>
   </url>
   <url>
+    <loc>/reference/selectRandomSamples.html</loc>
+  </url>
+  <url>
     <loc>/reference/singletsGate.html</loc>
   </url>
   <url>
     <loc>/reference/subsample.html</loc>
+  </url>
+  <url>
+    <loc>/reference/updateMarkerName.html</loc>
   </url>
 </urlset>
