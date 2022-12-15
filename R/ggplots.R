@@ -634,6 +634,15 @@ ggplotEvents <- function(obj,
 #' transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)
 #' @param xLinearRange if (xScale == "linear"), linear range to be used
 #' @param yLinearRange if (yScale == "linear"), linear range to be used
+#' @param transList optional list of scale transformations to be applied to each
+#' channel. If it is non null, 'x/yScale', 'x/yLogicleParams' and
+#' 'x/yLinear_range' will be discarded.
+#' @param runTransforms (TRUE/FALSE) only taken into account if transList is
+#' not NULL. Will 'transList' result in data being effectively transformed ?
+#' - If TRUE, than the data will undergo transformations prior to
+#' visualization.
+#' - If FALSE, the axis will be scaled but the data themselves are
+#' not transformed.
 #' @param interactive if TRUE, transform the scaling formats such that the
 #' ggcyto::x_scale_logicle() and ggcyto::y_scale_logicle() do work with
 #' plotly::ggplotly()
@@ -644,6 +653,7 @@ ggplotEvents <- function(obj,
 #' @importFrom ggcyto scale_y_logicle
 #' @importFrom ggcyto scale_x_flowjo_biexp
 #' @importFrom ggcyto scale_y_flowjo_biexp
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples 
@@ -715,6 +725,8 @@ ggplotFilterEvents <- function(ffPre, ffPost,
                                ),
                                xLinearRange = NULL,
                                yLinearRange = NULL,
+                               transList = NULL,
+                               runTransforms = FALSE,
                                interactive = FALSE) {
     if (!inherits(ffPre, "flowFrame")) {
         stop("ffPre type not recognized, should be a flowFrame")
@@ -759,14 +771,11 @@ ggplotFilterEvents <- function(ffPre, ffPost,
         )
     }
 
-    df <- data.frame(
-        x = flowCore::exprs(ffPre)[, xChannel],
-        y = flowCore::exprs(ffPre)[, yChannel]
-    )
+
 
     # perform sub-sampling if necessary
 
-    nEvents <- nrow(df)
+    nEvents <- nrow(flowCore::exprs(ffPre))
     if (nDisplayCells < 1) stop("n_display_cells should be strictly positive!")
     i <- 0
     if (nDisplayCells < nEvents) {
@@ -780,6 +789,62 @@ ggplotFilterEvents <- function(ffPre, ffPost,
         }
     } else {
         i <- seq(nEvents)
+    }
+    
+    xTransformed <- FALSE
+    yTransformed <- FALSE
+    if (!is.null(transList)) {
+        res <- getTransfoParams(transList, xChannel)
+        if (!is.null(res)) {
+            if (runTransforms) {
+                xScale <- "linear"
+                xTransformed <- TRUE
+                if (res$type == "logicle") {
+                    xLinearRange <- c(0, res$paramsList$m)
+                }
+            } else {
+                xScale <- res$type
+                if (res$type == "logicle") {
+                    xLogicleParams <- res$paramsList
+                }
+            }
+        }
+        
+        if (!is.null(yChannel)) {
+            res <- getTransfoParams(transList, yChannel)
+            if (!is.null(res)) {
+                if (runTransforms) {
+                    yScale <- "linear"
+                    yTransformed <- TRUE
+                    if (res$type == "logicle") {
+                        yLinearRange <- c(0, res$paramsList$m)
+                    }
+                } else {
+                    yScale <- res$type
+                    if (res$type == "logicle") {
+                        yLogicleParams <- res$paramsList
+                    }
+                }
+            }
+        }
+        
+        if (runTransforms) {
+            # adapt scale to linear and linear_range to null
+            # if trans_list is passed and is effectively run
+            appliedTransList <- c()
+            
+            # remove not mentioned channels from trans_list
+            appliedTransList <- transList
+            transChannels <- names(transList@transforms)
+            for (n in transChannels) {
+                if (!(n %in% c(xChannel, yChannel))) {
+                    appliedTransList@transforms[[n]] <- NULL
+                }
+            }
+            
+            ffPre <- flowCore::transform(ffPre, translist = appliedTransList)
+            ffPost <- flowCore::transform(ffPost, translist = appliedTransList)
+        }
     }
 
     # find axis ranges depending on scales
@@ -810,11 +875,24 @@ ggplotFilterEvents <- function(ffPre, ffPost,
         }
     }
 
-    # plot main layer
+    # main plot layer
+    
+    if (xTransformed) {
+        xLabel <- paste0(xLabel, " (transformed)")
+    }
+    if (yTransformed) {
+        yLabel <- paste0(yLabel, " (transformed)")
+    }
+    
+    df <- data.frame(
+        x = flowCore::exprs(ffPre)[, xChannel],
+        y = flowCore::exprs(ffPre)[, yChannel]
+    )
+    
     # following 2 statements just to allow R cmd CHECK w/o note
-    x <- NULL
-    y <- NULL
-    p <- ggplot(df[i, ], aes(x = x, y = y)) +
+    # x <- NULL
+    # y <- NULL
+    p <- ggplot(df[i, ], aes(x = .data$x, y = .data$y)) +
         geom_point(
             size = size,
             color = ifelse(flowCore::exprs(ffPre)[i, "Original_ID"] %in%

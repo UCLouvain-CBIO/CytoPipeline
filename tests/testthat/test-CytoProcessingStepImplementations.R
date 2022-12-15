@@ -30,7 +30,7 @@ test_that("estimateScaleTransforms work", {
         suppressMessages(estimateScaleTransforms(
             ff = ff_c,
             fluoMethod = "estimateLogicle",
-            scatterMethod = "linear",
+            scatterMethod = "linearQuantile",
             scatterRefMarker = "BV785 - CD3"
         ))
 
@@ -47,6 +47,14 @@ test_that("estimateScaleTransforms work", {
     expect_equal(
         flowCore::exprs(thisFF),
         flowCore::exprs(refFF)
+    )
+    
+    transList2 <- estimateScaleTransforms(
+        ff = ff_c,
+        fluoMethod = "estimateLogicle",
+        scatterMethod = "linearQuantile",
+        scatterRefMarker = "BV785 - CD3",
+        specificScatterChannels = c("SSC-A", "SSC-H")
     )
 })
 

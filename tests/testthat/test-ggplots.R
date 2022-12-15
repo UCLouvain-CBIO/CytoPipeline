@@ -356,4 +356,58 @@ test_that("ggplotFilterEvents works", {
         "ggplotFilterEvents 2D - small size",
         fig = p
     )
+    
+    # calculate transformation list for the next steps
+    compensationMatrix <- flowCore::spillover(OMIP021UTSamples[[1]])$SPILL
+    
+    ffC <- runCompensation(OMIP021UTSamples[[1]],
+                           spillover = compensationMatrix,
+                           updateChannelNames = FALSE
+    )
+    
+    transList <- flowCore::estimateLogicle(
+        ffC,
+        colnames(compensationMatrix)
+    )
+    
+    transList <-
+        c(
+            transList,
+            flowCore::transformList(
+                "FSC-A",
+                flowCore::linearTransform(a = 0.00001)
+            )
+        )
+    
+    p <- ggplotFilterEvents(
+        ffPre = ffPre,
+        ffPost = ffL,
+        seed = 1,
+        xChannel = "FSC-A", 
+        yChannel = LDMarker, 
+        transList = transList,
+        runTransforms = FALSE
+    ) +
+        ggtitle("Live gate filter")
+    
+    vdiffr::expect_doppelganger(
+        "ggplotFilterEvents 2D - transList - not run",
+        fig = p
+    )
+    
+    p <- ggplotFilterEvents(
+        ffPre = ffPre,
+        ffPost = ffL,
+        seed = 1,
+        xChannel = "FSC-A", 
+        yChannel = LDMarker, 
+        transList = transList,
+        runTransforms = TRUE
+    ) +
+        ggtitle("Live gate filter")
+    
+    vdiffr::expect_doppelganger(
+        "ggplotFilterEvents 2D - transList - run",
+        fig = p
+    )
 })
