@@ -37,7 +37,7 @@
       "FUN": ["estimateScaleTransforms"],
       "ARGS": {
         "fluoMethod": ["estimateLogicle"],
-        "scatterMethod": ["linear"],
+        "scatterMethod": ["linearQuantile"],
         "scatterRefMarker": ["BV785 - CD3"]
       }
     }

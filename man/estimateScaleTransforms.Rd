@@ -7,8 +7,9 @@
 estimateScaleTransforms(
   ff,
   fluoMethod = c("estimateLogicle", "none"),
-  scatterMethod = c("linear", "none"),
-  scatterRefMarker = NULL
+  scatterMethod = c("linearQuantile", "none"),
+  scatterRefMarker = NULL,
+  specificScatterChannels = NULL
 )
 }
 \arguments{
@@ -19,6 +20,9 @@ estimateScaleTransforms(
 \item{scatterMethod}{method to be applied to all scatter channels}
 
 \item{scatterRefMarker}{the reference channel that is used to align the}
+
+\item{specificScatterChannels}{vector of scatter channels for which we
+still want to apply the fluo method (and not the scatter Method)}
 }
 \value{
 a flowCore::flowFrame with removed low quality events from the input

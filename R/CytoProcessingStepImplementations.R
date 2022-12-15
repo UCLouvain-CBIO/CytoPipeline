@@ -32,6 +32,8 @@
 #' @param fluoMethod method to be applied to all fluo channels
 #' @param scatterMethod method to be applied to all scatter channels
 #' @param scatterRefMarker the reference channel that is used to align the
+#' @param specificScatterChannels vector of scatter channels for which we 
+#' still want to apply the fluo method (and not the scatter Method)
 #'
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
@@ -49,9 +51,12 @@
 #'         scatterRefMarker = "BV785 - CD3")
 #' 
 estimateScaleTransforms <- function(ff,
-                                    fluoMethod = c("estimateLogicle", "none"),
-                                    scatterMethod = c("linear", "none"),
-                                    scatterRefMarker = NULL) {
+                                    fluoMethod = c("estimateLogicle",
+                                                   "none"),
+                                    scatterMethod = c("linearQuantile", 
+                                                      "none"),
+                                    scatterRefMarker = NULL,
+                                    specificScatterChannels = NULL){
     fluoMethod <- match.arg(fluoMethod)
     scatterMethod <- match.arg(scatterMethod)
     
@@ -64,7 +69,7 @@ estimateScaleTransforms <- function(ff,
         transList <- flowCore::estimateLogicle(ff, fluoCols)
     } # else do nothing
     
-    if (scatterMethod == "linear") {
+    if (scatterMethod == "linearQuantile") {
         if (is.null(scatterRefMarker)) {
             stop("linear scatter method requires a scatterRefMarker")
         }
@@ -83,6 +88,26 @@ estimateScaleTransforms <- function(ff,
                 silent = FALSE
             )
     } # else do nothing
+    
+    # handle specific cases of scatter channels that still need fluo method
+    if (! is.null(specificScatterChannels)) {
+        effectiveScatterChannels <- NULL
+        for (ch in specificScatterChannels) {
+            scatterChannels <-
+                flowCore::colnames(ff)[!areFluoCols(ff) & areSignalCols(ff)]
+            if (!(ch %in% scatterChannels)) {
+                message("Specific channel [", ch, "] is not a scatter channel",
+                        " => no correction of scale transformation done")
+            } else {
+                transList@transforms[[ch]] <- NULL
+                effectiveScatterChannels <- c(effectiveScatterChannels, ch)
+            } 
+        }
+        
+        transList <- c(transList, 
+                       flowCore::estimateLogicle(ff, 
+                                                 effectiveScatterChannels))
+    }
     
     return(transList)
 }
