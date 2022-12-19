@@ -62,7 +62,12 @@ object and the file cache on disk</p>
 <span></span>
 <span><span class="fu">buildCytoPipelineFromCache</span><span class="op">(</span><span class="va">experimentName</span>, path <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">checkCytoPipelineConsistencyWithCache</span><span class="op">(</span><span class="va">x</span>, path <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">checkCytoPipelineConsistencyWithCache</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  path <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  whichQueue <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"both"</span>, <span class="st">"scale transform"</span>, <span class="st">"pre-processing"</span><span class="op">)</span>,</span>
+<span>  sampleFile <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -79,6 +84,15 @@ object and the file cache on disk</p>
 <dt>experimentName</dt>
 <dd><p>the experimentName used to select the file cache on
 disk</p></dd>
+
+
+<dt>whichQueue</dt>
+<dd><p>which processing queue to check the consistency of</p></dd>
+
+
+<dt>sampleFile</dt>
+<dd><p>if whichQueue == "pre-processing" or "both": which sample
+file(s) to check on the disk cache</p></dd>
 
 </dl></div>
     <div id="value">
