@@ -810,12 +810,12 @@ test_that("plotCytoPipelineProcessingQueue works", {
 
     pipL6@flowFramesPreProcessingQueue[[2]]@name <- "aaaaaa"
 
-    expect_warning(plotCytoPipelineProcessingQueue(
+    expect_error(plotCytoPipelineProcessingQueue(
         pipL6,
         whichQueue = "scale transform",
         path = outputDir
     ),
-    regexp = "CytoPipeline object not consistent with cache"
+    NA
     )
 
     expect_warning(plotCytoPipelineProcessingQueue(

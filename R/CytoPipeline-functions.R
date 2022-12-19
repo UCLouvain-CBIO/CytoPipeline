@@ -987,41 +987,52 @@ buildCytoPipelineFromCache <- function(experimentName, path = ".") {
 ##' and what is stored in the file cache
 ##' @export
 ##'
-checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
+checkCytoPipelineConsistencyWithCache <- function(
+        x, path = ".",
+        whichQueue = c("both", "scale transform", "pre-processing"),
+        sampleFile = NULL) {
+    
     stopifnot(inherits(x, "CytoPipeline"))
-
+        
+    whichQueue = match.arg(whichQueue)    
+        
     #browser()
     ret <- list(isConsistent = TRUE, inconsistencyMsg = character(0))
 
-    nScaleTransformSteps <- length(x@scaleTransformProcessingQueue)
-    ret$scaleTransformStepStatus <- rep("not_run", nScaleTransformSteps)
-    ret$scaleTransformStepOutputObjNames <-
-        rep("unknown", nScaleTransformSteps)
-    ret$scaleTransformStepOutputClasses <-
-        rep("unknown", nScaleTransformSteps)
-
-    if (nScaleTransformSteps > 0) {
-        names(ret$scaleTransformStepStatus) <-
-            getProcessingStepNames(x, whichQueue = "scale transform")
+    if (whichQueue %in% c("both", "scale transform")) {
+        nScaleTransformSteps <- length(x@scaleTransformProcessingQueue)
+        ret$scaleTransformStepStatus <- rep("not_run", nScaleTransformSteps)
+        ret$scaleTransformStepOutputObjNames <-
+            rep("unknown", nScaleTransformSteps)
+        ret$scaleTransformStepOutputClasses <-
+            rep("unknown", nScaleTransformSteps)
+        
+        if (nScaleTransformSteps > 0) {
+            names(ret$scaleTransformStepStatus) <-
+                getProcessingStepNames(x, whichQueue = "scale transform")
+        }
     }
-
-    nPreProcessingSteps <- length(x@flowFramesPreProcessingQueue)
-    nSampleFiles <- length(x@sampleFiles)
-    ret$preProcessingStepStatus <-
-        matrix(rep("not_run", nPreProcessingSteps * nSampleFiles),
-            nrow = nPreProcessingSteps,
-            ncol = nSampleFiles
-        )
-    ret$preProcessingStepOutputObjNames <-
-        rep("unknown", nPreProcessingSteps)
-    ret$preProcessingStepOutputClasses <-
-        rep("unknown", nPreProcessingSteps)
-
-    if (nPreProcessingSteps > 0 && nSampleFiles > 0) {
-        rownames(ret$preProcessingStepStatus) <-
-            getProcessingStepNames(x, whichQueue = "pre-processing")
-        colnames(ret$preProcessingStepStatus) <- basename(x@sampleFiles)
+    
+    if (whichQueue %in% c("both", "pre-processing")) {
+        nPreProcessingSteps <- length(x@flowFramesPreProcessingQueue)
+        nSampleFiles <- length(x@sampleFiles)
+        ret$preProcessingStepStatus <-
+            matrix(rep("not_run", nPreProcessingSteps * nSampleFiles),
+                   nrow = nPreProcessingSteps,
+                   ncol = nSampleFiles
+            )
+        ret$preProcessingStepOutputObjNames <-
+            rep("unknown", nPreProcessingSteps)
+        ret$preProcessingStepOutputClasses <-
+            rep("unknown", nPreProcessingSteps)
+        
+        if (nPreProcessingSteps > 0 && nSampleFiles > 0) {
+            rownames(ret$preProcessingStepStatus) <-
+                getProcessingStepNames(x, whichQueue = "pre-processing")
+            colnames(ret$preProcessingStepStatus) <- basename(x@sampleFiles)
+        }
     }
+    
 
     # find cache corresponding to experiment name
     experimentNames <-
@@ -1043,117 +1054,81 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
     if (nrow(cacheInfo) == 0) {
         return(ret)
     }
-
+    
     # now check scale transform steps consistency
     # take only steps with scale transform type
-    stepsInfos <-
-        cacheInfo[
-            cacheInfo$type == "scale transform",
-            c(
-                "stepNb", "stepName", "stepJsonSerialize",
-                "outputClass", "outputObjectName"
-            )
-        ]
-
-    stepsInfos <- unique(stepsInfos)
-    nStepsInCache <- nrow(stepsInfos)
-    if (nStepsInCache > 0) {
-        uniqueStepNbs <- unique(stepsInfos$stepNb)
-
-        if (length(uniqueStepNbs) != nrow(stepsInfos)) {
-            stop(
-                "more than one step having the same step nb. ",
-                "Cache is inconsistent, deleting it manually is advised"
-            )
-        }
-
-        stepsInfos <- stepsInfos[order(stepsInfos$stepNb), ]
-        if (nStepsInCache > nScaleTransformSteps) {
-            ret$isConsistent <- FALSE
-            ret$inconsistencyMsg <-
-                "more scale transform steps in cache than "
-            "in CytoPipeline object"
-            return(ret)
-        }
-
-        for (j in seq_len(nStepsInCache)) {
-            pS <- from.json.CytoProcessingStep(
-                as.character(stepsInfos[j, "stepJsonSerialize"])
-            )
-            pS2 <- getProcessingStep(x,
-                whichQueue = "scale transform",
-                index = j
-            )
-            argsComparison <- all.equal(getCPSARGS(pS), getCPSARGS(pS2))
-            if (identical(getCPSName(pS), getCPSName(pS2)) &&
-                identical(getCPSFUN(pS), getCPSFUN(pS2)) &&
-                is.logical(argsComparison) && argsComparison) {
-                ret$scaleTransformStepStatus[j] <- "run"
-                ret$scaleTransformStepOutputClasses[j] <-
-                    as.character(stepsInfos[j, "outputClass"])
-                ret$scaleTransformStepOutputObjNames[j] <-
-                    as.character(stepsInfos[j, "outputObjectName"])
-                # and continue...
-            } else {
-                ret$scaleTransformStepStatus[j] <- "inconsistent"
+    
+    if (whichQueue %in% c("both", "scale transform")) {
+        stepsInfos <-
+            cacheInfo[
+                cacheInfo$type == "scale transform",
+                c(
+                    "stepNb", "stepName", "stepJsonSerialize",
+                    "outputClass", "outputObjectName"
+                )
+            ]
+        
+        stepsInfos <- unique(stepsInfos)
+        nStepsInCache <- nrow(stepsInfos)
+        if (nStepsInCache > 0) {
+            uniqueStepNbs <- unique(stepsInfos$stepNb)
+            
+            if (length(uniqueStepNbs) != nrow(stepsInfos)) {
+                stop(
+                    "more than one step having the same step nb. ",
+                    "Cache is inconsistent, deleting it manually is advised"
+                )
+            }
+            
+            stepsInfos <- stepsInfos[order(stepsInfos$stepNb), ]
+            if (nStepsInCache > nScaleTransformSteps) {
                 ret$isConsistent <- FALSE
                 ret$inconsistencyMsg <-
-                    paste0(
-                        "inconsistent scale transform step #", j,
-                        " (different in cache)"
-                    )
+                    "more scale transform steps in cache than "
+                "in CytoPipeline object"
                 return(ret)
+            }
+            
+            for (j in seq_len(nStepsInCache)) {
+                pS <- from.json.CytoProcessingStep(
+                    as.character(stepsInfos[j, "stepJsonSerialize"])
+                )
+                pS2 <- getProcessingStep(x,
+                                         whichQueue = "scale transform",
+                                         index = j
+                )
+                argsComparison <- all.equal(getCPSARGS(pS), getCPSARGS(pS2))
+                if (identical(getCPSName(pS), getCPSName(pS2)) &&
+                    identical(getCPSFUN(pS), getCPSFUN(pS2)) &&
+                    is.logical(argsComparison) && argsComparison) {
+                    ret$scaleTransformStepStatus[j] <- "run"
+                    ret$scaleTransformStepOutputClasses[j] <-
+                        as.character(stepsInfos[j, "outputClass"])
+                    ret$scaleTransformStepOutputObjNames[j] <-
+                        as.character(stepsInfos[j, "outputObjectName"])
+                    # and continue...
+                } else {
+                    ret$scaleTransformStepStatus[j] <- "inconsistent"
+                    ret$isConsistent <- FALSE
+                    ret$inconsistencyMsg <-
+                        paste0(
+                            "inconsistent scale transform step #", j,
+                            " (different in cache)"
+                        )
+                    return(ret)
+                }
             }
         }
     }
-
+    
     #browser()
 
     # now check pre-processing steps consistency
     # take only steps with pre-processing type
-
-    stepsInfos <-
-        cacheInfo[
-            cacheInfo$type == "pre-processing",
-            c(
-                "stepNb", "stepName", "stepJsonSerialize",
-                "outputClass", "outputObjectName"
-            )
-        ]
-    stepsInfos <- unique(stepsInfos)
-    nStepsInCache <- nrow(stepsInfos)
-    if (nStepsInCache > 0) {
-        uniqueStepNbs <- unique(stepsInfos$stepNb)
-
-        if (length(uniqueStepNbs) != nrow(stepsInfos)) {
-            stop(
-                "more than one step having the same step nb. ",
-                "Cache is inconsistent, deleting it manually is advised"
-            )
-        }
-
-        stepsInfos <- stepsInfos[order(stepsInfos$stepNb), ]
-        if (nStepsInCache > nPreProcessingSteps) {
-            ret$isConsistent <- FALSE
-            ret$inconsistencyMsg <-
-                "more pre-processing steps in cache than in CytoPipeline object"
-            return(ret)
-        }
-    }
-
-
-
-
-    if (nrow(cacheInfo[cacheInfo$type == "pre-processing", ]) == 0) {
-        return(ret)
-    }
-
-    for (s in seq_along(x@sampleFiles)) {
-        # take only steps with the target sample file
-        sampleFile <- basename(x@sampleFiles[s])
+    if (whichQueue %in% c("both", "pre-processing")) {
         stepsInfos <-
             cacheInfo[
-                !is.na(cacheInfo$fcsfile) & cacheInfo$fcsfile == sampleFile,
+                cacheInfo$type == "pre-processing",
                 c(
                     "stepNb", "stepName", "stepJsonSerialize",
                     "outputClass", "outputObjectName"
@@ -1163,49 +1138,103 @@ checkCytoPipelineConsistencyWithCache <- function(x, path = ".") {
         nStepsInCache <- nrow(stepsInfos)
         if (nStepsInCache > 0) {
             uniqueStepNbs <- unique(stepsInfos$stepNb)
-
+            
             if (length(uniqueStepNbs) != nrow(stepsInfos)) {
                 stop(
                     "more than one step having the same step nb. ",
                     "Cache is inconsistent, deleting it manually is advised"
                 )
             }
-
+            
             stepsInfos <- stepsInfos[order(stepsInfos$stepNb), ]
-
-            for (j in seq_len(nStepsInCache)) {
-                #browser()
-                pS <- from.json.CytoProcessingStep(
-                    as.character(stepsInfos[j, "stepJsonSerialize"])
-                )
-                pS2 <- getProcessingStep(x,
-                    whichQueue = "pre-processing",
-                    index = j
-                )
-                argsComparison <- all.equal(getCPSARGS(pS), getCPSARGS(pS2))
-                if (identical(getCPSName(pS), getCPSName(pS2)) &&
-                    identical(getCPSFUN(pS), getCPSFUN(pS2)) &&
-                    is.logical(argsComparison) && argsComparison) {
-                    ret$preProcessingStepStatus[j, sampleFile] <- "run"
-                    ret$preProcessingStepOutputClasses[j] <-
-                        as.character(stepsInfos[j, "outputClass"])
-                    ret$preProcessingStepOutputObjNames[j] <-
-                        as.character(stepsInfos[j, "outputObjectName"])
-                    # and continue...
-                } else {
-                    ret$preProcessingStepStatus[j, sampleFile] <- "inconsistent"
-                    ret$isConsistent <- FALSE
-                    ret$inconsistencyMsg <-
-                        paste0(
-                            "inconsistent pre-processing step #", j,
-                            " for sample file ", sampleFile,
-                            " (different in cache)"
-                        )
-                    return(ret)
-                }
+            if (nStepsInCache > nPreProcessingSteps) {
+                ret$isConsistent <- FALSE
+                ret$inconsistencyMsg <-
+                    "more pre-processing steps in cache than in CytoPipeline object"
+                return(ret)
             }
         }
-    } # end loop on sample files
+        
+        if (nrow(cacheInfo[cacheInfo$type == "pre-processing", ]) == 0) {
+            return(ret)
+        }
+        
+        if (is.null(sampleFile)) {
+            sampleFileIndices <- seq_along(x@sampleFiles)
+        } else if (is.numeric(sampleFile)) {
+            if (all(sampleFile > 0 && sampleFile <= length(x@sampleFiles))) {
+                sampleFileIndices <- sampleFile
+            } else {
+                stop("sampleFile out of bounds")
+            }
+        } else {
+            sampleFileIndices <-
+                which(basename(x@sampleFiles) == basename(sampleFile))
+            if (length(sampleFileIndices) == 0) {
+                stop("sampleFile not found in CytoPipeline")
+            } 
+        }
+        
+        for (s in sampleFileIndices) {
+            # take only steps with the target sample file
+            sampleFile <- basename(x@sampleFiles[s])
+            stepsInfos <-
+                cacheInfo[
+                    !is.na(cacheInfo$fcsfile) & cacheInfo$fcsfile == sampleFile,
+                    c(
+                        "stepNb", "stepName", "stepJsonSerialize",
+                        "outputClass", "outputObjectName"
+                    )
+                ]
+            stepsInfos <- unique(stepsInfos)
+            nStepsInCache <- nrow(stepsInfos)
+            if (nStepsInCache > 0) {
+                uniqueStepNbs <- unique(stepsInfos$stepNb)
+                
+                if (length(uniqueStepNbs) != nrow(stepsInfos)) {
+                    stop(
+                        "more than one step having the same step nb. ",
+                        "Cache is inconsistent, deleting it manually is advised"
+                    )
+                }
+                
+                stepsInfos <- stepsInfos[order(stepsInfos$stepNb), ]
+                
+                for (j in seq_len(nStepsInCache)) {
+                    #browser()
+                    pS <- from.json.CytoProcessingStep(
+                        as.character(stepsInfos[j, "stepJsonSerialize"])
+                    )
+                    pS2 <- getProcessingStep(x,
+                                             whichQueue = "pre-processing",
+                                             index = j
+                    )
+                    argsComparison <- all.equal(getCPSARGS(pS), getCPSARGS(pS2))
+                    if (identical(getCPSName(pS), getCPSName(pS2)) &&
+                        identical(getCPSFUN(pS), getCPSFUN(pS2)) &&
+                        is.logical(argsComparison) && argsComparison) {
+                        ret$preProcessingStepStatus[j, sampleFile] <- "run"
+                        ret$preProcessingStepOutputClasses[j] <-
+                            as.character(stepsInfos[j, "outputClass"])
+                        ret$preProcessingStepOutputObjNames[j] <-
+                            as.character(stepsInfos[j, "outputObjectName"])
+                        # and continue...
+                    } else {
+                        ret$preProcessingStepStatus[j, sampleFile] <- "inconsistent"
+                        ret$isConsistent <- FALSE
+                        ret$inconsistencyMsg <-
+                            paste0(
+                                "inconsistent pre-processing step #", j,
+                                " for sample file ", sampleFile,
+                                " (different in cache)"
+                            )
+                        return(ret)
+                    }
+                }
+            }
+        } # end loop on sample files
+    }
+    
 
 
     return(ret)
@@ -1422,7 +1451,9 @@ getCytoPipelineObjectFromCache <-
         #browser()
 
         # checking consistency between to-be-run processing steps and cache
-        res <- checkCytoPipelineConsistencyWithCache(x, path = path)
+        res <- checkCytoPipelineConsistencyWithCache(x, path = path,
+                                                     whichQueue = whichQueue,
+                                                     sampleFile = sampleFile)
         if (!res$isConsistent) {
             stop(res$inconsistencyMsg)
         }
@@ -1512,7 +1543,11 @@ getCytoPipelineObjectInfos <-
         }
 
         # checking consistency between to-be-run processing steps and cache
-        res <- checkCytoPipelineConsistencyWithCache(x, path = path)
+        res <- checkCytoPipelineConsistencyWithCache(
+            x, path = path,
+            whichQueue = whichQueue,
+            sampleFile = sampleFile)
+        
         if (!res$isConsistent) {
             stop(res$inconsistencyMsg)
         }
@@ -1734,7 +1769,12 @@ plotCytoPipelineProcessingQueue <-
             
             box.lcol <- c("black", rep("orange", nSteps))
             
-            res <- checkCytoPipelineConsistencyWithCache(x, path = path)
+            res <- 
+                checkCytoPipelineConsistencyWithCache(
+                    x, path = path,
+                    whichQueue = whichQueue,
+                    sampleFile = sampleFileIndex)
+            
             if (!res$isConsistent) {
                 warning(
                     "CytoPipeline object not consistent with cache: ",
