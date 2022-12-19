@@ -11,7 +11,12 @@ deleteCytoPipelineCache(x, path = ".")
 
 buildCytoPipelineFromCache(experimentName, path = ".")
 
-checkCytoPipelineConsistencyWithCache(x, path = ".")
+checkCytoPipelineConsistencyWithCache(
+  x,
+  path = ".",
+  whichQueue = c("both", "scale transform", "pre-processing"),
+  sampleFile = NULL
+)
 }
 \arguments{
 \item{x}{a CytoPipeline object}
@@ -21,6 +26,11 @@ checkCytoPipelineConsistencyWithCache(x, path = ".")
 
 \item{experimentName}{the experimentName used to select the file cache on
 disk}
+
+\item{whichQueue}{which processing queue to check the consistency of}
+
+\item{sampleFile}{if whichQueue == "pre-processing" or "both": which sample
+file(s) to check on the disk cache}
 }
 \value{
 for \code{deleteCytoPipelineCache}: TRUE if successfully removed\cr

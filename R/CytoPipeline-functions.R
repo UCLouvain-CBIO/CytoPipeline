@@ -814,6 +814,10 @@ execute <- function(x,
 #' (without the /.cache)
 #' @param experimentName the experimentName used to select the file cache on
 #' disk
+#' @param whichQueue which processing queue to check the consistency of
+#' @param sampleFile if whichQueue == "pre-processing" or "both": which sample
+#' file(s) to check on the disk cache
+#' 
 #' @return
 #' for `deleteCytoPipelineCache`: TRUE if successfully removed\cr
 #' for `buildCytoPipelineCache`: the built CytoPipeline object\cr
