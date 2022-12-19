@@ -4,14 +4,31 @@
 \alias{writeFlowFrame}
 \title{write flowFrame to disk}
 \usage{
-writeFlowFrame(ff, fileName, format = c("fcs", "csv"), ...)
+writeFlowFrame(
+  ff,
+  dir,
+  useFCSIdentifier = TRUE,
+  prefix = "",
+  suffix = "",
+  format = c("fcs", "csv"),
+  ...
+)
 }
 \arguments{
 \item{ff}{a flowCore::flowFrame}
 
-\item{...}{other arguments (not used)}
+\item{dir}{an existing directory to store the flowFrame,}
 
-\item{transList}{a flowCore::transformList}
+\item{useFCSIdentifier}{if TRUE filename used will be based on flowFrame
+identifier (using flowCOre::identifier(ff))}
+
+\item{prefix}{file name prefix}
+
+\item{suffix}{file name suffix}
+
+\item{format}{either fcs or csv}
+
+\item{...}{other arguments (not used)}
 }
 \value{
 nothing
@@ -51,7 +68,9 @@ res <- readSampleFiles(
     
 ff_c <- compensateFromMatrix(res[[2]], matrixSource = "fcs") 
 outputDir <- withr::local_tempdir()
-outputFile <- paste0(outputDir, "/fcs_export.csv")
-writeFlowFrame(ff_c, fileName = outputFile, format = "csv")
+writeFlowFrame(ff_c, 
+               dir = outputDir,
+               suffix = "_fcs_export",
+               format = "csv")
 
 }

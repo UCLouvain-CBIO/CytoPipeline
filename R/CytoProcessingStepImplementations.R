@@ -1877,3 +1877,79 @@ applyScaleTransforms <- function(ff, transList, ...) {
     return(ff)
 }
 
+#' @title write flowFrame to disk
+#' @description wrapper around flowCore::write.FCS() or utils::write.csv
+#' that discards any additional parameter passed in (...)
+#' @param ff a flowCore::flowFrame
+#' @param dir an existing directory to store the flowFrame, 
+#' @param useFCSIdentifier if TRUE filename used will be based on flowFrame
+#' identifier (using flowCOre::identifier(ff))
+#' @param prefix file name prefix
+#' @param suffix file name suffix
+#' @param format either fcs or csv
+#' @param ... other arguments (not used)
+#' @return nothing
+#' @export
+#' 
+#' @examples
+#' 
+#' transListPath <- paste0(system.file("extdata", 
+#'                                     package = "CytoPipeline"),
+#'                         "/OMIP021_TransList.rds") 
+#' 
+#' transList <- readRDSObject(transListPath)
+#' 
+#' ff_c <- compensateFromMatrix(OMIP021Samples[[1]],
+#'                              matrixSource = "fcs")  
+#' 
+#' ff_t <- applyScaleTransforms(ff_c, transList = transList)
+#' 
+#' 
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' res <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#'     
+#' ff_c <- compensateFromMatrix(res[[2]], matrixSource = "fcs") 
+#' outputDir <- withr::local_tempdir()
+#' writeFlowFrame(ff_c, 
+#'                dir = outputDir,
+#'                suffix = "_fcs_export",
+#'                format = "csv")
+#' 
+writeFlowFrame <- function(ff, dir, 
+                           useFCSIdentifier = TRUE,
+                           prefix = "", suffix ="",
+                           format = c("fcs", "csv"), ...) {
+    format <- match.arg(format)
+    if (!useFCSIdentifier && prefix == "" && suffix == "") {
+        stop ("No file name provided! If useFCSIdentifier == FALSE, ",
+              "then either prefix or suffix should be provided.")
+    }
+    if(!dir.exists(dir)) {
+        stop ("Provided directory does not exist!")
+    }
+    
+    fileName <- paste0(dir, "/", prefix)
+    if (useFCSIdentifier) {
+        fileName <- paste0(fileName, flowCore::identifier(ff))
+    }
+    fileName <- paste0(fileName, suffix, ".", format)
+    
+    if (format == "fcs") {
+        flowCore::write.FCS(ff, filename = fileName)
+    } else {
+        utils::write.csv(flowCore::exprs(ff), file = fileName, row.names = FALSE)
+    }
+}
+
