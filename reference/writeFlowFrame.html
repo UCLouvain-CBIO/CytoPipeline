@@ -60,11 +60,12 @@ that discards any additional parameter passed in (...)</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">writeFlowFrame</span><span class="op">(</span></span>
 <span>  <span class="va">ff</span>,</span>
-<span>  <span class="va">dir</span>,</span>
-<span>  useFCSIdentifier <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dir <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  useFCSFileName <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  prefix <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  suffix <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fcs"</span>, <span class="st">"csv"</span><span class="op">)</span>,</span>
+<span>  csvUseChannelMarker <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -79,9 +80,9 @@ that discards any additional parameter passed in (...)</p>
 <dd><p>an existing directory to store the flowFrame,</p></dd>
 
 
-<dt>useFCSIdentifier</dt>
-<dd><p>if TRUE filename used will be based on flowFrame
-identifier (using flowCOre::identifier(ff))</p></dd>
+<dt>useFCSFileName</dt>
+<dd><p>if TRUE filename used will be based on original fcs
+filename</p></dd>
 
 
 <dt>prefix</dt>
@@ -94,6 +95,12 @@ identifier (using flowCOre::identifier(ff))</p></dd>
 
 <dt>format</dt>
 <dd><p>either fcs or csv</p></dd>
+
+
+<dt>csvUseChannelMarker</dt>
+<dd><p>if TRUE (default), converts the channels to the
+corresponding marker names (where the Marker is not NA). This setting is
+only applicable to export in csv format.</p></dd>
 
 
 <dt>...</dt>
