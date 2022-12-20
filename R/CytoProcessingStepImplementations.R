@@ -1882,11 +1882,14 @@ applyScaleTransforms <- function(ff, transList, ...) {
 #' that discards any additional parameter passed in (...)
 #' @param ff a flowCore::flowFrame
 #' @param dir an existing directory to store the flowFrame, 
-#' @param useFCSIdentifier if TRUE filename used will be based on flowFrame
-#' identifier (using flowCOre::identifier(ff))
+#' @param useFCSFileName if TRUE filename used will be based on original fcs 
+#' filename
 #' @param prefix file name prefix
 #' @param suffix file name suffix
 #' @param format either fcs or csv
+#' @param csvUseChannelMarker if TRUE (default), converts the channels to the
+#' corresponding marker names (where the Marker is not NA). This setting is
+#' only applicable to export in csv format.
 #' @param ... other arguments (not used)
 #' @return nothing
 #' @export
@@ -1927,12 +1930,14 @@ applyScaleTransforms <- function(ff, transList, ...) {
 #'                suffix = "_fcs_export",
 #'                format = "csv")
 #' 
-writeFlowFrame <- function(ff, dir, 
-                           useFCSIdentifier = TRUE,
+writeFlowFrame <- function(ff, dir = ".", 
+                           useFCSFileName = TRUE,
                            prefix = "", suffix ="",
-                           format = c("fcs", "csv"), ...) {
+                           format = c("fcs", "csv"), 
+                           csvUseChannelMarker = TRUE,
+                           ...) {
     format <- match.arg(format)
-    if (!useFCSIdentifier && prefix == "" && suffix == "") {
+    if (!useFCSFileName && prefix == "" && suffix == "") {
         stop ("No file name provided! If useFCSIdentifier == FALSE, ",
               "then either prefix or suffix should be provided.")
     }
@@ -1941,15 +1946,32 @@ writeFlowFrame <- function(ff, dir,
     }
     
     fileName <- paste0(dir, "/", prefix)
-    if (useFCSIdentifier) {
-        fileName <- paste0(fileName, flowCore::identifier(ff))
+    if (useFCSFileName) {
+        fileNameSkeleton <- 
+            basename(flowCore::keyword(ff, keyword = "FILENAME")$FILENAME)
+        fileNameSkeleton <- 
+            substr(fileNameSkeleton, 1, nchar(fileNameSkeleton) - 4)
+        fileName <- paste0(fileName, fileNameSkeleton)
     }
     fileName <- paste0(fileName, suffix, ".", format)
     
     if (format == "fcs") {
         flowCore::write.FCS(ff, filename = fileName)
     } else {
-        utils::write.csv(flowCore::exprs(ff), file = fileName, row.names = FALSE)
+        exprs <- flowCore::exprs(ff)
+        if (csvUseChannelMarker) {
+            oldColNames <- colnames(exprs)
+            newColNames <- oldColNames
+            for (j in seq_along(oldColNames)) {
+                ret <- flowCore::getChannelMarker(ff, name = oldColNames[j])
+                if (!is.na(ret$desc)) {
+                    newColNames[j] <- ret$desc
+                }
+            }
+            colnames(exprs) <- newColNames
+        }
+        utils::write.csv(exprs, file = fileName, 
+                         row.names = FALSE)
     }
 }
 

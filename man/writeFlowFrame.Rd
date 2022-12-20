@@ -6,11 +6,12 @@
 \usage{
 writeFlowFrame(
   ff,
-  dir,
-  useFCSIdentifier = TRUE,
+  dir = ".",
+  useFCSFileName = TRUE,
   prefix = "",
   suffix = "",
   format = c("fcs", "csv"),
+  csvUseChannelMarker = TRUE,
   ...
 )
 }
@@ -19,14 +20,18 @@ writeFlowFrame(
 
 \item{dir}{an existing directory to store the flowFrame,}
 
-\item{useFCSIdentifier}{if TRUE filename used will be based on flowFrame
-identifier (using flowCOre::identifier(ff))}
+\item{useFCSFileName}{if TRUE filename used will be based on original fcs
+filename}
 
 \item{prefix}{file name prefix}
 
 \item{suffix}{file name suffix}
 
 \item{format}{either fcs or csv}
+
+\item{csvUseChannelMarker}{if TRUE (default), converts the channels to the
+corresponding marker names (where the Marker is not NA). This setting is
+only applicable to export in csv format.}
 
 \item{...}{other arguments (not used)}
 }

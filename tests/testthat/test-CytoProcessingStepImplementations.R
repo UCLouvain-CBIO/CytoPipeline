@@ -607,14 +607,14 @@ test_that("writeFlowFrame works", {
     suffix <- "_export"
     
     writeFlowFrame(ff_c, dir = outputDir,
-                   useFCSIdentifier = TRUE,
+                   useFCSFileName = TRUE,
                    prefix = prefix,
                    suffix = suffix, 
                    format = "fcs")
     
     outputFile <- paste0(outputDir, "/", 
                          prefix, 
-                         flowCore::identifier(ff_c),
+                         "Donor1",
                          suffix,
                          ".fcs")
     
@@ -623,7 +623,7 @@ test_that("writeFlowFrame works", {
                     == round(flowCore::exprs(ff_c), 0)))
     
     writeFlowFrame(ff_c, dir = outputDir,
-                   useFCSIdentifier = FALSE,
+                   useFCSFileName = FALSE,
                    prefix = prefix,
                    suffix = suffix, 
                    format = "csv")
