@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.2</span>
       </span>
     </div>
 
@@ -209,14 +209,14 @@ the next step.</p></li>
 </ul>
 <p>Note there are important differences between the two processing
 queues. On the one hand, the <code>scaleTransformProcessingQueue</code>
-takes the vector of all sample files as an input, and will be run first
-by convention, and only once. On the other hand, the
+takes the vector of all sample files as an input, and will be executed
+first, and only once. On the other hand, the
 <code>flowFramesPreProcessingQueue</code> will be run after the scale
-transformation, on each sample file one after the other, in a loop. The
-final output of the <code>scaleTransformProcessingQueue</code>, which
-should be a <code>flowCore::tranformList</code>, is also provided as
-input to the <code>flowFramesPreProcessingQueue</code>, by
-convention.</p>
+transformation processing queue, on each sample file one after the
+other, within a loop. The final output of the
+<code>scaleTransformProcessingQueue</code>, which should be a
+<code>flowCore::tranformList</code>, is also provided as input to the
+<code>flowFramesPreProcessingQueue</code>, by convention.</p>
 <p>In the next subsections, we show the different steps involved in
 creating a <code>CytoPipeline</code> object.</p>
 <div class="section level3">
@@ -226,10 +226,10 @@ creating a <code>CytoPipeline</code> object.</p>
 directory in which the <code>.fcs</code> raw data files are stored.
 <code>workDir</code> will be used as root directory to store the disk
 cache. Indeed, when running the <code>CytoPipeline</code> objects, all
-the different step outputs will be store in a <code>BiocFileCache</code>
-instance, in a sub-directory that will be created in
-<code>workDir</code>and of which the name will be set to the pipeline
-<code>experimentName</code>.</p>
+the different step outputs will be stored in a
+<code>BiocFileCache</code> instance, in a sub-directory that will be
+created in <code>workDir</code>and of which the name will be set to the
+pipeline <code>experimentName</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># raw data</span></span>
 <span><span class="va">rawDataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"CytoPipeline"</span><span class="op">)</span></span>
@@ -380,28 +380,27 @@ different processing queues. We do this for the PeacoQC pipeline.</p>
 <span>        whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
 <span>        <span class="fu"><a href="../reference/CytoProcessingStep.html">CytoProcessingStep</a></span><span class="op">(</span></span>
 <span>            name <span class="op">=</span> <span class="st">"remove_doublets"</span>,</span>
-<span>            FUN <span class="op">=</span> <span class="st">"removeDoubletsFlowStats"</span>,</span>
+<span>            FUN <span class="op">=</span> <span class="st">"removeDoubletsCytoPipeline"</span>,</span>
 <span>            ARGS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>                areaChannels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FSC-A"</span>, <span class="st">"SSC-A"</span><span class="op">)</span>,</span>
 <span>                heightChannels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FSC-H"</span>, <span class="st">"SSC-H"</span><span class="op">)</span>,</span>
-<span>                wider_gate <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>                nmads <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span>            <span class="op">)</span></span>
-<span>        <span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
+<span>                    </span>
 <span></span>
+<span>                </span>
 <span><span class="va">pipL_PeacoQC</span> <span class="op">&lt;-</span></span>
 <span>    <span class="fu"><a href="../reference/handlingProcessingSteps.html">addProcessingStep</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>,</span>
 <span>        whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
 <span>        <span class="fu"><a href="../reference/CytoProcessingStep.html">CytoProcessingStep</a></span><span class="op">(</span></span>
 <span>            name <span class="op">=</span> <span class="st">"remove_debris"</span>,</span>
-<span>            FUN <span class="op">=</span> <span class="st">"removeDebrisFlowClustTmix"</span>,</span>
+<span>            FUN <span class="op">=</span> <span class="st">"removeDebrisManualGate"</span>,</span>
 <span>            ARGS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>                FSCChannel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FSC-A"</span><span class="op">)</span>,</span>
-<span>                SSCChannel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SSC-A"</span><span class="op">)</span>,</span>
-<span>                nClust <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                level <span class="op">=</span> <span class="fl">0.97</span>,</span>
-<span>                B <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>                verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>                FSCChannel <span class="op">=</span> <span class="st">"FSC-A"</span>,</span>
+<span>                SSCChannel <span class="op">=</span> <span class="st">"SSC-A"</span>,</span>
+<span>                gateData <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">73615</span>, <span class="fl">110174</span>, <span class="fl">213000</span>, <span class="fl">201000</span>, <span class="fl">126000</span>,</span>
+<span>                              <span class="fl">47679</span>, <span class="fl">260500</span>, <span class="fl">260500</span>, <span class="fl">113000</span>, <span class="fl">35000</span><span class="op">)</span></span>
 <span>            <span class="op">)</span></span>
 <span>        <span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
@@ -411,10 +410,13 @@ different processing queues. We do this for the PeacoQC pipeline.</p>
 <span>        whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
 <span>        <span class="fu"><a href="../reference/CytoProcessingStep.html">CytoProcessingStep</a></span><span class="op">(</span></span>
 <span>            name <span class="op">=</span> <span class="st">"remove_dead_cells"</span>,</span>
-<span>            FUN <span class="op">=</span> <span class="st">"removeDeadCellsDeGate"</span>,</span>
+<span>            FUN <span class="op">=</span> <span class="st">"removeDeadCellsManualGate"</span>,</span>
 <span>            ARGS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>                preTransform <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                LDMarker <span class="op">=</span> <span class="st">"L/D Aqua - Viability"</span><span class="op">)</span></span>
+<span>                FSCChannel <span class="op">=</span> <span class="st">"FSC-A"</span>,</span>
+<span>                LDMarker <span class="op">=</span> <span class="st">"L/D Aqua - Viability"</span>,</span>
+<span>                gateData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">250000</span>, <span class="fl">250000</span>,</span>
+<span>                             <span class="fl">0</span>, <span class="fl">650</span>, <span class="fl">650</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span>            <span class="op">)</span></span>
 <span>        <span class="op">)</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
 </div>
@@ -492,15 +494,8 @@ specified in the JSON file itself.</p>
 <pre><code><span><span class="co">## MAD analysis removed 16.69% of the measurements</span></span></code></pre>
 <pre><code><span><span class="co">## The algorithm removed 16.69% of the measurements</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [remove_doublets] ...</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: replacing previous import 'flowViz::contour' by 'graphics::contour'</span></span>
-<span><span class="co">## when loading 'flowStats'</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 6 [remove_debris] ...</span></span></code></pre>
-<pre><code><span><span class="co">## The prior specification has no effect when usePrior=no</span></span></code></pre>
-<pre><code><span><span class="co">## Using the serial version of flowClust</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 7 [remove_dead_cells] ...</span></span></code></pre>
-<pre><code><span><span class="co">## Removing Dead Cells events (using flowDensity::deGate()) from file : Donor1.fcs</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: replacing previous import 'flowCore::plot' by 'graphics::plot' when</span></span>
-<span><span class="co">## loading 'flowDensity'</span></span></code></pre>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
 <pre><code><span><span class="co">## ### NOW PRE-PROCESSING FILE /__w/_temp/Library/CytoPipeline/extdata/sample_Donor2.fcs...</span></span></code></pre>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
@@ -525,11 +520,8 @@ specified in the JSON file itself.</p>
 <pre><code><span><span class="co">## The algorithm removed 14.89% of the measurements</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [remove_doublets] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 6 [remove_debris] ...</span></span></code></pre>
-<pre><code><span><span class="co">## The prior specification has no effect when usePrior=no</span></span></code></pre>
-<pre><code><span><span class="co">## Using the serial version of flowClust</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 7 [remove_dead_cells] ...</span></span></code></pre>
-<pre><code><span><span class="co">## Removing Dead Cells events (using flowDensity::deGate()) from file : Donor2.fcs</span></span></code></pre>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># execute flowAI pipeline</span></span>
 <span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">jsonDir</span>, <span class="fu"><a href="../reference/execute.html">execute</a></span><span class="op">(</span><span class="va">pipL_flowAI</span>,</span>
 <span>                                 path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -576,10 +568,7 @@ specified in the JSON file itself.</p>
 <pre><code><span><span class="co">## Compensating file : Donor1.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [remove_doublets] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [remove_debris] ...</span></span></code></pre>
-<pre><code><span><span class="co">## The prior specification has no effect when usePrior=no</span></span></code></pre>
-<pre><code><span><span class="co">## Using the serial version of flowClust</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 6 [remove_dead_cells] ...</span></span></code></pre>
-<pre><code><span><span class="co">## Removing Dead Cells events (using flowDensity::deGate()) from file : Donor1.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
 <pre><code><span><span class="co">## ### NOW PRE-PROCESSING FILE ./sample_Donor2.fcs...</span></span></code></pre>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
@@ -596,10 +585,7 @@ specified in the JSON file itself.</p>
 <pre><code><span><span class="co">## Compensating file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [remove_doublets] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [remove_debris] ...</span></span></code></pre>
-<pre><code><span><span class="co">## The prior specification has no effect when usePrior=no</span></span></code></pre>
-<pre><code><span><span class="co">## Using the serial version of flowClust</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 6 [remove_dead_cells] ...</span></span></code></pre>
-<pre><code><span><span class="co">## Removing Dead Cells events (using flowDensity::deGate()) from file : Donor2.fcs</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="inspecting-results-and-visualization">Inspecting results and visualization<a class="anchor" aria-label="anchor" href="#inspecting-results-and-visualization"></a>
@@ -607,27 +593,27 @@ specified in the JSON file itself.</p>
 <div class="section level3">
 <h3 id="plotting-processing-queues-as-workflow-graphs">Plotting processing queues as workflow graphs<a class="anchor" aria-label="anchor" href="#plotting-processing-queues-as-workflow-graphs"></a>
 </h3>
-<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot work flow graphs</span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_PeacoQC</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotWorkFlows-1.png" width="700"></p>
-<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_PeacoQC</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
 <span>  sampleFile <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotWorkFlows-2.png" width="700"></p>
-<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_flowAI</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotWorkFlows-3.png" width="700"></p>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_flowAI</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
@@ -638,7 +624,7 @@ specified in the JSON file itself.</p>
 <div class="section level3">
 <h3 id="obtaining-information-about-pipeline-generated-objects">Obtaining information about pipeline generated objects<a class="anchor" aria-label="anchor" href="#obtaining-information-about-pipeline-generated-objects"></a>
 </h3>
-<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectInfos</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>, </span>
 <span>                           path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                           whichQueue <span class="op">=</span> <span class="st">"scale transform"</span><span class="op">)</span></span></code></pre></div>
@@ -648,7 +634,7 @@ specified in the JSON file itself.</p>
 <span><span class="co">## 3               compensate_obj       flowSet</span></span>
 <span><span class="co">## 4      flowframe_aggregate_obj     flowFrame</span></span>
 <span><span class="co">## 5 scale_transform_estimate_obj transformList</span></span></code></pre>
-<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectInfos</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>, </span>
 <span>                           path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                           whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
@@ -665,7 +651,7 @@ specified in the JSON file itself.</p>
 <div class="section level3">
 <h3 id="retrieving-flow-frames-at-different-steps-and-plotting-them">Retrieving flow frames at different steps and plotting them<a class="anchor" aria-label="anchor" href="#retrieving-flow-frames-at-different-steps-and-plotting-them"></a>
 </h3>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># example of retrieving a flow frame</span></span>
 <span><span class="co"># at a given step</span></span>
 <span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineFlowFrame</a></span><span class="op">(</span></span>
@@ -685,15 +671,15 @@ specified in the JSON file itself.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotFlowFrames-1.png" width="700"></p>
-<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span>, yChannel <span class="op">=</span> <span class="st">"SSC-A"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotFlowFrames-2.png" width="700"></p>
-<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotFilterEvents.html">ggplotFilterEvents</a></span><span class="op">(</span><span class="va">ff</span>, <span class="va">ff2</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span>, yChannel <span class="op">=</span> <span class="st">"SSC-A"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotFlowFrames-3.png" width="700"></p>
 </div>
 <div class="section level3">
-<h3 id="example-of-retrieving-another-type-of-object">example of retrieving another type of object<a class="anchor" aria-label="anchor" href="#example-of-retrieving-another-type-of-object"></a>
+<h3 id="example-of-retrieving-another-type-of-object">Example of retrieving another type of object<a class="anchor" aria-label="anchor" href="#example-of-retrieving-another-type-of-object"></a>
 </h3>
 <p>We now provide an example on how to retrieve an object from the
 cache, that is not specifically a <code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-class.html" class="external-link">flowCore::flowFrame</a></code>.</p>
@@ -701,7 +687,7 @@ cache, that is not specifically a <code><a href="https://rdrr.io/pkg/flowCore/ma
 represents a set of<br><code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-class.html" class="external-link">flowCore::flowFrame</a></code>objects, that was obtained after the
 compensation step of the scale transformation processing queue, prior to
 aggregating the two samples.</p>
-<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectFromCache</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>,</span>
 <span>                                      path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                                      whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
@@ -712,7 +698,7 @@ aggregating the two samples.</p>
 <span><span class="co">## column names(22): FSC-A FSC-H ... Time Original_ID</span></span></code></pre>
 </div>
 <div class="section level3">
-<h3 id="interactive-visualization">interactive visualization<a class="anchor" aria-label="anchor" href="#interactive-visualization"></a>
+<h3 id="interactive-visualization">Interactive visualization<a class="anchor" aria-label="anchor" href="#interactive-visualization"></a>
 </h3>
 <p>Using the <code>CytoPipelineGUI</code> package, it is possible to
 interactively inspect results at the different steps of the pipeline,
@@ -720,10 +706,31 @@ either in the form of <code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-
 <code><a href="https://rdrr.io/pkg/flowCore/man/transformList-class.html" class="external-link">flowCore::transformList</a></code>. To do this, install the
 <code>CytoPipelineGUI</code> package, and uncomment the following
 code:</p>
-<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#devtools::install_github("https://github.com/UCLouvain-CBIO/CytoPipelineGUI")</span></span>
 <span><span class="co">#CytoPipelineGUI::CytoPipelineCheckApp(dir = workDir)</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="adding-function-wrappers---note-on-the-cytopipelineutils-package">Adding function wrappers - note on the CytoPipelineUtils
+package<a class="anchor" aria-label="anchor" href="#adding-function-wrappers---note-on-the-cytopipelineutils-package"></a>
+</h2>
+<p>As was described in the previous sections, <code>CytoPipeline</code>
+requires the user to provide wrappers to pre-processing functions, as
+<code>FUN</code> parameter of <code>CytoProcessingSteps</code>. These
+can be coded by the user her/himself, or come from a built-in function
+provided in <code>CytoPipeline</code> itself.</p>
+<p>However, in order to avoid having too many external dependencies for
+<code>CytoPipeline</code>, another package
+<code>CytoPipelineUtils</code>, is also <a href="https://github.com/UCLouvain-CBIO/CytoPipelineUtils" class="external-link">available</a>
+<code>CytoPipelineUtils</code> is meant to be used in conjunction with
+<code>CytoPipeline</code> package. It is a helper package, which is
+aimed at hosting wrapper implementations of various functions of various
+packages.</p>
+<p><code>CytoPipelineUtils</code> is open to contributions. If you want
+to implement your own wrapper of your favourite pre-processing function
+and use it in a <code>CytoPipeline</code> object, this is the place to
+do it!</p>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
@@ -751,62 +758,45 @@ code:</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] CytoPipeline_0.99.1 flowCore_2.11.0     BiocStyle_2.27.0   </span></span>
+<span><span class="co">## [1] CytoPipeline_0.99.2 BiocStyle_2.27.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] splines_4.3.0         bitops_1.0-7          filelock_1.0.2       </span></span>
-<span><span class="co">##   [4] fields_14.1           tibble_3.1.8          graph_1.77.1         </span></span>
-<span><span class="co">##   [7] XML_3.99-0.13         deSolve_1.34          lifecycle_1.0.3      </span></span>
-<span><span class="co">##  [10] doParallel_1.0.17     rprojroot_2.0.3       flowWorkspace_4.11.0 </span></span>
-<span><span class="co">##  [13] lattice_0.20-45       MASS_7.3-58.1         magrittr_2.0.3       </span></span>
-<span><span class="co">##  [16] sass_0.4.4            rmarkdown_2.19        jquerylib_0.1.4      </span></span>
-<span><span class="co">##  [19] yaml_2.3.6            spam_2.9-1            sp_1.5-1             </span></span>
-<span><span class="co">##  [22] rgeos_0.6-1           DBI_1.1.3             RColorBrewer_1.1-3   </span></span>
-<span><span class="co">##  [25] maps_3.4.1            abind_1.4-5           zlibbioc_1.45.0      </span></span>
-<span><span class="co">##  [28] ggcyto_1.27.4         purrr_1.0.0           BiocGenerics_0.45.0  </span></span>
-<span><span class="co">##  [31] RCurl_1.98-1.9        pracma_2.4.2          circlize_0.4.15      </span></span>
-<span><span class="co">##  [34] IRanges_2.33.0        S4Vectors_0.37.3      flowStats_4.11.0     </span></span>
-<span><span class="co">##  [37] pkgdown_2.0.7.9000    codetools_0.2-18      tidyselect_1.2.0     </span></span>
-<span><span class="co">##  [40] shape_1.4.6           farver_2.1.1          viridis_0.6.2        </span></span>
-<span><span class="co">##  [43] matrixStats_0.63.0    stats4_4.3.0          BiocFileCache_2.7.1  </span></span>
-<span><span class="co">##  [46] jsonlite_1.8.4        GetoptLong_1.0.5      ks_1.14.0            </span></span>
-<span><span class="co">##  [49] flowAI_1.29.0         iterators_1.0.14      systemfonts_1.0.4    </span></span>
-<span><span class="co">##  [52] foreach_1.5.2         tools_4.3.0           ragg_1.2.4           </span></span>
-<span><span class="co">##  [55] MBA_0.1-0             Rcpp_1.0.9            glue_1.6.2           </span></span>
-<span><span class="co">##  [58] mnormt_2.1.1          gridExtra_2.3         xfun_0.35            </span></span>
-<span><span class="co">##  [61] dplyr_1.0.10          withr_2.5.0           BiocManager_1.30.19  </span></span>
-<span><span class="co">##  [64] fastmap_1.1.0         RPMG_2.2-3            latticeExtra_0.6-30  </span></span>
-<span><span class="co">##  [67] fansi_1.0.3           caTools_1.18.2        digest_0.6.31        </span></span>
-<span><span class="co">##  [70] R6_2.5.1              textshaping_0.3.6     colorspace_2.0-3     </span></span>
-<span><span class="co">##  [73] gtools_3.9.4          jpeg_0.1-10           RSQLite_2.2.19       </span></span>
-<span><span class="co">##  [76] flowDensity_1.33.0    utf8_1.2.2            generics_0.1.3       </span></span>
-<span><span class="co">##  [79] hexbin_1.28.2         data.table_1.14.6     corpcor_1.6.10       </span></span>
-<span><span class="co">##  [82] robustbase_0.95-0     httr_1.4.4            IDPmisc_1.1.20       </span></span>
-<span><span class="co">##  [85] pkgconfig_2.0.3       gtable_0.3.1          changepoint_2.2.4    </span></span>
-<span><span class="co">##  [88] blob_1.2.3            ComplexHeatmap_2.15.0 RProtoBufLib_2.11.0  </span></span>
-<span><span class="co">##  [91] pcaPP_2.0-3           htmltools_0.5.4       carData_3.0-5        </span></span>
-<span><span class="co">##  [94] dotCall64_1.0-2       bookdown_0.31         clue_0.3-63          </span></span>
-<span><span class="co">##  [97] scales_1.2.1          Biobase_2.59.0        Rwave_2.6-5          </span></span>
-<span><span class="co">## [100] png_0.1-8             RSEIS_4.1-4           flowViz_1.63.0       </span></span>
-<span><span class="co">## [103] splancs_2.01-43       knitr_1.41            reshape2_1.4.4       </span></span>
-<span><span class="co">## [106] rjson_0.2.21          curl_4.3.3            cachem_1.0.6         </span></span>
-<span><span class="co">## [109] zoo_1.8-11            GlobalOptions_0.1.2   stringr_1.5.0        </span></span>
-<span><span class="co">## [112] KernSmooth_2.23-20    parallel_4.3.0        fda_6.0.5            </span></span>
-<span><span class="co">## [115] RFOC_3.4-6            desc_1.4.2            pillar_1.8.1         </span></span>
-<span><span class="co">## [118] grid_4.3.0            vctrs_0.5.1           gplots_3.1.3         </span></span>
-<span><span class="co">## [121] car_3.1-1             cytolib_2.11.0        dbplyr_2.2.1         </span></span>
-<span><span class="co">## [124] cluster_2.1.4         Rgraphviz_2.43.0      evaluate_0.19        </span></span>
-<span><span class="co">## [127] mvtnorm_1.1-3         cli_3.5.0             compiler_4.3.0       </span></span>
-<span><span class="co">## [130] rlang_1.0.6           crayon_1.5.2          ncdfFlow_2.45.0      </span></span>
-<span><span class="co">## [133] rrcov_1.7-2           labeling_0.4.2        mclust_6.0.0         </span></span>
-<span><span class="co">## [136] interp_1.1-3          fds_1.8               GEOmap_2.5-0         </span></span>
-<span><span class="co">## [139] plyr_1.8.8            fs_1.5.2              stringi_1.7.8        </span></span>
-<span><span class="co">## [142] rainbow_3.7           viridisLite_0.4.1     deldir_1.0-6         </span></span>
-<span><span class="co">## [145] hdrcde_3.4            assertthat_0.2.1      munsell_0.5.0        </span></span>
-<span><span class="co">## [148] PeacoQC_1.9.0         Matrix_1.5-3          bit64_4.0.5          </span></span>
-<span><span class="co">## [151] ggplot2_3.4.0         highr_0.9             memoise_2.0.1        </span></span>
-<span><span class="co">## [154] bslib_0.4.2           flowClust_3.37.0      DEoptimR_1.0-11      </span></span>
-<span><span class="co">## [157] bit_4.0.5             diagram_1.6.5</span></span></code></pre>
+<span><span class="co">##   [1] DBI_1.1.3             gridExtra_2.3         rlang_1.0.6          </span></span>
+<span><span class="co">##   [4] magrittr_2.0.3        clue_0.3-63           GetoptLong_1.0.5     </span></span>
+<span><span class="co">##   [7] matrixStats_0.63.0    compiler_4.3.0        RSQLite_2.2.19       </span></span>
+<span><span class="co">##  [10] png_0.1-8             systemfonts_1.0.4     vctrs_0.5.1          </span></span>
+<span><span class="co">##  [13] reshape2_1.4.4        stringr_1.5.0         pkgconfig_2.0.3      </span></span>
+<span><span class="co">##  [16] shape_1.4.6           crayon_1.5.2          fastmap_1.1.0        </span></span>
+<span><span class="co">##  [19] dbplyr_2.2.1          labeling_0.4.2        utf8_1.2.2           </span></span>
+<span><span class="co">##  [22] ncdfFlow_2.45.0       rmarkdown_2.19        graph_1.77.1         </span></span>
+<span><span class="co">##  [25] ragg_1.2.4            purrr_1.0.0           bit_4.0.5            </span></span>
+<span><span class="co">##  [28] xfun_0.35             zlibbioc_1.45.0       cachem_1.0.6         </span></span>
+<span><span class="co">##  [31] jsonlite_1.8.4        flowWorkspace_4.11.0  blob_1.2.3           </span></span>
+<span><span class="co">##  [34] highr_0.9             parallel_4.3.0        cluster_2.1.4        </span></span>
+<span><span class="co">##  [37] R6_2.5.1              bslib_0.4.2           stringi_1.7.8        </span></span>
+<span><span class="co">##  [40] RColorBrewer_1.1-3    jquerylib_0.1.4       Rcpp_1.0.9           </span></span>
+<span><span class="co">##  [43] bookdown_0.31         assertthat_0.2.1      iterators_1.0.14     </span></span>
+<span><span class="co">##  [46] knitr_1.41            zoo_1.8-11            IRanges_2.33.0       </span></span>
+<span><span class="co">##  [49] flowCore_2.11.0       tidyselect_1.2.0      yaml_2.3.6           </span></span>
+<span><span class="co">##  [52] doParallel_1.0.17     codetools_0.2-18      curl_4.3.3           </span></span>
+<span><span class="co">##  [55] lattice_0.20-45       tibble_3.1.8          plyr_1.8.8           </span></span>
+<span><span class="co">##  [58] Biobase_2.59.0        withr_2.5.0           evaluate_0.19        </span></span>
+<span><span class="co">##  [61] desc_1.4.2            BiocFileCache_2.7.1   circlize_0.4.15      </span></span>
+<span><span class="co">##  [64] pillar_1.8.1          BiocManager_1.30.19   filelock_1.0.2       </span></span>
+<span><span class="co">##  [67] foreach_1.5.2         flowAI_1.29.0         stats4_4.3.0         </span></span>
+<span><span class="co">##  [70] generics_0.1.3        rprojroot_2.0.3       diagram_1.6.5        </span></span>
+<span><span class="co">##  [73] S4Vectors_0.37.3      ggplot2_3.4.0         munsell_0.5.0        </span></span>
+<span><span class="co">##  [76] ggcyto_1.27.4         scales_1.2.1          PeacoQC_1.9.0        </span></span>
+<span><span class="co">##  [79] glue_1.6.2            changepoint_2.2.4     tools_4.3.0          </span></span>
+<span><span class="co">##  [82] hexbin_1.28.2         data.table_1.14.6     fs_1.5.2             </span></span>
+<span><span class="co">##  [85] XML_3.99-0.13         grid_4.3.0            RProtoBufLib_2.11.0  </span></span>
+<span><span class="co">##  [88] colorspace_2.0-3      cli_3.5.0             textshaping_0.3.6    </span></span>
+<span><span class="co">##  [91] fansi_1.0.3           cytolib_2.11.0        ComplexHeatmap_2.15.0</span></span>
+<span><span class="co">##  [94] dplyr_1.0.10          Rgraphviz_2.43.0      gtable_0.3.1         </span></span>
+<span><span class="co">##  [97] sass_0.4.4            digest_0.6.31         BiocGenerics_0.45.0  </span></span>
+<span><span class="co">## [100] farver_2.1.1          rjson_0.2.21          memoise_2.0.1        </span></span>
+<span><span class="co">## [103] htmltools_0.5.4       pkgdown_2.0.7.9000    lifecycle_1.0.3      </span></span>
+<span><span class="co">## [106] httr_1.4.4            GlobalOptions_0.1.2   bit64_4.0.5</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>

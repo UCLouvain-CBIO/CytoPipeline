@@ -34,6 +34,9 @@
     <loc>/reference/aggregateAndSample.html</loc>
   </url>
   <url>
+    <loc>/reference/appendCellID.html</loc>
+  </url>
+  <url>
     <loc>/reference/applyScaleTransforms.html</loc>
   </url>
   <url>
@@ -94,9 +97,6 @@
     <loc>/reference/qualityControlFlowAI.html</loc>
   </url>
   <url>
-    <loc>/reference/qualityControlFlowCut.html</loc>
-  </url>
-  <url>
     <loc>/reference/qualityControlPeacoQC.html</loc>
   </url>
   <url>
@@ -109,25 +109,13 @@
     <loc>/reference/removeChannels.html</loc>
   </url>
   <url>
-    <loc>/reference/removeDeadCellsDeGate.html</loc>
-  </url>
-  <url>
     <loc>/reference/removeDeadCellsManualGate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/removeDebrisFlowClustTmix.html</loc>
   </url>
   <url>
     <loc>/reference/removeDebrisManualGate.html</loc>
   </url>
   <url>
     <loc>/reference/removeDoubletsCytoPipeline.html</loc>
-  </url>
-  <url>
-    <loc>/reference/removeDoubletsFlowStats.html</loc>
-  </url>
-  <url>
-    <loc>/reference/removeDoubletsPeacoQC.html</loc>
   </url>
   <url>
     <loc>/reference/removeMarginsPeacoQC.html</loc>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.2</span>
       </span>
     </div>
 
@@ -69,6 +69,10 @@
           <p><code><a href="aggregateAndSample.html">aggregateAndSample()</a></code> </p>
         </td>
         <td><p>Aggregate and sample multiple flow frames of a flow set together</p></td>
+      </tr><tr><td>
+          <p><code><a href="appendCellID.html">appendCellID()</a></code> </p>
+        </td>
+        <td><p>append 'Original_ID' column to a flowframe</p></td>
       </tr><tr><td>
           <p><code><a href="applyScaleTransforms.html">applyScaleTransforms()</a></code> </p>
         </td>
@@ -153,10 +157,6 @@ transformation is then applied to corresponding -W and -H channels
         </td>
         <td><p>perform QC with flowAI</p></td>
       </tr><tr><td>
-          <p><code><a href="qualityControlFlowCut.html">qualityControlFlowCut()</a></code> </p>
-        </td>
-        <td><p>perform QC with flowCut</p></td>
-      </tr><tr><td>
           <p><code><a href="qualityControlPeacoQC.html">qualityControlPeacoQC()</a></code> </p>
         </td>
         <td><p>perform QC with PeacoQC</p></td>
@@ -173,17 +173,9 @@ transformation is then applied to corresponding -W and -H channels
         </td>
         <td><p>remove channels from a flowFrame</p></td>
       </tr><tr><td>
-          <p><code><a href="removeDeadCellsDeGate.html">removeDeadCellsDeGate()</a></code> </p>
-        </td>
-        <td><p>remove dead cells from a flowFrame</p></td>
-      </tr><tr><td>
           <p><code><a href="removeDeadCellsManualGate.html">removeDeadCellsManualGate()</a></code> </p>
         </td>
         <td><p>remove dead cells from a flowFrame using manual gating</p></td>
-      </tr><tr><td>
-          <p><code><a href="removeDebrisFlowClustTmix.html">removeDebrisFlowClustTmix()</a></code> </p>
-        </td>
-        <td><p>remove debris from a flowFrame, using flowClust</p></td>
       </tr><tr><td>
           <p><code><a href="removeDebrisManualGate.html">removeDebrisManualGate()</a></code> </p>
         </td>
@@ -192,14 +184,6 @@ transformation is then applied to corresponding -W and -H channels
           <p><code><a href="removeDoubletsCytoPipeline.html">removeDoubletsCytoPipeline()</a></code> </p>
         </td>
         <td><p>remove doublets from a flowFrame, using CytoPipeline custom algorithm</p></td>
-      </tr><tr><td>
-          <p><code><a href="removeDoubletsFlowStats.html">removeDoubletsFlowStats()</a></code> </p>
-        </td>
-        <td><p>remove doublets from a flowFrame, using flowStats</p></td>
-      </tr><tr><td>
-          <p><code><a href="removeDoubletsPeacoQC.html">removeDoubletsPeacoQC()</a></code> </p>
-        </td>
-        <td><p>remove doublets from a flowFrame, using PeacoQC</p></td>
       </tr><tr><td>
           <p><code><a href="removeMarginsPeacoQC.html">removeMarginsPeacoQC()</a></code> </p>
         </td>
