@@ -1,10 +1,6 @@
 {
   "experimentName": ["OMIP021_PeacoQC"],
-  "sampleFiles": ["./sample_Donor1.fcs", "./sample_Donor2.fcs"],
-  "savePreprocessedFiles": [false],
-  "savePlotsInFiles": [false],
-  "saveScaleTransform": [false],
-  "scaleTransformFile": [],
+  "sampleFiles": ["./sample_Donor1.fcs", "./sample_Donor2.fcs"],    
   "scaleTransformProcessingSteps": [
     {
       "name": ["flowframe_read"],
@@ -68,31 +64,29 @@
     },
     {
       "name": ["remove_doublets"],
-      "FUN": ["removeDoubletsFlowStats"],
+      "FUN": ["removeDoubletsCytoPipeline"],
       "ARGS": {
         "areaChannels": ["FSC-A", "SSC-A"],
         "heightChannels": ["FSC-H", "SSC-H"],
-        "wider_gate": [true]
+        "nmads": [3, 5]
       }
     },
     {
       "name": ["remove_debris"],
-      "FUN": ["removeDebrisFlowClustTmix"],
+      "FUN": ["removeDebrisManualGate"],
       "ARGS": {
         "FSCChannel": ["FSC-A"],
         "SSCChannel": ["SSC-A"],
-        "nClust": [3],
-        "level": [0.97],
-        "B": [100],
-        "verbose": [true]
+        "gateData": [73615.0, 110174.0, 213000.0, 201000.0, 126000.0, 47679.0, 260500.0, 260500.0, 113000.0, 35000.0]
       }
     },
     {
       "name": ["remove_dead_cells"],
-      "FUN": ["removeDeadCellsDeGate"],
+      "FUN": ["removeDeadCellsManualGate"],
       "ARGS": {
-		"preTransform": [true],  
-        "LDMarker": ["L/D Aqua - Viability"]
+		"FSCChannel": ["FSC-A"], 
+        "LDMarker": ["L/D Aqua - Viability"],
+		"gateData": [0.0, 0.0, 250000.0, 250000.0, 0.0, 650.0, 650.0, 0.0]
       }
     },
     {

@@ -455,46 +455,31 @@ showProcessingSteps <- function(x,
 #'     )
 #' 
 #' pipL <-
-#'     addProcessingStep(
-#'         pipL,
-#'         whichQueue = "pre-processing",
-#'         CytoProcessingStep(
-#'             name = "remove_doublets",
-#'             FUN = "removeDoubletsFlowStats",
-#'             ARGS = list(
-#'                 areaChannels = c("FSC-A", "SSC-A"),
-#'                 heightChannels = c("FSC-H", "SSC-H"),
-#'                 wider_gate = TRUE
-#'             )
-#'         )
-#'     )
-#' 
-#' pipL <-
-#'     addProcessingStep(pipL,
-#'                       whichQueue = "pre-processing",
-#'                       CytoProcessingStep(
-#'                           name = "remove_debris",
-#'                           FUN = "removeDebrisFlowClustTmix",
-#'                           ARGS = list(
-#'                               FSCChannel = c("FSC-A"),
-#'                               SSCChannel = c("SSC-A"),
-#'                               nClust = 3,
-#'                               level = 0.97,
-#'                               B = 100,
-#'                               verbose = TRUE
-#'                           )
+#' addProcessingStep(pipL,
+#'                   whichQueue = "pre-processing",
+#'                   CytoProcessingStep(
+#'                       name = "remove_debris",
+#'                       FUN = "removeDebrisManualGate",
+#'                       ARGS = list(
+#'                           FSCChannel = "FSC-A",
+#'                           SSCChannel = "SSC-A",
+#'                           gateData =  c(73615, 110174, 213000, 201000, 126000,
+#'                                         47679, 260500, 260500, 113000, 35000)
 #'                       )
-#'     )
+#'                   )
+#' )
 #' 
 #' pipL <-
 #'     addProcessingStep(pipL,
 #'                       whichQueue = "pre-processing",
 #'                       CytoProcessingStep(
 #'                           name = "remove_dead_cells",
-#'                           FUN = "removeDeadCellsDeGate",
+#'                           FUN = "removeDeadCellsManualGate",
 #'                           ARGS = list(
-#'                               preTransform = TRUE,
-#'                               LDMarker = "L/D Aqua - Viability"
+#'                               FSCChannel = "FSC-A",
+#'                               LDMarker = "L/D Aqua - Viability",
+#'                               gateData = c(0, 0, 250000, 250000,
+#'                                            0, 650, 650, 0)
 #'                           )
 #'                       )
 #'     )

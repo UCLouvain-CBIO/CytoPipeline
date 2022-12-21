@@ -124,11 +124,11 @@ of one step being the input of the next step.
 
 Note there are important differences between the two processing queues. 
 On the one hand, the `scaleTransformProcessingQueue` takes the vector of all 
-sample files as an input, and will be run first by convention, and only once. 
+sample files as an input, and will be executed first, and only once. 
 On the other hand, the `flowFramesPreProcessingQueue` will be run after the 
-scale transformation, on each sample file one after the other, in a loop. 
-The final output of the `scaleTransformProcessingQueue`, which should be a 
-`flowCore::tranformList`, is also provided as input to the 
+scale transformation processing queue, on each sample file one after the other, 
+within a loop. The final output of the `scaleTransformProcessingQueue`, which 
+should be a `flowCore::tranformList`, is also provided as input to the 
 `flowFramesPreProcessingQueue`, by convention.      
 
 In the next subsections, we show the different steps involved in creating a
@@ -139,7 +139,7 @@ In the next subsections, we show the different steps involved in creating a
 In the following code, `rawDataDir` refers to the directory in which the `.fcs`
 raw data files are stored. `workDir` will be used as root directory to store 
 the disk cache. Indeed, when running the `CytoPipeline` objects, all the 
-different step outputs will be store in a `BiocFileCache` instance, in a 
+different step outputs will be stored in a `BiocFileCache` instance, in a 
 sub-directory that will be created in `workDir`and of which the name will be 
 set to the pipeline `experimentName`.
 
@@ -295,28 +295,27 @@ pipL_PeacoQC <-
         whichQueue = "pre-processing",
         CytoProcessingStep(
             name = "remove_doublets",
-            FUN = "removeDoubletsFlowStats",
+            FUN = "removeDoubletsCytoPipeline",
             ARGS = list(
                 areaChannels = c("FSC-A", "SSC-A"),
                 heightChannels = c("FSC-H", "SSC-H"),
-                wider_gate = TRUE
+                nmads = c(3, 5))
             )
-        )
     )
+                    
 
+                
 pipL_PeacoQC <-
     addProcessingStep(pipL_PeacoQC,
         whichQueue = "pre-processing",
         CytoProcessingStep(
             name = "remove_debris",
-            FUN = "removeDebrisFlowClustTmix",
+            FUN = "removeDebrisManualGate",
             ARGS = list(
-                FSCChannel = c("FSC-A"),
-                SSCChannel = c("SSC-A"),
-                nClust = 3,
-                level = 0.97,
-                B = 100,
-                verbose = TRUE
+                FSCChannel = "FSC-A",
+                SSCChannel = "SSC-A",
+                gateData =  c(73615, 110174, 213000, 201000, 126000,
+                              47679, 260500, 260500, 113000, 35000)
             )
         )
     )
@@ -326,10 +325,13 @@ pipL_PeacoQC <-
         whichQueue = "pre-processing",
         CytoProcessingStep(
             name = "remove_dead_cells",
-            FUN = "removeDeadCellsDeGate",
+            FUN = "removeDeadCellsManualGate",
             ARGS = list(
-                preTransform = TRUE,
-                LDMarker = "L/D Aqua - Viability")
+                FSCChannel = "FSC-A",
+                LDMarker = "L/D Aqua - Viability",
+                gateData = c(0, 0, 250000, 250000,
+                             0, 650, 650, 0)
+            )
         )
     )
 
@@ -440,7 +442,7 @@ ggplotFilterEvents(ff, ff2, xChannel = "FSC-A", yChannel = "SSC-A")
 ```
 
 
-## example of retrieving another type of object
+## Example of retrieving another type of object
 
 We now provide an example on how to retrieve an object from the cache, that
 is not specifically a `flowCore::flowFrame`.  
@@ -459,7 +461,7 @@ show(obj)
 ```
 
 
-## interactive visualization
+## Interactive visualization
 
 Using the `CytoPipelineGUI` package, it is possible to interactively inspect
 results at the different steps of the pipeline, either in the form of 
@@ -472,7 +474,23 @@ the following code:
 #CytoPipelineGUI::CytoPipelineCheckApp(dir = workDir)
 ```
 
+# Adding function wrappers - note on the CytoPipelineUtils package
 
+As was described in the previous sections, `CytoPipeline` requires the user to 
+provide wrappers to pre-processing functions, as `FUN` parameter of 
+`CytoProcessingSteps`. These can be coded by the user her/himself, or 
+come from a built-in function provided in `CytoPipeline` itself.
+
+However, in order to avoid having too many external dependencies for
+`CytoPipeline`, another package `CytoPipelineUtils`, is also
+[available](https://github.com/UCLouvain-CBIO/CytoPipelineUtils)
+`CytoPipelineUtils` is meant to be used in conjunction with `CytoPipeline` 
+package. It is a helper package, which is aimed at hosting wrapper 
+implementations of various functions of various packages.
+
+`CytoPipelineUtils` is open to contributions. If you want to implement your 
+own wrapper of your favourite pre-processing function and use it in a 
+`CytoPipeline` object, this is the place to do it! 
 
 # Session information {-}
 

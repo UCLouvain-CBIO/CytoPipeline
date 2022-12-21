@@ -761,7 +761,7 @@ ggplotFilterEvents <- function(ffPre, ffPost,
     }
 
     if (!"Original_ID" %in% flowCore::colnames(ffPre)) {
-        ffPre <- .appendCellID(ffPre)
+        ffPre <- appendCellID(ffPre)
     }
 
     if (!"Original_ID" %in% flowCore::colnames(ffPost)) {

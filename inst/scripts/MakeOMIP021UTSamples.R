@@ -23,7 +23,7 @@ data(OMIP021Samples)
 
 # sub-sample equal nb of events in each fcs
 sampleSize <- 100
-OMIP021UTSamples <- fsApply(
+OMIP021UTSamples <- flowCore::fsApply(
     x = OMIP021Samples,
     FUN = function(ff) {
         subsample(ff, nSamples = sampleSize, seed = 1)

@@ -116,7 +116,7 @@ subsample <- function(ff, nSamples, seed = NULL) {
     }
 
     # add Original_ID as a new column if necessary
-    ff <- .appendCellID(ff)
+    ff <- appendCellID(ff)
 
     ff[keep, ]
 }
@@ -841,16 +841,17 @@ removeChannels <- function(ff, channels) {
     return(ff)
 }
 
-# #' @title append 'Original_ID' column to a flowframe
-# #' @description : on a flowCore::flowFrame, append a 'Original_ID' column.
-# #' This column can be used in plots comparing the events pre and post gating.
-# #' If the 'Original_ID' column already exists, the function does nothing
-# #' @param ff a flowCore::flowFrame
-# #' @param eventIDs an integer vector containing the values to be added in
-# #' as Original ID's
-# #' 
-# #' @return new flowCore::flowFrame containing the added 'Original_ID' column
-.appendCellID <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
+#' @title append 'Original_ID' column to a flowframe
+#' @description : on a flowCore::flowFrame, append a 'Original_ID' column.
+#' This column can be used in plots comparing the events pre and post gating.
+#' If the 'Original_ID' column already exists, the function does nothing
+#' @param ff a flowCore::flowFrame
+#' @param eventIDs an integer vector containing the values to be added in
+#' as Original ID's
+#' 
+#' @return new flowCore::flowFrame containing the added 'Original_ID' column
+#' @export
+appendCellID <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
     if (!inherits(ff, "flowFrame")) {
         stop("ff type not recognized, should be a flowFrame")
     }
