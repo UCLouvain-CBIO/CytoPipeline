@@ -40,6 +40,16 @@ test_that("CytoProcessingStep basics works", {
     expect_equal(res, 55)
 })
 
+test_that("CytoProcessingStep wrong function works", {
+    ps <- CytoProcessingStep("dummy step", "mistake_fun")
+    
+    psName <- getCPSName(ps)
+    expect_equal(psName, "dummy step")
+    
+    expect_error(executeProcessingStep(ps, 1:10),
+                 regexp = "not found")
+})
+
 test_that("CytoProcessingStep exports and imports work", {
     # case of a primitive
     ps <- CytoProcessingStep("summing step", sum)

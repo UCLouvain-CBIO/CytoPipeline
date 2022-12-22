@@ -75,24 +75,24 @@ setClass("CytoProcessingStep",
         FUN = character()
     ),
     validity = function(object) {
-        msg <- character()
-        ## Fails with un-exported functions.
-        if (length(object@FUN)) {
-            if (!is.function(object@FUN)) {
-                res <- try(match.fun(object@FUN), silent = TRUE)
-                if (methods::is(res, "try-error")) {
-                    msg <- c(msg, paste0(
-                        "Function '", object@FUN,
-                        "' not found."
-                    ))
-                }
-            }
-        }
-        if (length(msg)) {
-            msg
-        } else {
+        # msg <- character()
+        # ## Fails with un-exported functions.
+        # if (length(object@FUN)) {
+        #     if (!is.function(object@FUN)) {
+        #         res <- try(match.fun(object@FUN), silent = TRUE)
+        #         if (methods::is(res, "try-error")) {
+        #             msg <- c(msg, paste0(
+        #                 "Function '", object@FUN,
+        #                 "' not found."
+        #             ))
+        #         }
+        #     }
+        # }
+        # if (length(msg)) {
+        #     msg
+        # } else {
             TRUE
-        }
+    #     }
     }
 )
 
@@ -157,6 +157,25 @@ executeProcessingStep <- function(x, ...) {
     if (!methods::is(x, "CytoProcessingStep")) {
         stop("'x' should be a 'CytoProcessingStep' object!")
     }
+    
+    # first validate processing step before execution!
+    msg <- character()
+    ## Fails with un-exported functions.
+    if (length(x@FUN)) {
+        if (!is.function(x@FUN)) {
+            res <- try(match.fun(x@FUN), silent = TRUE)
+            if (methods::is(res, "try-error")) {
+                msg <- c(msg, paste0(
+                    "Function '", x@FUN,
+                    "' not found."
+                ))
+            }
+        }
+    }
+    if (length(msg)) {
+        stop(msg)
+    }
+    # execute processing step
     do.call(x@FUN, args = c(list(...), x@ARGS))
 }
 

@@ -616,22 +616,6 @@ execute <- function(x,
             message(msg, " ...")
             # browser()
             if (s == 1) {
-                # # try runnning with adding sampleFiles parameters
-                # # if complain => run without sampleFiles
-                # 
-                # res <- try(executeProcessingStep(
-                #     x@scaleTransformProcessingQueue[[s]],
-                #     sampleFiles = x@sampleFiles
-                # ), silent = TRUE)
-                # # not good => refine error type check !
-                # if (methods::is(res, "try-error")) {
-                #     res <-
-                #         executeProcessingStep(
-                #             x@scaleTransformProcessingQueue[[s]]
-                #         )
-                # }
-                
-                
                 res <- executeProcessingStep(
                     x@scaleTransformProcessingQueue[[s]],
                     sampleFiles = x@sampleFiles)
