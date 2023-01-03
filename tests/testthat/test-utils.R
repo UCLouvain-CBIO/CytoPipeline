@@ -408,3 +408,8 @@ test_that("removeChannels works", {
     
     
 })
+
+test_that("getFCSFileName works", {
+    fName <- getFCSFileName(OMIP021Samples[[1]])
+    expect_equal(fName, "Donor1.fcs")
+})

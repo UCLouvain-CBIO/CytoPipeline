@@ -329,7 +329,7 @@ readSampleFiles <- function(sampleFiles,
 #'                    yChannel = "SSC-A")
 removeMarginsPeacoQC <- function(x, ...) {
     myFunc <- function(ff) {
-        message("Removing margins from file : ", flowCore::identifier(ff))
+        message("Removing margins from file : ", getFCSFileName(ff))
         channel4Margins <-
             flowCore::colnames(ff)[areSignalCols(ff)]
         ffOut <- PeacoQC::RemoveMargins(ff, channels = channel4Margins)
@@ -385,7 +385,7 @@ getAcquiredCompensationMatrix <- function(ff) {
     } else if (!is.null(res$`$SPILLOVER`)) {
         compensationMatrix <- res$`$SPILLOVER`
     } else {
-        fileId <- flowCore::identifier(ff)
+        fileId <- getFCSFileName(ff)
         stop(
             "Issue retrieving compensation matrix for file ",
             fileId, " : slot is NULL!"
@@ -440,7 +440,7 @@ compensateFromMatrix <- function(x,
                                  ...) {
     myFunc <- function(ff, matrixSource = c("fcs", "import"),
                        matrixPath = NULL) {
-        message("Compensating file : ", flowCore::identifier(ff))
+        message("Compensating file : ", getFCSFileName(ff))
         matrixSource <- match.arg(matrixSource)
         if (matrixSource == "fcs") {
             # obtains compensation matrix
@@ -1115,7 +1115,7 @@ writeFlowFrame <- function(ff, dir = ".",
                            ...) {
     format <- match.arg(format)
     if (!useFCSFileName && prefix == "" && suffix == "") {
-        stop ("No file name provided! If useFCSIdentifier == FALSE, ",
+        stop ("No file name provided! If useFCSFileName == FALSE, ",
               "then either prefix or suffix should be provided.")
     }
     if(!dir.exists(dir)) {
@@ -1124,8 +1124,7 @@ writeFlowFrame <- function(ff, dir = ".",
     
     fileName <- paste0(dir, "/", prefix)
     if (useFCSFileName) {
-        fileNameSkeleton <- 
-            basename(flowCore::keyword(ff, keyword = "FILENAME")$FILENAME)
+        fileNameSkeleton <- getFCSFileName(ff)
         fileNameSkeleton <- 
             substr(fileNameSkeleton, 1, nchar(fileNameSkeleton) - 4)
         fileName <- paste0(fileName, fileNameSkeleton)

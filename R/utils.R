@@ -889,3 +889,18 @@ appendCellID <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
     return(ff)
 }
 
+#' @title get fcs file name 
+#' @description get basename of $FILENAME keyword if exists
+#' @param ff a flowCore::flowFrame
+#' @return the basename of $FILENAME keyword
+#' @export
+#' @examples 
+#' fName <- getFCSFileName(OMIP021Samples[[1]])
+getFCSFileName <- function(ff) {
+    if (!inherits(ff, "flowFrame")) {
+        stop("ff type not recognized, should be a flowFrame")
+    }
+    fName <- basename(flowCore::keyword(ff, keyword = "FILENAME")$FILENAME)
+    if (is.null(fName)) stop("No FILENAME keyword for flowFrame")
+    return(fName)
+}
