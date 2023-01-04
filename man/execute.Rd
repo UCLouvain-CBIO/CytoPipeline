@@ -9,7 +9,8 @@ execute(
   path = ".",
   rmCache = FALSE,
   useBiocParallel = FALSE,
-  BPPARAM = BiocParallel::bpparam()
+  BPPARAM = BiocParallel::bpparam(),
+  BPOPTIONS = BiocParallel::bpoptions(packages = c("flowCore"))
 )
 }
 \arguments{
@@ -28,6 +29,13 @@ Note the BiocParallel function used is \code{bplapply()}}
 \item{BPPARAM}{if \code{useBiocParallel} is TRUE, sets the BPPARAM back-end to
 be used for the computation. If not provided, will use the top back-end on
 the \code{BiocParallel::registered()} stack.}
+
+\item{BPOPTIONS}{if \code{useBiocParallel} is TRUE, sets the BPOPTIONS to be
+passed to \code{bplapply()} function. Note that if you use a \code{SnowParams} back-end,
+you need to specify all the packages that need to be loaded for the different
+CytoProcessingStep to work properly (visibility of functions). As a minimum,
+the flowCore package needs to be loaded
+(hence the default \code{BPOPTIONS = bpoptions(packages = c("flowCore"))} )}
 }
 \value{
 nothing

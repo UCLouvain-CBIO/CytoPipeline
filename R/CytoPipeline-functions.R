@@ -335,6 +335,12 @@ showProcessingSteps <- function(x,
 #' @param BPPARAM if `useBiocParallel` is TRUE, sets the BPPARAM back-end to
 #' be used for the computation. If not provided, will use the top back-end on 
 #' the `BiocParallel::registered()` stack.
+#' @param BPOPTIONS if `useBiocParallel` is TRUE, sets the BPOPTIONS to be 
+#' passed to `bplapply()` function. Note that if you use a `SnowParams` back-end,
+#' you need to specify all the packages that need to be loaded for the different
+#' CytoProcessingStep to work properly (visibility of functions). As a minimum,
+#' the flowCore package needs to be loaded 
+#' (hence the default `BPOPTIONS = bpoptions(packages = c("flowCore"))` )
 #' @returns nothing
 #' @export
 #' 
@@ -548,7 +554,9 @@ execute <- function(x,
                     path = ".",
                     rmCache = FALSE,
                     useBiocParallel = FALSE,
-                    BPPARAM = BiocParallel::bpparam()) {
+                    BPPARAM = BiocParallel::bpparam(),
+                    BPOPTIONS = BiocParallel::bpoptions(
+                        packages = c("flowCore"))) {
     stopifnot(inherits(x, "CytoPipeline"))
 
     #browser()
@@ -758,16 +766,10 @@ execute <- function(x,
     }
     
     if (useBiocParallel) {
-        # apparently the below is needed to make sure not only CytoPipeline, 
-        # but also flowCore gets visible from the workers in case we use 
-        # SnowParams
-        bpOpt <- BiocParallel::bpoptions(packages = c("flowCore"))
-        
         #browser()
-        
         invisible(BiocParallel::bplapply(x@sampleFiles, 
                                          BPPARAM = BPPARAM,
-                                         BPOPTIONS = bpOpt, 
+                                         BPOPTIONS = BPOPTIONS, 
                                          FUN = preProcessOneFile))
     } else {
         invisible(lapply(x@sampleFiles, FUN = preProcessOneFile))
