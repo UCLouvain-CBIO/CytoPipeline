@@ -199,6 +199,25 @@ test_that("removeMarginsPeacoQC works", {
         flowCore::exprs(ff_m),
         flowCore::exprs(ref_ff_m)
     )
+    
+    # TO DO: reactivate the below when PeacoQC::RemoveMargins() has been fixed
+    
+    # channelSpecifications <- 
+    #     list( "450/50Violet-A" = list(minRange = 0, maxRange = 262143),
+    #           "PECy5 - CD28" = list(minRange = 0, maxRange = 20000))
+    # ff_m2 <- 
+    #     suppressWarnings(removeMarginsPeacoQC(x = fs_raw[[1]],
+    #                      channelSpecifications = channelSpecifications))
+    # 
+    # ref_ff_m2 <- readRDS(test_path("fixtures", "ff_m2.rds"))
+    # 
+    # # saveRDS(ff_m2, test_path("fixtures", "ff_m2.rds"))
+    # 
+    # expect_equal(
+    #     flowCore::exprs(ff_m2),
+    #     flowCore::exprs(ref_ff_m2)
+    # )
+        
 })
 
 
@@ -421,7 +440,7 @@ test_that("writeFlowFrame works", {
                          suffix,
                          ".fcs")
     
-    thisFF <- read.FCS(outputFile, transform = FALSE)
+    thisFF <- flowCore::read.FCS(outputFile, transform = FALSE)
     expect_true(all(round(flowCore::exprs(thisFF), 0)
                     == round(flowCore::exprs(ff_c), 0)))
     

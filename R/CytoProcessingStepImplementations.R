@@ -303,6 +303,15 @@ readSampleFiles <- function(sampleFiles,
 #' If input is a flowSet, it applies removeMargins() to each flowFrame of the
 #' flowSet.
 #' @param x a flowCore::flowSet or a flowCore::flowFrame
+#' @param channelSpecifications A list of lists with parameter specifications 
+#' for certain channels. This parameter should only be used if the values in 
+#' the internal parameters description is too strict or wrong for a number or 
+#' all channels. This should be one list per channel with first a minRange 
+#' and then a maxRange value. This list should have the channel name found back 
+#' in colnames(flowCore::exprs(ff)), or the corresponding marker name (found in
+#' flowCore::pData(flowCore::description(ff)) ) . 
+#' If a channel is not listed in this parameter, its default internal values 
+#' will be used. The default of this parameter is NULL.
 #' @param ... additional parameters passed to PeacoQC::RemoveMargins()
 #'
 #' @return either a flowCore::flowSet or a flowCore::flowFrame depending on
@@ -327,18 +336,59 @@ readSampleFiles <- function(sampleFiles,
 #'                    ffPost = ff_m,
 #'                    xChannel = "FSC-A",
 #'                    yChannel = "SSC-A")
-removeMarginsPeacoQC <- function(x, ...) {
-    myFunc <- function(ff) {
+removeMarginsPeacoQC <- function(x, channelSpecifications = NULL, ...) {
+    PQCChannelSpecs <- channelSpecifications
+    
+    if (!is.null(channelSpecifications)) {
+        if (!is(channelSpecifications, "list")) 
+            stop("channelSpecifications should be a list of lists.")
+        if (!all(lengths(channelSpecifications) == 2)) 
+            stop("channel_specifications should be a list of lists. \n",
+                 "Every list should have the channel name and should contain\n",
+                 "a minRange and maxRange value.")
+    }
+    
+    
+    myFunc <- function(ff, channelSpecifications) {
         message("Removing margins from file : ", getFCSFileName(ff))
         channel4Margins <-
             flowCore::colnames(ff)[areSignalCols(ff)]
-        ffOut <- PeacoQC::RemoveMargins(ff, channels = channel4Margins)
+        
+        markers4Margins <- 
+            flowCore::pData(flowCore::parameters(ff))$desc[areSignalCols(ff)]
+        
+        PQCChannelSpecs <- channelSpecifications
+        
+        if (!is.null(PQCChannelSpecs)) {
+            newNames <- names(PQCChannelSpecs)
+            for (l in seq_along(newNames)) {
+                chName <- newNames[l]
+                if (!(chName %in% flowCore::colnames(ff))) {
+                    # try as marker
+                    whichMarker <- which(markers4Margins == chName)
+                    if (length(whichMarker) == 0)
+                        stop("error in channelSpecifications names\n",
+                             "could not find [", chName, "], neither as ",
+                             "channel, nor as marker")
+                    else {
+                        newNames[l] <- channel4Margins[whichMarker[1]]
+                    }
+                }
+            }
+            names(PQCChannelSpecs) <- newNames
+        }
+        
+        ffOut <- PeacoQC::RemoveMargins(ff, channels = channel4Margins,
+                                        channel_specifications = 
+                                            PQCChannelSpecs)
         return(ffOut)
     }
     if (inherits(x, "flowFrame")) {
-        return(myFunc(x))
+        return(myFunc(x, channelSpecifications = channelSpecifications))
     } else if (inherits(x, "flowSet")) {
-        fsOut <- flowCore::fsApply(x, FUN = myFunc, simplify = TRUE)
+        fsOut <- flowCore::fsApply(x, FUN = myFunc, simplify = TRUE,
+                                   channelSpecifications = 
+                                       channelSpecifications)
         return(fsOut)
     } else {
         stop("x should be a flowCore::flowFrame or a flowCore::flowSet")
