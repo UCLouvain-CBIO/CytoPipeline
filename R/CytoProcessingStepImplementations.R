@@ -340,7 +340,7 @@ removeMarginsPeacoQC <- function(x, channelSpecifications = NULL, ...) {
     PQCChannelSpecs <- channelSpecifications
     
     if (!is.null(channelSpecifications)) {
-        if (!is(channelSpecifications, "list")) 
+        if (!methods::is(channelSpecifications, "list")) 
             stop("channelSpecifications should be a list of lists.")
         if (!all(lengths(channelSpecifications) == 2)) 
             stop("channel_specifications should be a list of lists. \n",
