@@ -202,22 +202,55 @@ test_that("removeMarginsPeacoQC works", {
     
     # TO DO: reactivate the below when PeacoQC::RemoveMargins() has been fixed
     
-    # channelSpecifications <- 
-    #     list( "450/50Violet-A" = list(minRange = 0, maxRange = 262143),
-    #           "PECy5 - CD28" = list(minRange = 0, maxRange = 20000))
-    # ff_m2 <- 
-    #     suppressWarnings(removeMarginsPeacoQC(x = fs_raw[[1]],
-    #                      channelSpecifications = channelSpecifications))
-    # 
-    # ref_ff_m2 <- readRDS(test_path("fixtures", "ff_m2.rds"))
-    # 
-    # # saveRDS(ff_m2, test_path("fixtures", "ff_m2.rds"))
-    # 
-    # expect_equal(
-    #     flowCore::exprs(ff_m2),
-    #     flowCore::exprs(ref_ff_m2)
-    # )
+    channelSpecifications <-
+        list( "450/50Violet-A" = list(minRange = 0, maxRange = 262143),
+              "PECy5 - CD28" = list(minRange = 0, maxRange = 20000))
+    ff_m2 <-
+        suppressWarnings(removeMarginsPeacoQC(x = fs_raw[[1]],
+                         channelSpecifications = channelSpecifications))
+
+    ref_ff_m2 <- readRDS(test_path("fixtures", "ff_m2.rds"))
+
+    # saveRDS(ff_m2, test_path("fixtures", "ff_m2.rds"))
+
+    expect_equal(
+        flowCore::exprs(ff_m2),
+        flowCore::exprs(ref_ff_m2)
+    )
+    
+    channelSpecifications <- 
+        list( "AllFluoChannels" = list(minRange = 0, maxRange = 40000))
+    
+    ff_m3 <-
+        suppressWarnings(removeMarginsPeacoQC(x = fs_raw[[1]],
+                         channelSpecifications = channelSpecifications))
+    
+    ref_ff_m3 <- readRDS(test_path("fixtures", "ff_m3.rds"))
+    
+    # saveRDS(ff_m3, test_path("fixtures", "ff_m3.rds"))
         
+    expect_equal(
+        flowCore::exprs(ff_m3),
+        flowCore::exprs(ref_ff_m3)
+    )
+    
+    channelSpecifications <-
+        list( "AllFluoChannels" = list(minRange = 0, maxRange = 40000),
+              "450/50Violet-A" = list(minRange = 0, maxRange = 262143),
+              "PECy5 - CD28" = list(minRange = 0, maxRange = 20000))
+    
+    ff_m4 <-
+        suppressWarnings(removeMarginsPeacoQC(x = fs_raw[[1]],
+                         channelSpecifications = channelSpecifications))
+    
+    ref_ff_m4 <- readRDS(test_path("fixtures", "ff_m4.rds"))
+    
+    # saveRDS(ff_m4, test_path("fixtures", "ff_m4.rds"))
+    
+    expect_equal(
+        flowCore::exprs(ff_m4),
+        flowCore::exprs(ref_ff_m4)
+    )
 })
 
 

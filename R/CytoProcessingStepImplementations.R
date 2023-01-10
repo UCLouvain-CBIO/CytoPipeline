@@ -312,6 +312,9 @@ readSampleFiles <- function(sampleFiles,
 #' flowCore::pData(flowCore::description(ff)) ) . 
 #' If a channel is not listed in this parameter, its default internal values 
 #' will be used. The default of this parameter is NULL.
+#' If the name of one list is set to `AllFluoChannels`, then the `minRange`
+#' and `maxRange` specified there will be taken as default for all fluorescent
+#' channel (not scatter)
 #' @param ... additional parameters passed to PeacoQC::RemoveMargins()
 #'
 #' @return either a flowCore::flowSet or a flowCore::flowFrame depending on
@@ -359,7 +362,15 @@ removeMarginsPeacoQC <- function(x, channelSpecifications = NULL, ...) {
         
         PQCChannelSpecs <- channelSpecifications
         
+        
         if (!is.null(PQCChannelSpecs)) {
+            
+            #store default fluo parameters (if any)
+            defaultFluoChannelList <- PQCChannelSpecs[["AllFluoChannels"]]
+            if (!is.null(defaultFluoChannelList)) {
+                PQCChannelSpecs[["AllFluoChannels"]] <- NULL
+            }
+            
             newNames <- names(PQCChannelSpecs)
             for (l in seq_along(newNames)) {
                 chName <- newNames[l]
@@ -376,6 +387,16 @@ removeMarginsPeacoQC <- function(x, channelSpecifications = NULL, ...) {
                 }
             }
             names(PQCChannelSpecs) <- newNames
+            
+            # apply default fluo parameters, if any
+            if (!is.null(defaultFluoChannelList)) {
+                for (ch in flowCore::colnames(ff)
+                     [CytoPipeline::areFluoCols(ff)]) {
+                    if (!(ch %in% newNames)) {
+                        PQCChannelSpecs[[ch]] <- defaultFluoChannelList
+                    }
+                }
+            }
         }
         
         ffOut <- PeacoQC::RemoveMargins(ff, channels = channel4Margins,
