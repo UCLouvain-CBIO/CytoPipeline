@@ -413,3 +413,22 @@ test_that("getFCSFileName works", {
     fName <- getFCSFileName(OMIP021Samples[[1]])
     expect_equal(fName, "Donor1.fcs")
 })
+
+test_that("updateCompMatrixLabels works", {
+    myMat <- diag(nrow = 3)
+    names <- c("450/50Violet-A", "BV605 - CD161", 
+               "670/30Yellow-A :: BV785 - CD3")
+    colnames(myMat) <- rownames(myMat) <- names
+    
+    myNewMat <- .updateCompMatrixLabels(myMat, OMIP021Samples[[1]])
+    
+    newColNames <- colnames(myNewMat)
+    newRowNames <- rownames(myNewMat)
+    
+    expectedNewNames <- c("450/50Violet-A",
+                          "540/30Violet-A",
+                          "670/30Yellow-A")
+    
+    expect_equal(newColNames, expectedNewNames)
+    expect_equal(newRowNames, expectedNewNames)
+})

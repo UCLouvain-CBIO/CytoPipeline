@@ -530,6 +530,8 @@ compensateFromMatrix <- function(x,
                     check.names = FALSE,
                     row.names = 1
                 )
+            compensationMatrix <- 
+                .updateCompMatrixLabels(compensationMatrix, ff)
         }
 
         ffOut <- runCompensation(ff,
@@ -549,6 +551,7 @@ compensateFromMatrix <- function(x,
         stop("x should be a flowCore::flowFrame or a flowCore::flowSet")
     }
 }
+
 
 
 ### FUNCTIONS FOR DOUBLETS REMOVAL ###

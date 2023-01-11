@@ -904,3 +904,29 @@ getFCSFileName <- function(ff) {
     if (is.null(fName)) stop("No FILENAME keyword for flowFrame")
     return(fName)
 }
+
+# update compensation matrix labels, replace by bold channel name
+# if label == concatenation of channel, " :: ", marker (as in FlowJo export)
+# if label == marker
+.updateCompMatrixLabels <- function(mat, ff) {
+    stopifnot (inherits(ff, "flowFrame"))
+    
+    matLabels <- colnames(mat)
+    for(j in seq_along(matLabels)) {
+        # if label if the concatenation of channel & marker (as in FJ export),
+        # keep only the part before " :: "
+        ind <- regexpr(" :: ", matLabels[j])
+        if (ind > 1) {
+            matLabels[j] <- substr(matLabels[j], 1, ind-1)
+        }
+        
+        # match channel or marker to channel
+        matLabels[j] <- flowCore::getChannelMarker(ff, matLabels[j])[,"name"]
+    }
+    
+    colnames(mat) <- matLabels
+    rownames(mat) <- matLabels
+    
+    mat
+}
+
