@@ -310,8 +310,15 @@ sampleFiles <- function(x) {
         is.list(params)
     ))
 
-    mandatory <- c("experimentName")
-    optional <- c("sampleFiles", "saveScaleTransform", "scaleTransformFile")
+    # experimentName no more explicitly mandatory from the params list
+    # because populated by default (default_experiment)
+    #mandatory <- c("experimentName")
+    mandatory <- c() 
+    #optional <- c("sampleFiles", "saveScaleTransform", "scaleTransformFile")
+    optional <- c("experimentName",
+                  "sampleFiles", 
+                  "saveScaleTransform", 
+                  "scaleTransformFile")
 
     for (m in mandatory) {
         if (is.null(params[[m]])) {
