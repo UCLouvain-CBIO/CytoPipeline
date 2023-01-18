@@ -952,7 +952,7 @@ qualityControlFlowAI <- function(ff,
             ...
         )
 
-    goodEvents <- !(seq_len(flowCore::nrow(ffIn)) %in% badEventIDs)
+    goodEvents <- !(seq_len(flowCore::nrow(ffIn)) %in% badEventIDs[[1]])
     ff <- ff[goodEvents, ] # note we take ff and not ffIn (no transfo)
 
     return(ff)
