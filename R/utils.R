@@ -851,6 +851,9 @@ removeChannels <- function(ff, channels) {
 #' 
 #' @return new flowCore::flowFrame containing the added 'Original_ID' column
 #' @export
+#' @examples
+#' retFF <- appendCellID(OMIP021Samples[[1]])
+#'
 appendCellID <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
     if (!inherits(ff, "flowFrame")) {
         stop("ff type not recognized, should be a flowFrame")

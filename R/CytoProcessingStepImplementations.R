@@ -312,9 +312,9 @@ readSampleFiles <- function(sampleFiles,
 #' flowCore::pData(flowCore::description(ff)) ) . 
 #' If a channel is not listed in this parameter, its default internal values 
 #' will be used. The default of this parameter is NULL.
-#' If the name of one list is set to `AllFluoChannels`, then the `minRange`
-#' and `maxRange` specified there will be taken as default for all fluorescent
-#' channel (not scatter)
+#' If the name of one list is set to `AllFluoChannels`, then the  
+#' `minRange` and `maxRange` specified there will be taken as default   
+#' for all fluorescent channels (not scatter)
 #' @param ... additional parameters passed to PeacoQC::RemoveMargins()
 #'
 #' @return either a flowCore::flowSet or a flowCore::flowFrame depending on
@@ -378,7 +378,7 @@ removeMarginsPeacoQC <- function(x, channelSpecifications = NULL, ...) {
                     # try as marker
                     whichMarker <- which(markers4Margins == chName)
                     if (length(whichMarker) == 0)
-                        stop("error in channelSpecifications names\n",
+                        stop("channelSpecifications names: ",
                              "could not find [", chName, "], neither as ",
                              "channel, nor as marker")
                     else {

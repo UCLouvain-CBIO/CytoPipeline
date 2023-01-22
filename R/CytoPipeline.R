@@ -14,51 +14,234 @@
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
 
-##' @title CytoPipeline class
-##'
-##' @aliases CytoPipeline-class, CytoPipeline
-##'
-##' @name CytoPipeline-class
-##'
-##' @rdname CytoPipeline
-##'
-##' @description
-##'
-##' Class representing a flow cytometry pipeline, and composed of two processing
-##' queues, i.e. lists of CytoProcessingStep objects :
-##' - a list of CytoProcessingStep(s) for pre-calculation of scale
-##' transformations per channel
-##' - a list of CytoProcessingStep(s) for the pre-processing of flow frames
-##'
-##' @slot scaleTransformProcessingQueue A `list()` of    
-##' CytoProcessingStep objects containing the steps   
-##' for obtaining the scale transformations per channel
-##'
-##' @slot flowFramesPreProcessingQueue A `list()` of     
-##' CytoProcessingStep objects containing the steps   
-##' for pre-processing of the samples flow frames
-##'
-##' @slot experimentName A `character()` containing     
-##' the experiment (run) name
-##'
-##' @slot sampleFiles A `character()` vector storing   
-##' all fcs files to be run into the pipeline
-##'
+#' @title CytoPipeline class
+#'
+#' @aliases CytoPipeline-class, CytoPipeline
+#'
+#' @name CytoPipeline-class
+#'
+#' @rdname CytoPipeline
+#'
+#' @description
+#'
+#' Class representing a flow cytometry pipeline, and composed of two processing
+#' queues, i.e. lists of CytoProcessingStep objects :
+#' - a list of CytoProcessingStep(s) for pre-calculation of scale
+#' transformations per channel
+#' - a list of CytoProcessingStep(s) for the pre-processing of flow frames
+#'
+#' @slot scaleTransformProcessingQueue A `list()` of    
+#' CytoProcessingStep objects containing the steps   
+#' for obtaining the scale transformations per channel
+#'
+#' @slot flowFramesPreProcessingQueue A `list()` of     
+#' CytoProcessingStep objects containing the steps   
+#' for pre-processing of the samples flow frames
+#'
+#' @slot experimentName A `character()` containing     
+#' the experiment (run) name
+#'
+#' @slot sampleFiles A `character()` vector storing   
+#' all fcs files to be run into the pipeline
+#'
 # @slot savePreprocessedFiles if TRUE, will save pre-processed fcs file in
 # /QC subdirectory
 #
 # @slot savePlotsInFiles if TRUE, will save files corresponding to default
 # generated plot at each pre-processing step
 #
-##' @slot saveScaleTransform if TRUE,    
-##' will save rds object storing scale transformation    
-##' list generated
-#
-##' @slot scaleTransformFile basename of the file     
-##' to use to save the scale transformation list   
-##' (if 'saveScaleTransform' == TRUE)
-#
-##' @exportClass CytoPipeline
+#' @slot saveScaleTransform if TRUE,    
+#' will save rds object storing scale transformation    
+#' list generated
+#'
+#' @slot scaleTransformFile basename of the file     
+#' to use to save the scale transformation list   
+#' (if 'saveScaleTransform' == TRUE)
+#'
+#' @exportClass CytoPipeline
+#' @examples
+#' 
+#' ### *** EXAMPLE 1: building CytoPipeline step by step *** ###
+#' 
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' experimentName <- "OMIP021_PeacoQC"
+#' sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+#'                                              pattern = "sample_"))
+#'                                              
+#' outputDir <- withr::local_tempdir()
+#' 
+#' # main parameters : sample files and output files
+#' pipelineParams <- list()
+#' pipelineParams$experimentName <- experimentName
+#' pipelineParams$sampleFiles <- sampleFiles
+#' pipL <- CytoPipeline(pipelineParams)
+#' 
+#' ### SCALE TRANSFORMATION STEPS ###
+#' 
+#' pipL <-
+#'     addProcessingStep(pipL,
+#'                       whichQueue = "scale transform",
+#'                       CytoProcessingStep(
+#'                           name = "flowframe_read",
+#'                           FUN = "readSampleFiles",
+#'                           ARGS = list(
+#'                               whichSamples = "all",
+#'                               truncate_max_range = FALSE,
+#'                               min.limit = NULL
+#'                           )
+#'                       )
+#'     )
+#' 
+#' pipL <-
+#'     addProcessingStep(pipL,
+#'                       whichQueue = "scale transform",
+#'                       CytoProcessingStep(
+#'                           name = "remove_margins",
+#'                           FUN = "removeMarginsPeacoQC",
+#'                           ARGS = list()
+#'                      )
+#'     )
+#' 
+#' pipL <-
+#'     addProcessingStep(pipL,
+#'                       whichQueue = "scale transform",
+#'                       CytoProcessingStep(
+#'                           name = "compensate",
+#'                           FUN = "compensateFromMatrix",
+#'                           ARGS = list(matrixSource = "fcs")
+#'                       )
+#'     )
+#' 
+#' pipL <-
+#'     addProcessingStep(pipL,
+#'                       whichQueue = "scale transform",
+#'                       CytoProcessingStep(
+#'                           name = "flowframe_aggregate",
+#'                           FUN = "aggregateAndSample",
+#'                           ARGS = list(
+#'                               nTotalEvents = 10000,
+#'                               seed = 0
+#'                           )
+#'                       )
+#'     )
+#' 
+#' pipL <-
+#'     addProcessingStep(pipL,
+#'                       whichQueue = "scale transform",
+#'                       CytoProcessingStep(
+#'                           name = "scale_transform_estimate",
+#'                           FUN = "estimateScaleTransforms",
+#'                           ARGS = list(
+#'                               fluoMethod = "estimateLogicle",
+#'                               scatterMethod = "linear",
+#'                               scatterRefMarker = "BV785 - CD3"
+#'                           )
+#'                       )
+#'     )
+#' 
+#' ### PRE-PROCESSING STEPS ###
+#' 
+#' pipL <-
+#'     addProcessingStep(pipL,
+#'                       whichQueue = "pre-processing",
+#'                       CytoProcessingStep(
+#'                           name = "flowframe_read",
+#'                           FUN = "readSampleFiles",
+#'                           ARGS = list(
+#'                               truncate_max_range = FALSE,
+#'                               min.limit = NULL
+#'                           )
+#'                       )
+#'     )
+#' 
+#' pipL <-
+#'     addProcessingStep(pipL,
+#'                       whichQueue = "pre-processing",
+#'                       CytoProcessingStep(
+#'                           name = "remove_margins",
+#'                           FUN = "removeMarginsPeacoQC",
+#'                           ARGS = list()
+#'                       )
+#'     )
+#' 
+#' pipL <-
+#'     addProcessingStep(pipL,
+#'                       whichQueue = "pre-processing",
+#'                       CytoProcessingStep(
+#'                           name = "compensate",
+#'                           FUN = "compensateFromMatrix",
+#'                           ARGS = list(matrixSource = "fcs")
+#'                       )
+#'     )
+#' 
+#' pipL <-
+#'     addProcessingStep(
+#'         pipL,
+#'         whichQueue = "pre-processing",
+#'         CytoProcessingStep(
+#'             name = "remove_debris",
+#'             FUN = "removeDebrisManualGate",
+#'             ARGS = list(
+#'                 FSCChannel = "FSC-A",
+#'                 SSCChannel = "SSC-A",
+#'                 gateData =  c(73615, 110174, 213000, 201000, 126000,
+#'                               47679, 260500, 260500, 113000, 35000)))
+#'     )
+#' 
+#' pipL <-
+#'     addProcessingStep(pipL,
+#'                       whichQueue = "pre-processing",
+#'                       CytoProcessingStep(
+#'                           name = "remove_dead_cells",
+#'                           FUN = "removeDeadCellsManualGate",
+#'                           ARGS = list(
+#'                               FSCChannel = "FSC-A",
+#'                               LDMarker = "L/D Aqua - Viability",
+#'                               gateData = c(0, 0, 250000, 250000,
+#'                                            0, 650, 650, 0)
+#'                           )
+#'                       )
+#'     )
+#' 
+#' pipL <-
+#'     addProcessingStep(
+#'         pipL,
+#'         whichQueue = "pre-processing",
+#'         CytoProcessingStep(
+#'             name = "perform_QC",
+#'             FUN = "qualityControlPeacoQC",
+#'             ARGS = list(
+#'                 preTransform = TRUE,
+#'                 min_cells = 150, # default
+#'                 max_bins = 500, # default
+#'                 step = 500, # default,
+#'                 MAD = 6, # default
+#'                 IT_limit = 0.55, # default
+#'                 force_IT = 150, # default
+#'                 peak_removal = 0.3333, # default
+#'                 min_nr_bins_peakdetection = 10 # default
+#'             )
+#'         )
+#'     )
+#' 
+#' pipL <-
+#'     addProcessingStep(pipL,
+#'                       whichQueue = "pre-processing",
+#'                       CytoProcessingStep(
+#'                           name = "transform",
+#'                           FUN = "applyScaleTransforms",
+#'                           ARGS = list()
+#'                       )
+#'     )
+#' 
+#' ### *** EXAMPLE 2: building CytoPipeline from JSON file *** ###
+#' 
+#' jsonDir <- system.file("extdata", package = "CytoPipeline")
+#' jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+#' 
+#' pipL2 <- CytoPipeline(jsonPath)
+#' 
 setClass("CytoPipeline",
     slots = c(
         experimentName = "character",

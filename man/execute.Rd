@@ -31,10 +31,11 @@ be used for the computation. If not provided, will use the top back-end on
 the \code{BiocParallel::registered()} stack.}
 
 \item{BPOPTIONS}{if \code{useBiocParallel} is TRUE, sets the BPOPTIONS to be
-passed to \code{bplapply()} function. Note that if you use a \code{SnowParams} back-end,
-you need to specify all the packages that need to be loaded for the different
-CytoProcessingStep to work properly (visibility of functions). As a minimum,
-the flowCore package needs to be loaded
+passed to \code{bplapply()} function.
+Note that if you use a \code{SnowParams} back-end, you need to specify all
+the packages that need to be loaded for the different CytoProcessingStep
+to work properly (visibility of functions). As a minimum,
+the \code{flowCore} package needs to be loaded.
 (hence the default \code{BPOPTIONS = bpoptions(packages = c("flowCore"))} )}
 }
 \value{
@@ -170,18 +171,19 @@ pipL <-
     )
 
 pipL <-
-addProcessingStep(pipL,
-                  whichQueue = "pre-processing",
-                  CytoProcessingStep(
-                      name = "remove_debris",
-                      FUN = "removeDebrisManualGate",
-                      ARGS = list(
-                          FSCChannel = "FSC-A",
-                          SSCChannel = "SSC-A",
-                          gateData =  c(73615, 110174, 213000, 201000, 126000,
-                                        47679, 260500, 260500, 113000, 35000)
-                      )
-                  )
+addProcessingStep(
+    pipL,
+    whichQueue = "pre-processing",
+    CytoProcessingStep(
+        name = "remove_debris",
+        FUN = "removeDebrisManualGate",
+        ARGS = list(
+            FSCChannel = "FSC-A",
+            SSCChannel = "SSC-A",
+            gateData =  c(73615, 110174, 213000, 201000, 126000,
+                          47679, 260500, 260500, 113000, 35000)
+                   )
+   )
 )
 
 pipL <-

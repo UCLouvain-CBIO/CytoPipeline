@@ -336,10 +336,11 @@ showProcessingSteps <- function(x,
 #' be used for the computation. If not provided, will use the top back-end on 
 #' the `BiocParallel::registered()` stack.
 #' @param BPOPTIONS if `useBiocParallel` is TRUE, sets the BPOPTIONS to be 
-#' passed to `bplapply()` function. Note that if you use a `SnowParams` back-end,
-#' you need to specify all the packages that need to be loaded for the different
-#' CytoProcessingStep to work properly (visibility of functions). As a minimum,
-#' the flowCore package needs to be loaded 
+#' passed to `bplapply()` function.   
+#' Note that if you use a `SnowParams` back-end, you need to specify all   
+#' the packages that need to be loaded for the different CytoProcessingStep   
+#' to work properly (visibility of functions). As a minimum,    
+#' the `flowCore` package needs to be loaded.  
 #' (hence the default `BPOPTIONS = bpoptions(packages = c("flowCore"))` )
 #' @returns nothing
 #' @export
@@ -461,18 +462,19 @@ showProcessingSteps <- function(x,
 #'     )
 #' 
 #' pipL <-
-#' addProcessingStep(pipL,
-#'                   whichQueue = "pre-processing",
-#'                   CytoProcessingStep(
-#'                       name = "remove_debris",
-#'                       FUN = "removeDebrisManualGate",
-#'                       ARGS = list(
-#'                           FSCChannel = "FSC-A",
-#'                           SSCChannel = "SSC-A",
-#'                           gateData =  c(73615, 110174, 213000, 201000, 126000,
-#'                                         47679, 260500, 260500, 113000, 35000)
-#'                       )
-#'                   )
+#' addProcessingStep(
+#'     pipL,
+#'     whichQueue = "pre-processing",
+#'     CytoProcessingStep(
+#'         name = "remove_debris",
+#'         FUN = "removeDebrisManualGate",
+#'         ARGS = list(
+#'             FSCChannel = "FSC-A",
+#'             SSCChannel = "SSC-A",
+#'             gateData =  c(73615, 110174, 213000, 201000, 126000,
+#'                           47679, 260500, 260500, 113000, 35000)
+#'                    )
+#'    )
 #' )
 #' 
 #' pipL <-
@@ -969,7 +971,7 @@ checkCytoPipelineConsistencyWithCache <- function(
     
     stopifnot(inherits(x, "CytoPipeline"))
         
-    whichQueue = match.arg(whichQueue)    
+    whichQueue <- match.arg(whichQueue)    
         
     #browser()
     ret <- list(isConsistent = TRUE, inconsistencyMsg = character(0))
@@ -1125,7 +1127,8 @@ checkCytoPipelineConsistencyWithCache <- function(
             if (nStepsInCache > nPreProcessingSteps) {
                 ret$isConsistent <- FALSE
                 ret$inconsistencyMsg <-
-                    "more pre-processing steps in cache than in CytoPipeline object"
+                    paste0("more pre-processing steps in cache than in ",
+                           "CytoPipeline object")
                 return(ret)
             }
         }
@@ -1195,7 +1198,8 @@ checkCytoPipelineConsistencyWithCache <- function(
                             as.character(stepsInfos[j, "outputObjectName"])
                         # and continue...
                     } else {
-                        ret$preProcessingStepStatus[j, sampleFile] <- "inconsistent"
+                        ret$preProcessingStepStatus[j, sampleFile] <- 
+                            "inconsistent"
                         ret$isConsistent <- FALSE
                         ret$inconsistencyMsg <-
                             paste0(

@@ -18,9 +18,9 @@ in colnames(flowCore::exprs(ff)), or the corresponding marker name (found in
 flowCore::pData(flowCore::description(ff)) ) .
 If a channel is not listed in this parameter, its default internal values
 will be used. The default of this parameter is NULL.
-If the name of one list is set to \code{AllFluoChannels}, then the \code{minRange}
-and \code{maxRange} specified there will be taken as default for all fluorescent
-channel (not scatter)}
+If the name of one list is set to \code{AllFluoChannels}, then the
+\code{minRange} and \code{maxRange} specified there will be taken as default
+for all fluorescent channels (not scatter)}
 
 \item{...}{additional parameters passed to PeacoQC::RemoveMargins()}
 }
