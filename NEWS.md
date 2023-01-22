@@ -1,5 +1,8 @@
 # CytoPipeline 0.99
 
+## CytoPipeline 0.99.3
+- some minor changes for BiocCheck()
+
 ## CytoPipeline 0.99.2
 - removed dependencies to a number of packages, moved corresponding 
 implementations of CytoProcessingSteps (wrappers) into `CytoPipelineUtils` 
