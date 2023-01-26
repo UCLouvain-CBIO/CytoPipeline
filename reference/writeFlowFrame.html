@@ -18,7 +18,7 @@ that discards any additional parameter passed in (...)"><!-- mathjax --><script 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.4</span>
       </span>
     </div>
 
@@ -48,7 +48,7 @@ that discards any additional parameter passed in (...)"><!-- mathjax --><script 
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>write flowFrame to disk</h1>
-    <small class="dont-index">Source: <a href="https://github.com/UCLouvain-CBIO/CytoPipeline/blob/HEAD/R/CytoProcessingStepImplementations.R" class="external-link"><code>R/CytoProcessingStepImplementations.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/UCLouvain-CBIO/CytoPipeline/blob/HEAD/R/utils.R" class="external-link"><code>R/utils.R</code></a></small>
     <div class="hidden name"><code>writeFlowFrame.Rd</code></div>
     </div>
 
@@ -116,21 +116,7 @@ only applicable to export in csv format.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">transListPath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, </span></span>
-<span class="r-in"><span>                                    package <span class="op">=</span> <span class="st">"CytoPipeline"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                        <span class="st">"/OMIP021_TransList.rds"</span><span class="op">)</span> </span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">transList</span> <span class="op">&lt;-</span> <span class="fu"><a href="readRDSObject.html">readRDSObject</a></span><span class="op">(</span><span class="va">transListPath</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ff_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="compensateFromMatrix.html">compensateFromMatrix</a></span><span class="op">(</span><span class="va">OMIP021Samples</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>                             matrixSource <span class="op">=</span> <span class="st">"fcs"</span><span class="op">)</span>  </span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Compensating file : Donor1.fcs</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ff_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="applyScaleTransforms.html">applyScaleTransforms</a></span><span class="op">(</span><span class="va">ff_c</span>, transList <span class="op">=</span> <span class="va">transList</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">rawDataDir</span> <span class="op">&lt;-</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">rawDataDir</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"CytoPipeline"</span><span class="op">)</span>, <span class="st">"/"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sampleFiles</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">rawDataDir</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">rawDataDir</span>, pattern <span class="op">=</span> <span class="st">"sample_"</span><span class="op">)</span><span class="op">)</span></span></span>

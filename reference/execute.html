@@ -27,7 +27,7 @@ the cache."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.4</span>
       </span>
     </div>
 
@@ -82,7 +82,14 @@ the cache.</p>
 <span>  rmCache <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  useBiocParallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">bpparam</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  BPOPTIONS <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/bpoptions.html" class="external-link">bpoptions</a></span><span class="op">(</span>packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"flowCore"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  BPOPTIONS <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/bpoptions.html" class="external-link">bpoptions</a></span><span class="op">(</span>packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"flowCore"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  saveLastStepFF <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  saveFFUseFCSFileName <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  saveFFPrefix <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  saveFFSuffix <span class="op">=</span> <span class="st">"_preprocessed"</span>,</span>
+<span>  saveFFFormat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fcs"</span>, <span class="st">"csv"</span><span class="op">)</span>,</span>
+<span>  saveFFCsvUseChannelMarker <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  saveScaleTransforms <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -122,6 +129,40 @@ the packages that need to be loaded for the different CytoProcessingStep
 to work properly (visibility of functions). As a minimum,
 the <code>flowCore</code> package needs to be loaded.
 (hence the default <code>BPOPTIONS = bpoptions(packages = c("flowCore"))</code> )</p></dd>
+
+
+<dt>saveLastStepFF</dt>
+<dd><p>= TRUE,</p></dd>
+
+
+<dt>saveFFUseFCSFileName</dt>
+<dd><p>if TRUE filename used will be based on
+original fcs filename</p></dd>
+
+
+<dt>saveFFPrefix</dt>
+<dd><p>FF file name prefix</p></dd>
+
+
+<dt>saveFFSuffix</dt>
+<dd><p>FF file name suffix</p></dd>
+
+
+<dt>saveFFFormat</dt>
+<dd><p>either <code>fcs</code> or <code>csv</code></p></dd>
+
+
+<dt>saveFFCsvUseChannelMarker</dt>
+<dd><p>if TRUE (default), converts the channels
+to the corresponding marker names (where the Marker is not NA).
+This setting is only applicable to export in csv format.</p></dd>
+
+
+<dt>saveScaleTransforms</dt>
+<dd><p>if TRUE (default FALSE), save on disk
+(in RDS format) the <code><a href="https://rdrr.io/pkg/flowCore/man/transformList-class.html" class="external-link">flowCore::transformList</a></code> object obtained after running
+the scaleTransform processing queue. The file name is hardcoded to
+<code>path</code>/<code>experimentName</code>/<code>RDS</code>/<code>scaleTransformList.rds</code></p></dd>
 
 </dl></div>
     <div id="value">

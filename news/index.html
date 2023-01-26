@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.4</span>
       </span>
     </div>
 
@@ -53,15 +53,20 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.99" id="cytopipeline-099">CytoPipeline 0.99<a class="anchor" aria-label="anchor" href="#cytopipeline-099"></a></h2>
 <div class="section level3">
-<h3 id="cytopipeline-0-99">CytoPipeline 0.99.3<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99"></a></h3>
+<h3 id="cytopipeline-0-99">CytoPipeline 0.99.4<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99"></a></h3>
+<ul><li>improved CytoPipeline constructors (<code>experimentName</code> and <code>sampleFiles</code> are now parameters of all constructor version)</li>
+<li>centralized the production of standard outputs during pipeline execution, set all tuning parameters in execute() instead of slots in CytoPipeline object.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="cytopipeline-0-99-1">CytoPipeline 0.99.3<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-1"></a></h3>
 <ul><li>some minor changes for BiocCheck()</li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-0-99-1">CytoPipeline 0.99.2<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-1"></a></h3>
+<h3 id="cytopipeline-0-99-2">CytoPipeline 0.99.2<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-2"></a></h3>
 <ul><li>removed dependencies to a number of packages, moved corresponding implementations of CytoProcessingSteps (wrappers) into <code>CytoPipelineUtils</code> package</li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-0-99-2">CytoPipeline 0.99.1<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-2"></a></h3>
+<h3 id="cytopipeline-0-99-3">CytoPipeline 0.99.1<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-3"></a></h3>
 <ul><li>Maintenance due to Bioc version change (3.17)</li>
 <li>removed use of openCyto::gate_tail() (disappeared w/o deprecation), replaced by flowDensity::deGate()</li>
 <li>implemented export of pre-processed file (writeFlowFrame as a CytoProcessingStep implementation)</li>
@@ -69,7 +74,7 @@
 <li>selectRandomSamples (new CytoProcessing step implementation)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-0-99-3">CytoPipeline 0.99.0<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-3"></a></h3>
+<h3 id="cytopipeline-0-99-4">CytoPipeline 0.99.0<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-4"></a></h3>
 <ul><li>Prior to Bioconductor submission</li>
 </ul></div>
 </div>
