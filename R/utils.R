@@ -908,6 +908,92 @@ getFCSFileName <- function(ff) {
     return(fName)
 }
 
+#' @title write flowFrame to disk
+#' @description wrapper around flowCore::write.FCS() or utils::write.csv
+#' that discards any additional parameter passed in (...)
+#' @param ff a flowCore::flowFrame
+#' @param dir an existing directory to store the flowFrame, 
+#' @param useFCSFileName if TRUE filename used will be based on original fcs 
+#' filename
+#' @param prefix file name prefix
+#' @param suffix file name suffix
+#' @param format either fcs or csv
+#' @param csvUseChannelMarker if TRUE (default), converts the channels to the
+#' corresponding marker names (where the Marker is not NA). This setting is
+#' only applicable to export in csv format.
+#' @param ... other arguments (not used)
+#' @return nothing
+#' @export
+#' 
+#' @examples
+#' rawDataDir <-
+#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#' sampleFiles <-
+#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#' 
+#' truncateMaxRange <- FALSE
+#' minLimit <- NULL
+#' 
+#' # create flowCore::flowSet with all samples of a dataset
+#' res <- readSampleFiles(
+#'     sampleFiles = sampleFiles,
+#'     whichSamples = "all",
+#'     truncate_max_range = truncateMaxRange,
+#'     min.limit = minLimit)
+#'     
+#' ff_c <- compensateFromMatrix(res[[2]], matrixSource = "fcs") 
+#' outputDir <- withr::local_tempdir()
+#' writeFlowFrame(ff_c, 
+#'                dir = outputDir,
+#'                suffix = "_fcs_export",
+#'                format = "csv")
+#' 
+writeFlowFrame <- function(ff, dir = ".", 
+                           useFCSFileName = TRUE,
+                           prefix = "", suffix ="",
+                           format = c("fcs", "csv"), 
+                           csvUseChannelMarker = TRUE,
+                           ...) {
+    format <- match.arg(format)
+    if (!useFCSFileName && prefix == "" && suffix == "") {
+        stop ("No file name provided! If useFCSFileName == FALSE, ",
+              "then either prefix or suffix should be provided.")
+    }
+    if(!dir.exists(dir)) {
+        stop ("Provided directory does not exist!")
+    }
+    
+    fileName <- paste0(dir, "/", prefix)
+    if (useFCSFileName) {
+        fileNameSkeleton <- getFCSFileName(ff)
+        fileNameSkeleton <- 
+            substr(fileNameSkeleton, 1, nchar(fileNameSkeleton) - 4)
+        fileName <- paste0(fileName, fileNameSkeleton)
+    }
+    fileName <- paste0(fileName, suffix, ".", format)
+    
+    if (format == "fcs") {
+        flowCore::write.FCS(ff, filename = fileName)
+    } else {
+        exprs <- flowCore::exprs(ff)
+        if (csvUseChannelMarker) {
+            oldColNames <- colnames(exprs)
+            newColNames <- oldColNames
+            for (j in seq_along(oldColNames)) {
+                ret <- flowCore::getChannelMarker(ff, name = oldColNames[j])
+                if (!is.na(ret$desc)) {
+                    newColNames[j] <- ret$desc
+                }
+            }
+            colnames(exprs) <- newColNames
+        }
+        utils::write.csv(exprs, file = fileName, 
+                         row.names = FALSE)
+    }
+}
+
+
+
 # update compensation matrix labels, replace by bold channel name
 # if label == concatenation of channel, " :: ", marker (as in FlowJo export)
 # if label == marker

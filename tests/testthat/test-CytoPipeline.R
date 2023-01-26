@@ -337,6 +337,13 @@ test_that("CytoPipeline with complex flows raises no error", {
                 rmCache = TRUE,
                 path = outputDir
             ))
+            
+            suppressWarnings(execute(pipL,
+                                     rmCache = FALSE,
+                                     path = outputDir,
+                                     saveLastStepFF = FALSE,
+                                     saveScaleTransforms = TRUE
+            ))
         },
         NA
     )

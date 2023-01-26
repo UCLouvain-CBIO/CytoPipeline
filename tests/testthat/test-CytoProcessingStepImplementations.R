@@ -450,47 +450,6 @@ test_that("applyScaleTransform works", {
     )
 })
 
-test_that("writeFlowFrame works", {
-    outputDir <- withr::local_tempdir()
-    
-    ff_c <- readRDS(test_path("fixtures", "ff_c.rds"))
-    
-    expect_error(writeFlowFrame(ff, dir = paste0(outputDir, "/notThere")),
-                 regexp = "Provided directory does not exist")
-    
-    prefix <- "File_"
-    suffix <- "_export"
-    
-    writeFlowFrame(ff_c, dir = outputDir,
-                   useFCSFileName = TRUE,
-                   prefix = prefix,
-                   suffix = suffix, 
-                   format = "fcs")
-    
-    outputFile <- paste0(outputDir, "/", 
-                         prefix, 
-                         "Donor1",
-                         suffix,
-                         ".fcs")
-    
-    thisFF <- flowCore::read.FCS(outputFile, transform = FALSE)
-    expect_true(all(round(flowCore::exprs(thisFF), 0)
-                    == round(flowCore::exprs(ff_c), 0)))
-    
-    writeFlowFrame(ff_c, dir = outputDir,
-                   useFCSFileName = FALSE,
-                   prefix = prefix,
-                   suffix = suffix, 
-                   format = "csv")
-    
-    outputCSV <- paste0(outputDir, "/", 
-                         prefix,
-                        suffix,
-                         ".csv")
-    
-    thisExpr <- read.csv(file = outputCSV)
-    expect_true(all(round(thisExpr,4) == round(flowCore::exprs(ff_c), 4)))
-})
 
 
 

@@ -10,7 +10,14 @@ execute(
   rmCache = FALSE,
   useBiocParallel = FALSE,
   BPPARAM = BiocParallel::bpparam(),
-  BPOPTIONS = BiocParallel::bpoptions(packages = c("flowCore"))
+  BPOPTIONS = BiocParallel::bpoptions(packages = c("flowCore")),
+  saveLastStepFF = TRUE,
+  saveFFUseFCSFileName = TRUE,
+  saveFFPrefix = "",
+  saveFFSuffix = "_preprocessed",
+  saveFFFormat = c("fcs", "csv"),
+  saveFFCsvUseChannelMarker = TRUE,
+  saveScaleTransforms = FALSE
 )
 }
 \arguments{
@@ -37,6 +44,26 @@ the packages that need to be loaded for the different CytoProcessingStep
 to work properly (visibility of functions). As a minimum,
 the \code{flowCore} package needs to be loaded.
 (hence the default \code{BPOPTIONS = bpoptions(packages = c("flowCore"))} )}
+
+\item{saveLastStepFF}{= TRUE,}
+
+\item{saveFFUseFCSFileName}{if TRUE filename used will be based on
+original fcs filename}
+
+\item{saveFFPrefix}{FF file name prefix}
+
+\item{saveFFSuffix}{FF file name suffix}
+
+\item{saveFFFormat}{either \code{fcs} or \code{csv}}
+
+\item{saveFFCsvUseChannelMarker}{if TRUE (default), converts the channels
+to the corresponding marker names (where the Marker is not NA).
+This setting is only applicable to export in csv format.}
+
+\item{saveScaleTransforms}{if TRUE (default FALSE), save on disk
+(in RDS format) the \code{flowCore::transformList} object obtained after running
+the scaleTransform processing queue. The file name is hardcoded to
+\code{path}/\code{experimentName}/\code{RDS}/\code{scaleTransformList.rds}}
 }
 \value{
 nothing

@@ -342,6 +342,19 @@ showProcessingSteps <- function(x,
 #' to work properly (visibility of functions). As a minimum,    
 #' the `flowCore` package needs to be loaded.  
 #' (hence the default `BPOPTIONS = bpoptions(packages = c("flowCore"))` )
+#' @param saveLastStepFF = TRUE,
+#' @param saveFFUseFCSFileName if TRUE filename used will be based on  
+#' original fcs filename
+#' @param saveFFPrefix FF file name prefix 
+#' @param saveFFSuffix FF file name suffix
+#' @param saveFFFormat either `fcs` or `csv` 
+#' @param saveFFCsvUseChannelMarker if TRUE (default), converts the channels   
+#' to the corresponding marker names (where the Marker is not NA).  
+#' This setting is only applicable to export in csv format.
+#' @param saveScaleTransforms if TRUE (default FALSE), save on disk 
+#' (in RDS format) the `flowCore::transformList` object obtained after running  
+#' the scaleTransform processing queue. The file name is hardcoded to
+#' `path`/`experimentName`/`RDS`/`scaleTransformList.rds`
 #' @returns nothing
 #' @export
 #' 
@@ -558,21 +571,31 @@ execute <- function(x,
                     useBiocParallel = FALSE,
                     BPPARAM = BiocParallel::bpparam(),
                     BPOPTIONS = BiocParallel::bpoptions(
-                        packages = c("flowCore"))) {
+                        packages = c("flowCore")),
+                    saveLastStepFF = TRUE,
+                    saveFFUseFCSFileName = TRUE,
+                    saveFFPrefix = "", 
+                    saveFFSuffix = "_preprocessed",
+                    saveFFFormat = c("fcs", "csv"), 
+                    saveFFCsvUseChannelMarker = TRUE,
+                    saveScaleTransforms = FALSE) {
     stopifnot(inherits(x, "CytoPipeline"))
 
     #browser()
 
     outputDir <- paste0(path, "/", x@experimentName, "/output/")
-
     # qualityControlDir <- paste0(outputDir, "QC/")
     rdsOutputDir <- paste0(outputDir, "RDS/")
-    # 
-    # for (newPath in c(qualityControlDir, rdsOutputDir)) {
-    #     if (!dir.exists(newPath)) {
-    #         dir.create(newPath, recursive = TRUE)
-    #     }
-    # }
+    
+    newDirs <- c(outputDir, rdsOutputDir)
+    createDirs <- c(saveLastStepFF, saveScaleTransforms)
+    
+
+    for (i in seq_along(newDirs)) {
+        if (createDirs[i] && !dir.exists(newDirs[i])) {
+            dir.create(newDirs[i], recursive = TRUE)
+        }
+    }
 
     # create or use local cache
     localCacheDir <- paste0(path, "/", x@experimentName, "/.cache")
@@ -662,26 +685,23 @@ execute <- function(x,
         }
     } # end loop on steps
 
-    # store transformList for use in flowFrames pre-processing steps
+    # store transformList if needed
+    currentTransList <- NULL
     if (inherits(res, "transformList")) {
         currentTransList <- res
-        if (x@saveScaleTransform) {
-            if (!length(x@scaleTransformFile)) {
-                stop(
-                    "saving scale tranformations require a ",
-                    "'scaleTranformFile' to be set"
-                )
-            }
-            
-            if (!dir.exists(rdsOutputDir)) {
-                dir.create(rdsOutputDir, recursive = TRUE)
-            }
-            saveRDS(currentTransList,
-                file = paste0(
-                    rdsOutputDir,
-                    x@scaleTransformFile
-                )
+        if (saveScaleTransforms) {
+            scaleTransformFile = "scaleTransformList.rds"
+            saveRDS(res,
+                    file = paste0(
+                        rdsOutputDir,
+                        scaleTransformFile
+                    )
             )
+        }
+    } else {
+        if (saveScaleTransforms) {
+            warning("could not store last step tranformList", 
+                    "result object was no tranformList")
         }
     }
     
@@ -764,7 +784,26 @@ execute <- function(x,
                     name = "preprocessing", append = TRUE
                 ) <- preprocessingMeta
             } # if (newResource)
+            # if last step and fcs saving is configured => do it!
+            if (s == length(x@flowFramesPreProcessingQueue) &&
+                saveLastStepFF) {
+                if (!inherits(res, "flowFrame")) {
+                    warning("could not store last step flowFrame", 
+                            "result object was no flowFrame")
+                } else {
+                    CytoPipeline::writeFlowFrame(
+                        ff = res,
+                        dir = outputDir,
+                        useFCSFileName = saveFFUseFCSFileName,
+                        prefix = saveFFPrefix,
+                        suffix = saveFFSuffix,
+                        format = saveFFFormat,
+                        csvUseChannelMarker = saveFFCsvUseChannelMarker)
+                }
+            }
         } # end loop on steps
+        
+        
     }
     
     if (useBiocParallel) {

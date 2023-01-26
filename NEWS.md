@@ -1,9 +1,19 @@
 # CytoPipeline 0.99
 
+## CytoPipeline 0.99.4
+
+- improved CytoPipeline constructors (`experimentName` and `sampleFiles` are
+now parameters of all constructor version)
+- centralized the production of standard outputs during pipeline execution, 
+set all tuning parameters in execute() instead of slots 
+in CytoPipeline object.  
+
 ## CytoPipeline 0.99.3
+
 - some minor changes for BiocCheck()
 
 ## CytoPipeline 0.99.2
+
 - removed dependencies to a number of packages, moved corresponding 
 implementations of CytoProcessingSteps (wrappers) into `CytoPipelineUtils` 
 package

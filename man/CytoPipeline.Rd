@@ -89,14 +89,6 @@ the experiment (run) name}
 
 \item{\code{sampleFiles}}{A \code{character()} vector storing
 all fcs files to be run into the pipeline}
-
-\item{\code{saveScaleTransform}}{if TRUE,
-will save rds object storing scale transformation
-list generated}
-
-\item{\code{scaleTransformFile}}{basename of the file
-to use to save the scale transformation list
-(if 'saveScaleTransform' == TRUE)}
 }}
 
 \examples{

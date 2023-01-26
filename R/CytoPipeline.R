@@ -44,19 +44,6 @@
 #' @slot sampleFiles A `character()` vector storing   
 #' all fcs files to be run into the pipeline
 #'
-# @slot savePreprocessedFiles if TRUE, will save pre-processed fcs file in
-# /QC subdirectory
-#
-# @slot savePlotsInFiles if TRUE, will save files corresponding to default
-# generated plot at each pre-processing step
-#
-#' @slot saveScaleTransform if TRUE,    
-#' will save rds object storing scale transformation    
-#' list generated
-#'
-#' @slot scaleTransformFile basename of the file     
-#' to use to save the scale transformation list   
-#' (if 'saveScaleTransform' == TRUE)
 #'
 #' @exportClass CytoPipeline
 #' @examples
@@ -247,21 +234,13 @@ setClass("CytoPipeline",
         experimentName = "character",
         scaleTransformProcessingQueue = "list",
         flowFramesPreProcessingQueue = "list",
-        sampleFiles = "character",
-        # savePreprocessedFiles = "logical",
-        # savePlotsInFiles = "logical",
-        saveScaleTransform = "logical",
-        scaleTransformFile = "character"
+        sampleFiles = "character"
     ),
     prototype = list(
         experimentName = "default_experiment",
         scaleTransformProcessingQueue = list(),
         flowFramesPreProcessingQueue = list(),
-        sampleFiles = character(),
-        # savePreprocessedFiles = FALSE,
-        # savePlotsInFiles = FALSE,
-        saveScaleTransform = FALSE,
-        scaleTransformFile = character()
+        sampleFiles = character()
     )
 )
 
@@ -316,12 +295,6 @@ setMethod(
         }
         showProcessingSteps(object, whichQueue = "scale transform")
         showProcessingSteps(object, whichQueue = "pre-processing")
-        cat("Other slots:\n")
-        # cat("savePreprocessedFiles: ",
-        #     object@savePreprocessedFiles, "\n")
-        # cat("savePlotsInFiles: ", object@savePlotsInFiles, "\n")
-        cat("saveScaleTransform: ", object@saveScaleTransform, "\n")
-        cat("scaleTransformFile: ", object@scaleTransformFile, "\n")
     }
 )
 
@@ -507,11 +480,9 @@ sampleFiles <- function(x) {
     # because populated by default (default_experiment)
     #mandatory <- c("experimentName")
     mandatory <- c() 
-    #optional <- c("sampleFiles", "saveScaleTransform", "scaleTransformFile")
+    #optional <- c("sampleFiles")
     optional <- c("experimentName",
-                  "sampleFiles", 
-                  "saveScaleTransform", 
-                  "scaleTransformFile")
+                  "sampleFiles")
 
     for (m in mandatory) {
         if (is.null(params[[m]])) {
