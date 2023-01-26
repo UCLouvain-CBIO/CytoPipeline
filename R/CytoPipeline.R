@@ -352,17 +352,21 @@ setMethod(
 #' @rdname CytoPipeline
 #'
 #' @param object a `list()`
+#' @param experimentName the experiment name
+#' @param sampleFiles the sample files
 #'
 #' @export
 #'
 setMethod(
     "CytoPipeline", "list",
-    function(object) {
+    function(object,
+             experimentName = "default_experiment",
+             sampleFiles = character()) {
         x <- methods::new("CytoPipeline",
-            experimentName = "default_experiment",
+            experimentName = experimentName,
             scaleTransformProcessingQueue = list(),
             flowFramesPreProcessingQueue = list(),
-            sampleFiles = character()
+            sampleFiles = sampleFiles
         )
         x <- .makeSlots(x, object)
         x <- .makeProcessingQueues(x, object)
@@ -374,17 +378,23 @@ setMethod(
 #'
 #'
 #' @param object a `character()` containing a JSON input
+#' @param experimentName the experiment name
+#' @param sampleFiles the sample files
 #'
 #' @export
 #'
 setMethod(
     "CytoPipeline", "character",
-    function(object) {
+    function(object,
+             experimentName = "default_experiment",
+             sampleFiles = character()) {
         pipelineParams <- jsonlite::read_json(object,
             simplifyVector = TRUE,
             simplifyDataFrame = FALSE
         )
-        cytoPipeline <- CytoPipeline(pipelineParams)
+        cytoPipeline <- CytoPipeline(pipelineParams,
+                                     experimentName = experimentName,
+                                     sampleFiles = sampleFiles)
         return(cytoPipeline)
     }
 )

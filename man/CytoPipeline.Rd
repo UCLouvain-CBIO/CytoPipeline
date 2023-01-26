@@ -24,9 +24,17 @@
   sampleFiles = character()
 )
 
-\S4method{CytoPipeline}{list}(object)
+\S4method{CytoPipeline}{list}(
+  object,
+  experimentName = "default_experiment",
+  sampleFiles = character()
+)
 
-\S4method{CytoPipeline}{character}(object)
+\S4method{CytoPipeline}{character}(
+  object,
+  experimentName = "default_experiment",
+  sampleFiles = character()
+)
 
 \method{as.list}{CytoPipeline}(x, ...)
 
