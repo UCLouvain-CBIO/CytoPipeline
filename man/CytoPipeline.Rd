@@ -104,10 +104,8 @@ sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
 outputDir <- withr::local_tempdir()
 
 # main parameters : sample files and output files
-pipelineParams <- list()
-pipelineParams$experimentName <- experimentName
-pipelineParams$sampleFiles <- sampleFiles
-pipL <- CytoPipeline(pipelineParams)
+pipL <- CytoPipeline(experimentName = experimentName,
+                     sampleFiles = sampleFiles)
 
 ### SCALE TRANSFORMATION STEPS ###
 
@@ -271,6 +269,12 @@ pipL <-
 
 jsonDir <- system.file("extdata", package = "CytoPipeline")
 jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+
+# Note that the `experimentName` and `sampleFiles` are here 
+# specified in the JSON file itself. This is not necessary, as 
+# one could well specify the processing steps only in the JSON file, and 
+# pass the `experimentName` and `sampleFiles` directly 
+# in the `CytoPipeline` constructor.
 
 pipL2 <- CytoPipeline(jsonPath)
 

@@ -152,7 +152,7 @@ workDir <- suppressMessages(withr::local_tempdir())
 
 ## first method: step by step, using CytoPipeline methods
 
-In this sub-section, we build a `CytoPipeline` object by successively adding 
+In this sub-section, we build a `CytoPipeline` object and successively add 
 `CytoProcessingStep` objects to the two different processing queues. We do this
 for the PeacoQC pipeline.
 
@@ -164,10 +164,8 @@ experimentName <- "OMIP021_PeacoQC"
 sampleFiles <- paste0(rawDataDir, "/", list.files(rawDataDir,
                                              pattern = "sample_"))
 
-pipelineParams <- list()
-pipelineParams$experimentName <- experimentName
-pipelineParams$sampleFiles <- sampleFiles
-pipL_PeacoQC <- CytoPipeline(pipelineParams)
+pipL_PeacoQC <- CytoPipeline(experimentName = experimentName,
+                             sampleFiles = sampleFiles)
 
 ### SCALE TRANSFORMATION STEPS ###
 
@@ -342,8 +340,11 @@ pipL_PeacoQC <-
 ## second method: in one go, using JSON file input 
 
 In this sub-section, we build the flowAI pipeline, this time using a JSON
-file as an input. Note that the `experimentName` is here specified in the JSON
-file itself.
+file as an input. Note that the `experimentName` and `sampleFiles` are here 
+specified in the JSON file itself. This is not necessary, as 
+one could well specify the processing steps only in the JSON file, and 
+pass the `experimentName` and `sampleFiles` directly 
+in the `CytoPipeline` constructor.
 
 ```{r CytoPipelineJson}
 

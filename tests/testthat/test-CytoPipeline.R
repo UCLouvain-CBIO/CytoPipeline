@@ -154,10 +154,8 @@ test_that("CytoPipeline with complex flows raises no error", {
             ))
 
             # main parameters : sample files and output files
-            pipelineParams <- list()
-            pipelineParams$experimentName <- experimentName
-            pipelineParams$sampleFiles <- sampleFiles
-            pipL <- CytoPipeline(pipelineParams)
+            pipL <- CytoPipeline(experimentName = experimentName,
+                                 sampleFiles = sampleFiles)
 
             ### SCALE TRANSFORMATION STEPS ###
 
@@ -365,7 +363,8 @@ test_that("CytoPipeline with json input raises no error", {
     )
 })
 
-test_that("CytoPipeline with Biocparallel::Serial (by default) raises no error", {
+test_that("CytoPipeline with Biocparallel::Serial (by default) raises no error",
+          {
     expect_error(
         {
             jsonDir <- system.file("extdata", package = "CytoPipeline")
@@ -373,10 +372,12 @@ test_that("CytoPipeline with Biocparallel::Serial (by default) raises no error",
 
             pipL2 <- CytoPipeline(jsonPath)
             experimentName(pipL2) <- "BPSerial_Experiment"
-            sampleFiles(pipL2) <- paste0(jsonDir, "/", basename(sampleFiles(pipL2)))
+            sampleFiles(pipL2) <- paste0(jsonDir, "/", 
+                                         basename(sampleFiles(pipL2)))
             bp <- BiocParallel::SerialParam()
             BiocParallel::register(bp, default = TRUE)
-            suppressWarnings(execute(pipL2, path = outputDir, useBiocParallel = TRUE))
+            suppressWarnings(execute(pipL2, path = outputDir, 
+                                     useBiocParallel = TRUE))
         },
         NA
     )
@@ -389,9 +390,11 @@ test_that("CytoPipeline with Biocparallel::SnowParam raises no error", {
             jsonPath <- paste0(jsonDir, "/pipelineParams.json")
 
             pipL2 <- CytoPipeline(jsonPath)
+                
             experimentName(pipL2) <- "BPSNOW_Experiment"
             sampleFiles(pipL2) <- paste0(jsonDir, "/", 
-                                         basename(sampleFiles(pipL2)))
+                                        c("sample_Donor1.fcs", 
+                                          "sample_Donor2.fcs"))
             logDir <- paste0(outputDir, 
                              "/BiocParallel/log")
             suppressWarnings(dir.create(logDir, recursive = TRUE))
