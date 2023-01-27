@@ -239,8 +239,8 @@ pipeline <code>experimentName</code>.</p>
 <div class="section level3">
 <h3 id="first-method-step-by-step-using-cytopipeline-methods">first method: step by step, using CytoPipeline methods<a class="anchor" aria-label="anchor" href="#first-method-step-by-step-using-cytopipeline-methods"></a>
 </h3>
-<p>In this sub-section, we build a <code>CytoPipeline</code> object by
-successively adding <code>CytoProcessingStep</code> objects to the two
+<p>In this sub-section, we build a <code>CytoPipeline</code> object and
+successively add <code>CytoProcessingStep</code> objects to the two
 different processing queues. We do this for the PeacoQC pipeline.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># main parameters : sample files and output files</span></span>
@@ -249,10 +249,8 @@ different processing queues. We do this for the PeacoQC pipeline.</p>
 <span><span class="va">sampleFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">rawDataDir</span>, <span class="st">"/"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">rawDataDir</span>,</span>
 <span>                                             pattern <span class="op">=</span> <span class="st">"sample_"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">pipelineParams</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">pipelineParams</span><span class="op">$</span><span class="va">experimentName</span> <span class="op">&lt;-</span> <span class="va">experimentName</span></span>
-<span><span class="va">pipelineParams</span><span class="op">$</span><span class="va">sampleFiles</span> <span class="op">&lt;-</span> <span class="va">sampleFiles</span></span>
-<span><span class="va">pipL_PeacoQC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CytoPipeline.html">CytoPipeline</a></span><span class="op">(</span><span class="va">pipelineParams</span><span class="op">)</span></span>
+<span><span class="va">pipL_PeacoQC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CytoPipeline.html">CytoPipeline</a></span><span class="op">(</span>experimentName <span class="op">=</span> <span class="va">experimentName</span>,</span>
+<span>                             sampleFiles <span class="op">=</span> <span class="va">sampleFiles</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">### SCALE TRANSFORMATION STEPS ###</span></span>
 <span></span>
@@ -424,8 +422,12 @@ different processing queues. We do this for the PeacoQC pipeline.</p>
 <h3 id="second-method-in-one-go-using-json-file-input">second method: in one go, using JSON file input<a class="anchor" aria-label="anchor" href="#second-method-in-one-go-using-json-file-input"></a>
 </h3>
 <p>In this sub-section, we build the flowAI pipeline, this time using a
-JSON file as an input. Note that the <code>experimentName</code> is here
-specified in the JSON file itself.</p>
+JSON file as an input. Note that the <code>experimentName</code> and
+<code>sampleFiles</code> are here specified in the JSON file itself.
+This is not necessary, as one could well specify the processing steps
+only in the JSON file, and pass the <code>experimentName</code> and
+<code>sampleFiles</code> directly in the <code>CytoPipeline</code>
+constructor.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">jsonDir</span> <span class="op">&lt;-</span> <span class="va">rawDataDir</span></span>
 <span></span>
