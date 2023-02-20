@@ -56,7 +56,7 @@
 #' sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
 #'                                              pattern = "sample_"))
 #'                                              
-#' outputDir <- withr::local_tempdir()
+#' outputDir <- base::tempdir()
 #' 
 #' # main parameters : sample files and output files
 #' pipL <- CytoPipeline(experimentName = experimentName,

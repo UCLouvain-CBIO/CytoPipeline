@@ -415,7 +415,7 @@ test_that("getFCSFileName works", {
 })
 
 test_that("writeFlowFrame works", {
-    outputDir <- withr::local_tempdir()
+    outputDir <- base::tempdir()
     
     ff_c <- readRDS(test_path("fixtures", "ff_c.rds"))
     

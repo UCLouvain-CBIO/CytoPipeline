@@ -3,6 +3,8 @@
 ## CytoPipeline 0.99.5
 - reactivated unit tests for ggplot2 objects
 - added man page for CytoPipeline package
+- a few modifs in the vignette related to Bioc review process
+- replaced withr::local_tempdir() by base::tempdir()
 
 ## CytoPipeline 0.99.4
 

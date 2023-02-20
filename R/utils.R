@@ -942,7 +942,7 @@ getFCSFileName <- function(ff) {
 #'     min.limit = minLimit)
 #'     
 #' ff_c <- compensateFromMatrix(res[[2]], matrixSource = "fcs") 
-#' outputDir <- withr::local_tempdir()
+#' outputDir <- base::tempdir()
 #' writeFlowFrame(ff_c, 
 #'                dir = outputDir,
 #'                suffix = "_fcs_export",
