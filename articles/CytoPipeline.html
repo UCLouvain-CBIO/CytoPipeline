@@ -105,6 +105,19 @@ document.addEventListener("DOMContentLoaded", function() {
       links[i].target = '_blank';
 });
 </script><div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>To install this package, start R and enter (uncommented):</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># if (!require("BiocManager", quietly = TRUE))</span></span>
+<span><span class="co">#     install.packages("BiocManager")</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># BiocManager::install("CytoPipeline")</span></span></code></pre></div>
+<p>Note that CytoPipeline imports ggplot2 (&gt;= 3.4.1).<br>
+The version requirement is due to a bug in version 3.4.0., affecting
+<code><a href="https://ggplot2.tidyverse.org/reference/geom_hex.html" class="external-link">ggplot2::geom_hex()</a></code>.</p>
+</div>
+<div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>The <code>CytoPipeline</code> package provides infrastructure to
@@ -126,9 +139,11 @@ after each step.</p>
 derived from a reference public dataset accompanying the OMIP-021
 (Optimized Multicolor Immunofluorescence Panel 021) article <span class="citation">(Gherardin et al. 2014)</span>.</p>
 <p>A sub-sample of this public dataset is built-in in the
-<code>CytoPipeline</code> package, as the OMIP021 dataset. See
-<code>./scripts/MakeOMIP021Sample.R</code> for more details on how the
-<code>OMIP021</code> dataset was created.</p>
+<code>CytoPipeline</code> package, as the OMIP021 dataset. See the
+<code>MakeOMIP021Samples.R</code> script for more details on how the
+<code>OMIP021</code> dataset was created. This script is to be found in
+the <code>script</code> subdirectory in the <code>CytoPipeline</code>
+package installation path.</p>
 <p>Note that in the <code>CytoPipeline</code>package, as in the current
 vignette, matrices of flow cytometry events intensities are stored as
 <code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-class.html" class="external-link">flowCore::flowFrame</a></code> objects <span class="citation">(Ellis B
@@ -230,11 +245,13 @@ the different step outputs will be stored in a
 <code>BiocFileCache</code> instance, in a sub-directory that will be
 created in <code>workDir</code>and of which the name will be set to the
 pipeline <code>experimentName</code>.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># raw data</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://uclouvain-cbio.github.io/CytoPipeline" class="external-link">CytoPipeline</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># raw data</span></span>
 <span><span class="va">rawDataDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"CytoPipeline"</span><span class="op">)</span></span>
 <span><span class="co"># output files</span></span>
-<span><span class="va">workDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_tempfile.html" class="external-link">local_tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">workDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="fu">base</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="first-method-step-by-step-using-cytopipeline-methods">first method: step by step, using CytoPipeline methods<a class="anchor" aria-label="anchor" href="#first-method-step-by-step-using-cytopipeline-methods"></a>
@@ -242,12 +259,12 @@ pipeline <code>experimentName</code>.</p>
 <p>In this sub-section, we build a <code>CytoPipeline</code> object and
 successively add <code>CytoProcessingStep</code> objects to the two
 different processing queues. We do this for the PeacoQC pipeline.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># main parameters : sample files and output files</span></span>
 <span></span>
 <span><span class="va">experimentName</span> <span class="op">&lt;-</span> <span class="st">"OMIP021_PeacoQC"</span></span>
-<span><span class="va">sampleFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">rawDataDir</span>, <span class="st">"/"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">rawDataDir</span>,</span>
-<span>                                             pattern <span class="op">=</span> <span class="st">"sample_"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sampleFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">rawDataDir</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">rawDataDir</span>,</span>
+<span>                                                pattern <span class="op">=</span> <span class="st">"sample_"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pipL_PeacoQC</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CytoPipeline.html">CytoPipeline</a></span><span class="op">(</span>experimentName <span class="op">=</span> <span class="va">experimentName</span>,</span>
 <span>                             sampleFiles <span class="op">=</span> <span class="va">sampleFiles</span><span class="op">)</span></span>
@@ -428,19 +445,27 @@ This is not necessary, as one could well specify the processing steps
 only in the JSON file, and pass the <code>experimentName</code> and
 <code>sampleFiles</code> directly in the <code>CytoPipeline</code>
 constructor.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">jsonDir</span> <span class="op">&lt;-</span> <span class="va">rawDataDir</span></span>
 <span></span>
 <span><span class="co"># creation on CytoPipeline object,</span></span>
 <span><span class="co"># using json file as input</span></span>
 <span><span class="va">pipL_flowAI</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu"><a href="../reference/CytoPipeline.html">CytoPipeline</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">jsonDir</span>, <span class="st">"/OMIP021_flowAI_pipeline.json"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/CytoPipeline.html">CytoPipeline</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">jsonDir</span>, <span class="st">"OMIP021_flowAI_pipeline.json"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="executing-pipelines">Executing pipelines<a class="anchor" aria-label="anchor" href="#executing-pipelines"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="section level3">
+<h3 id="executing-peacoqc-pipeline">Executing PeacoQC pipeline<a class="anchor" aria-label="anchor" href="#executing-peacoqc-pipeline"></a>
+</h3>
+<p>Note: executing the next statement might generate some
+warnings.<br>
+These are generated by the <code>PeacoQC method</code>, are highly
+dependent on the shape of the data investigated, and can safely be
+ignored here.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># execute PeacoQC pipeline</span></span>
 <span><span class="fu"><a href="../reference/execute.html">execute</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>, path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
@@ -523,7 +548,14 @@ constructor.</p>
 <pre><code><span><span class="co">## Proceeding with step 5 [remove_doublets] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 6 [remove_debris] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 7 [remove_dead_cells] ...</span></span></code></pre>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+</div>
+<div class="section level3">
+<h3 id="executing-flowai-pipeline">Executing flowAI pipeline<a class="anchor" aria-label="anchor" href="#executing-flowai-pipeline"></a>
+</h3>
+<p>Note: again this might generate some warnings, due to flowAI.<br>
+These are highly dependent on the shape of the data investigated, and
+can safely be ignored here.</p>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># execute flowAI pipeline</span></span>
 <span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="va">jsonDir</span>, <span class="fu"><a href="../reference/execute.html">execute</a></span><span class="op">(</span><span class="va">pipL_flowAI</span>,</span>
 <span>                                 path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -589,44 +621,65 @@ constructor.</p>
 <pre><code><span><span class="co">## Proceeding with step 5 [remove_debris] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 6 [remove_dead_cells] ...</span></span></code></pre>
 </div>
+</div>
 <div class="section level2">
 <h2 id="inspecting-results-and-visualization">Inspecting results and visualization<a class="anchor" aria-label="anchor" href="#inspecting-results-and-visualization"></a>
 </h2>
 <div class="section level3">
 <h3 id="plotting-processing-queues-as-workflow-graphs">Plotting processing queues as workflow graphs<a class="anchor" aria-label="anchor" href="#plotting-processing-queues-as-workflow-graphs"></a>
 </h3>
-<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># plot work flow graphs</span></span>
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># plot work flow graph - PeacoQC - scale transformList</span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_PeacoQC</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
-<p><img src="CytoPipeline_files/figure-html/plotWorkFlows-1.png" width="700"></p>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
+<div class="figure">
+<img src="CytoPipeline_files/figure-html/plotWorkFlows1-1.png" alt="PeacoQC pipeline - scale transformList processing queue" width="700"><p class="caption">
+PeacoQC pipeline - scale transformList processing queue
+</p>
+</div>
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># plot work flow graph - PeacoQC - pre-processing</span></span>
+<span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_PeacoQC</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
 <span>  sampleFile <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
-<p><img src="CytoPipeline_files/figure-html/plotWorkFlows-2.png" width="700"></p>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
+<div class="figure">
+<img src="CytoPipeline_files/figure-html/plotWorkFlows2-1.png" alt="PeacoQC pipeline - file pre-processing queue" width="700"><p class="caption">
+PeacoQC pipeline - file pre-processing queue
+</p>
+</div>
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># plot work flow graph - flowAI - scale transformList</span></span>
+<span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_flowAI</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
-<p><img src="CytoPipeline_files/figure-html/plotWorkFlows-3.png" width="700"></p>
-<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
+<div class="figure">
+<img src="CytoPipeline_files/figure-html/plotWorkFlows3-1.png" alt="flowAI pipeline - scale transformList processing queue" width="700"><p class="caption">
+flowAI pipeline - scale transformList processing queue
+</p>
+</div>
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># plot work flow graph - flowAI - pre-processing</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_flowAI</span>,</span>
 <span>  whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
 <span>  sampleFile <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
-<p><img src="CytoPipeline_files/figure-html/plotWorkFlows-4.png" width="700"></p>
+<div class="figure">
+<img src="CytoPipeline_files/figure-html/plotWorkFlows4-1.png" alt="flowAI pipeline - file pre-processing queue" width="700"><p class="caption">
+flowAI pipeline - file pre-processing queue
+</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="obtaining-information-about-pipeline-generated-objects">Obtaining information about pipeline generated objects<a class="anchor" aria-label="anchor" href="#obtaining-information-about-pipeline-generated-objects"></a>
 </h3>
-<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectInfos</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>, </span>
 <span>                           path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                           whichQueue <span class="op">=</span> <span class="st">"scale transform"</span><span class="op">)</span></span></code></pre></div>
@@ -636,7 +689,7 @@ constructor.</p>
 <span><span class="co">## 3               compensate_obj       flowSet</span></span>
 <span><span class="co">## 4      flowframe_aggregate_obj     flowFrame</span></span>
 <span><span class="co">## 5 scale_transform_estimate_obj transformList</span></span></code></pre>
-<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectInfos</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>, </span>
 <span>                           path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                           whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
@@ -653,7 +706,7 @@ constructor.</p>
 <div class="section level3">
 <h3 id="retrieving-flow-frames-at-different-steps-and-plotting-them">Retrieving flow frames at different steps and plotting them<a class="anchor" aria-label="anchor" href="#retrieving-flow-frames-at-different-steps-and-plotting-them"></a>
 </h3>
-<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># example of retrieving a flow frame</span></span>
 <span><span class="co"># at a given step</span></span>
 <span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineFlowFrame</a></span><span class="op">(</span></span>
@@ -669,16 +722,30 @@ constructor.</p>
 <span>  whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
 <span>  sampleFile <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  objectName <span class="op">=</span> <span class="st">"remove_debris_obj"</span>,</span>
-<span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="CytoPipeline_files/figure-html/plotFlowFrames-1.png" width="700"></p>
-<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span>, yChannel <span class="op">=</span> <span class="st">"SSC-A"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="CytoPipeline_files/figure-html/plotFlowFrames-2.png" width="700"></p>
+<span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="CytoPipeline_files/figure-html/ggplotEvents1-1.png" alt="1-dimensional distribution plot (forward scatter channel)" width="700"><p class="caption">
+1-dimensional distribution plot (forward scatter channel)
+</p>
+</div>
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span>, yChannel <span class="op">=</span> <span class="st">"SSC-A"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="CytoPipeline_files/figure-html/ggplotEvents2-1.png" alt="2-dimensional distribution plot (forward scatter vs. side scatter channels)" width="700"><p class="caption">
+2-dimensional distribution plot (forward scatter vs. side scatter
+channels)
+</p>
+</div>
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotFilterEvents.html">ggplotFilterEvents</a></span><span class="op">(</span><span class="va">ff</span>, <span class="va">ff2</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span>, yChannel <span class="op">=</span> <span class="st">"SSC-A"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="CytoPipeline_files/figure-html/plotFlowFrames-3.png" width="700"></p>
+<div class="figure">
+<img src="CytoPipeline_files/figure-html/ggplotEvents3-1.png" alt="2-dimensional difference plot between remove_doublets and remove_debris steps" width="700"><p class="caption">
+2-dimensional difference plot between remove_doublets and remove_debris
+steps
+</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="example-of-retrieving-another-type-of-object">Example of retrieving another type of object<a class="anchor" aria-label="anchor" href="#example-of-retrieving-another-type-of-object"></a>
@@ -689,7 +756,7 @@ cache, that is not specifically a <code><a href="https://rdrr.io/pkg/flowCore/ma
 represents a set of<br><code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-class.html" class="external-link">flowCore::flowFrame</a></code>objects, that was obtained after the
 compensation step of the scale transformation processing queue, prior to
 aggregating the two samples.</p>
-<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectFromCache</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>,</span>
 <span>                                      path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                                      whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
@@ -708,7 +775,7 @@ either in the form of <code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-
 <code><a href="https://rdrr.io/pkg/flowCore/man/transformList-class.html" class="external-link">flowCore::transformList</a></code>. To do this, install the
 <code>CytoPipelineGUI</code> package, and uncomment the following
 code:</p>
-<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#devtools::install_github("https://github.com/UCLouvain-CBIO/CytoPipelineGUI")</span></span>
 <span><span class="co">#CytoPipelineGUI::CytoPipelineCheckApp(dir = workDir)</span></span></code></pre></div>
 </div>
