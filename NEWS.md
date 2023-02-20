@@ -1,8 +1,7 @@
 # CytoPipeline 0.99
 
 ## CytoPipeline 0.99.5
-
-(no changes yet)
+- reactivated unit tests for ggplot2 objects
 
 ## CytoPipeline 0.99.4
 

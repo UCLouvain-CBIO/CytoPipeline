@@ -56,7 +56,7 @@ Imports:
     utils,
     withr,
     rlang,
-    ggplot2,
+    ggplot2 (>= 3.4.1),
     ggcyto,
     BiocFileCache,
     BiocParallel,
