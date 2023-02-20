@@ -21,6 +21,9 @@ a new flowCore::flowFrame with the updated marker name
 'desc' of parameters data) of a given channel.
 }
 \examples{
+
+data(OMIP021Samples)
+
 retFF <- updateMarkerName(OMIP021Samples[[1]],
                           channel = "FSC-A",
                           newMarkerName = "Fwd Scatter-A")

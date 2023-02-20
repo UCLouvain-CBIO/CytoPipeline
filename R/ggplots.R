@@ -30,6 +30,7 @@ NULL
 #'
 #' @examples 
 #' 
+#' data(OMIP021Samples)
 #' 
 #' # single flowFrame plot
 #' ggplotFlowRate(OMIP021Samples[[1]])
@@ -194,6 +195,7 @@ ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100) {
 #'
 #' @examples 
 #' 
+#' data(OMIP021Samples)
 #' 
 #' ### 1D Examples ###
 #' 
@@ -657,6 +659,8 @@ ggplotEvents <- function(obj,
 #' @export
 #'
 #' @examples 
+#' 
+#' data(OMIP021Samples)
 #' 
 #' ffPre <- OMIP021Samples[[1]]
 #' 

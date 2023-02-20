@@ -16,5 +16,8 @@ the basename of $FILENAME keyword
 get basename of $FILENAME keyword if exists
 }
 \examples{
+
+data(OMIP021Samples)
+
 fName <- getFCSFileName(OMIP021Samples[[1]])
 }

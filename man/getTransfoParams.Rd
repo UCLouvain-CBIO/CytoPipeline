@@ -26,6 +26,9 @@ investigates a flowCore::tranformList object to get the type
 and parameters of the transformation applying to a specific channel
 }
 \examples{
+
+data(OMIP021Samples)
+
 # set-up a hybrid transformation list :
 # - two channels are logicle-ly transformed with automatic param estimates
 # - one channel has explicit logicle transfo with default parameters

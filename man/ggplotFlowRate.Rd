@@ -22,6 +22,7 @@ plot flow rate as a function of time, using ggplot2
 }
 \examples{
 
+data(OMIP021Samples)
 
 # single flowFrame plot
 ggplotFlowRate(OMIP021Samples[[1]])

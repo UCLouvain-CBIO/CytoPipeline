@@ -24,6 +24,9 @@ channels
 finds name of channels corresponding to user provided markers
 }
 \examples{
+
+data(OMIP021Samples)
+
 # with existing markers
 ret <- getChannelNamesFromMarkers(
     OMIP021Samples[[1]],

@@ -47,6 +47,8 @@ we apply a parallelogram shaped gate, by keeping a constant range of channel
 }
 \examples{
 
+data(OMIP021Samples)
+
 # simple example with one single singlets gate filter 
 # FSC-A and FSC-H channels are used by default
 

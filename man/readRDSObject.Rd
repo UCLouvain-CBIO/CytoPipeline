@@ -21,6 +21,8 @@ parameters passed in (...)
 }
 \examples{
 
+data(OMIP021Samples)
+
 transListPath <- paste0(system.file("extdata", 
                                     package = "CytoPipeline"),
                         "/OMIP021_TransList.rds") 

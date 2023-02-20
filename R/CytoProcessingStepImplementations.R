@@ -40,6 +40,8 @@
 #'
 #' @examples
 #' 
+#' data(OMIP021Samples)
+#' 
 #' compMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
 #' ff_c <- runCompensation(OMIP021Samples[[1]], spillover = compMatrix)
 #' 
@@ -1083,6 +1085,8 @@ qualityControlPeacoQC <- function(ff,
 ##' 
 ##' @examples
 ##' 
+##' data(OMIP021Samples)
+##' 
 ##' transListPath <- paste0(system.file("extdata", 
 ##'                                     package = "CytoPipeline"),
 ##'                         "/OMIP021_TransList.rds") 
@@ -1111,6 +1115,8 @@ readRDSObject <- function(RDSFile, ...) {
 ##' @export
 ##' 
 ##' @examples
+##' 
+##' data(OMIP021Samples)
 ##' 
 ##' transListPath <- paste0(system.file("extdata", 
 ##'                                     package = "CytoPipeline"),

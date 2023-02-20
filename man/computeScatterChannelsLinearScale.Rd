@@ -37,6 +37,8 @@ based on a referenceChannel
 }
 \examples{
 
+data(OMIP021Samples)
+
 ff <- OMIP021Samples[[1]]
 refMarker <- "APCCy7 - CD4"
 refChannel <- "780/60Red-A"

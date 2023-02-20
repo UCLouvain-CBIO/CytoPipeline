@@ -49,6 +49,9 @@ This function is based on PeacoQC::AggregateFlowframes() where file names
 inputs have been replaced by a flowSet input.
 }
 \examples{
+
+data(OMIP021Samples)
+
 nCells <- 1000
 agg <- aggregateAndSample(
     fs = OMIP021Samples,

@@ -23,6 +23,9 @@ columns in ff
 : find flow frame columns that represent true signal
 }
 \examples{
+
+data(OMIP021Samples)
+
 areSignalCols(OMIP021Samples[[1]])
 
 }

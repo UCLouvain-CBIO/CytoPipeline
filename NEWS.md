@@ -6,6 +6,7 @@
 - a few modifs in the vignette related to Bioc review process
 - replaced withr::local_tempdir() by base::tempdir()
 - removed extraneous whitespaces in CytoPipeline show() method
+- removed `LazyData: true` in DESCRIPTION file 
 
 ## CytoPipeline 0.99.4
 

@@ -22,6 +22,9 @@ be the time channel. First tries to identify a channel name containing the
 channel.
 }
 \examples{
+
+data(OMIP021Samples)
+
 ret <- findTimeChannel(OMIP021Samples[[1]])
 ret # "Time"
 

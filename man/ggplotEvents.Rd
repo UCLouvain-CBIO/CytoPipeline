@@ -82,6 +82,7 @@ if 2D : geom_hex will be used \cr
 }
 \examples{
 
+data(OMIP021Samples)
 
 ### 1D Examples ###
 

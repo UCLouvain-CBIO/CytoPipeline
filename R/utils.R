@@ -25,6 +25,9 @@
 #' @export
 #' 
 #' @examples
+#' 
+#' data(OMIP021Samples)
+#' 
 #' areSignalCols(OMIP021Samples[[1]])
 #'
 areSignalCols <- function(ff,
@@ -61,6 +64,9 @@ areSignalCols <- function(ff,
 #' @export
 #' 
 #' @examples
+#' 
+#' data(OMIP021Samples)
+#' 
 #' areFluoCols(OMIP021Samples[[1]])
 #'
 areFluoCols <- function(ff,
@@ -88,6 +94,9 @@ areFluoCols <- function(ff,
 #' @export
 #' 
 #' @examples
+#' 
+#' data(OMIP021Samples)
+#' 
 #' # take first sample of dataset, subsample 100 events and create new flowFrame
 #' ff <- subsample(OMIP021Samples[[1]], nSamples = 100)
 #' 
@@ -138,6 +147,9 @@ subsample <- function(ff, nSamples, seed = NULL) {
 #' @export
 #' 
 #' @examples 
+#' 
+#' data(OMIP021Samples)
+#' 
 #' ff <- OMIP021Samples[[1]]
 #' compMatrix <- flowCore::spillover(ff)$SPILL
 #' ff <- runCompensation(ff, 
@@ -192,6 +204,9 @@ runCompensation <- function(obj, spillover, updateChannelNames = TRUE) {
 #' @export
 #' 
 #' @examples 
+#' 
+#' data(OMIP021Samples)
+#' 
 #' nCells <- 1000
 #' agg <- aggregateAndSample(
 #'     fs = OMIP021Samples,
@@ -316,7 +331,9 @@ aggregateAndSample <- function(fs,
 #' @export
 #' 
 #' @examples
-
+#' 
+#' data(OMIP021Samples)
+#' 
 #' # set-up a hybrid transformation list :
 #' # - two channels are logicle-ly transformed with automatic param estimates
 #' # - one channel has explicit logicle transfo with default parameters
@@ -421,6 +438,8 @@ getTransfoParams <- function(transList,
 #' @export
 #'
 #' @examples
+#' 
+#' data(OMIP021Samples)
 #' 
 #' ff <- OMIP021Samples[[1]]
 #' refMarker <- "APCCy7 - CD4"
@@ -656,6 +675,9 @@ computeScatterChannelsLinearScale <- function(ff,
 #' time. If not found, returns NULL.
 #' @export
 #' @examples 
+#' 
+#' data(OMIP021Samples)
+#' 
 #' ret <- findTimeChannel(OMIP021Samples[[1]])
 #' ret # "Time"
 #'
@@ -708,6 +730,9 @@ findTimeChannel <- function(obj, excludeChannels = c()) {
 #' @export
 #'
 #' @examples 
+#' 
+#' data(OMIP021Samples)
+#' 
 #' # with existing markers
 #' ret <- getChannelNamesFromMarkers(
 #'     OMIP021Samples[[1]],
@@ -787,6 +812,9 @@ getChannelNamesFromMarkers <- function(ff, markers) {
 #' @return a new flowCore::flowFrame with the updated marker name
 #' @export
 #' @examples
+#' 
+#' data(OMIP021Samples)
+#' 
 #' retFF <- updateMarkerName(OMIP021Samples[[1]],
 #'                           channel = "FSC-A",
 #'                           newMarkerName = "Fwd Scatter-A")
@@ -820,6 +848,9 @@ updateMarkerName <- function(ff, channel, newMarkerName) {
 #' @return a new flowCore::flowFrame with the removed channels
 #' @export
 #' @examples
+#' 
+#' data(OMIP021Samples)
+#' 
 #' retFF <- removeChannels(OMIP021Samples[[1]],
 #'                         channel = "FSC-A")
 #'
@@ -852,6 +883,9 @@ removeChannels <- function(ff, channels) {
 #' @return new flowCore::flowFrame containing the added 'Original_ID' column
 #' @export
 #' @examples
+#' 
+#' data(OMIP021Samples)
+#' 
 #' retFF <- appendCellID(OMIP021Samples[[1]])
 #'
 appendCellID <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
@@ -898,6 +932,9 @@ appendCellID <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
 #' @return the basename of $FILENAME keyword
 #' @export
 #' @examples 
+#' 
+#' data(OMIP021Samples)
+#' 
 #' fName <- getFCSFileName(OMIP021Samples[[1]])
 getFCSFileName <- function(ff) {
     if (!inherits(ff, "flowFrame")) {

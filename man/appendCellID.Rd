@@ -21,6 +21,9 @@ This column can be used in plots comparing the events pre and post gating.
 If the 'Original_ID' column already exists, the function does nothing
 }
 \examples{
+
+data(OMIP021Samples)
+
 retFF <- appendCellID(OMIP021Samples[[1]])
 
 }

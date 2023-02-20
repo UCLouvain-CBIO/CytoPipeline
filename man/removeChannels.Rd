@@ -19,6 +19,9 @@ a new flowCore::flowFrame with the removed channels
 names.
 }
 \examples{
+
+data(OMIP021Samples)
+
 retFF <- removeChannels(OMIP021Samples[[1]],
                         channel = "FSC-A")
 

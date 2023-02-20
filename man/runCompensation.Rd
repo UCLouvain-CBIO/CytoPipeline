@@ -26,6 +26,9 @@ utility, allowing to trigger an update of the fluo channel names
 with a prefix 'comp-' (as in FlowJo)
 }
 \examples{
+
+data(OMIP021Samples)
+
 ff <- OMIP021Samples[[1]]
 compMatrix <- flowCore::spillover(ff)$SPILL
 ff <- runCompensation(ff, 

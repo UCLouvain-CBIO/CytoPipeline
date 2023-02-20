@@ -86,6 +86,8 @@ in 2D, showing the impact of applying a filter between :
 }
 \examples{
 
+data(OMIP021Samples)
+
 ffPre <- OMIP021Samples[[1]]
 
 # creating a manual polygon gate filter based on channels L/D and FSC-A

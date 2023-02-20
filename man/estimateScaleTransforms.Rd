@@ -46,6 +46,8 @@ For the estimateLogicle function, see flowCore documentation.
 }
 \examples{
 
+data(OMIP021Samples)
+
 compMatrix <- flowCore::spillover(OMIP021Samples[[1]])$SPILL
 ff_c <- runCompensation(OMIP021Samples[[1]], spillover = compMatrix)
 
