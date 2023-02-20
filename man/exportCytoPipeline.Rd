@@ -29,7 +29,7 @@ to a JSON file (writing the file = side effect)
 }}
 \examples{
 
-outputDir <- withr::local_tempdir()
+outputDir <- base::tempdir()
 
 # build CytoPipeline object using json input
 jsonPath <- paste0(system.file("extdata", package = "CytoPipeline"), 

@@ -286,13 +286,13 @@ setMethod(
     "show", "CytoPipeline",
     function(object) {
         cat(
-            "Pipeline object for flow cytometry experiment: ",
+            "Pipeline object for flow cytometry experiment:",
             object@experimentName, "\n"
         )
         if (length(object@sampleFiles)) {
             cat(
                 "Sample files:", length(object@sampleFiles),
-                " sample file(s)\n"
+                "sample file(s)\n"
             )
         } else {
             cat("No sample file\n")

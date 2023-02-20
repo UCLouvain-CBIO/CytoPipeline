@@ -300,14 +300,14 @@ showProcessingSteps <- function(x,
     }
 
     if (length(queue)) {
-        cat(queueName, ": ", length(queue), " processing step(s)\n")
+        cat(queueName, ":", length(queue), "processing step(s)\n")
         for (i in seq_along(queue)) {
             ps <- queue[[i]]
-            cat(i, ": ")
+            cat(i, ":")
             show(ps)
         }
     } else {
-        cat(queueName, " has no processing step\n")
+        cat(queueName, "has no processing step\n")
     }
 }
 

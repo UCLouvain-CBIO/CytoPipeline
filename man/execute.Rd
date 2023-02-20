@@ -91,7 +91,7 @@ experimentName <- "OMIP021_PeacoQC"
 sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
                                              pattern = "sample_"))
                                              
-outputDir <- withr::local_tempdir()
+outputDir <- base::tempdir()
 
 # main parameters : sample files and output files
 pipelineParams <- list()
