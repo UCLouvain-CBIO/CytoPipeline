@@ -42,6 +42,7 @@ biocViews: FlowCytometry, Preprocessing, QualityControl, WorkflowStep,
 Collate:
     'CytoPipeline-functions.R'
     'CytoPipeline.R'
+    'CytoPipelineClass.R'
     'CytoProcessingStep.R'
     'CytoProcessingStepImplementations.R'
     'data.R'

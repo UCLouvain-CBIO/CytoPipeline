@@ -2,6 +2,7 @@
 
 ## CytoPipeline 0.99.5
 - reactivated unit tests for ggplot2 objects
+- added man page for CytoPipeline package
 
 ## CytoPipeline 0.99.4
 
