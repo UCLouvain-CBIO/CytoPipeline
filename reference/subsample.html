@@ -86,7 +86,10 @@ adds also a column 'Original_ID' if not already present in flowFrame.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># take first sample of dataset, subsample 100 events and create new flowFrame</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">OMIP021Samples</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># take first sample of dataset, subsample 100 events and create new flowFrame</span></span></span>
 <span class="r-in"><span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu">subsample</span><span class="op">(</span><span class="va">OMIP021Samples</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, nSamples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
