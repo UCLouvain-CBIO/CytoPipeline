@@ -368,7 +368,7 @@ showProcessingSteps <- function(x,
 #' sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
 #'                                              pattern = "sample_"))
 #'                                              
-#' outputDir <- withr::local_tempdir()
+#' outputDir <- base::tempdir()
 #' 
 #' # main parameters : sample files and output files
 #' pipelineParams <- list()
@@ -852,7 +852,7 @@ execute <- function(x,
 #' # build CytoPipeline object using json input, run and store results in cache
 #' jsonDir <- system.file("extdata", package = "CytoPipeline")
 #' jsonPath <- paste0(jsonDir, "/pipelineParams.json")
-#' outputDir <- withr::local_tempdir()
+#' outputDir <- base::tempdir()
 #' pipL <- CytoPipeline(jsonPath)
 #' 
 #' # note we temporarily set working directory into package root directory
@@ -1267,7 +1267,7 @@ checkCytoPipelineConsistencyWithCache <- function(
 #' @return - for `export2JSONFile`: nothing
 #' @examples
 #'
-#' outputDir <- withr::local_tempdir()
+#' outputDir <- base::tempdir()
 #' 
 #' # build CytoPipeline object using json input
 #' jsonPath <- paste0(system.file("extdata", package = "CytoPipeline"), 
@@ -1337,7 +1337,7 @@ export2JSONFile <- function(x, path) {
 #' # build CytoPipeline object using json input, run and store results in cache
 #' jsonDir <- system.file("extdata", package = "CytoPipeline")
 #' jsonPath <- paste0(jsonDir, "/pipelineParams.json")
-#' outputDir <- withr::local_tempdir()
+#' outputDir <- base::tempdir()
 #' pipL <- CytoPipeline(jsonPath)
 #' 
 #' # note we temporarily set working directory into package root directory
