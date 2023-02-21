@@ -29,7 +29,7 @@ Description: This package provides support for automation and visualization of
  The package provides also specific visualization tools like
  pipeline workflow summary display, and 1D/2D comparison plots of obtained
  flowFrames at various steps of the pipeline.
-License: GPL (>=3) | file LICENSE
+License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

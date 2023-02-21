@@ -691,7 +691,7 @@ execute <- function(x,
     if (inherits(res, "transformList")) {
         currentTransList <- res
         if (saveScaleTransforms) {
-            scaleTransformFile = "scaleTransformList.rds"
+            scaleTransformFile <- "scaleTransformList.rds"
             saveRDS(res,
                     file = file.path(
                         rdsOutputDir,
