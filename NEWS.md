@@ -8,6 +8,7 @@
 - removed extraneous whitespaces in CytoPipeline show() method
 - removed `LazyData: true` in DESCRIPTION file 
 - replaced `paste0(path, "/", filename)` by `file.path(path, filename)`
+- updated License field in DESCRIPTION file
 
 ## CytoPipeline 0.99.4
 
