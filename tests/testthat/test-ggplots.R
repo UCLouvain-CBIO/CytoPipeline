@@ -21,7 +21,7 @@ path <- system.file("scripts",
                     package = "CytoPipeline"
 )
 
-source(paste0(path,"/MakeOMIP021UTSamples.R"))
+source(file.path(path,"MakeOMIP021UTSamples.R"))
 
 # TO DO: reactivate tests when ggplot version is fixed
 # error message (issue with vdiffr::expect_doppelganger())

@@ -74,7 +74,7 @@ and what is stored in the file cache
 # preliminary run:
 # build CytoPipeline object using json input, run and store results in cache
 jsonDir <- system.file("extdata", package = "CytoPipeline")
-jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+jsonPath <- file.path(jsonDir, "pipelineParams.json")
 outputDir <- base::tempdir()
 pipL <- CytoPipeline(jsonPath)
 

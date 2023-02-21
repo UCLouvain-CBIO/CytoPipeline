@@ -24,9 +24,9 @@ additional parameter passed in (...)
 
 data(OMIP021Samples)
 
-transListPath <- paste0(system.file("extdata", 
-                                    package = "CytoPipeline"),
-                        "/OMIP021_TransList.rds") 
+transListPath <- file.path(system.file("extdata", 
+                                       package = "CytoPipeline"),
+                           "OMIP021_TransList.rds") 
 
 transList <- readRDSObject(transListPath)
 

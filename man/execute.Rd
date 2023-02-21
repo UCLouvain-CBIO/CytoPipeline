@@ -86,9 +86,9 @@ the cache.
 ### *** EXAMPLE 1: building CytoPipeline step by step *** ###
 
 rawDataDir <-
-    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+    system.file("extdata", package = "CytoPipeline")
 experimentName <- "OMIP021_PeacoQC"
-sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
                                              pattern = "sample_"))
                                              
 outputDir <- base::tempdir()
@@ -268,7 +268,7 @@ suppressWarnings(execute(pipL, rmCache = FALSE, path = outputDir))
 ### *** EXAMPLE 2: building CytoPipeline from JSON file *** ###
 
 jsonDir <- system.file("extdata", package = "CytoPipeline")
-jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+jsonPath <- file.path(jsonDir, "pipelineParams.json")
 
 pipL2 <- CytoPipeline(jsonPath)
 

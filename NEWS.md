@@ -7,6 +7,7 @@
 - replaced withr::local_tempdir() by base::tempdir()
 - removed extraneous whitespaces in CytoPipeline show() method
 - removed `LazyData: true` in DESCRIPTION file 
+- replaced `paste0(path, "/", filename)` by `file.path(path, filename)`
 
 ## CytoPipeline 0.99.4
 

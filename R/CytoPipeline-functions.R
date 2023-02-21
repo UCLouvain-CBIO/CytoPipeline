@@ -22,13 +22,14 @@
 ##' processing steps
 ##' @examples 
 ##' 
-##' rawDataDir <- paste0(system.file("extdata", package = "CytoPipeline"), "/")
+##' rawDataDir <-
+##'     system.file("extdata", package = "CytoPipeline")
 ##' experimentName <- "OMIP021_PeacoQC"
-##' sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+##' sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
 ##'                                              pattern = "sample_"))
 ##' transListPath <- 
-##'     paste0(system.file("extdata", package = "CytoPipeline"), 
-#'             "/OMIP021_TransList.rds")
+##'     file.path(system.file("extdata", package = "CytoPipeline"), 
+##'               "OMIP021_TransList.rds")
 ##' 
 ##' # main parameters : sample files and experiment name
 ##' pipelineParams <- list()
@@ -363,9 +364,9 @@ showProcessingSteps <- function(x,
 #' ### *** EXAMPLE 1: building CytoPipeline step by step *** ###
 #' 
 #' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' experimentName <- "OMIP021_PeacoQC"
-#' sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+#' sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
 #'                                              pattern = "sample_"))
 #'                                              
 #' outputDir <- base::tempdir()
@@ -545,7 +546,7 @@ showProcessingSteps <- function(x,
 #' ### *** EXAMPLE 2: building CytoPipeline from JSON file *** ###
 #' 
 #' jsonDir <- system.file("extdata", package = "CytoPipeline")
-#' jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+#' jsonPath <- file.path(jsonDir, "pipelineParams.json")
 #' 
 #' pipL2 <- CytoPipeline(jsonPath)
 #' 
@@ -583,9 +584,9 @@ execute <- function(x,
 
     #browser()
 
-    outputDir <- paste0(path, "/", x@experimentName, "/output/")
-    # qualityControlDir <- paste0(outputDir, "QC/")
-    rdsOutputDir <- paste0(outputDir, "RDS/")
+    outputDir <- file.path(path, x@experimentName, "output")
+    # qualityControlDir <- file.path(outputDir, "QC")
+    rdsOutputDir <- file.path(outputDir, "RDS")
     
     newDirs <- c(outputDir, rdsOutputDir)
     createDirs <- c(saveLastStepFF, saveScaleTransforms)
@@ -598,7 +599,7 @@ execute <- function(x,
     }
 
     # create or use local cache
-    localCacheDir <- paste0(path, "/", x@experimentName, "/.cache")
+    localCacheDir <- file.path(path, x@experimentName, ".cache")
     bfc <- BiocFileCache::BiocFileCache(localCacheDir, ask = FALSE)
 
     # remove cache if 'rmCache' is set to
@@ -692,7 +693,7 @@ execute <- function(x,
         if (saveScaleTransforms) {
             scaleTransformFile = "scaleTransformList.rds"
             saveRDS(res,
-                    file = paste0(
+                    file = file.path(
                         rdsOutputDir,
                         scaleTransformFile
                     )
@@ -851,7 +852,7 @@ execute <- function(x,
 #' # preliminary run:
 #' # build CytoPipeline object using json input, run and store results in cache
 #' jsonDir <- system.file("extdata", package = "CytoPipeline")
-#' jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+#' jsonPath <- file.path(jsonDir, "pipelineParams.json")
 #' outputDir <- base::tempdir()
 #' pipL <- CytoPipeline(jsonPath)
 #' 
@@ -891,7 +892,7 @@ NULL
 ##'
 deleteCytoPipelineCache <- function(x, path = ".") {
     stopifnot(inherits(x, "CytoPipeline"))
-    localCacheDir <- paste0(path, "/", x@experimentName, "/.cache")
+    localCacheDir <- file.path(path, x@experimentName, ".cache")
     bfc <- BiocFileCache::BiocFileCache(localCacheDir, ask = FALSE)
     BiocFileCache::removebfc(bfc, ask = FALSE)
 }
@@ -922,7 +923,7 @@ buildCytoPipelineFromCache <- function(experimentName, path = ".") {
         )
         return(x)
     } else {
-        cacheDir <- paste0(path, "/", x@experimentName, "/.cache")
+        cacheDir <- file.path(path, x@experimentName, ".cache")
 
         bfc <- BiocFileCache::BiocFileCache(cacheDir, ask = FALSE)
         cacheInfo <- BiocFileCache::bfcinfo(bfc)
@@ -1062,7 +1063,7 @@ checkCytoPipelineConsistencyWithCache <- function(
     }
 
     # cache found => check consistency
-    cacheDir <- paste0(path, "/", x@experimentName, "/.cache")
+    cacheDir <- file.path(path, x@experimentName, ".cache")
 
     bfc <- BiocFileCache::BiocFileCache(cacheDir, ask = FALSE)
     cacheInfo <- BiocFileCache::bfcinfo(bfc)
@@ -1270,8 +1271,8 @@ checkCytoPipelineConsistencyWithCache <- function(
 #' outputDir <- base::tempdir()
 #' 
 #' # build CytoPipeline object using json input
-#' jsonPath <- paste0(system.file("extdata", package = "CytoPipeline"), 
-#'                   "/pipelineParams.json")
+#' jsonPath <- file.path(system.file("extdata", package = "CytoPipeline"), 
+#'                       "pipelineParams.json")
 #'   
 #' pipL <- CytoPipeline(jsonPath)
 #' 
@@ -1281,7 +1282,7 @@ checkCytoPipelineConsistencyWithCache <- function(
 #'                                    index = nPreProcessing)
 #'
 #' # export back to json file    
-#' export2JSONFile(pipL, path = paste0(outputDir, "/newFile.json")) 
+#' export2JSONFile(pipL, path = file.path(outputDir, "newFile.json")) 
 NULL
 
 
@@ -1336,7 +1337,7 @@ export2JSONFile <- function(x, path) {
 #' # preliminary run:
 #' # build CytoPipeline object using json input, run and store results in cache
 #' jsonDir <- system.file("extdata", package = "CytoPipeline")
-#' jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+#' jsonPath <- file.path(jsonDir, "pipelineParams.json")
 #' outputDir <- base::tempdir()
 #' pipL <- CytoPipeline(jsonPath)
 #' 
@@ -1414,7 +1415,7 @@ getCytoPipelineExperimentNames <-
         }
         experimentNames <- vector(mode = "character", length = 0)
         for (d in subdirs) {
-            tentative <- paste0(path, "/", d, "/.cache")
+            tentative <- file.path(path, d, ".cache")
             if (dir.exists(tentative)) {
                 experimentNames <- c(experimentNames, d)
             }
@@ -1477,7 +1478,7 @@ getCytoPipelineObjectFromCache <-
         }
 
 
-        cacheDir <- paste0(path, "/", x@experimentName, "/.cache")
+        cacheDir <- file.path(path, x@experimentName, ".cache")
 
         bfc <- BiocFileCache::BiocFileCache(cacheDir, ask = FALSE)
         cacheInfo <- BiocFileCache::bfcinfo(bfc)
@@ -1570,7 +1571,7 @@ getCytoPipelineObjectInfos <-
             stop(res$inconsistencyMsg)
         }
 
-        cacheDir <- paste0(path, "/", x@experimentName, "/.cache")
+        cacheDir <- file.path(path, x@experimentName, ".cache")
 
         bfc <- BiocFileCache::BiocFileCache(cacheDir, ask = FALSE)
         cacheInfo <- BiocFileCache::bfcinfo(bfc)

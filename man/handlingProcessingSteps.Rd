@@ -111,13 +111,14 @@ processing queue
 }}
 \examples{
 
-rawDataDir <- paste0(system.file("extdata", package = "CytoPipeline"), "/")
+rawDataDir <-
+    system.file("extdata", package = "CytoPipeline")
 experimentName <- "OMIP021_PeacoQC"
-sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
                                              pattern = "sample_"))
 transListPath <- 
-    paste0(system.file("extdata", package = "CytoPipeline"), 
-            "/OMIP021_TransList.rds")
+    file.path(system.file("extdata", package = "CytoPipeline"), 
+              "OMIP021_TransList.rds")
 
 # main parameters : sample files and experiment name
 pipelineParams <- list()

@@ -32,8 +32,8 @@ to a JSON file (writing the file = side effect)
 outputDir <- base::tempdir()
 
 # build CytoPipeline object using json input
-jsonPath <- paste0(system.file("extdata", package = "CytoPipeline"), 
-                  "/pipelineParams.json")
+jsonPath <- file.path(system.file("extdata", package = "CytoPipeline"), 
+                      "pipelineParams.json")
   
 pipL <- CytoPipeline(jsonPath)
 
@@ -43,5 +43,5 @@ pipL <- removeProcessingStep(pipL, whichQueue = "pre-processing",
                                    index = nPreProcessing)
 
 # export back to json file    
-export2JSONFile(pipL, path = paste0(outputDir, "/newFile.json")) 
+export2JSONFile(pipL, path = file.path(outputDir, "newFile.json")) 
 }

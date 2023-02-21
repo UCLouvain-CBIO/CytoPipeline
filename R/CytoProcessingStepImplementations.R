@@ -132,9 +132,9 @@ estimateScaleTransforms <- function(ff,
 #' @examples
 #'
 #' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 #' 
 #' nRandomSamples <- 1
 #' selectSampleFiles <- selectRandomSamples(sampleFiles, 
@@ -186,9 +186,9 @@ selectRandomSamples <- function(sampleFiles,
 #' @examples
 #'
 #' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -327,9 +327,9 @@ readSampleFiles <- function(sampleFiles,
 #' @examples
 #' 
 #' rawDataDir <- 
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <- 
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -432,9 +432,9 @@ removeMarginsPeacoQC <- function(x, channelSpecifications = NULL, ...) {
 #' @examples
 #'
 #' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -487,9 +487,9 @@ getAcquiredCompensationMatrix <- function(ff) {
 #' @examples
 #'
 #' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -581,9 +581,9 @@ compensateFromMatrix <- function(x,
 #' @examples
 #'
 #' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -685,9 +685,9 @@ removeDoubletsCytoPipeline <- function(ff,
 #' @examples
 #'
 #' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -770,9 +770,9 @@ removeDebrisManualGate <- function(ff,
 #' @examples
 #'
 #' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -872,9 +872,9 @@ removeDeadCellsManualGate <- function(ff,
 #' @examples
 #'
 #' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -979,9 +979,9 @@ qualityControlFlowAI <- function(ff,
 #' @examples
 #'
 #' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -1087,9 +1087,9 @@ qualityControlPeacoQC <- function(ff,
 ##' 
 ##' data(OMIP021Samples)
 ##' 
-##' transListPath <- paste0(system.file("extdata", 
-##'                                     package = "CytoPipeline"),
-##'                         "/OMIP021_TransList.rds") 
+##' transListPath <- file.path(system.file("extdata", 
+##'                                         package = "CytoPipeline"),
+##'                            "OMIP021_TransList.rds") 
 ##' 
 ##' transList <- readRDSObject(transListPath)
 ##' 
@@ -1118,9 +1118,9 @@ readRDSObject <- function(RDSFile, ...) {
 ##' 
 ##' data(OMIP021Samples)
 ##' 
-##' transListPath <- paste0(system.file("extdata", 
-##'                                     package = "CytoPipeline"),
-##'                         "/OMIP021_TransList.rds") 
+##' transListPath <- file.path(system.file("extdata", 
+##'                                        package = "CytoPipeline"),
+##'                            "OMIP021_TransList.rds") 
 ##' 
 ##' transList <- readRDSObject(transListPath)
 ##' 

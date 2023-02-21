@@ -39,9 +39,9 @@ It also pre-selects the channels to be handled (=> all signal channels)
 \examples{
 
 rawDataDir <-
-    paste0(system.file("extdata", package = "CytoPipeline"), "/")
+    system.file("extdata", package = "CytoPipeline")
 sampleFiles <-
-    paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+    file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 
 truncateMaxRange <- FALSE
 minLimit <- NULL

@@ -23,14 +23,15 @@ test_that("CytoPipeline default creation raises no error", {
 })
 
 test_that("Cytopipeline add/remove/clean processing step works", {
-    rawDataDir <- paste0(system.file("extdata", package = "CytoPipeline"), "/")
+    rawDataDir <- system.file("extdata", package = "CytoPipeline")
     experimentName <- "OMIP021_PeacoQC"
-    sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+    sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
         pattern = "sample_"
     ))
-    transListPath <- paste0(system.file("extdata",
-                                        package = "CytoPipeline"),
-                            "/OMIP021_TransList.rds")
+    transListPath <- file.path(system.file("extdata",
+                                           package = "CytoPipeline"),
+                               "OMIP021_TransList.rds")
+                                        
 
     # main parameters : sample files and experiment name
     pipelineParams <- list()
@@ -107,15 +108,15 @@ test_that("CytoPipeline with reading scale transfo only raises no error", {
     expect_error(
         {
             rawDataDir <-
-                paste0(system.file("extdata", package = "CytoPipeline"), "/")
+                system.file("extdata", package = "CytoPipeline")
             experimentName <- "OMIP021_PeacoQC"
-            sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+            sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
                 pattern = "sample_"
             ))
-            transListPath <- paste0(system.file("extdata",
-                                                package = "CytoPipeline"),
-                                    "/OMIP021_TransList.rds")
-
+            transListPath <- file.path(system.file("extdata",
+                                                   package = "CytoPipeline"),
+                                       "OMIP021_TransList.rds")
+                                                
             # main parameters : sample files and output files
             pipelineParams <- list()
             pipelineParams$experimentName <- experimentName
@@ -147,9 +148,9 @@ test_that("CytoPipeline with complex flows raises no error", {
     expect_error(
         {
             rawDataDir <-
-                paste0(system.file("extdata", package = "CytoPipeline"), "/")
+                system.file("extdata", package = "CytoPipeline")
             experimentName <- "OMIP021_PeacoQC"
-            sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+            sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
                 pattern = "sample_"
             ))
 
@@ -351,7 +352,7 @@ test_that("CytoPipeline with json input raises no error", {
     expect_error(
         {
             jsonDir <- system.file("extdata", package = "CytoPipeline")
-            jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+            jsonPath <- file.path(jsonDir, "pipelineParams.json")
 
             pipL2 <- CytoPipeline(jsonPath)
             withr::with_dir(new = jsonDir, {
@@ -368,12 +369,13 @@ test_that("CytoPipeline with Biocparallel::Serial (by default) raises no error",
     expect_error(
         {
             jsonDir <- system.file("extdata", package = "CytoPipeline")
-            jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+            jsonPath <- file.path(jsonDir, "pipelineParams.json")
 
             pipL2 <- CytoPipeline(jsonPath)
             experimentName(pipL2) <- "BPSerial_Experiment"
-            sampleFiles(pipL2) <- paste0(jsonDir, "/", 
-                                         basename(sampleFiles(pipL2)))
+            sampleFiles(pipL2) <- file.path(jsonDir,
+                                            basename(sampleFiles(pipL2)))
+                                         
             bp <- BiocParallel::SerialParam()
             BiocParallel::register(bp, default = TRUE)
             suppressWarnings(execute(pipL2, path = outputDir, 
@@ -387,16 +389,17 @@ test_that("CytoPipeline with Biocparallel::SnowParam raises no error", {
     expect_error(
         {
             jsonDir <- system.file("extdata", package = "CytoPipeline")
-            jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+            jsonPath <- file.path(jsonDir, "pipelineParams.json")
 
             pipL2 <- CytoPipeline(jsonPath)
                 
             experimentName(pipL2) <- "BPSNOW_Experiment"
-            sampleFiles(pipL2) <- paste0(jsonDir, "/", 
-                                        c("sample_Donor1.fcs", 
-                                          "sample_Donor2.fcs"))
-            logDir <- paste0(outputDir, 
-                             "/BiocParallel/log")
+            sampleFiles(pipL2) <- file.path(jsonDir, 
+                                            c("sample_Donor1.fcs", 
+                                              "sample_Donor2.fcs"))
+                                        
+            logDir <- file.path(outputDir, "BiocParallel", "log")
+                        
             suppressWarnings(dir.create(logDir, recursive = TRUE))
             bp <- BiocParallel::SnowParam(workers = 2, log = TRUE, 
                                           logdir = logDir,
@@ -412,7 +415,7 @@ test_that("CytoPipeline with Biocparallel::SnowParam raises no error", {
 
 test_that("CytoPipeline export as list works", {
     jsonDir <- system.file("extdata", package = "CytoPipeline")
-    jsonPath <- paste0(jsonDir, "/pipelineParams.json")
+    jsonPath <- file.path(jsonDir, "pipelineParams.json")
 
     pipL1 <- CytoPipeline(jsonPath)
     pipList <- as.list(pipL1)
@@ -452,8 +455,8 @@ test_that("CytoPipeline not in cache with warning", {
 
 
 test_that("Check consistency with cache works", {
-    rawDataDir <- paste0(system.file("extdata", package = "CytoPipeline"), "/")
-    sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+    rawDataDir <- system.file("extdata", package = "CytoPipeline")
+    sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
         pattern = "sample_"
     ))
 
@@ -651,8 +654,8 @@ test_that("plotCytoPipelineProcessingQueue works", {
 
     deleteCytoPipelineCache(pipL6, path = outputDir)
 
-    rawDataDir <- paste0(system.file("extdata", package = "CytoPipeline"), "/")
-    sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+    rawDataDir <- system.file("extdata", package = "CytoPipeline")
+    sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
         pattern = "sample_"
     ))
 
@@ -850,8 +853,8 @@ test_that("getCytoPipelineObject works", {
             experimentName <- "OMIP021_PeacoQC"
 
             rawDataDir <-
-                paste0(system.file("extdata", package = "CytoPipeline"), "/")
-            sampleFiles <- paste0(rawDataDir, list.files(rawDataDir,
+                system.file("extdata", package = "CytoPipeline")
+            sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
                 pattern = "sample_"
             ))
 

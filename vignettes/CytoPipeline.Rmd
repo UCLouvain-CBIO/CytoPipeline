@@ -528,7 +528,7 @@ the following code:
 
 As was described in the previous sections, `CytoPipeline` requires the user to 
 provide wrappers to pre-processing functions, as `FUN` parameter of 
-`CytoProcessingSteps`. These can be coded by the user her/himself, or 
+`CytoProcessingSteps`. These can be coded by the user themself, or 
 come from a built-in function provided in `CytoPipeline` itself.
 
 However, in order to avoid having too many external dependencies for

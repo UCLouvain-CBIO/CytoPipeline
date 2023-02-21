@@ -20,7 +20,7 @@ path <- system.file("scripts",
                     package = "CytoPipeline"
 )
 
-source(paste0(path,"/MakeOMIP021UTSamples.R"))
+source(file.path(path,"MakeOMIP021UTSamples.R"))
 
 test_that("CytoProcessingStep basics works", {
     ps <- CytoProcessingStep("summing step", sum)

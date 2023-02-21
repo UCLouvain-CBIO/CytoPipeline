@@ -964,9 +964,9 @@ getFCSFileName <- function(ff) {
 #' 
 #' @examples
 #' rawDataDir <-
-#'     paste0(system.file("extdata", package = "CytoPipeline"), "/")
+#'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -1000,14 +1000,16 @@ writeFlowFrame <- function(ff, dir = ".",
         stop ("Provided directory does not exist!")
     }
     
-    fileName <- paste0(dir, "/", prefix)
+    baseFileName <- prefix
     if (useFCSFileName) {
         fileNameSkeleton <- getFCSFileName(ff)
         fileNameSkeleton <- 
             substr(fileNameSkeleton, 1, nchar(fileNameSkeleton) - 4)
-        fileName <- paste0(fileName, fileNameSkeleton)
+        baseFileName <- paste0(baseFileName, fileNameSkeleton)
     }
-    fileName <- paste0(fileName, suffix, ".", format)
+    baseFileName <- paste0(baseFileName, suffix, ".", format)
+    
+    fileName <- file.path(dir, baseFileName)
     
     if (format == "fcs") {
         flowCore::write.FCS(ff, filename = fileName)

@@ -19,7 +19,7 @@ path <- system.file("scripts",
                     package = "CytoPipeline"
 )
 
-source(paste0(path,"/MakeOMIP021UTSamples.R"))
+source(file.path(path,"MakeOMIP021UTSamples.R"))
 
 
 test_that("estimateScaleTransforms work", {
@@ -34,9 +34,9 @@ test_that("estimateScaleTransforms work", {
             scatterRefMarker = "BV785 - CD3"
         ))
 
-    transListPath <- paste0(system.file("extdata", 
-                                        package = "CytoPipeline"),
-                            "/OMIP021_TransList.rds")
+    transListPath <- file.path(system.file("extdata", 
+                                           package = "CytoPipeline"),
+                               "OMIP021_TransList.rds")
     refTransList <- readRDS(transListPath)
 
     # saveRDS(transList, transListPath)
@@ -60,9 +60,9 @@ test_that("estimateScaleTransforms work", {
 
 test_that("selectRandomSamples works", {
     rawDataDir <-
-        paste0(system.file("extdata", package = "CytoPipeline"), "/")
+        system.file("extdata", package = "CytoPipeline")
     sampleFiles <-
-        paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+        file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
     
     seed <- 2
     nSamples <- 1
@@ -92,9 +92,9 @@ test_that("selectRandomSamples works", {
 
 test_that("readSampleFiles works", {
     rawDataDir <-
-        paste0(system.file("extdata", package = "CytoPipeline"), "/")
+        system.file("extdata", package = "CytoPipeline")
     sampleFiles <-
-        paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+        file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
 
     truncateMaxRange <- FALSE
     minLimit <- NULL
@@ -136,9 +136,9 @@ test_that("readSampleFiles works", {
 
 test_that("readSampleFiles with post-processing works", {
     rawDataDir <-
-        paste0(system.file("extdata", package = "CytoPipeline"), "/")
+        system.file("extdata", package = "CytoPipeline")
     sampleFiles <-
-        paste0(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+        file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
     
     channelMarkerFile <-
         system.file("extdata/ChannelMarkerUsed.csv", package = "CytoPipeline")
@@ -357,9 +357,9 @@ test_that("removeDeadCellsManualGate works", {
 test_that("qualityControlPeacoQC", {
     ref_ff_lcells <- readRDS(test_path("fixtures", "ff_lcells_manual_gate.rds"))
 
-    transListPath <- paste0(system.file("extdata", 
-                                        package = "CytoPipeline"),
-                            "/OMIP021_TransList.rds")
+    transListPath <- file.path(system.file("extdata", 
+                                           package = "CytoPipeline"),
+                               "OMIP021_TransList.rds")
     refTransList <- readRDS(transListPath)
 
     expect_error(suppressWarnings(qualityControlPeacoQC(
@@ -423,9 +423,10 @@ test_that("qualityControlFlowAI works", {
 test_that("readRDSObject works", {
     expect_error(readRDSObject("dummyPath.rds"),
                  regexp = "file dummyPath.rds does not exist")
-    transListPath <- paste0(system.file("extdata", 
-                                        package = "CytoPipeline"),
-                            "/OMIP021_TransList.rds")   
+    transListPath <- file.path(system.file("extdata", 
+                                           package = "CytoPipeline"),
+                               "OMIP021_TransList.rds")  
+                                         
     obj <- readRDSObject(transListPath)
     
     refTransList <- readRDS(transListPath)
@@ -434,9 +435,10 @@ test_that("readRDSObject works", {
 })
 
 test_that("applyScaleTransform works", {
-    transListPath <- paste0(system.file("extdata", 
-                                        package = "CytoPipeline"),
-                            "/OMIP021_TransList.rds") 
+    transListPath <- file.path(system.file("extdata", 
+                                           package = "CytoPipeline"),
+                               "OMIP021_TransList.rds") 
+                                        
     ff_c <- readRDS(test_path("fixtures", "ff_c.rds"))
     transList <- readRDS(transListPath)
     
