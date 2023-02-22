@@ -25,7 +25,7 @@ library(CytoPipeline)
 # note that automatic download API for FlowRepository does not work anymore 
 # for the time being (May 2022)
 datasetPath <- "/Datasets/OMIP-021/FlowRepository_FR-FCM-ZZ9H_files"
-datasetPath <- "C:/CBIO/2021-phd-philippe-hauchamps/Datasets/OMIP-021/FlowRepository_FR-FCM-ZZ9H_files"
+#datasetPath <- "C:/CBIO/2021-phd-philippe-hauchamps/Datasets/OMIP-021/FlowRepository_FR-FCM-ZZ9H_files"
 
 
 files <- list.files(datasetPath, pattern = "Donor", recursive = TRUE)
@@ -43,9 +43,6 @@ OMIP021Samples <- read.flowSet(
     min.limit = NULL
 )
 
-
-
-
 pData(OMIP021Samples)$Donor <- paste0("Donor_", seq(nDonors))
 
 # sub-sample equal nb of events in each fcs
@@ -57,25 +54,18 @@ OMIP021Samples <- fsApply(
     }
 )
 
-
-
 usethis::use_data(OMIP021Samples, overwrite = TRUE)
 
 fsApply(
     x = OMIP021Samples,
     FUN = function(ff) {
-        basefilename <- paste0(
-            "sample_",
-            flowCore::identifier(ff)
-        )
+        basefilename <- flowCore::identifier(ff)
         path <- system.file("extdata",
             package = "CytoPipeline"
         )
-
         flowCore::keyword(ff)[["$FIL"]] <- basefilename
-        flowCore::keyword(ff)[["FILENAME"]] <- basefilename
         flowCore::write.FCS(ff,
-            filename = paste0(path, "/", basefilename)
+            filename = file.path(path, basefilename)
         )
     }
 )
