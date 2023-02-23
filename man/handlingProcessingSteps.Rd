@@ -115,7 +115,7 @@ rawDataDir <-
     system.file("extdata", package = "CytoPipeline")
 experimentName <- "OMIP021_PeacoQC"
 sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-                                             pattern = "sample_"))
+                                             pattern = "Donor"))
 transListPath <- 
     file.path(system.file("extdata", package = "CytoPipeline"), 
               "OMIP021_TransList.rds")

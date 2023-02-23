@@ -26,7 +26,7 @@ test_that("Cytopipeline add/remove/clean processing step works", {
     rawDataDir <- system.file("extdata", package = "CytoPipeline")
     experimentName <- "OMIP021_PeacoQC"
     sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-        pattern = "sample_"
+        pattern = "Donor"
     ))
     transListPath <- file.path(system.file("extdata",
                                            package = "CytoPipeline"),
@@ -111,7 +111,7 @@ test_that("CytoPipeline with reading scale transfo only raises no error", {
                 system.file("extdata", package = "CytoPipeline")
             experimentName <- "OMIP021_PeacoQC"
             sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-                pattern = "sample_"
+                pattern = "Donor"
             ))
             transListPath <- file.path(system.file("extdata",
                                                    package = "CytoPipeline"),
@@ -143,6 +143,46 @@ test_that("CytoPipeline with reading scale transfo only raises no error", {
     )
 })
 
+test_that("CytoPipeline with no sample raises an execution error", {
+    expect_error(
+        {
+            rawDataDir <-
+                system.file("extdata", package = "CytoPipeline")
+            experimentName <- "OMIP021_PeacoQC"
+            sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
+                                                            pattern = "NotGood"
+            ))
+            
+            # main parameters : sample files and output files
+            pipelineParams <- list()
+            pipelineParams$experimentName <- experimentName
+            pipelineParams$sampleFiles <- sampleFiles
+            
+            pipL <- CytoPipeline(pipelineParams)
+            
+            pipL <-
+                addProcessingStep(pipL,
+                                  whichQueue = "scale transform",
+                                  CytoProcessingStep(
+                                      name = "flowframe_read",
+                                      FUN = "readSampleFiles",
+                                      ARGS = list(
+                                          whichSamples = "all",
+                                          truncate_max_range = FALSE,
+                                          min.limit = NULL
+                                      )
+                                  )
+                )
+            
+            suppressWarnings(execute(pipL,
+                                     rmCache = TRUE,
+                                     path = outputDir
+            ))
+        },
+        "Can't execute CytoPipeline object with no sample file"
+    )
+})
+
 
 test_that("CytoPipeline with complex flows raises no error", {
     expect_error(
@@ -151,7 +191,7 @@ test_that("CytoPipeline with complex flows raises no error", {
                 system.file("extdata", package = "CytoPipeline")
             experimentName <- "OMIP021_PeacoQC"
             sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-                pattern = "sample_"
+                pattern = "Donor"
             ))
 
             # main parameters : sample files and output files
@@ -351,14 +391,21 @@ test_that("CytoPipeline with complex flows raises no error", {
 test_that("CytoPipeline with json input raises no error", {
     expect_error(
         {
+            rawDataDir <-
+                system.file("extdata", package = "CytoPipeline")
+            experimentName <- "OMIP021_PeacoQC"
+            sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
+                                                            pattern = "Donor"))
             jsonDir <- system.file("extdata", package = "CytoPipeline")
             jsonPath <- file.path(jsonDir, "pipelineParams.json")
 
-            pipL2 <- CytoPipeline(jsonPath)
-            withr::with_dir(new = jsonDir, {
-                suppressWarnings(execute(pipL2,
-                                         rmCache = TRUE,
-                                         path = outputDir))})
+            pipL2 <- CytoPipeline(jsonPath,
+                                  experimentName = experimentName,
+                                  sampleFiles = sampleFiles)
+            
+            suppressWarnings(execute(pipL2,
+                                     rmCache = TRUE,
+                                     path = outputDir))
         },
         NA
     )
@@ -368,13 +415,19 @@ test_that("CytoPipeline with Biocparallel::Serial (by default) raises no error",
           {
     expect_error(
         {
+            rawDataDir <-
+                system.file("extdata", package = "CytoPipeline")
+            sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
+                                                            pattern = "Donor"))
+            
             jsonDir <- system.file("extdata", package = "CytoPipeline")
             jsonPath <- file.path(jsonDir, "pipelineParams.json")
 
-            pipL2 <- CytoPipeline(jsonPath)
+            pipL2 <- CytoPipeline(jsonPath,
+                                  sampleFiles = sampleFiles)
+            
+            # testing changing the experiment name on the fly
             experimentName(pipL2) <- "BPSerial_Experiment"
-            sampleFiles(pipL2) <- file.path(jsonDir,
-                                            basename(sampleFiles(pipL2)))
                                          
             bp <- BiocParallel::SerialParam()
             BiocParallel::register(bp, default = TRUE)
@@ -388,15 +441,17 @@ test_that("CytoPipeline with Biocparallel::Serial (by default) raises no error",
 test_that("CytoPipeline with Biocparallel::SnowParam raises no error", {
     expect_error(
         {
+            rawDataDir <-
+                system.file("extdata", package = "CytoPipeline")
+            sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
+                                                            pattern = "Donor"))
+            
             jsonDir <- system.file("extdata", package = "CytoPipeline")
             jsonPath <- file.path(jsonDir, "pipelineParams.json")
 
-            pipL2 <- CytoPipeline(jsonPath)
-                
-            experimentName(pipL2) <- "BPSNOW_Experiment"
-            sampleFiles(pipL2) <- file.path(jsonDir, 
-                                            c("sample_Donor1.fcs", 
-                                              "sample_Donor2.fcs"))
+            pipL2 <- CytoPipeline(jsonPath,
+                                  experimentName = "BPSNOW_Experiment",
+                                  sampleFiles = sampleFiles)
                                         
             logDir <- file.path(outputDir, "BiocParallel", "log")
                         
@@ -457,7 +512,7 @@ test_that("CytoPipeline not in cache with warning", {
 test_that("Check consistency with cache works", {
     rawDataDir <- system.file("extdata", package = "CytoPipeline")
     sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-        pattern = "sample_"
+        pattern = "Donor"
     ))
 
     pipL5 <- CytoPipeline(experimentName = "DummyExperiment")
@@ -597,7 +652,7 @@ test_that("Check consistency with cache works", {
         res$inconsistencyMsg,
         paste0(
             "inconsistent pre-processing step #2 for sample file ",
-            "sample_Donor1.fcs (different in cache)"
+            "Donor1.fcs (different in cache)"
         )
     )
     expect_equal(unname(res$scaleTransformStepStatus[1]), "run")
@@ -622,7 +677,7 @@ test_that("Check consistency with cache works", {
         res$inconsistencyMsg,
         paste0(
             "inconsistent pre-processing step #1 for sample file ",
-            "sample_Donor1.fcs (different in cache)"
+            "Donor1.fcs (different in cache)"
         )
     )
     expect_equal(unname(res$scaleTransformStepStatus[1]), "run")
@@ -656,7 +711,7 @@ test_that("plotCytoPipelineProcessingQueue works", {
 
     rawDataDir <- system.file("extdata", package = "CytoPipeline")
     sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-        pattern = "sample_"
+        pattern = "Donor"
     ))
 
     # put only second sample file for the time being
@@ -855,7 +910,7 @@ test_that("getCytoPipelineObject works", {
             rawDataDir <-
                 system.file("extdata", package = "CytoPipeline")
             sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-                pattern = "sample_"
+                pattern = "Donor"
             ))
 
             pipL7 <- buildCytoPipelineFromCache(

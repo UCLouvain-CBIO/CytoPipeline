@@ -174,7 +174,7 @@ for the PeacoQC pipeline.
 
 experimentName <- "OMIP021_PeacoQC"
 sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-                                                pattern = "sample_"))
+                                                pattern = "Donor"))
 
 pipL_PeacoQC <- CytoPipeline(experimentName = experimentName,
                              sampleFiles = sampleFiles)
@@ -365,7 +365,11 @@ jsonDir <- rawDataDir
 # creation on CytoPipeline object,
 # using json file as input
 pipL_flowAI <-
-  CytoPipeline(file.path(jsonDir, "OMIP021_flowAI_pipeline.json"))
+  CytoPipeline(file.path(jsonDir, "OMIP021_flowAI_pipeline.json"),
+               experimentName = "OMIP021_flowAI",
+               sampleFiles = sampleFiles)
+
+
 ```
 
 # Executing pipelines
@@ -390,8 +394,7 @@ and can safely be ignored here.
 
 ```{r executeFlowAI }
 # execute flowAI pipeline
-withr::with_dir(jsonDir, execute(pipL_flowAI,
-                                 path = workDir))
+execute(pipL_flowAI, path = workDir)
 ```
 
 

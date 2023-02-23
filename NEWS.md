@@ -3,6 +3,7 @@
 ## CytoPipeline 0.99.6
 - corrected the OMIP021Samples fcs data in order to keep the original file
 name
+- bug correction: error message on execution with no sample file
 
 
 ## CytoPipeline 0.99.5

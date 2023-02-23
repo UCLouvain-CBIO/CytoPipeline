@@ -89,7 +89,7 @@ rawDataDir <-
     system.file("extdata", package = "CytoPipeline")
 experimentName <- "OMIP021_PeacoQC"
 sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-                                             pattern = "sample_"))
+                                             pattern = "Donor"))
                                              
 outputDir <- base::tempdir()
 
@@ -270,12 +270,13 @@ suppressWarnings(execute(pipL, rmCache = FALSE, path = outputDir))
 jsonDir <- system.file("extdata", package = "CytoPipeline")
 jsonPath <- file.path(jsonDir, "pipelineParams.json")
 
-pipL2 <- CytoPipeline(jsonPath)
+pipL2 <- CytoPipeline(jsonPath, 
+                      experimentName = experimentName,
+                      sampleFiles = sampleFiles)
 
 # note we temporarily set working directory into package root directory
 # needed as json path mentions "./" path for sample files
-withr::with_dir(new = jsonDir, {
-     suppressWarnings(execute(pipL2, rmCache = TRUE, path = outputDir))})
+suppressWarnings(execute(pipL2, rmCache = TRUE, path = outputDir))
 
 ### *** EXAMPLE 3: building CytoPipeline from cache (previously run) *** ###
 

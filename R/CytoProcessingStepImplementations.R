@@ -134,7 +134,7 @@ estimateScaleTransforms <- function(ff,
 #' rawDataDir <-
 #'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 #' 
 #' nRandomSamples <- 1
 #' selectSampleFiles <- selectRandomSamples(sampleFiles, 
@@ -188,7 +188,7 @@ selectRandomSamples <- function(sampleFiles,
 #' rawDataDir <-
 #'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -224,7 +224,9 @@ readSampleFiles <- function(sampleFiles,
         stop("'whichSamples' should be either 'all', or a vector of indexes")
     }
 
-    if (length(sampleFiles) == 1) {
+    if (length(sampleFiles) == 0) {
+        stop("no sample files to read")
+    } else if (length(sampleFiles) == 1) {
         res <- flowCore::read.FCS(sampleFiles, ...)
         # Add a column with Cell ID
         res <- appendCellID(res)
@@ -329,7 +331,7 @@ readSampleFiles <- function(sampleFiles,
 #' rawDataDir <- 
 #'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <- 
-#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -434,7 +436,7 @@ removeMarginsPeacoQC <- function(x, channelSpecifications = NULL, ...) {
 #' rawDataDir <-
 #'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -489,7 +491,7 @@ getAcquiredCompensationMatrix <- function(ff) {
 #' rawDataDir <-
 #'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -583,7 +585,7 @@ compensateFromMatrix <- function(x,
 #' rawDataDir <-
 #'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -687,7 +689,7 @@ removeDoubletsCytoPipeline <- function(ff,
 #' rawDataDir <-
 #'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -772,7 +774,7 @@ removeDebrisManualGate <- function(ff,
 #' rawDataDir <-
 #'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -874,7 +876,7 @@ removeDeadCellsManualGate <- function(ff,
 #' rawDataDir <-
 #'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL
@@ -981,7 +983,7 @@ qualityControlFlowAI <- function(ff,
 #' rawDataDir <-
 #'     system.file("extdata", package = "CytoPipeline")
 #' sampleFiles <-
-#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 #' 
 #' truncateMaxRange <- FALSE
 #' minLimit <- NULL

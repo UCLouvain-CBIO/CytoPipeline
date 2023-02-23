@@ -31,11 +31,19 @@ to a JSON file (writing the file = side effect)
 
 outputDir <- base::tempdir()
 
+rawDataDir <-
+    system.file("extdata", package = "CytoPipeline")
+experimentName <- "OMIP021_PeacoQC"
+sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
+                                             pattern = "Donor"))
+
 # build CytoPipeline object using json input
 jsonPath <- file.path(system.file("extdata", package = "CytoPipeline"), 
                       "pipelineParams.json")
   
-pipL <- CytoPipeline(jsonPath)
+pipL <- CytoPipeline(jsonPath,
+                     experimentName = experimentName,
+                     sampleFiles = sampleFiles)
 
 # remove the last pre-processing step
 nPreProcessing <- getNbProcessingSteps(pipL, whichQueue = "pre-processing")

@@ -46,7 +46,7 @@ that discards any additional parameter passed in (...)
 rawDataDir <-
     system.file("extdata", package = "CytoPipeline")
 sampleFiles <-
-    file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+    file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 
 truncateMaxRange <- FALSE
 minLimit <- NULL

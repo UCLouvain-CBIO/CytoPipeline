@@ -1,6 +1,4 @@
 {
-  "experimentName": ["OMIP021_PeacoQC"],
-  "sampleFiles": ["./sample_Donor1.fcs", "./sample_Donor2.fcs"],    
   "scaleTransformProcessingSteps": [
     {
       "name": ["flowframe_read"],

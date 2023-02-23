@@ -54,8 +54,6 @@ OMIP021Samples <- fsApply(
     }
 )
 
-usethis::use_data(OMIP021Samples, overwrite = TRUE)
-
 fsApply(
     x = OMIP021Samples,
     FUN = function(ff) {
@@ -69,3 +67,5 @@ fsApply(
         )
     }
 )
+
+usethis::use_data(OMIP021Samples, overwrite = TRUE)

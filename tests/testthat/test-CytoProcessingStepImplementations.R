@@ -62,7 +62,7 @@ test_that("selectRandomSamples works", {
     rawDataDir <-
         system.file("extdata", package = "CytoPipeline")
     sampleFiles <-
-        file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+        file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
     
     seed <- 2
     nSamples <- 1
@@ -89,12 +89,28 @@ test_that("selectRandomSamples works", {
         
 })
 
+test_that("readSampleFiles with no sample files gives an error", {
+    rawDataDir <-
+        system.file("extdata", package = "CytoPipeline")
+    sampleFiles <-
+        file.path(rawDataDir, list.files(rawDataDir, pattern = "NoGood"))
+    
+    expect_error(
+        readSampleFiles(
+            sampleFiles = sampleFiles,
+            whichSamples = "all",
+            truncate_max_range = truncateMaxRange,
+            min.limit = minLimit
+        ), regexp = "no sample files to read")
+})
+
+
 
 test_that("readSampleFiles works", {
     rawDataDir <-
         system.file("extdata", package = "CytoPipeline")
     sampleFiles <-
-        file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+        file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
 
     truncateMaxRange <- FALSE
     minLimit <- NULL
@@ -138,7 +154,7 @@ test_that("readSampleFiles with post-processing works", {
     rawDataDir <-
         system.file("extdata", package = "CytoPipeline")
     sampleFiles <-
-        file.path(rawDataDir, list.files(rawDataDir, pattern = "sample_"))
+        file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
     
     channelMarkerFile <-
         system.file("extdata/ChannelMarkerUsed.csv", package = "CytoPipeline")

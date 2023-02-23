@@ -54,7 +54,7 @@
 #'     system.file("extdata", package = "CytoPipeline")
 #' experimentName <- "OMIP021_PeacoQC"
 #' sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-#'                                              pattern = "sample_"))
+#'                                              pattern = "Donor"))
 #'                                              
 #' outputDir <- base::tempdir()
 #' 
@@ -225,13 +225,9 @@
 #' jsonDir <- system.file("extdata", package = "CytoPipeline")
 #' jsonPath <- file.path(jsonDir, "pipelineParams.json")
 #' 
-#' # Note that the `experimentName` and `sampleFiles` are here 
-#' # specified in the JSON file itself. This is not necessary, as 
-#' # one could well specify the processing steps only in the JSON file, and 
-#' # pass the `experimentName` and `sampleFiles` directly 
-#' # in the `CytoPipeline` constructor.
-#' 
-#' pipL2 <- CytoPipeline(jsonPath)
+#' pipL2 <- CytoPipeline(jsonPath,
+#'                       experimentName = experimentName,
+#'                       sampleFiles = sampleFiles)
 #' 
 setClass("CytoPipeline",
     slots = c(
