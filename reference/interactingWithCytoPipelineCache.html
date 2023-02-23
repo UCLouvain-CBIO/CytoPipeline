@@ -18,7 +18,7 @@ object and the file cache on disk"><!-- mathjax --><script src="https://cdnjs.cl
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.6</span>
       </span>
     </div>
 
@@ -136,25 +136,32 @@ and what is stored in the file cache</p></li>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># preliminary run:</span></span></span>
 <span class="r-in"><span><span class="co"># build CytoPipeline object using json input, run and store results in cache</span></span></span>
+<span class="r-in"><span><span class="va">rawDataDir</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"CytoPipeline"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">experimentName</span> <span class="op">&lt;-</span> <span class="st">"OMIP021_PeacoQC"</span></span></span>
+<span class="r-in"><span><span class="va">sampleFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">rawDataDir</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">rawDataDir</span>,</span></span>
+<span class="r-in"><span>                                             pattern <span class="op">=</span> <span class="st">"Donor"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                             </span></span>
 <span class="r-in"><span><span class="va">jsonDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"CytoPipeline"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">jsonPath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">jsonDir</span>, <span class="st">"pipelineParams.json"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">outputDir</span> <span class="op">&lt;-</span> <span class="fu">base</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">pipL</span> <span class="op">&lt;-</span> <span class="fu"><a href="CytoPipeline.html">CytoPipeline</a></span><span class="op">(</span><span class="va">jsonPath</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pipL</span> <span class="op">&lt;-</span> <span class="fu"><a href="CytoPipeline.html">CytoPipeline</a></span><span class="op">(</span><span class="va">jsonPath</span>,</span></span>
+<span class="r-in"><span>                     experimentName <span class="op">=</span> <span class="va">experimentName</span>,</span></span>
+<span class="r-in"><span>                     sampleFiles <span class="op">=</span> <span class="va">sampleFiles</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># note we temporarily set working directory into package root directory</span></span></span>
 <span class="r-in"><span><span class="co"># needed as json path mentions "./" path for sample files</span></span></span>
-<span class="r-in"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span>new <span class="op">=</span> <span class="va">jsonDir</span>, <span class="op">{</span></span></span>
-<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="execute.html">execute</a></span><span class="op">(</span><span class="va">pipL</span>, rmCache <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="execute.html">execute</a></span><span class="op">(</span><span class="va">pipL</span>, rmCache <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="va">outputDir</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ### running SCALE TRANSFORMATION processing steps ###</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing margins from file : sample_Donor1.fcs</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing margins from file : sample_Donor2.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing margins from file : Donor1.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing margins from file : Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 3 [compensate] ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Compensating file : sample_Donor1.fcs</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Compensating file : sample_Donor2.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Compensating file : Donor1.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Compensating file : Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [flowframe_aggregate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [scale_transform_estimate] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> estimating logicle transformations for fluorochrome channels...</span>
@@ -170,37 +177,37 @@ and what is stored in the file cache</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> a = 1.40e-05 ; b = -1.80e-01</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> applying SSC-A linear transformation for SSC-H channel...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE ./sample_Donor1.fcs...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE /__w/_temp/Library/CytoPipeline/extdata/Donor1.fcs...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing margins from file : sample_Donor1.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing margins from file : Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 3 [compensate] ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Compensating file : sample_Donor1.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Compensating file : Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [remove_doublets] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [remove_debris] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor1.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for Donor1.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 22.09% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 22.09% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE ./sample_Donor2.fcs...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE /__w/_temp/Library/CytoPipeline/extdata/Donor2.fcs...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins] ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing margins from file : sample_Donor2.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Removing margins from file : Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 3 [compensate] ...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Compensating file : sample_Donor2.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Compensating file : Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [remove_doublets] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [remove_debris] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 6 [remove_dead_cells] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC] ...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Applying PeacoQC method...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for sample_Donor2.fcs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting quality control analysis for Donor2.fcs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculating peaks</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MAD analysis removed 1.69% of the measurements</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The algorithm removed 1.69% of the measurements</span>
@@ -230,7 +237,7 @@ and what is stored in the file cache</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 4 [flowframe_aggregate]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 5 [scale_transform_estimate]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE sample_Donor1.fcs...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE Donor1.fcs...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins]: found in cache!</span>
@@ -241,7 +248,7 @@ and what is stored in the file cache</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 7 [perform_QC]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 8 [transform]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE sample_Donor2.fcs...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ### NOW PRE-PROCESSING FILE Donor2.fcs...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> #####################################################</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 1 [flowframe_read]: found in cache!</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Proceeding with step 2 [remove_margins]: found in cache!</span>
