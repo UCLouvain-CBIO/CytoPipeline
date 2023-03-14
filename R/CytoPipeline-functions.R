@@ -656,7 +656,8 @@ execute <- function(x,
             if (s == 1) {
                 res <- executeProcessingStep(
                     x@scaleTransformProcessingQueue[[s]],
-                    sampleFiles = x@sampleFiles)
+                    sampleFiles = x@sampleFiles,
+                    pData = x@pData)
                 
             } else {
                 res <-

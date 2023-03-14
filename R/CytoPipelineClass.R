@@ -258,10 +258,11 @@ setValidity("CytoPipeline", function(object) {
         if (!inherits(object@pData, "data.frame")) {
             return("Non-null @pData slot should be a data.frame")
         }
-        if (!isTRUE(all.equal(rownames(object@pData), 
-                        basename(object@sampleFiles)))) {
-            msg <- paste0("Non-null @pData slot should have ",
-                          "rownames equal to sample file basenames")
+        # if (!isTRUE(all.equal(rownames(object@pData), 
+        #                       basename(object@sampleFiles))))
+        if (!all(basename(object@sampleFiles) %in% rownames(object@pData))) {
+            msg <- paste0("Row names of non-null @pData slot should contain ",
+                          "all sample file basenames")
             return(msg)
         }
     }
@@ -371,7 +372,8 @@ setMethod(
             experimentName = experimentName,
             scaleTransformProcessingQueue = list(),
             flowFramesPreProcessingQueue = list(),
-            sampleFiles = sampleFiles
+            sampleFiles = sampleFiles,
+            pData = pData
         )
         x <- .makeSlots(x, object)
         x <- .makeProcessingQueues(x, object)
@@ -401,7 +403,9 @@ setMethod(
         )
         cytoPipeline <- CytoPipeline(pipelineParams,
                                      experimentName = experimentName,
-                                     sampleFiles = sampleFiles)
+                                     sampleFiles = sampleFiles,
+                                     pData = pData)
+        #browser()
         return(cytoPipeline)
     }
 )

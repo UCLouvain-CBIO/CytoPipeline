@@ -109,7 +109,7 @@ test_that("Cytopipeline add/remove/clean processing step works", {
                  regexp = "is not TRUE")
     
     expect_error(pData(pipL) <- newPhenoData,
-                 regexp = "should have rownames equal to sample file basenames")
+                 regexp = "should contain all sample file basenames")
     
 })
 
@@ -209,7 +209,7 @@ test_that("Creation of CytoPipeline with wrong phenoData raises an error", {
             pipL <- CytoPipeline(experimentName = experimentName,
                                  sampleFiles = sampleFiles,
                                  pData = phenoData)
-        }, "Non-null @pData slot should have rownames equal to sample file")
+        }, "Row names of non-null @pData slot should contain all sample file")
 })
 
 test_that("Execution of CytoPipeline with correct phenoData raises no error", {

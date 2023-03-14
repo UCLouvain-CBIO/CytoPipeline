@@ -234,10 +234,11 @@ readSampleFiles <- function(sampleFiles,
         if (!inherits(pData, "data.frame")) {
             stop("Non-null pData should be a data.frame")
         }
-        if (!isTRUE(all.equal(rownames(pData), 
-                              basename(sampleFiles)))) {
-            stop("Non-null pData should have ",
-                 "rownames equal to sample file basenames")
+        # if (!isTRUE(all.equal(rownames(pData), 
+        #                       basename(sampleFiles))))
+        if (!all(basename(sampleFiles) %in% rownames(pData))) {
+            stop("Row names of non-null pData should contain ",
+                 "all sample file basenames")
         }
     }
     
@@ -312,6 +313,7 @@ readSampleFiles <- function(sampleFiles,
             res <- methods::as(res, "flowSet")
             
             #also store in global flowSet pData
+            pData <- pData[rownames(pData) %in% basename(sampleFiles),]
             flowCore::pData(res) <- pData
         }
         
