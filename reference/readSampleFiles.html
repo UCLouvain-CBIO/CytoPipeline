@@ -61,6 +61,7 @@ Also adds a "Cell_ID" additional column, used in flowFrames comparison</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">readSampleFiles</span><span class="op">(</span></span>
 <span>  <span class="va">sampleFiles</span>,</span>
 <span>  whichSamples <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  pData <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  channelMarkerFile <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -75,6 +76,12 @@ Also adds a "Cell_ID" additional column, used in flowFrames comparison</p>
 <dt>whichSamples</dt>
 <dd><p>either 'all' if all sample files need to be read, or
 a vector of indexes pointing to the sampleFiles vector</p></dd>
+
+
+<dt>pData</dt>
+<dd><p>an optional <code>data.frame</code> containing
+additional information for each sample file.
+The <code>pData</code> raw names must correspond to <code>basename(sampleFiles)</code>.</p></dd>
 
 
 <dt>channelMarkerFile</dt>

@@ -70,25 +70,32 @@ transformations per channel</p></li>
     
 
 <dl><dt><code>scaleTransformProcessingQueue</code></dt>
-<dd><p>A <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of
+<dd><p>A <code>list</code> of
 CytoProcessingStep objects containing the steps
 for obtaining the scale transformations per channel</p></dd>
 
 
 <dt><code>flowFramesPreProcessingQueue</code></dt>
-<dd><p>A <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of
+<dd><p>A <code>list</code> of
 CytoProcessingStep objects containing the steps
 for pre-processing of the samples flow frames</p></dd>
 
 
 <dt><code>experimentName</code></dt>
-<dd><p>A <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code> containing
+<dd><p>A <code>character</code> containing
 the experiment (run) name</p></dd>
 
 
 <dt><code>sampleFiles</code></dt>
-<dd><p>A <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code> vector storing
+<dd><p>A <code>character</code> vector storing
 all fcs files to be run into the pipeline</p></dd>
+
+
+<dt><code>pData</code></dt>
+<dd><p>An optional <code>data.frame</code> containing
+additional information for each sample file.
+The <code>pData</code> raw names must correspond to <code>basename(sampleFiles)</code>
+otherwise validation of the CytoPipeline object will fail!</p></dd>
 
 
 </dl></div>

@@ -97,21 +97,24 @@ at the vignette!</p>
 <span><span class="fu">CytoPipeline</span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  experimentName <span class="op">=</span> <span class="st">"default_experiment"</span>,</span>
-<span>  sampleFiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  sampleFiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  pData <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for list</span></span>
 <span><span class="fu">CytoPipeline</span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  experimentName <span class="op">=</span> <span class="st">"default_experiment"</span>,</span>
-<span>  sampleFiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  sampleFiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  pData <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for character</span></span>
 <span><span class="fu">CytoPipeline</span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  experimentName <span class="op">=</span> <span class="st">"default_experiment"</span>,</span>
-<span>  sampleFiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  sampleFiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  pData <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for CytoPipeline</span></span>
@@ -123,7 +126,11 @@ at the vignette!</p>
 <span></span>
 <span><span class="fu">sampleFiles</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">sampleFiles</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span></code></pre></div>
+<span><span class="fu">sampleFiles</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
+<span></span>
+<span><span class="fu">pData</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pData</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -138,6 +145,10 @@ at the vignette!</p>
 
 <dt>sampleFiles</dt>
 <dd><p>the sample files</p></dd>
+
+
+<dt>pData</dt>
+<dd><p>the pheno Data (data.frame or NULL)</p></dd>
 
 
 <dt>x</dt>

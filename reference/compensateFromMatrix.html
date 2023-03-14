@@ -62,8 +62,10 @@ in the fcs files themselves or provided as a csv file.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compensateFromMatrix</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  matrixSource <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fcs"</span>, <span class="st">"import"</span><span class="op">)</span>,</span>
+<span>  matrixSource <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fcs"</span>, <span class="st">"import"</span>, <span class="st">"pData"</span><span class="op">)</span>,</span>
 <span>  matrixPath <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pDataVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pDataPathMapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  updateChannelNames <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -72,19 +74,33 @@ in the fcs files themselves or provided as a csv file.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>a flowCore::flowSet or a flowCore::flowFrame</p></dd>
+<dd><p>a <code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-class.html" class="external-link">flowCore::flowFrame</a></code> or <code><a href="https://rdrr.io/pkg/flowCore/man/flowSet-class.html" class="external-link">flowCore::flowSet</a></code></p></dd>
 
 
 <dt>matrixSource</dt>
 <dd><p>if "fcs", the compensation matrix will be fetched from
 the fcs files (different compensation matrices can then be applied by fcs
 file)
-if "import", uses matrixPath to read the matrix (should be a csv file)</p></dd>
+if "import", uses <code>matrixPath</code> to read the matrix (should be a csv file)
+if "pData", uses <code>pDataVar</code> and <code>pDataPathMapping</code> to link a specific
+phenotype data variable to map different matrix paths</p></dd>
 
 
 <dt>matrixPath</dt>
 <dd><p>if matrixSource == "import", will be used as the input csv
 file path</p></dd>
+
+
+<dt>pDataVar</dt>
+<dd><p>variable name (column of pheno data)
+used to map the compenstion matrix file</p></dd>
+
+
+<dt>pDataPathMapping</dt>
+<dd><p>a named list:</p><ul><li><p>item names are possible values of <code>pDataVar</code></p></li>
+<li><p>item values are character() providing the <code>matrixPath</code>
+for the corresponding <code>pDataVar</code> value</p></li>
+</ul></dd>
 
 
 <dt>updateChannelNames</dt>
