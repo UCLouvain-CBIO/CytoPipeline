@@ -201,6 +201,64 @@ test_that("readSampleFiles with post-processing works", {
     )
 })
 
+test_that("readSampleFiles with phenoData works", {
+    rawDataDir <-
+        system.file("extdata", package = "CytoPipeline")
+    sampleFiles <-
+        file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
+    
+    truncateMaxRange <- FALSE
+    minLimit <- NULL
+    
+    phenoData <- data.frame(Donor = c(1, 2),
+                            Group = c("G1", "G2"),
+                            row.names = basename(sampleFiles))
+    
+    res <- readSampleFiles(
+        sampleFiles = sampleFiles,
+        whichSamples = "all",
+        truncate_max_range = truncateMaxRange,
+        min.limit = minLimit,
+        pData = phenoData)
+    
+    retPData <- flowCore::pData(res)
+    expectedPData <- phenoData
+    expectedPData$name <- c("Donor1.fcs", "Donor2.fcs")
+    
+    expect_equal(retPData, expectedPData)
+    
+    expect_equal(
+        flowCore::keyword(res[[1]], "CytoPipeline_Donor")[["CytoPipeline_Donor"]],
+        1)
+    
+    expect_equal(
+        flowCore::keyword(res[[1]], "CytoPipeline_Group")[["CytoPipeline_Group"]],
+        "G1")
+    
+    expect_equal(
+        flowCore::keyword(res[[2]], "CytoPipeline_Donor")[["CytoPipeline_Donor"]],
+        2)
+    
+    expect_equal(
+        flowCore::keyword(res[[2]], "CytoPipeline_Group")[["CytoPipeline_Group"]],
+        "G2")
+    
+    res2 <- readSampleFiles(
+        sampleFiles = sampleFiles,
+        whichSamples = 2,
+        truncate_max_range = truncateMaxRange,
+        min.limit = minLimit,
+        pData = phenoData)
+    
+    expect_equal(
+        flowCore::keyword(res2, "CytoPipeline_Donor")[["CytoPipeline_Donor"]],
+        2)
+    
+    expect_equal(
+        flowCore::keyword(res2, "CytoPipeline_Group")[["CytoPipeline_Group"]],
+        "G2")
+})
+
 test_that("removeMarginsPeacoQC works", {
     fs_raw <- OMIP021UTSamples
 
@@ -285,6 +343,72 @@ test_that("compensateFromMatrix works", {
         flowCore::exprs(ff_c),
         flowCore::exprs(ref_ff_c)
     )
+})
+
+test_that("compensateFromMatrix works with pData", {
+    rawDataDir <-
+        system.file("extdata", package = "CytoPipeline")
+    sampleFiles <-
+        file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
+    
+    truncateMaxRange <- FALSE
+    minLimit <- NULL
+    
+    phenoData <- data.frame(Donor = c(1, 2),
+                            Group = c("G1", "G2"),
+                            row.names = basename(sampleFiles))
+    
+    fs <- readSampleFiles(
+        sampleFiles = sampleFiles,
+        whichSamples = "all",
+        truncate_max_range = truncateMaxRange,
+        min.limit = minLimit,
+        pData = phenoData)
+    
+    pDataVar <- "Group"
+    pDataPathMapping <-
+        list(G1 = "compMatForG1.csv",
+             G2 = "compMatForG2.csv")
+    
+    expect_error(
+        compensateFromMatrix(fs[[1]],
+                             matrixSource = "pData",
+                             pDataVar = pDataVar,
+                             pDataPathMapping = pDataPathMapping),
+        regexp = "compMatForG1.csv")
+    
+    expect_error(
+        compensateFromMatrix(fs[[2]],
+                             matrixSource = "pData",
+                             pDataVar = pDataVar,
+                             pDataPathMapping = pDataPathMapping),
+        regexp = "compMatForG2.csv")
+    
+    expect_error(
+        compensateFromMatrix(fs,
+                             matrixSource = "pData",
+                             pDataVar = pDataVar,
+                             pDataPathMapping = pDataPathMapping),
+        regexp = "compMatForG1.csv")
+    
+    pDataPathMapping <- 
+        list(W1 = "compMatForG1.csv",
+             G2 = "compMatForG2.csv")
+    
+    expect_error(
+        compensateFromMatrix(fs[[1]],
+                             matrixSource = "pData",
+                             pDataVar = pDataVar,
+                             pDataPathMapping = pDataPathMapping),
+        regexp = "No mapping found for variable")
+    
+    pDataVar <- "NonExistentVar"
+    expect_error(
+        compensateFromMatrix(fs[[1]],
+                             matrixSource = "pData",
+                             pDataVar = pDataVar,
+                             pDataPathMapping = pDataPathMapping),
+        regexp = "not found in flowFrame")
 })
 
 

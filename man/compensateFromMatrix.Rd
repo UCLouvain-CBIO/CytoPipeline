@@ -6,22 +6,36 @@
 \usage{
 compensateFromMatrix(
   x,
-  matrixSource = c("fcs", "import"),
+  matrixSource = c("fcs", "import", "pData"),
   matrixPath = NULL,
+  pDataVar = NULL,
+  pDataPathMapping = NULL,
   updateChannelNames = TRUE,
   ...
 )
 }
 \arguments{
-\item{x}{a flowCore::flowSet or a flowCore::flowFrame}
+\item{x}{a \code{flowCore::flowFrame} or \code{flowCore::flowSet}}
 
 \item{matrixSource}{if "fcs", the compensation matrix will be fetched from
 the fcs files (different compensation matrices can then be applied by fcs
 file)
-if "import", uses matrixPath to read the matrix (should be a csv file)}
+if "import", uses \code{matrixPath} to read the matrix (should be a csv file)
+if "pData", uses \code{pDataVar} and \code{pDataPathMapping} to link a specific
+phenotype data variable to map different matrix paths}
 
 \item{matrixPath}{if matrixSource == "import", will be used as the input csv
 file path}
+
+\item{pDataVar}{variable name (column of pheno data)
+used to map the compenstion matrix file}
+
+\item{pDataPathMapping}{a named list:
+\itemize{
+\item item names are possible values of \code{pDataVar}
+\item item values are character() providing the \code{matrixPath}
+for the corresponding \code{pDataVar} value
+}}
 
 \item{updateChannelNames}{if TRUE, updates the fluo channel names by
 prefixing them with "comp-"}

@@ -102,6 +102,15 @@ test_that("Cytopipeline add/remove/clean processing step works", {
     newExp <- "newExperiment"
     experimentName(pipL) <- newExp
     expect_equal(experimentName(pipL), newExp)
+    
+    newPhenoData <- data.frame(name = c("Donor1", "Donor2"),
+                               donor = c(1,2))
+    expect_error(pData(pipL) <- "invalidCharacterType", 
+                 regexp = "is not TRUE")
+    
+    expect_error(pData(pipL) <- newPhenoData,
+                 regexp = "should have rownames equal to sample file basenames")
+    
 })
 
 test_that("CytoPipeline with reading scale transfo only raises no error", {
@@ -180,6 +189,71 @@ test_that("CytoPipeline with no sample raises an execution error", {
             ))
         },
         "Can't execute CytoPipeline object with no sample file"
+    )
+})
+
+test_that("Creation of CytoPipeline with wrong phenoData raises an error", {
+    expect_error(
+        {
+            rawDataDir <-
+                system.file("extdata", package = "CytoPipeline")
+            experimentName <- "OMIP021_PeacoQC"
+            sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
+                                                            pattern = "Donor"
+            ))
+            
+            phenoData <- data.frame(row.names = c("wrong1", "wrong2"),
+                                    donor = c(1,2), 
+                                    group = c("G1", "G1"))
+            
+            pipL <- CytoPipeline(experimentName = experimentName,
+                                 sampleFiles = sampleFiles,
+                                 pData = phenoData)
+        }, "Non-null @pData slot should have rownames equal to sample file")
+})
+
+test_that("Execution of CytoPipeline with correct phenoData raises no error", {
+    expect_error(
+        {
+            rawDataDir <-
+                system.file("extdata", package = "CytoPipeline")
+            experimentName <- "OMIP021_PeacoQC"
+            sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
+                                                            pattern = "Donor"
+            ))
+            
+            phenoData <- data.frame(row.names = basename(sampleFiles),
+                                    donor = c(1,2), 
+                                    group = c("G1", "G1"))
+            
+            # main parameters : sample files and output files
+            pipelineParams <- list()
+            pipelineParams$experimentName <- experimentName
+            pipelineParams$sampleFiles <- sampleFiles
+            pipelineParams$pData <- phenoData
+            
+            pipL <- CytoPipeline(pipelineParams)
+            
+            pipL <-
+                addProcessingStep(pipL,
+                                  whichQueue = "scale transform",
+                                  CytoProcessingStep(
+                                      name = "flowframe_read",
+                                      FUN = "readSampleFiles",
+                                      ARGS = list(
+                                          whichSamples = "all",
+                                          truncate_max_range = FALSE,
+                                          min.limit = NULL
+                                      )
+                                  )
+                )
+            
+            suppressWarnings(execute(pipL,
+                                     rmCache = TRUE,
+                                     path = outputDir
+            ))
+        },
+        NA
     )
 })
 

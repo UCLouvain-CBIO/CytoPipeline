@@ -13,6 +13,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
+setClassUnion("DataFrameOrNull",
+              members=c("data.frame", "NULL"))
 
 #' @title CytoPipeline class
 #'
@@ -30,20 +32,24 @@
 #' transformations per channel
 #' - a list of CytoProcessingStep(s) for the pre-processing of flow frames
 #'
-#' @slot scaleTransformProcessingQueue A `list()` of    
+#' @slot scaleTransformProcessingQueue A `list` of    
 #' CytoProcessingStep objects containing the steps   
 #' for obtaining the scale transformations per channel
 #'
-#' @slot flowFramesPreProcessingQueue A `list()` of     
+#' @slot flowFramesPreProcessingQueue A `list` of     
 #' CytoProcessingStep objects containing the steps   
 #' for pre-processing of the samples flow frames
 #'
-#' @slot experimentName A `character()` containing     
+#' @slot experimentName A `character` containing     
 #' the experiment (run) name
 #'
-#' @slot sampleFiles A `character()` vector storing   
+#' @slot sampleFiles A `character` vector storing   
 #' all fcs files to be run into the pipeline
 #'
+#' @slot pData An optional `data.frame` containing
+#' additional information for each sample file. 
+#' The `pData` raw names must correspond to `basename(sampleFiles)`
+#' otherwise validation of the CytoPipeline object will fail!
 #'
 #' @exportClass CytoPipeline
 #' @examples
@@ -234,17 +240,32 @@ setClass("CytoPipeline",
         experimentName = "character",
         scaleTransformProcessingQueue = "list",
         flowFramesPreProcessingQueue = "list",
-        sampleFiles = "character"
+        sampleFiles = "character",
+        pData = "DataFrameOrNull"
     ),
     prototype = list(
         experimentName = "default_experiment",
         scaleTransformProcessingQueue = list(),
         flowFramesPreProcessingQueue = list(),
-        sampleFiles = character()
+        sampleFiles = character(),
+        pData = NULL
     )
 )
 
 setValidity("CytoPipeline", function(object) {
+    if (!is.null(object@pData)) {
+        #browser()
+        if (!inherits(object@pData, "data.frame")) {
+            return("Non-null @pData slot should be a data.frame")
+        }
+        if (!isTRUE(all.equal(rownames(object@pData), 
+                        basename(object@sampleFiles)))) {
+            msg <- paste0("Non-null @pData slot should have ",
+                          "rownames equal to sample file basenames")
+            return(msg)
+        }
+    }
+    
     msg1 <- .validProcessingQueue(
         object@scaleTransformProcessingQueue,
         "scaleTransformProcessingQueue"
@@ -293,6 +314,12 @@ setMethod(
         } else {
             cat("No sample file\n")
         }
+        if (!is.null(object@pData)) {
+            cat("pheno data:\n")
+            show(object@pData)
+        } else {
+            cat("No pheno data\n")
+        }
         showProcessingSteps(object, whichQueue = "scale transform")
         showProcessingSteps(object, whichQueue = "pre-processing")
     }
@@ -306,18 +333,21 @@ setGeneric("CytoPipeline", function(object, ...) {
 #' @rdname CytoPipeline
 #' @param experimentName the experiment name
 #' @param sampleFiles the sample files
+#' @param pData the pheno data (data.frame or NULL)
 #' @export
 #'
 setMethod(
     "CytoPipeline", "missing",
     function(object,
              experimentName = "default_experiment",
-             sampleFiles = character()) {
+             sampleFiles = character(),
+             pData = NULL) {
         methods::new("CytoPipeline",
             experimentName = experimentName,
             scaleTransformProcessingQueue = list(),
             flowFramesPreProcessingQueue = list(),
-            sampleFiles = sampleFiles
+            sampleFiles = sampleFiles,
+            pData = pData
         )
     }
 )
@@ -327,6 +357,7 @@ setMethod(
 #' @param object a `list()`
 #' @param experimentName the experiment name
 #' @param sampleFiles the sample files
+#' @param pData the phenoData (data.frame or NULL)
 #'
 #' @export
 #'
@@ -334,7 +365,8 @@ setMethod(
     "CytoPipeline", "list",
     function(object,
              experimentName = "default_experiment",
-             sampleFiles = character()) {
+             sampleFiles = character(),
+             pData = NULL) {
         x <- methods::new("CytoPipeline",
             experimentName = experimentName,
             scaleTransformProcessingQueue = list(),
@@ -353,6 +385,7 @@ setMethod(
 #' @param object a `character()` containing a JSON input
 #' @param experimentName the experiment name
 #' @param sampleFiles the sample files
+#' @param pData the pheno Data (data.frame or NULL)
 #'
 #' @export
 #'
@@ -360,7 +393,8 @@ setMethod(
     "CytoPipeline", "character",
     function(object,
              experimentName = "default_experiment",
-             sampleFiles = character()) {
+             sampleFiles = character(),
+             pData = NULL) {
         pipelineParams <- jsonlite::read_json(object,
             simplifyVector = TRUE,
             simplifyDataFrame = FALSE
@@ -458,6 +492,26 @@ sampleFiles <- function(x) {
     return(x)
 }
 
+##' @rdname CytoPipeline
+##' @param x a `CytoPipeline` object
+##' @export
+##'
+pData <- function(x) {
+    stopifnot(inherits(x, "CytoPipeline"))
+    return(x@pData)
+}
+
+##' @rdname CytoPipeline
+##' @param x a `CytoPipeline` object
+##' @param value the new value to be assigned
+##' @export
+##'
+"pData<-" <- function(x, value) {
+    stopifnot(inherits(x, "CytoPipeline"))
+    x@pData <- value
+    if (isTRUE(methods::validObject(x))) return(x)
+}
+
 .validProcessingQueue <- function(x, queueName) {
     msg <- NULL
     if (length(x) && !all(vapply(x, inherits, "CytoProcessingStep"))) {
@@ -482,7 +536,8 @@ sampleFiles <- function(x) {
     mandatory <- c() 
     #optional <- c("sampleFiles")
     optional <- c("experimentName",
-                  "sampleFiles")
+                  "sampleFiles",
+                  "pData")
 
     for (m in mandatory) {
         if (is.null(params[[m]])) {

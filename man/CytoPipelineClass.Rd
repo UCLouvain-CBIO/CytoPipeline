@@ -18,19 +18,24 @@ transformations per channel
 \section{Slots}{
 
 \describe{
-\item{\code{scaleTransformProcessingQueue}}{A \code{list()} of
+\item{\code{scaleTransformProcessingQueue}}{A \code{list} of
 CytoProcessingStep objects containing the steps
 for obtaining the scale transformations per channel}
 
-\item{\code{flowFramesPreProcessingQueue}}{A \code{list()} of
+\item{\code{flowFramesPreProcessingQueue}}{A \code{list} of
 CytoProcessingStep objects containing the steps
 for pre-processing of the samples flow frames}
 
-\item{\code{experimentName}}{A \code{character()} containing
+\item{\code{experimentName}}{A \code{character} containing
 the experiment (run) name}
 
-\item{\code{sampleFiles}}{A \code{character()} vector storing
+\item{\code{sampleFiles}}{A \code{character} vector storing
 all fcs files to be run into the pipeline}
+
+\item{\code{pData}}{An optional \code{data.frame} containing
+additional information for each sample file.
+The \code{pData} raw names must correspond to \code{basename(sampleFiles)}
+otherwise validation of the CytoPipeline object will fail!}
 }}
 
 \examples{

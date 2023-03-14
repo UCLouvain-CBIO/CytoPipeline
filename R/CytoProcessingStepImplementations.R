@@ -172,6 +172,9 @@ selectRandomSamples <- function(sampleFiles,
 #' @param sampleFiles a vector of character path to sample files
 #' @param whichSamples either 'all' if all sample files need to be read, or
 #' a vector of indexes pointing to the sampleFiles vector
+#' @param pData an optional `data.frame` containing
+#' additional information for each sample file. 
+#' The `pData` raw names must correspond to `basename(sampleFiles)`.
 #' @param channelMarkerFile an optional path to a csv file which provides the 
 #' mapping between channels and markers. If provided, this csv file should 
 #' contain a `Channel` column, and a `Marker` column. Optionally a 'Used' 
@@ -213,8 +216,21 @@ selectRandomSamples <- function(sampleFiles,
 #' 
 readSampleFiles <- function(sampleFiles,
                             whichSamples = "all", 
+                            pData = NULL,
                             channelMarkerFile = NULL,
                             ...) {
+    #sanity check on pData
+    if (!is.null(pData)) {
+        if (!inherits(pData, "data.frame")) {
+            stop("Non-null pData should be a data.frame")
+        }
+        if (!isTRUE(all.equal(rownames(pData), 
+                              basename(sampleFiles)))) {
+            stop("Non-null pData should have ",
+                 "rownames equal to sample file basenames")
+        }
+    }
+    
     if (whichSamples == "all") {
         # do nothing : sampleFiles should contain all the input sample files
         # already
@@ -223,15 +239,56 @@ readSampleFiles <- function(sampleFiles,
     } else {
         stop("'whichSamples' should be either 'all', or a vector of indexes")
     }
+    
+    # internal function to store pheno data in flowFrame description
+    storePDataKeywords <- function(ff, sampleFile, pData) {
+        filePData <- methods::as(pData, 
+                                 "data.frame")[basename(sampleFile), 
+                                               ,
+                                               drop=TRUE]
+        
+        for (j in seq_along(filePData)){
+            newKeyword <- paste0("CytoPipeline_",
+                                 names(filePData)[j])
+            newValue <- filePData[[j]]
+            flowCore::keyword(ff)[[newKeyword]] <- newValue    
+        } 
+        ff
+    }
+    
 
     if (length(sampleFiles) == 0) {
         stop("no sample files to read")
     } else if (length(sampleFiles) == 1) {
         res <- flowCore::read.FCS(sampleFiles, ...)
+        
+        if (!is.null(pData)) {
+            # Add pheno data in flowFrame description
+            res <- storePDataKeywords(res,
+                                      sampleFile = sampleFiles,
+                                      pData = pData)
+        }
         # Add a column with Cell ID
         res <- appendCellID(res)
     } else {
-        res <- flowCore::read.flowSet(sampleFiles, ...)
+        res <- flowCore::read.flowSet(sampleFiles,
+                                      ...)
+        if (!is.null(pData)) {
+            
+            # store corresponding pData in each file keywords
+            res <- flowCore::flowSet_to_list(res)
+            res <- mapply(FUN = storePDataKeywords,
+                          ff = res,
+                          sampleFile = sampleFiles,
+                          MoreArgs = list(pData = pData),
+                          SIMPLIFY = FALSE)
+            res <- methods::as(res, "flowSet")
+            
+            #also store in global flowSet pData
+            flowCore::pData(res) <- pData
+        }
+        
+        
         # Add a column with Cell ID
         res <- flowCore::fsApply(
             x = res,
@@ -473,13 +530,21 @@ getAcquiredCompensationMatrix <- function(ff) {
 #' @description executes the classical compensation function on a flowSet or
 #' flowFrame, given a compensation matrix. The matrix can be either retrieved
 #' in the fcs files themselves or provided as a csv file.
-#' @param x a flowCore::flowSet or a flowCore::flowFrame
+#' @param x a `flowCore::flowFrame` or `flowCore::flowSet`
 #' @param matrixSource if "fcs", the compensation matrix will be fetched from
 #' the fcs files (different compensation matrices can then be applied by fcs
 #' file)
-#' if "import", uses matrixPath to read the matrix (should be a csv file)
+#' if "import", uses `matrixPath` to read the matrix (should be a csv file)
+#' if "pData", uses `pDataVar` and `pDataPathMapping` to link a specific 
+#' phenotype data variable to map different matrix paths
 #' @param matrixPath if matrixSource == "import", will be used as the input csv
 #' file path
+#' @param pDataVar variable name (column of pheno data) 
+#' used to map the compenstion matrix file
+#' @param pDataPathMapping a named list:
+#' - item names are possible values of `pDataVar`
+#' - item values are character() providing the `matrixPath` 
+#' for the corresponding `pDataVar` value
 #' @param updateChannelNames if TRUE, updates the fluo channel names by
 #' prefixing them with "comp-"
 #' @param ... additional arguments (not used)
@@ -509,51 +574,109 @@ getAcquiredCompensationMatrix <- function(ff) {
 #'     compensateFromMatrix(ff_m,
 #'                          matrixSource = "fcs")        
 compensateFromMatrix <- function(x,
-                                 matrixSource = c("fcs", "import"),
+                                 matrixSource = c("fcs", "import", "pData"),
                                  matrixPath = NULL,
+                                 pDataVar = NULL,
+                                 pDataPathMapping = NULL,
                                  updateChannelNames = TRUE,
                                  ...) {
-    myFunc <- function(ff, matrixSource = c("fcs", "import"),
-                       matrixPath = NULL) {
+
+    
+    matrixSource = match.arg(matrixSource)
+    
+    if (matrixSource == "import"){
+        if (is.null(matrixPath)) {
+            stop("matrixPath can't be NULL if matrixSource == 'import'")
+        }
+    }
+    
+    # if matrix == "pData", check needed parameters
+    if (matrixSource == "pData"){
+        if (is.null(pDataVar)) {
+            stop("pDataVar can't be NULL if matrixSource == 'pData'")
+        } else if (!is.character(pDataVar)) {
+            stop("pDataVar should be a character")
+        } else if (!is.list(pDataPathMapping)) {
+            stop("pDataPathMapping should be a named list")
+        } else if (length(names(pDataPathMapping)) == 0) {
+            stop("pDataPathMapping should be a named list")
+        }
+    }
+    
+    importCompensationMatrix <- function(ff, matrixPath) {
+        # import matrix from file (path)
+        if (is.null(matrixPath)) {
+            stop("No path specified for compensation matrix!")
+        }
+        if (!file.exists(matrixPath)) {
+            stop("Compensation matrix file [", matrixPath,
+                 "] not found!")
+        }
+        compensationMatrix <-
+            utils::read.csv(matrixPath,
+                            check.names = FALSE,
+                            row.names = 1
+            )
+        compensationMatrix <- 
+            .updateCompMatrixLabels(compensationMatrix, ff)
+        
+        return(compensationMatrix)
+    }
+    
+    compensateOneFFWithSource <- function(
+        ff, matrixSource, matrixPath, pDataVar, pDataPathMapping){
+        
         message("Compensating file : ", getFCSFileName(ff))
-        matrixSource <- match.arg(matrixSource)
         if (matrixSource == "fcs") {
             # obtains compensation matrix
             compensationMatrix <-
                 getAcquiredCompensationMatrix(ff)
         } else {
-            # import matrix from file (path)
-            if (is.null(matrixPath)) {
-                stop("No path specified for compensation matrix!")
+            # find correct matrix path
+            if (matrixSource == "pData"){
+                usedKey <- paste0("CytoPipeline_", pDataVar)
+                varValue <- flowCore::keyword(ff, usedKey)[[usedKey]]
+                if (is.null(varValue)) {
+                    stop("keyword [", usedKey, "] not found in flowFrame")
+                }
+                matrixPath <- pDataPathMapping[[varValue]]
+                if (is.null(matrixPath)) {
+                    stop("No mapping found for variable [", pDataVar, "], ",
+                         "value = ", varValue)
+                }
+                if (!is.character(matrixPath)) {
+                    stop("Mapping found for varaible [", pDataVar, "],",
+                         "value = ", varValue, " is not a character")
+                }
             }
-            if (!file.exists(matrixPath)) {
-                stop("Compensation matrix file not found!")
-            }
-            compensationMatrix <-
-                utils::read.csv(matrixPath,
-                    check.names = FALSE,
-                    row.names = 1
-                )
-            compensationMatrix <- 
-                .updateCompMatrixLabels(compensationMatrix, ff)
+            compensationMatrix <- importCompensationMatrix(ff, matrixPath)
         }
-
+        
         ffOut <- runCompensation(ff,
-            compensationMatrix,
-            updateChannelNames = updateChannelNames
+                                 compensationMatrix,
+                                 updateChannelNames = updateChannelNames
         )
-
+        
         return(ffOut)
     }
-
+            
     if (inherits(x, "flowFrame")) {
-        return(myFunc(x, matrixSource = matrixSource, matrixPath = matrixPath))
+        res <- compensateOneFFWithSource(
+            ff = x, matrixSource, matrixPath, pDataVar, pDataPathMapping)
     } else if (inherits(x, "flowSet")) {
-        fsOut <- flowCore::fsApply(x, FUN = myFunc, simplify = TRUE)
-        return(fsOut)
+        res <- flowCore::fsApply(x, 
+                                 FUN = compensateOneFFWithSource, 
+                                 simplify = TRUE,
+                                 matrixSource = matrixSource,
+                                 matrixPath = matrixPath,
+                                 pDataVar = pDataVar,
+                                 pDataPathMapping = pDataPathMapping)
     } else {
         stop("x should be a flowCore::flowFrame or a flowCore::flowSet")
     }
+    
+    res
+
 }
 
 

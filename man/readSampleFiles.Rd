@@ -7,6 +7,7 @@
 readSampleFiles(
   sampleFiles,
   whichSamples = "all",
+  pData = NULL,
   channelMarkerFile = NULL,
   ...
 )
@@ -16,6 +17,10 @@ readSampleFiles(
 
 \item{whichSamples}{either 'all' if all sample files need to be read, or
 a vector of indexes pointing to the sampleFiles vector}
+
+\item{pData}{an optional \code{data.frame} containing
+additional information for each sample file.
+The \code{pData} raw names must correspond to \code{basename(sampleFiles)}.}
 
 \item{channelMarkerFile}{an optional path to a csv file which provides the
 mapping between channels and markers. If provided, this csv file should

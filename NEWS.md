@@ -4,7 +4,10 @@
 - corrected the OMIP021Samples fcs data in order to keep the original file
 name
 - bug correction: error message on execution with no sample file
-
+- added `phenoData` slot in CytoPipeline object
+- updated `readSamples()` to allow passing a `pData` parameters
+- updated `compensateFromMatrix()` to allow passing a mapping 
+based on a `pData` variable
 
 ## CytoPipeline 0.99.5
 - reactivated unit tests for ggplot2 objects

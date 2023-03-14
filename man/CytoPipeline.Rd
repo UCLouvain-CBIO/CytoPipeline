@@ -11,6 +11,8 @@
 \alias{experimentName<-}
 \alias{sampleFiles}
 \alias{sampleFiles<-}
+\alias{pData}
+\alias{pData<-}
 \title{CytoPipeline package}
 \usage{
 \S4method{show}{CytoPipeline}(object)
@@ -18,19 +20,22 @@
 \S4method{CytoPipeline}{missing}(
   object,
   experimentName = "default_experiment",
-  sampleFiles = character()
+  sampleFiles = character(),
+  pData = NULL
 )
 
 \S4method{CytoPipeline}{list}(
   object,
   experimentName = "default_experiment",
-  sampleFiles = character()
+  sampleFiles = character(),
+  pData = NULL
 )
 
 \S4method{CytoPipeline}{character}(
   object,
   experimentName = "default_experiment",
-  sampleFiles = character()
+  sampleFiles = character(),
+  pData = NULL
 )
 
 \method{as.list}{CytoPipeline}(x, ...)
@@ -42,6 +47,10 @@ experimentName(x) <- value
 sampleFiles(x)
 
 sampleFiles(x) <- value
+
+pData(x)
+
+pData(x) <- value
 }
 \arguments{
 \item{object}{a \code{character()} containing a JSON input}
@@ -49,6 +58,8 @@ sampleFiles(x) <- value
 \item{experimentName}{the experiment name}
 
 \item{sampleFiles}{the sample files}
+
+\item{pData}{the pheno Data (data.frame or NULL)}
 
 \item{x}{a \code{CytoPipeline} object}
 

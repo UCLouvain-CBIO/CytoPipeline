@@ -743,7 +743,8 @@ execute <- function(x,
                         executeProcessingStep(
                             x@flowFramesPreProcessingQueue[[s]],
                             sampleFiles = file,
-                            transList = currentTransList
+                            transList = currentTransList,
+                            pData = x@pData
                         )
                 } else {
                     res <-
