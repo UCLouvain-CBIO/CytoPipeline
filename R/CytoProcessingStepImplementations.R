@@ -114,64 +114,72 @@ estimateScaleTransforms <- function(ff,
     return(transList)
 }
 
-#' @title select a nb of sample files randomly
-#' @description Wrapper around sample(sampleFiles, nSamples).
-#' For the needs of making it a CytoProcessingStep:
-#' - takes `sampleFiles` as an explicit first parameter
-#' - can manage a seed
-#' - allow passing ... as a parameter (not used)
-#' @param sampleFiles a vector of character path to sample files
-#' @param nSamples number of samples to randomly select. If `nSamples` is
-#' higher than nb of available samples, the output will be all samples
-#' @param seed an optional seed parameters (provided to ease reproducibility).
-#' @param ... additional parameters passed (not used here).
-#'
-#' @return a subset of `sampleFiles`, randomly selected
-#' @export
-#' 
-#' @examples
-#'
-#' rawDataDir <-
-#'     system.file("extdata", package = "CytoPipeline")
-#' sampleFiles <-
-#'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
-#' 
-#' nRandomSamples <- 1
-#' selectSampleFiles <- selectRandomSamples(sampleFiles, 
-#'                                          nSamples = nRandomSamples,
-#'                                          seed = 1)
-#'                                          
-selectRandomSamples <- function(sampleFiles,
-                                nSamples,
-                                seed = NULL,
-                                ...) {
-    
-    if (!is.numeric(nSamples) || nSamples < 1) {
-        stop("[nSamples] should be a numeric >= 1")
-    }
-    
-    nAvailableSamples <- length(sampleFiles)
-    
-    if (nSamples > nAvailableSamples) nSamples <- nAvailableSamples
-    
-    if (!is.null(seed)) {
-        # set the seed locally in the execution environment,
-        # restore it afterward
-        withr::local_seed(seed)
-    }
-    
-    outputSamples <- sample(sampleFiles, nSamples)
-    
-    outputSamples
-}
+# #' @title select a nb of sample files randomly
+# #' @description Wrapper around sample(sampleFiles, nSamples).
+# #' For the needs of making it a CytoProcessingStep:
+# #' - takes `sampleFiles` as an explicit first parameter
+# #' - can manage a seed
+# #' - allow passing ... as a parameter (not used)
+# #' @param sampleFiles a vector of character path to sample files
+# #' @param nSamples number of samples to randomly select. If `nSamples` is
+# #' higher than nb of available samples, the output will be all samples
+# #' @param seed an optional seed parameters (provided to ease reproducibility).
+# #' @param ... additional parameters passed (not used here).
+# #'
+# #' @return a subset of `sampleFiles`, randomly selected
+# #' @export
+# #' 
+# #' @examples
+# #'
+# #' rawDataDir <-
+# #'     system.file("extdata", package = "CytoPipeline")
+# #' sampleFiles <-
+# #'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
+# #' 
+# #' nRandomSamples <- 1
+# #' selectSampleFiles <- selectRandomSamples(sampleFiles, 
+# #'                                          nSamples = nRandomSamples,
+# #'                                          seed = 1)
+# #'                                          
+# selectRandomSamples <- function(sampleFiles,
+#                                 nSamples,
+#                                 seed = NULL,
+#                                 ...) {
+#     
+#     if (!is.numeric(nSamples) || nSamples < 1) {
+#         stop("[nSamples] should be a numeric >= 1")
+#     }
+#     
+#     nAvailableSamples <- length(sampleFiles)
+#     
+#     if (nSamples > nAvailableSamples) nSamples <- nAvailableSamples
+#     
+#     if (!is.null(seed)) {
+#         # set the seed locally in the execution environment,
+#         # restore it afterward
+#         withr::local_seed(seed)
+#     }
+#     
+#     outputSamples <- sample(sampleFiles, nSamples)
+#     
+#     outputSamples
+# }
 
 
 #' @title Read fcs sample files
 #' @description Wrapper around flowCore::read.fcs() or flowCore::read.flowSet().
 #' Also adds a "Cell_ID" additional column, used in flowFrames comparison
 #' @param sampleFiles a vector of character path to sample files
-#' @param whichSamples either 'all' if all sample files need to be read, or
-#' a vector of indexes pointing to the sampleFiles vector
+#' @param whichSamples one of:
+#' - 'all' if all sample files need to be read
+#' - 'random' if some samples need to be chosen randomly 
+#' (in that case, using `nSamples` and `seed`)
+#' - a vector of indexes pointing to the sampleFiles vector
+#' @param nSamples number of samples to randomly select 
+#' (if `whichSamples == "random"`). 
+#' If `nSamples` is higher than nb of available samples, 
+#' the output will be all samples
+#' @param seed an optional seed parameters (provided to ease reproducibility).
 #' @param pData an optional `data.frame` containing
 #' additional information for each sample file. 
 #' The `pData` raw names must correspond to `basename(sampleFiles)`.
@@ -216,6 +224,8 @@ selectRandomSamples <- function(sampleFiles,
 #' 
 readSampleFiles <- function(sampleFiles,
                             whichSamples = "all", 
+                            nSamples = NULL,
+                            seed = NULL,
                             pData = NULL,
                             channelMarkerFile = NULL,
                             ...) {
@@ -234,6 +244,23 @@ readSampleFiles <- function(sampleFiles,
     if (whichSamples == "all") {
         # do nothing : sampleFiles should contain all the input sample files
         # already
+    } else if (whichSamples == "random") {
+        if (!is.numeric(nSamples) || nSamples < 1) {
+            stop("[nSamples] should be a numeric >= 1")
+        }
+        
+        nAvailableSamples <- length(sampleFiles)
+        
+        if (nSamples > nAvailableSamples) nSamples <- nAvailableSamples
+        
+        if (!is.null(seed)) {
+            # set the seed locally in the execution environment,
+            # restore it afterward
+            withr::local_seed(seed)
+        }
+        
+        whichSamples <- sample(seq_along(sampleFiles), nSamples)
+        sampleFiles <- sampleFiles[whichSamples]
     } else if (is.numeric(whichSamples)) {
         sampleFiles <- sampleFiles[whichSamples]
     } else {

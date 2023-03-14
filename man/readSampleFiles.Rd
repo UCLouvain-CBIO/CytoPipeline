@@ -7,6 +7,8 @@
 readSampleFiles(
   sampleFiles,
   whichSamples = "all",
+  nSamples = NULL,
+  seed = NULL,
   pData = NULL,
   channelMarkerFile = NULL,
   ...
@@ -15,8 +17,20 @@ readSampleFiles(
 \arguments{
 \item{sampleFiles}{a vector of character path to sample files}
 
-\item{whichSamples}{either 'all' if all sample files need to be read, or
-a vector of indexes pointing to the sampleFiles vector}
+\item{whichSamples}{one of:
+\itemize{
+\item 'all' if all sample files need to be read
+\item 'random' if some samples need to be chosen randomly
+(in that case, using \code{nSamples} and \code{seed})
+\item a vector of indexes pointing to the sampleFiles vector
+}}
+
+\item{nSamples}{number of samples to randomly select
+(if \code{whichSamples == "random"}).
+If \code{nSamples} is higher than nb of available samples,
+the output will be all samples}
+
+\item{seed}{an optional seed parameters (provided to ease reproducibility).}
 
 \item{pData}{an optional \code{data.frame} containing
 additional information for each sample file.

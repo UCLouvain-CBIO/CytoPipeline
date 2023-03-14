@@ -8,6 +8,8 @@ name
 - updated `readSamples()` to allow passing a `pData` parameters
 - updated `compensateFromMatrix()` to allow passing a mapping 
 based on a `pData` variable
+- updated `readSamples()` to allow selecting a random number of samples and
+removed `selectSamples()`
 
 ## CytoPipeline 0.99.5
 - reactivated unit tests for ggplot2 objects

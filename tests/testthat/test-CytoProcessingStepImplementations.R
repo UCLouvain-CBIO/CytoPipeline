@@ -58,36 +58,36 @@ test_that("estimateScaleTransforms work", {
     )
 })
 
-test_that("selectRandomSamples works", {
-    rawDataDir <-
-        system.file("extdata", package = "CytoPipeline")
-    sampleFiles <-
-        file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
-    
-    seed <- 2
-    nSamples <- 1
-    
-    newSampleFiles <- selectRandomSamples(sampleFiles, 
-                                          nSamples = nSamples,
-                                          seed = seed)
-    expected <- sampleFiles[1]
-    expect_equal(newSampleFiles,
-                 expected)
-    
-    newSampleFiles <- selectRandomSamples(sampleFiles, 
-                                          nSamples = 3,
-                                          seed = seed)
-    
-    expect_equal(newSampleFiles,
-                 sampleFiles)
-    
-    expect_error(selectRandomSamples(sampleFiles, 
-                                     nSamples = 0,
-                                     seed = seed),
-                 regexp = "should be a numeric >= 1")
-                                          
-        
-})
+# test_that("selectRandomSamples works", {
+#     rawDataDir <-
+#         system.file("extdata", package = "CytoPipeline")
+#     sampleFiles <-
+#         file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
+#     
+#     seed <- 2
+#     nSamples <- 1
+#     
+#     newSampleFiles <- selectRandomSamples(sampleFiles, 
+#                                           nSamples = nSamples,
+#                                           seed = seed)
+#     expected <- sampleFiles[1]
+#     expect_equal(newSampleFiles,
+#                  expected)
+#     
+#     newSampleFiles <- selectRandomSamples(sampleFiles, 
+#                                           nSamples = 3,
+#                                           seed = seed)
+#     
+#     expect_equal(newSampleFiles,
+#                  sampleFiles)
+#     
+#     expect_error(selectRandomSamples(sampleFiles, 
+#                                      nSamples = 0,
+#                                      seed = seed),
+#                  regexp = "should be a numeric >= 1")
+#                                           
+#         
+# })
 
 test_that("readSampleFiles with no sample files gives an error", {
     rawDataDir <-
@@ -148,6 +148,69 @@ test_that("readSampleFiles works", {
         flowCore::exprs(res2),
         flowCore::exprs(fs_raw[[2]])
     )
+})
+
+test_that("readSampleFiles with random samples works", {
+    rawDataDir <-
+        system.file("extdata", package = "CytoPipeline")
+    sampleFiles <-
+        file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
+    
+    truncateMaxRange <- FALSE
+    minLimit <- NULL
+    
+    fs_raw <-
+        flowCore::read.flowSet(sampleFiles,
+                               truncate_max_range = truncateMaxRange,
+                               min.limit = minLimit
+        )
+    fs_raw <- flowCore::fsApply(fs_raw, FUN = appendCellID)
+    
+    seed <- 2
+    nSamples <- 1
+    
+    res <- readSampleFiles(
+        sampleFiles = sampleFiles,
+        whichSamples = "random",
+        nSamples = nSamples,
+        seed = seed,
+        truncate_max_range = truncateMaxRange,
+        min.limit = minLimit
+    )
+    
+    expect_equal(
+        flowCore::exprs(res),
+        flowCore::exprs(fs_raw[[1]])
+    )
+    
+    res <- readSampleFiles(
+        sampleFiles = sampleFiles,
+        whichSamples = "random",
+        nSamples = 3,
+        seed = seed,
+        truncate_max_range = truncateMaxRange,
+        min.limit = minLimit
+    )
+    
+    expect_equal(
+        flowCore::exprs(res[[1]]),
+        flowCore::exprs(fs_raw[[1]])
+    )
+    
+    expect_equal(
+        flowCore::exprs(res[[2]]),
+        flowCore::exprs(fs_raw[[2]])
+    )
+    
+ 
+    expect_error(readSampleFiles(
+        sampleFiles = sampleFiles,
+        whichSamples = "random",
+        nSamples = 0,
+        seed = seed,
+        truncate_max_range = truncateMaxRange,
+        min.limit = minLimit),
+        regexp = "should be a numeric >= 1")
 })
 
 test_that("readSampleFiles with post-processing works", {
