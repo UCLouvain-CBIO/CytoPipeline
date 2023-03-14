@@ -61,6 +61,8 @@ Also adds a "Cell_ID" additional column, used in flowFrames comparison</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">readSampleFiles</span><span class="op">(</span></span>
 <span>  <span class="va">sampleFiles</span>,</span>
 <span>  whichSamples <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  nSamples <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pData <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  channelMarkerFile <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -74,8 +76,22 @@ Also adds a "Cell_ID" additional column, used in flowFrames comparison</p>
 
 
 <dt>whichSamples</dt>
-<dd><p>either 'all' if all sample files need to be read, or
-a vector of indexes pointing to the sampleFiles vector</p></dd>
+<dd><p>one of:</p><ul><li><p>'all' if all sample files need to be read</p></li>
+<li><p>'random' if some samples need to be chosen randomly
+(in that case, using <code>nSamples</code> and <code>seed</code>)</p></li>
+<li><p>a vector of indexes pointing to the sampleFiles vector</p></li>
+</ul></dd>
+
+
+<dt>nSamples</dt>
+<dd><p>number of samples to randomly select
+(if <code>whichSamples == "random"</code>).
+If <code>nSamples</code> is higher than nb of available samples,
+the output will be all samples</p></dd>
+
+
+<dt>seed</dt>
+<dd><p>an optional seed parameters (provided to ease reproducibility).</p></dd>
 
 
 <dt>pData</dt>
