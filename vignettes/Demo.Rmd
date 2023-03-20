@@ -19,61 +19,41 @@ vignette: >
 
 # Introduction
 
-```{r, echo = FALSE}
-vembedr::embed_url("https://www.youtube.com/watch?v=IB832cQkXdg&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=1")
-```
+<iframe src="https://www.youtube.com/embed/IB832cQkXdg" width="533" height="300" frameborder="0" allowfullscreen data-external="1"></iframe>
 
 # Background information
 
-```{r, echo = FALSE}
-vembedr::embed_url("https://www.youtube.com/watch?v=0AmO9ZaxJoE&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=2")
-```
+<iframe src="https://www.youtube.com/embed/0AmO9ZaxJoE" width="533" height="300" frameborder="0" allowfullscreen data-external="1"></iframe>
 
 # Illustrating dataset
 
-```{r, echo = FALSE}
-vembedr::embed_url("https://www.youtube.com/watch?v=D8Jkf_bhrfQ&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=3")
-```
+<iframe src="https://www.youtube.com/embed/D8Jkf_bhrfQ" width="533" height="300" frameborder="0" allowfullscreen data-external="1"></iframe>
 
 # Specifying the pipeline
 
-```{r, echo = FALSE}
-vembedr::embed_url("https://www.youtube.com/watch?v=z25TcU39Bqc&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=4")
-```
+<iframe src="https://www.youtube.com/embed/z25TcU39Bqc" width="533" height="300" frameborder="0" allowfullscreen data-external="1"></iframe>
 
 # Running the pipeline
 
-```{r, echo = FALSE}
-vembedr::embed_url("https://www.youtube.com/watch?v=6q4MTZi_Hvw&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=5")
-```
+<iframe src="https://www.youtube.com/embed/6q4MTZi_Hvw" width="533" height="300" frameborder="0" allowfullscreen data-external="1"></iframe>
 
 # Visualizing the results
 
-```{r, echo = FALSE}
-vembedr::embed_url("https://www.youtube.com/watch?v=NAtwhr7UQW4&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=6")
-```
+<iframe src="https://www.youtube.com/embed/NAtwhr7UQW4" width="533" height="300" frameborder="0" allowfullscreen data-external="1"></iframe>
 
 # Comparing pipelines
 
-```{r, echo = FALSE}
-vembedr::embed_url("https://www.youtube.com/watch?v=F2gdPr-_zi0&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=7")
-```
+<iframe src="https://www.youtube.com/embed/F2gdPr-_zi0" width="533" height="300" frameborder="0" allowfullscreen data-external="1"></iframe>
 
 # Example with two different QC methods
 
-```{r, echo = FALSE}
-vembedr::embed_url("https://www.youtube.com/watch?v=uLGeARGGxR8&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=8")
-```
+<iframe src="https://www.youtube.com/embed/uLGeARGGxR8" width="533" height="300" frameborder="0" allowfullscreen data-external="1"></iframe>
 
 # Visualizing scale transformations
 
-```{r, echo = FALSE}
-vembedr::embed_url("https://www.youtube.com/watch?v=b3htJsbn3Ag&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=9")
-```
+<iframe src="https://www.youtube.com/embed/b3htJsbn3Ag" width="533" height="300" frameborder="0" allowfullscreen data-external="1"></iframe>
 
 # Defining technical run parameters
 
-```{r, echo = FALSE}
-vembedr::embed_url("https://www.youtube.com/watch?v=-jPp_aNnA_U&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=10")
-```
+<iframe src="https://www.youtube.com/embed/-jPp_aNnA_U" width="533" height="300" frameborder="0" allowfullscreen data-external="1"></iframe>
 
