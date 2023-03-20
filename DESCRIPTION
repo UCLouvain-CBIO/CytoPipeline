@@ -1,6 +1,6 @@
 Package: CytoPipeline
 Title: Automation and visualization of flow cytometry data analysis pipelines
-Version: 0.99.6
+Version: 0.99.7
 Authors@R:
     c(person(given = "Philippe",
              family = "Hauchamps",
