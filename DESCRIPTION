@@ -71,7 +71,8 @@ Suggests:
     diffviewer,
     knitr,
     rmarkdown,
-    BiocStyle
+    BiocStyle,
+    vembedr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 LazyData: true

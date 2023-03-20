@@ -1,0 +1,79 @@
+---
+title: "Demonstration of the CytoPipeline R package suite functionalities"
+author:
+    - name: Philippe Hauchamps
+    - name: Laurent Gatto
+package: CytoPipeline
+abstract: >
+ This vignette provides links to videos demonstrating some of the functionalities of CytoPipeline R package suite. It is distributed, as well as the accompanying videos, under a CC BY-SA license.
+output:
+  BiocStyle::html_document:
+    toc_float: true
+bibliography: CytoPipeline.bib
+vignette: >
+  %\VignetteIndexEntry{Demonstration of the CytoPipeline R package suite functionalities}
+  %\VignetteEngine{knitr::rmarkdown}
+  %%\VignetteKeywords{FlowCytometry, Preprocessing, QualityControl, WorkflowStep, Software, Visualization}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+```{r, echo = FALSE}
+vembedr::embed_url("https://www.youtube.com/watch?v=IB832cQkXdg&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=1")
+```
+
+# Background information
+
+```{r, echo = FALSE}
+vembedr::embed_url("https://www.youtube.com/watch?v=0AmO9ZaxJoE&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=2")
+```
+
+# Illustrating dataset
+
+```{r, echo = FALSE}
+vembedr::embed_url("https://www.youtube.com/watch?v=D8Jkf_bhrfQ&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=3")
+```
+
+# Specifying the pipeline
+
+```{r, echo = FALSE}
+vembedr::embed_url("https://www.youtube.com/watch?v=z25TcU39Bqc&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=4")
+```
+
+# Running the pipeline
+
+```{r, echo = FALSE}
+vembedr::embed_url("https://www.youtube.com/watch?v=6q4MTZi_Hvw&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=5")
+```
+
+# Visualizing the results
+
+```{r, echo = FALSE}
+vembedr::embed_url("https://www.youtube.com/watch?v=NAtwhr7UQW4&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=6")
+```
+
+# Comparing pipelines
+
+```{r, echo = FALSE}
+vembedr::embed_url("https://www.youtube.com/watch?v=F2gdPr-_zi0&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=7")
+```
+
+# Example with two different QC methods
+
+```{r, echo = FALSE}
+vembedr::embed_url("https://www.youtube.com/watch?v=uLGeARGGxR8&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=8")
+```
+
+# Visualizing scale transformations
+
+```{r, echo = FALSE}
+vembedr::embed_url("https://www.youtube.com/watch?v=b3htJsbn3Ag&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=9")
+```
+
+# Defining technical run parameters
+
+```{r, echo = FALSE}
+vembedr::embed_url("https://www.youtube.com/watch?v=-jPp_aNnA_U&list=PLkWC5oGQNlzDTznHjo6zXxBIBDJUQnizr&index=10")
+```
+

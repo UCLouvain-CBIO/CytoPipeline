@@ -10,6 +10,7 @@ name
 based on a `pData` variable
 - updated `readSamples()` to allow selecting a random number of samples and
 removed `selectSamples()`
+- vignette with demo and links to videos
 
 ## CytoPipeline 0.99.5
 - reactivated unit tests for ggplot2 objects
