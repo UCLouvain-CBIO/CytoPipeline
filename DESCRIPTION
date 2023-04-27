@@ -1,6 +1,6 @@
 Package: CytoPipeline
 Title: Automation and visualization of flow cytometry data analysis pipelines
-Version: 0.99.7
+Version: 1.1.1
 Authors@R:
     c(person(given = "Philippe",
              family = "Hauchamps",
@@ -74,4 +74,3 @@ Suggests:
     BiocStyle
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-LazyData: true

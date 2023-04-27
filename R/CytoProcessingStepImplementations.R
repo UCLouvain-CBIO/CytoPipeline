@@ -92,7 +92,7 @@ estimateScaleTransforms <- function(ff,
     } # else do nothing
     
     # handle specific cases of scatter channels that still need fluo method
-    if (! is.null(specificScatterChannels)) {
+    if (!is.null(specificScatterChannels) && fluoMethod == "estimateLogicle") {
         effectiveScatterChannels <- NULL
         for (ch in specificScatterChannels) {
             scatterChannels <-
@@ -103,6 +103,8 @@ estimateScaleTransforms <- function(ff,
             } else {
                 transList@transforms[[ch]] <- NULL
                 effectiveScatterChannels <- c(effectiveScatterChannels, ch)
+                message("Specific scatter channel found: [", ch, "] ",
+                        "=> correcting scale transformation to logicle...")
             } 
         }
         
@@ -611,7 +613,7 @@ compensateFromMatrix <- function(x,
                                  ...) {
 
     
-    matrixSource = match.arg(matrixSource)
+    matrixSource <- match.arg(matrixSource)
     
     if (matrixSource == "import"){
         if (is.null(matrixPath)) {

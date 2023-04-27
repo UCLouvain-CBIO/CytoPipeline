@@ -1,7 +1,12 @@
-# CytoPipeline 0.99
+# CytoPipeline 1.1
 
-## CytoPipeline 0.99.7
-(nothing yet)
+# CytoPipeline 1.1.1
+- tiny modifications to support upgrade to Bioc 3.18
+
+# CytoPipeline 1.0
+- first release Bioconductor
+
+# CytoPipeline 0.99
 
 ## CytoPipeline 0.99.6
 - corrected the OMIP021Samples fcs data in order to keep the original file
