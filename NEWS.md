@@ -1,5 +1,9 @@
 # CytoPipeline 1.1
 
+# CytoPipeline 1.1.2
+- storage of phenoData into cache upon execution of CytoPipeline object
+(and back into CytoPipeline object when re-built from cache)
+
 # CytoPipeline 1.1.1
 - tiny modifications to support upgrade to Bioc 3.18
 
