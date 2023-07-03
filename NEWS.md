@@ -3,6 +3,9 @@
 # CytoPipeline 1.1.2
 - storage of phenoData into cache upon execution of CytoPipeline object
 (and back into CytoPipeline object when re-built from cache)
+- changed the default behaviour of estimateScaleTransforms() so that
+the default method for scatter channels is now "none" instead of 
+"linearQuantile"
 
 # CytoPipeline 1.1.1
 - tiny modifications to support upgrade to Bioc 3.18
