@@ -167,23 +167,27 @@ ggplotFlowRate <- function(obj, title = "Flow Rate", timeUnit = 100) {
 #' @param bins used in geom_hex
 #' @param fill used in geom_density
 #' @param alpha used in geom_density
-#' @param xScale scale to be used for the x axis
+#' @param xScale scale to be used for the x axis 
+#' (note "linear" corresponds to no transformation)
 #' @param yScale scale to be used for the y axis
+#' (note "linear" corresponds to no transformation)
 #' @param xLogicleParams if (xScale == "logicle"), the parameters of the logicle
-#' transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)
+#' transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...).
+#' If NULL, these parameters will be estimated by flowCore::estimateLogicle()
 #' @param yLogicleParams if (yScale == "logicle"), the parameters of the logicle
-#' transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)
+#' transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...).
+#' If NULL, these parameters will be estimated by flowCore::estimateLogicle()
 #' @param xLinearRange if (xScale == "linear"), the x axis range to be used
 #' @param yLinearRange if (yScale == "linear"), the y axis range to be used
 #' @param transList optional list of scale transformations to be applied to each
 #' channel. If it is non null, 'x/yScale', 'x/yLogicleParams' and
 #' 'x/yLinear_range' will be discarded.
-#' @param runTransforms (TRUE/FALSE) only taken into account if transList is
-#' not NULL. Will 'transList' result in data being effectively transformed ?
+#' @param runTransforms (TRUE/FALSE) Will the application of non linear scale
+#' result in data being effectively transformed ?
 #' - If TRUE, than the data will undergo transformations prior to
 #' visualization.
-#' - If FALSE, the axis will be scaled but the data themselves are
-#' not transformed.
+#' - If FALSE, the axis will be scaled but the data themselves will not be
+#' transformed.
 #' @return a list of ggplot objects
 #' @import ggplot2
 #' @importFrom ggcyto scale_x_logicle
@@ -349,14 +353,8 @@ ggplotEvents <- function(obj,
                          alpha = 0.2,
                          xScale = c("linear", "logicle"),
                          yScale = c("linear", "logicle"),
-                         xLogicleParams = list(
-                             w = 2, m = 6.42,
-                             a = 0, t = 262144
-                         ),
-                         yLogicleParams = list(
-                             w = 2, m = 6.42,
-                             a = 0, t = 262144
-                         ),
+                         xLogicleParams = NULL,
+                         yLogicleParams = NULL,
                          xLinearRange = NULL,
                          yLinearRange = NULL,
                          transList = NULL,
@@ -365,6 +363,8 @@ ggplotEvents <- function(obj,
 
     #browser()
     
+    xScale <- match.arg(xScale)
+    yScale <- match.arg(yScale)
 
     isFlowSet <- FALSE
     if (inherits(obj, "flowSet")) {
@@ -395,6 +395,73 @@ ggplotEvents <- function(obj,
         yLabel <- yChannel
         if (!is.na(yChMk$desc)) {
             yLabel <- paste0(yLabel, " : ", yChMk$desc)
+        }
+    }
+    
+    # reduce flow frame or flow set to the displayed channels
+    selectedCols <- xChannel
+    if (!is.null(yChannel)){
+        selectedCols <- c(selectedCols, yChannel)
+    }
+    if (isFlowSet) {
+        obj <- flowCore::fsApply(obj,
+                                 FUN = function(ff, selectedCols){
+                                     ff <- ff[, selectedCols]
+                                 },
+                                 selectedCols = selectedCols
+        )    
+    } else {
+        obj <- obj[, selectedCols]
+    }
+    
+    # build scale transforms for not linear scales,
+    # when these are not directly provided by the user
+    if (is.null(transList) && (xScale != "linear" || yScale != "linear")) {
+        estimatedCols <- c()
+        if (xScale == "logicle" && is.null(xLogicleParams)) {
+            estimatedCols <- xChannel
+        }
+        if (!is.null(yChannel) && yScale == "logicle" && 
+            is.null(yLogicleParams)) {
+            estimatedCols <- c(estimatedCols, yChannel)
+        }
+        if (!is.null(estimatedCols)) {
+            if (isFlowSet){
+                transList <- flowCore::estimateLogicle(obj[[1]], estimatedCols)
+            } else {
+                transList <- flowCore::estimateLogicle(obj, estimatedCols)
+            }
+        }
+        
+        # add the self provided logicle parameters
+        if (xScale == "logicle" && !is.null(xLogicleParams)){
+            xLogicleTrans <- flowCore::logicleTransform(
+                w = xLogicleParams$w,
+                t = xLogicleParams$t,
+                m = xLogicleParams$m,
+                a = xLogicleParams$a
+            )
+            if (is.null(transList)) {
+                transList <- flowCore::transformList(from = xChannel,
+                                                     tfun = xLogicleTrans)
+            } else {
+                transList@transforms[[xChannel]] <- xLogicleTrans
+            }
+        }
+        if (!is.null(yChannel) && yScale == "logicle" &&
+            !is.null(yLogicleParams)) {
+            yLogicleTrans <- flowCore::logicleTransform(
+                w = yLogicleParams$w,
+                t = yLogicleParams$t,
+                m = yLogicleParams$m,
+                a = yLogicleParams$a
+            )
+            if (is.null(transList)) {
+                transList <- flowCore::transformList(from = yChannel,
+                                                     tfun = yLogicleTrans)
+            } else {
+                transList@transforms[[yChannel]] <- yLogicleTrans
+            }
         }
     }
 
@@ -629,18 +696,22 @@ ggplotEvents <- function(obj,
 #' @param seed seed used for sub-sampling (if any)
 #' @param size used by geom_point()
 #' @param xScale scale to be used for the x axis
+#' (note "linear" corresponds to no transformation)
 #' @param yScale scale to be used for the y axis
+#' (note "linear" corresponds to no transformation)
 #' @param xLogicleParams if (xScale == "logicle"), the parameters of the logicle
 #' transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)
+#' If NULL, these parameters will be estimated by flowCore::estimateLogicle()
 #' @param yLogicleParams if (yScale == "logicle"), the parameters of the logicle
 #' transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)
+#' If NULL, these parameters will be estimated by flowCore::estimateLogicle()
 #' @param xLinearRange if (xScale == "linear"), linear range to be used
 #' @param yLinearRange if (yScale == "linear"), linear range to be used
 #' @param transList optional list of scale transformations to be applied to each
 #' channel. If it is non null, 'x/yScale', 'x/yLogicleParams' and
 #' 'x/yLinear_range' will be discarded.
-#' @param runTransforms (TRUE/FALSE) only taken into account if transList is
-#' not NULL. Will 'transList' result in data being effectively transformed ?
+#' @param runTransforms (TRUE/FALSE) Will the application of non linear scale
+#' result in data being effectively transformed ?
 #' - If TRUE, than the data will undergo transformations prior to
 #' visualization.
 #' - If FALSE, the axis will be scaled but the data themselves are
@@ -719,14 +790,8 @@ ggplotFilterEvents <- function(ffPre, ffPost,
                                size = 0.5,
                                xScale = c("linear", "logicle"),
                                yScale = c("linear", "logicle"),
-                               xLogicleParams = list(
-                                   w = 2, m = 6.42,
-                                   a = 0, t = 262144
-                               ),
-                               yLogicleParams = list(
-                                   w = 2, m = 6.42,
-                                   a = 0, t = 262144
-                               ),
+                               xLogicleParams = NULL,
+                               yLogicleParams = NULL,
                                xLinearRange = NULL,
                                yLinearRange = NULL,
                                transList = NULL,
@@ -739,6 +804,9 @@ ggplotFilterEvents <- function(ffPre, ffPost,
     if (!inherits(ffPost, "flowFrame")) {
         stop("ffPost type not recognized, should be a flowFrame")
     }
+    
+    xScale <- match.arg(xScale)
+    yScale <- match.arg(yScale)
     
     # selection of scale_logical function to use (temporary fix due to ggcyto)
     used_logical_scale <- "logicle"
@@ -775,7 +843,63 @@ ggplotFilterEvents <- function(ffPre, ffPost,
         )
     }
 
+    # reduce flow frame or flow set to the displayed channels
+    selectedCols <- xChannel
+    if (!is.null(yChannel)){
+        selectedCols <- c(selectedCols, yChannel)
+    }
+    selectedCols <- c(selectedCols, "Original_ID")
 
+    ffPre <- ffPre[, selectedCols]
+    ffPost <- ffPost[, selectedCols]
+
+
+    # build scale transforms for not linear scales,
+    # when these are not directly provided by the user
+    if (is.null(transList) && (xScale != "linear" || yScale != "linear")) {
+        estimatedCols <- c()
+        if (xScale == "logicle" && is.null(xLogicleParams)) {
+            estimatedCols <- xChannel
+        }
+        if (!is.null(yChannel) && yScale == "logicle" &&
+            is.null(yLogicleParams)) {
+            estimatedCols <- c(estimatedCols, yChannel)
+        }
+        if (!is.null(estimatedCols)) {
+            transList <- flowCore::estimateLogicle(ffPre, estimatedCols)
+        }
+
+        # add the self provided logicle parameters
+        if (xScale == "logicle" && !is.null(xLogicleParams)){
+            xLogicleTrans <- flowCore::logicleTransform(
+                w = xLogicleParams$w,
+                t = xLogicleParams$t,
+                m = xLogicleParams$m,
+                a = xLogicleParams$a
+            )
+            if (is.null(transList)) {
+                transList <- flowCore::transformList(from = xChannel,
+                                                     tfun = xLogicleTrans)
+            } else {
+                transList@transforms[[xChannel]] <- xLogicleTrans
+            }
+        }
+        if (!is.null(yChannel) && yScale == "logicle" &&
+            !is.null(yLogicleParams)) {
+            yLogicleTrans <- flowCore::logicleTransform(
+                w = yLogicleParams$w,
+                t = yLogicleParams$t,
+                m = yLogicleParams$m,
+                a = yLogicleParams$a
+            )
+            if (is.null(transList)) {
+                transList <- flowCore::transformList(from = yChannel,
+                                                     tfun = yLogicleTrans)
+            } else {
+                transList@transforms[[yChannel]] <- yLogicleTrans
+            }
+        }
+    }
 
     # perform sub-sampling if necessary
 

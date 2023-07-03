@@ -49,12 +49,51 @@ test_that("estimateScaleTransforms work", {
         flowCore::exprs(refFF)
     )
     
-    transList2 <- estimateScaleTransforms(
+    transList2 <- suppressMessages(estimateScaleTransforms(
         ff = ff_c,
         fluoMethod = "estimateLogicle",
         scatterMethod = "linearQuantile",
         scatterRefMarker = "BV785 - CD3",
         specificScatterChannels = c("SSC-A", "SSC-H")
+    ))
+    
+    transListPath <- file.path(system.file("extdata", 
+                                           package = "CytoPipeline"),
+                               "OMIP021_TransList2.rds")
+    
+    refTransList2 <- readRDS(transListPath)
+    
+    # saveRDS(transList2, transListPath)
+    
+    refFF2 <- flowCore::transform(ff_c, refTransList2)
+    thisFF2 <- flowCore::transform(ff_c, transList2)
+    
+    expect_equal(
+        flowCore::exprs(thisFF2),
+        flowCore::exprs(refFF2)
+    )
+    
+    transList3 <- suppressMessages(estimateScaleTransforms(
+        ff = ff_c,
+        fluoMethod = "estimateLogicle",
+        scatterMethod = "none",
+        scatterRefMarker = "BV785 - CD3"
+    ))
+    
+    transListPath <- file.path(system.file("extdata", 
+                                           package = "CytoPipeline"),
+                               "OMIP021_TransList3.rds")
+    
+    refTransList3 <- readRDS(transListPath)
+    
+    # saveRDS(transList3, transListPath)
+    
+    refFF3 <- flowCore::transform(ff_c, refTransList3)
+    thisFF3 <- flowCore::transform(ff_c, transList3)
+    
+    expect_equal(
+        flowCore::exprs(thisFF3),
+        flowCore::exprs(refFF3)
     )
 })
 
