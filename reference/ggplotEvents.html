@@ -85,8 +85,8 @@ if 2D : geom_hex will be used <br></p>
 <span>  alpha <span class="op">=</span> <span class="fl">0.2</span>,</span>
 <span>  xScale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"logicle"</span><span class="op">)</span>,</span>
 <span>  yScale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"logicle"</span><span class="op">)</span>,</span>
-<span>  xLogicleParams <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>w <span class="op">=</span> <span class="fl">2</span>, m <span class="op">=</span> <span class="fl">6.42</span>, a <span class="op">=</span> <span class="fl">0</span>, t <span class="op">=</span> <span class="fl">262144</span><span class="op">)</span>,</span>
-<span>  yLogicleParams <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>w <span class="op">=</span> <span class="fl">2</span>, m <span class="op">=</span> <span class="fl">6.42</span>, a <span class="op">=</span> <span class="fl">0</span>, t <span class="op">=</span> <span class="fl">262144</span><span class="op">)</span>,</span>
+<span>  xLogicleParams <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  yLogicleParams <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  xLinearRange <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  yLinearRange <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  transList <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -132,21 +132,25 @@ the number of events exceed this number, a sub-sampling will be performed</p></d
 
 
 <dt>xScale</dt>
-<dd><p>scale to be used for the x axis</p></dd>
+<dd><p>scale to be used for the x axis
+(note "linear" corresponds to no transformation)</p></dd>
 
 
 <dt>yScale</dt>
-<dd><p>scale to be used for the y axis</p></dd>
+<dd><p>scale to be used for the y axis
+(note "linear" corresponds to no transformation)</p></dd>
 
 
 <dt>xLogicleParams</dt>
 <dd><p>if (xScale == "logicle"), the parameters of the logicle
-transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)</p></dd>
+transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...).
+If NULL, these parameters will be estimated by flowCore::estimateLogicle()</p></dd>
 
 
 <dt>yLogicleParams</dt>
 <dd><p>if (yScale == "logicle"), the parameters of the logicle
-transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)</p></dd>
+transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...).
+If NULL, these parameters will be estimated by flowCore::estimateLogicle()</p></dd>
 
 
 <dt>xLinearRange</dt>
@@ -164,11 +168,11 @@ channel. If it is non null, 'x/yScale', 'x/yLogicleParams' and
 
 
 <dt>runTransforms</dt>
-<dd><p>(TRUE/FALSE) only taken into account if transList is
-not NULL. Will 'transList' result in data being effectively transformed ?</p><ul><li><p>If TRUE, than the data will undergo transformations prior to
+<dd><p>(TRUE/FALSE) Will the application of non linear scale
+result in data being effectively transformed ?</p><ul><li><p>If TRUE, than the data will undergo transformations prior to
 visualization.</p></li>
-<li><p>If FALSE, the axis will be scaled but the data themselves are
-not transformed.</p></li>
+<li><p>If FALSE, the axis will be scaled but the data themselves will not be
+transformed.</p></li>
 </ul></dd>
 
 </dl></div>
