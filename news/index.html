@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.3</span>
       </span>
     </div>
 
@@ -62,25 +62,25 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.1" id="cytopipeline-11">CytoPipeline 1.1<a class="anchor" aria-label="anchor" href="#cytopipeline-11"></a></h2>
+<div class="section level3">
+<h3 id="cytopipeline-1-1">CytoPipeline 1.1.3<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1"></a></h3>
+<p>(no changes yet)</p>
 </div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="1.1.2" id="cytopipeline-112">CytoPipeline 1.1.2<a class="anchor" aria-label="anchor" href="#cytopipeline-112"></a></h2>
+<div class="section level3">
+<h3 id="cytopipeline-1-1-1">CytoPipeline 1.1.2<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-1"></a></h3>
 <ul><li>storage of phenoData into cache upon execution of CytoPipeline object (and back into CytoPipeline object when re-built from cache)</li>
 <li>changed the default behaviour of estimateScaleTransforms() so that the default method for scatter channels is now “none” instead of “linearQuantile”</li>
 <li>changed default behaviour of ggplotEvents() and ggplotFilterEvents(), when logicle scale is used but no logicle parameters provided, these are now estimated using flowCore::estimatLogicle(), instead of explicit default values</li>
 </ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="1.1.1" id="cytopipeline-111">CytoPipeline 1.1.1<a class="anchor" aria-label="anchor" href="#cytopipeline-111"></a></h2>
+<div class="section level3">
+<h3 id="cytopipeline-1-1-2">CytoPipeline 1.1.1<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-2"></a></h3>
 <ul><li>tiny modifications to support upgrade to Bioc 3.18</li>
 </ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="1.0" id="cytopipeline-10">CytoPipeline 1.0<a class="anchor" aria-label="anchor" href="#cytopipeline-10"></a></h2>
-<ul><li>first release Bioconductor</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.99" id="cytopipeline-099">CytoPipeline 0.99<a class="anchor" aria-label="anchor" href="#cytopipeline-099"></a></h2>
 <div class="section level3">
-<h3 id="cytopipeline-0-99">CytoPipeline 0.99.6<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99"></a></h3>
+<h3 id="cytopipeline-1-1-3">CytoPipeline 0.99<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-3"></a></h3>
+</div>
+<div class="section level3">
+<h3 id="cytopipeline-1-1-4">CytoPipeline 0.99.6<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-4"></a></h3>
 <ul><li>corrected the OMIP021Samples fcs data in order to keep the original file name</li>
 <li>bug correction: error message on execution with no sample file</li>
 <li>added <code>phenoData</code> slot in CytoPipeline object</li>
@@ -91,7 +91,7 @@
 <li>vignette with demo and links to videos</li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-0-99-1">CytoPipeline 0.99.5<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-1"></a></h3>
+<h3 id="cytopipeline-1-1-5">CytoPipeline 0.99.5<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-5"></a></h3>
 <ul><li>reactivated unit tests for ggplot2 objects</li>
 <li>added man page for CytoPipeline package</li>
 <li>a few modifs in the vignette related to Bioc review process</li>
@@ -103,20 +103,20 @@
 <li>updated License field in DESCRIPTION file</li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-0-99-2">CytoPipeline 0.99.4<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-2"></a></h3>
+<h3 id="cytopipeline-1-1-6">CytoPipeline 0.99.4<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-6"></a></h3>
 <ul><li>improved CytoPipeline constructors (<code>experimentName</code> and <code>sampleFiles</code> are now parameters of all constructor version)</li>
 <li>centralized the production of standard outputs during pipeline execution, set all tuning parameters in execute() instead of slots in CytoPipeline object.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-0-99-3">CytoPipeline 0.99.3<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-3"></a></h3>
+<h3 id="cytopipeline-1-1-7">CytoPipeline 0.99.3<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-7"></a></h3>
 <ul><li>some minor changes for BiocCheck()</li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-0-99-4">CytoPipeline 0.99.2<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-4"></a></h3>
+<h3 id="cytopipeline-1-1-8">CytoPipeline 0.99.2<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-8"></a></h3>
 <ul><li>removed dependencies to a number of packages, moved corresponding implementations of CytoProcessingSteps (wrappers) into <code>CytoPipelineUtils</code> package</li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-0-99-5">CytoPipeline 0.99.1<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-5"></a></h3>
+<h3 id="cytopipeline-1-1-9">CytoPipeline 0.99.1<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-9"></a></h3>
 <ul><li>Maintenance due to Bioc version change (3.17)</li>
 <li>removed use of openCyto::gate_tail() (disappeared w/o deprecation), replaced by flowDensity::deGate()</li>
 <li>implemented export of pre-processed file (writeFlowFrame as a CytoProcessingStep implementation)</li>
@@ -124,7 +124,7 @@
 <li>selectRandomSamples (new CytoProcessing step implementation)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-0-99-6">CytoPipeline 0.99.0<a class="anchor" aria-label="anchor" href="#cytopipeline-0-99-6"></a></h3>
+<h3 id="cytopipeline-1-1-10">CytoPipeline 0.99.0<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-10"></a></h3>
 <ul><li>Prior to Bioconductor submission</li>
 </ul></div>
 </div>
