@@ -52,6 +52,9 @@ setClassUnion("DataFrameOrNull",
 #' otherwise validation of the CytoPipeline object will fail!
 #'
 #' @exportClass CytoPipeline
+#' 
+#' @return nothing
+#' 
 #' @examples
 #' 
 #' ### *** EXAMPLE 1: building CytoPipeline step by step *** ###

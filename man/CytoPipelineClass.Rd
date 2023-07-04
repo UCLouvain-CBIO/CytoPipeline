@@ -6,6 +6,9 @@
 \alias{CytoPipeline-class,}
 \alias{CytoPipelineClass}
 \title{CytoPipeline class}
+\value{
+nothing
+}
 \description{
 Class representing a flow cytometry pipeline, and composed of two processing
 queues, i.e. lists of CytoProcessingStep objects :

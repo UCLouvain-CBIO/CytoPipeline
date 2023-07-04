@@ -625,6 +625,38 @@ execute <- function(x,
     if (!res$isConsistent) {
         stop(res$inconsistencyMsg)
     }
+    
+    # store phenoData if present in CytoPipeline object
+    if (!is.null(pData(x))) {
+        cacheResourceName <- "phenoData"
+        msg <- paste0("Proceeding with phenoData")
+        if (cacheResourceName %in% BiocFileCache::bfcinfo(bfc)$rname) {
+            message(msg, ": found in cache => not need to store again!")
+        } else {
+            message(msg, " ...")
+            # browser()
+            # store file in cache
+            cacheResourceFile <- BiocFileCache::bfcnew(bfc, cacheResourceName)
+            saveRDS(pData(x), unname(cacheResourceFile))
+            
+            # add one entry in cache meta data tables
+            outputClass <- class(pData(x))
+            outputObjectName <- "pData"
+            genericMeta <-
+                data.frame(list(
+                    rid = names(cacheResourceFile),
+                    type = "phenoData",
+                    stepNb = 0,
+                    stepName = "",
+                    stepJsonSerialize = "",
+                    outputClass = outputClass,
+                    outputObjectName = outputObjectName
+                ))
+            
+            BiocFileCache::bfcmeta(bfc, name = "generic", append = TRUE) <-
+                genericMeta
+        }
+    } 
 
     ### first part is always to compute common transformation list ###
     message("#####################################################")
@@ -839,7 +871,7 @@ execute <- function(x,
 #' 
 #' @return
 #' for `deleteCytoPipelineCache`: TRUE if successfully removed\cr
-#' for `buildCytoPipelineCache`: the built CytoPipeline object\cr
+#' for `buildCytoPipelineFromCache`: the built CytoPipeline object\cr
 #' for `checkCytoPipelineConsistencyWithCache`: a list with the following
 #' values:
 #' - `isConsistent` (TRUE/FALSE)
@@ -940,6 +972,25 @@ buildCytoPipelineFromCache <- function(experimentName, path = ".") {
 
         bfc <- BiocFileCache::BiocFileCache(cacheDir, ask = FALSE)
         cacheInfo <- BiocFileCache::bfcinfo(bfc)
+        
+        # getting phenoData if there
+        stepsInfos <- 
+            cacheInfo[
+                cacheInfo$type == "phenoData",
+            ]
+        nSteps <- nrow(stepsInfos)
+        if (nSteps > 1)
+            stop("more than one line for phenoData => inconsistency!")
+        else if (nSteps == 1) {
+            cacheResourceName <- "phenoData"
+            cacheResourceFile <-
+                BiocFileCache::bfcrpath(
+                    x = bfc,
+                    rnames = cacheResourceName
+                )
+            phenoData <- readRDS(file = cacheResourceFile)
+            pData(x) <- phenoData
+        }
 
         # now building scale transform processing queue
         # take only steps with scale transform

@@ -255,6 +255,12 @@ test_that("Execution of CytoPipeline with correct phenoData raises no error", {
         },
         NA
     )
+    
+    newPipL <- buildCytoPipelineFromCache(experimentName,
+                                          path = outputDir)
+    
+    newPData <- pData(newPipL)
+    expect_true(all.equal(phenoData, newPData))
 })
 
 

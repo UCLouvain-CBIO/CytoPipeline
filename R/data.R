@@ -23,4 +23,5 @@
 #'         A subsampling of 5,000 events has been performed on each file.
 #' @source \url{https://flowrepository.org/experiments/305}
 #' @keywords data
+#' @return nothing
 NULL

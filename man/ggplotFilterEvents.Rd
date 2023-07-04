@@ -14,8 +14,8 @@ ggplotFilterEvents(
   size = 0.5,
   xScale = c("linear", "logicle"),
   yScale = c("linear", "logicle"),
-  xLogicleParams = list(w = 2, m = 6.42, a = 0, t = 262144),
-  yLogicleParams = list(w = 2, m = 6.42, a = 0, t = 262144),
+  xLogicleParams = NULL,
+  yLogicleParams = NULL,
   xLinearRange = NULL,
   yLinearRange = NULL,
   transList = NULL,
@@ -41,15 +41,19 @@ the number of events exceed this number, a subsampling will be performed}
 
 \item{size}{used by geom_point()}
 
-\item{xScale}{scale to be used for the x axis}
+\item{xScale}{scale to be used for the x axis
+(note "linear" corresponds to no transformation)}
 
-\item{yScale}{scale to be used for the y axis}
+\item{yScale}{scale to be used for the y axis
+(note "linear" corresponds to no transformation)}
 
 \item{xLogicleParams}{if (xScale == "logicle"), the parameters of the logicle
-transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)}
+transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)
+If NULL, these parameters will be estimated by flowCore::estimateLogicle()}
 
 \item{yLogicleParams}{if (yScale == "logicle"), the parameters of the logicle
-transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)}
+transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)
+If NULL, these parameters will be estimated by flowCore::estimateLogicle()}
 
 \item{xLinearRange}{if (xScale == "linear"), linear range to be used}
 
@@ -59,8 +63,8 @@ transformation to be used, as a list(w = ..., m = ..., a = ..., t = ...)}
 channel. If it is non null, 'x/yScale', 'x/yLogicleParams' and
 'x/yLinear_range' will be discarded.}
 
-\item{runTransforms}{(TRUE/FALSE) only taken into account if transList is
-not NULL. Will 'transList' result in data being effectively transformed ?
+\item{runTransforms}{(TRUE/FALSE) Will the application of non linear scale
+result in data being effectively transformed ?
 \itemize{
 \item If TRUE, than the data will undergo transformations prior to
 visualization.

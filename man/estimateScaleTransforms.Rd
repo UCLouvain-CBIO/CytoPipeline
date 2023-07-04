@@ -7,7 +7,7 @@
 estimateScaleTransforms(
   ff,
   fluoMethod = c("estimateLogicle", "none"),
-  scatterMethod = c("linearQuantile", "none"),
+  scatterMethod = c("none", "linearQuantile"),
   scatterRefMarker = NULL,
   specificScatterChannels = NULL
 )

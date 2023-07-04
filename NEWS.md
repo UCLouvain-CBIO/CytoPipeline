@@ -1,3 +1,21 @@
+# CytoPipeline 1.1
+
+# CytoPipeline 1.1.2
+- storage of phenoData into cache upon execution of CytoPipeline object
+(and back into CytoPipeline object when re-built from cache)
+- changed the default behaviour of estimateScaleTransforms() so that
+the default method for scatter channels is now "none" instead of 
+"linearQuantile"
+- changed default behaviour of ggplotEvents() and ggplotFilterEvents(), when
+logicle scale is used but no logicle parameters provided, these are now
+estimated using flowCore::estimatLogicle(), instead of explicit default values
+
+# CytoPipeline 1.1.1
+- tiny modifications to support upgrade to Bioc 3.18
+
+# CytoPipeline 1.0
+- first release Bioconductor
+
 # CytoPipeline 0.99
 
 ## CytoPipeline 0.99.6
