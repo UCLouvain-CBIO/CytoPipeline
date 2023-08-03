@@ -343,10 +343,12 @@ showProcessingSteps <- function(x,
 #' to work properly (visibility of functions). As a minimum,    
 #' the `flowCore` package needs to be loaded.  
 #' (hence the default `BPOPTIONS = bpoptions(packages = c("flowCore"))` )
-#' @param saveLastStepFF = TRUE,
-#' @param saveFFUseFCSFileName if TRUE filename used will be based on  
-#' original fcs filename
-#' @param saveFFPrefix FF file name prefix 
+#' @param saveLastStepFF if TRUE, save the final result of the pre-processing, 
+#' for each file. 
+#' By convention, these output files are stored in 
+#' `path`/`x@experimentName`/output/, the file names used are the same 
+#' as the initial fcs file basenames, concatenated with `saveFFSuffix`, 
+#' and with file extension corresponding to `saveFFFormat`.
 #' @param saveFFSuffix FF file name suffix
 #' @param saveFFFormat either `fcs` or `csv` 
 #' @param saveFFCsvUseChannelMarker if TRUE (default), converts the channels   
@@ -575,8 +577,6 @@ execute <- function(x,
                     BPOPTIONS = BiocParallel::bpoptions(
                         packages = c("flowCore")),
                     saveLastStepFF = TRUE,
-                    saveFFUseFCSFileName = TRUE,
-                    saveFFPrefix = "", 
                     saveFFSuffix = "_preprocessed",
                     saveFFFormat = c("fcs", "csv"), 
                     saveFFCsvUseChannelMarker = TRUE,
@@ -833,8 +833,8 @@ execute <- function(x,
                     CytoPipeline::writeFlowFrame(
                         ff = res,
                         dir = outputDir,
-                        useFCSFileName = saveFFUseFCSFileName,
-                        prefix = saveFFPrefix,
+                        useFCSFileName = TRUE,
+                        prefix = "",
                         suffix = saveFFSuffix,
                         format = saveFFFormat,
                         csvUseChannelMarker = saveFFCsvUseChannelMarker)

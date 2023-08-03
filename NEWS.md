@@ -4,6 +4,8 @@
 - in subSample(), renamed parameter 'nSamples' into 'nEvents', and added 
 possibility for passing unused parameters, in order to support 
 the use of the function as a processing step.
+- simplified the arguments of execute() related to the storage of the results
+after last pre-processing step.
 
 ## CytoPipeline 1.1.2
 - storage of phenoData into cache upon execution of CytoPipeline object
@@ -13,7 +15,7 @@ the default method for scatter channels is now "none" instead of
 "linearQuantile"
 - changed default behaviour of ggplotEvents() and ggplotFilterEvents(), when
 logicle scale is used but no logicle parameters provided, these are now
-estimated using flowCore::estimatLogicle(), instead of explicit default values
+estimated using flowCore::estimateLogicle(), instead of explicit default values
 
 ## CytoPipeline 1.1.1
 - tiny modifications to support upgrade to Bioc 3.18
