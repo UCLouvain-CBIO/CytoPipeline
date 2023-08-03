@@ -1,7 +1,9 @@
 # CytoPipeline 1.1
 
 ## CytoPipeline 1.1.3
-(no changes yet)
+- in subSample(), renamed parameter 'nSamples' into 'nEvents', and added 
+possibility for passing unused parameters, in order to support 
+the use of the function as a processing step.
 
 ## CytoPipeline 1.1.2
 - storage of phenoData into cache upon execution of CytoPipeline object

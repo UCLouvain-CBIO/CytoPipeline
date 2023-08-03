@@ -41,9 +41,9 @@ test_that("areFluoCols works", {
 test_that("subsample works", {
     ff <- OMIP021Samples[[1]]
 
-    nSamples <- 50
-    ffSub <- subsample(ff, nSamples)
-    expect_equal(flowCore::nrow(ffSub), nSamples)
+    nEvents <- 50
+    ffSub <- subsample(ff, nEvents)
+    expect_equal(flowCore::nrow(ffSub), nEvents)
 
     # subsample with more samples than original nrow (5000)
     ffSub <- subsample(ff, 10000)

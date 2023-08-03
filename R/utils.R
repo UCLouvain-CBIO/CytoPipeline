@@ -87,8 +87,9 @@ areFluoCols <- function(ff,
 #' with the specified number of samples, without replacement.
 #' adds also a column 'Original_ID' if not already present in flowFrame.
 #' @param ff a flowCore::flowFrame
-#' @param nSamples number of samples to be obtained using sub-sampling
+#' @param nEvents number of events to be obtained using sub-sampling
 #' @param seed  can be set for reproducibility of event sub-sampling
+#' @param ... additional parameters (currently not used)
 #'
 #' @return new flowCore::flowFrame with the obtained subset of samples
 #' @export
@@ -98,28 +99,28 @@ areFluoCols <- function(ff,
 #' data(OMIP021Samples)
 #' 
 #' # take first sample of dataset, subsample 100 events and create new flowFrame
-#' ff <- subsample(OMIP021Samples[[1]], nSamples = 100)
+#' ff <- subsample(OMIP021Samples[[1]], nEvents = 100)
 #' 
 #'
-subsample <- function(ff, nSamples, seed = NULL) {
+subsample <- function(ff, nEvents, seed = NULL, ...) {
     if (!inherits(ff, "flowFrame")) {
         stop("ff type not recognized, should be a flowFrame")
     }
 
     eventCounts <- length(flowCore::exprs(ff)[, 1])
-    nSamples <- min(eventCounts, nSamples)
+    nEvents <- min(eventCounts, nEvents)
 
     if (!is.null(seed)) {
         withr::with_seed(
             seed,
             keep <- sample(seq_len(eventCounts),
-                size = nSamples,
+                size = nEvents,
                 replace = FALSE
             )
         )
     } else {
         keep <- sample(seq_len(eventCounts),
-            size = nSamples,
+            size = nEvents,
             replace = FALSE
         )
     }

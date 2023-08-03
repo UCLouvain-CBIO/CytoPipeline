@@ -474,11 +474,11 @@ ggplotEvents <- function(obj,
         if (isFlowSet) {
             obj <- flowCore::fsApply(obj,
                 FUN = subsample,
-                nSamples = nDisplayCells,
+                nEvents = nDisplayCells,
                 seed = seed
             )
         } else {
-            obj <- subsample(obj, nSamples = nDisplayCells, seed = seed)
+            obj <- subsample(obj, nEvents = nDisplayCells, seed = seed)
         }
     }
 

@@ -50,7 +50,7 @@ sampleSize <- 5000
 OMIP021Samples <- fsApply(
     x = OMIP021Samples,
     FUN = function(ff) {
-        subsample(ff, nSamples = sampleSize, seed = 1)
+        subsample(ff, nEvents = sampleSize, seed = 1)
     }
 )
 
