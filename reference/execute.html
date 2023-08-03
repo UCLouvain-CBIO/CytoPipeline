@@ -94,8 +94,6 @@ the cache.</p>
 <span>  BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/register.html" class="external-link">bpparam</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  BPOPTIONS <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/bpoptions.html" class="external-link">bpoptions</a></span><span class="op">(</span>packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"flowCore"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  saveLastStepFF <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  saveFFUseFCSFileName <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  saveFFPrefix <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  saveFFSuffix <span class="op">=</span> <span class="st">"_preprocessed"</span>,</span>
 <span>  saveFFFormat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fcs"</span>, <span class="st">"csv"</span><span class="op">)</span>,</span>
 <span>  saveFFCsvUseChannelMarker <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -142,16 +140,12 @@ the <code>flowCore</code> package needs to be loaded.
 
 
 <dt>saveLastStepFF</dt>
-<dd><p>= TRUE,</p></dd>
-
-
-<dt>saveFFUseFCSFileName</dt>
-<dd><p>if TRUE filename used will be based on
-original fcs filename</p></dd>
-
-
-<dt>saveFFPrefix</dt>
-<dd><p>FF file name prefix</p></dd>
+<dd><p>if TRUE, save the final result of the pre-processing,
+for each file.
+By convention, these output files are stored in
+<code>path</code>/<code>x@experimentName</code>/output/, the file names used are the same
+as the initial fcs file basenames, concatenated with <code>saveFFSuffix</code>,
+and with file extension corresponding to <code>saveFFFormat</code>.</p></dd>
 
 
 <dt>saveFFSuffix</dt>

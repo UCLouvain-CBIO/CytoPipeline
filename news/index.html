@@ -65,12 +65,13 @@
 <div class="section level3">
 <h3 id="cytopipeline-1-1">CytoPipeline 1.1.3<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1"></a></h3>
 <ul><li>in subSample(), renamed parameter ‘nSamples’ into ‘nEvents’, and added possibility for passing unused parameters, in order to support the use of the function as a processing step.</li>
+<li>simplified the arguments of execute() related to the storage of the results after last pre-processing step.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="cytopipeline-1-1-1">CytoPipeline 1.1.2<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-1"></a></h3>
 <ul><li>storage of phenoData into cache upon execution of CytoPipeline object (and back into CytoPipeline object when re-built from cache)</li>
 <li>changed the default behaviour of estimateScaleTransforms() so that the default method for scatter channels is now “none” instead of “linearQuantile”</li>
-<li>changed default behaviour of ggplotEvents() and ggplotFilterEvents(), when logicle scale is used but no logicle parameters provided, these are now estimated using flowCore::estimatLogicle(), instead of explicit default values</li>
+<li>changed default behaviour of ggplotEvents() and ggplotFilterEvents(), when logicle scale is used but no logicle parameters provided, these are now estimated using flowCore::estimateLogicle(), instead of explicit default values</li>
 </ul></div>
 <div class="section level3">
 <h3 id="cytopipeline-1-1-2">CytoPipeline 1.1.1<a class="anchor" aria-label="anchor" href="#cytopipeline-1-1-2"></a></h3>
