@@ -70,7 +70,7 @@ adds also a column 'Original_ID' if not already present in flowFrame.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">subsample</span><span class="op">(</span><span class="va">ff</span>, <span class="va">nSamples</span>, seed <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">subsample</span><span class="op">(</span><span class="va">ff</span>, <span class="va">nEvents</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -79,12 +79,16 @@ adds also a column 'Original_ID' if not already present in flowFrame.</p>
 <dd><p>a flowCore::flowFrame</p></dd>
 
 
-<dt>nSamples</dt>
-<dd><p>number of samples to be obtained using sub-sampling</p></dd>
+<dt>nEvents</dt>
+<dd><p>number of events to be obtained using sub-sampling</p></dd>
 
 
 <dt>seed</dt>
 <dd><p>can be set for reproducibility of event sub-sampling</p></dd>
+
+
+<dt>...</dt>
+<dd><p>additional parameters (currently not used)</p></dd>
 
 </dl></div>
     <div id="value">
@@ -100,7 +104,7 @@ adds also a column 'Original_ID' if not already present in flowFrame.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">OMIP021Samples</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># take first sample of dataset, subsample 100 events and create new flowFrame</span></span></span>
-<span class="r-in"><span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu">subsample</span><span class="op">(</span><span class="va">OMIP021Samples</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, nSamples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu">subsample</span><span class="op">(</span><span class="va">OMIP021Samples</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, nEvents <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
