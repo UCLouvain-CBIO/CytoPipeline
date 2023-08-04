@@ -1673,10 +1673,14 @@ getCytoPipelineObjectInfos <-
                 cacheInfo$fcsfile == sampleFile)
 
             if (length(indexesInCache) == 0) {
-                stop(
-                    "Combination ('", whichQueue, "'", sampleFile,
-                    ") not found in cache"
-                )
+                # stop(
+                #     "Combination ('", whichQueue, "'", sampleFile,
+                #     ") not found in cache"
+                # )
+                # return empty data frame
+                retDF <- data.frame(outputObjectName = character(),
+                                    outputClass = character())
+                return (retDF)
             }
         } else {
             if (!("fcsfile" %in% colnames(cacheInfo))) {
@@ -1689,10 +1693,14 @@ getCytoPipelineObjectInfos <-
             }
 
             if (length(indexesInCache) == 0) {
-                stop(
-                    "Combination ('", whichQueue,
-                    "', no sample file) not found in cache"
-                )
+                # stop(
+                #     "Combination ('", whichQueue,
+                #     "', no sample file) not found in cache"
+                # )
+                # return empty data frame
+                retDF <- data.frame(outputObjectName = character(),
+                                    outputClass = character())
+                return (retDF)
             }
         }
 

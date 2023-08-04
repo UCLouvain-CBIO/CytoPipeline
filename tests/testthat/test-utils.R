@@ -390,6 +390,25 @@ test_that("updateMarkerName works", {
     
     checkMkName <- getChannelNamesFromMarkers(retFF, markers = "Fwd Scatter-A")
     expect_equal(checkMkName, "FSC-A")
+    expect_equal(flowCore::keyword(retFF, "$P1S")[["$P1S"]], "Fwd Scatter-A")
+    
+    # same with channel as index
+    retFF <- updateMarkerName(OMIP021Samples[[1]],
+                              channel = 1,
+                              newMarkerName = "Fwd Scatter-A")
+    checkMkName <- getChannelNamesFromMarkers(retFF, markers = "Fwd Scatter-A")
+    expect_equal(checkMkName, "FSC-A")
+    expect_equal(flowCore::keyword(retFF, "$P1S")[["$P1S"]], "Fwd Scatter-A")
+    
+    # now channel provided as marker (desc), not channel name
+    retFF <- updateMarkerName(OMIP021Samples[[1]],
+                              channel = "BV785 - CD3",
+                              newMarkerName = "fancy CD3")
+    checkMkName <- getChannelNamesFromMarkers(retFF, markers = "fancy CD3")
+    expect_equal(checkMkName, "670/30Violet-A")
+    expect_equal(flowCore::keyword(retFF, "$P10S")[["$P10S"]], "fancy CD3")
+    
+    
     
     expect_error(updateMarkerName(OMIP021Samples[[1]], channel = "FFF-A", 
                                   newMarkerName = "whatever"), 
@@ -470,3 +489,4 @@ test_that("updateCompMatrixLabels works", {
     expect_equal(newColNames, expectedNewNames)
     expect_equal(newRowNames, expectedNewNames)
 })
+

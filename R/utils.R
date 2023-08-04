@@ -805,7 +805,8 @@ getChannelNamesFromMarkers <- function(ff, markers) {
 
 #' @title update marker name of a given flowFrame channel
 #' @description : in a flowCore::flowFrame, update the marker name (stored in
-#' 'desc' of parameters data) of a given channel.
+#' 'desc' of parameters data) of a given channel. 
+#' Also update the corresponding keyword in the flowFrame.
 #' @param ff a flowCore::flowFrame
 #' @param channel the channel for which to update the marker name
 #' @param newMarkerName the new marker name to be given to the selected channel
@@ -821,22 +822,56 @@ getChannelNamesFromMarkers <- function(ff, markers) {
 #'                           newMarkerName = "Fwd Scatter-A")
 #'
 updateMarkerName <- function(ff, channel, newMarkerName) {
+    
+    # 0. check inputs
+    
     if (!inherits(ff, "flowFrame")) {
         stop("ff type not recognized, should be a flowFrame!")
     }
     
-    channelIndex <- which(flowCore::colnames(ff) == channel)
-    if (length(channelIndex) == 0) {
-        stop("channel not found in flowFrame!")
+    if (is.numeric(channel)) {
+        channelIndex <- channel[1]
+    } else if (is.character(channel)){
+        channelIndex <- which(flowCore::colnames(ff) == channel)
+        if (length(channelIndex) == 0) {
+            # try to find corresponding marker
+            chMk <- try(flowCore::getChannelMarker(ff, channel),
+                        silent = TRUE)
+            if (class(chMk) == "try-error") {
+                stop("channel not found in flowFrame!")
+            }
+            channelIndex <- which(flowCore::colnames(ff) == chMk$name)
+            
+        }
     } else {
-        channelIndex <- channelIndex[1]
+        stop("channel shoud be a numeric index of a character!")
     }
     
+    # 1. update flowFrame parameters pheno data
+
     param <- flowCore::parameters(ff)
     paramData <- flowCore::pData(param)
     paramData[channelIndex, "desc"] <- newMarkerName
     flowCore::pData(param) <- paramData
     flowCore::parameters(ff) <- param
+    
+    # 2. update flowFrame keyword
+    targetChannelName <- flowCore::colnames(ff)[channelIndex]
+    nChannels <- length(flowCore::colnames(ff))
+    potentialKeywordChannels <- paste0("$P", 1:nChannels,"N")
+    potentialKeywordMarkers <- paste0("$P", 1:nChannels,"S")
+    kch <- flowCore::keyword(ff, potentialKeywordChannels)
+    #kmk <- flowCore::keyword(ff, potentialKeywordMarkers)
+    
+    # if channel name exists as a keyword in flowFrame
+    # => update corresponding marker name
+    for (k in seq_along(kch)) {
+        if (kch[k][[potentialKeywordChannels[k]]] == targetChannelName) {
+            flowCore::keyword(ff)[[potentialKeywordMarkers[k]]] <- 
+                newMarkerName
+            break
+        }
+    }
     return(ff)
 }
 
@@ -1032,8 +1067,6 @@ writeFlowFrame <- function(ff, dir = ".",
     }
 }
 
-
-
 # update compensation matrix labels, replace by bold channel name
 # if label == concatenation of channel, " :: ", marker (as in FlowJo export)
 # if label == marker
@@ -1059,3 +1092,44 @@ writeFlowFrame <- function(ff, dir = ".",
     mat
 }
 
+# update marker names
+# the new set of marker names should be ordered and have the same length
+# as the channel names
+.updateMarkersName <- function(ff, newMarkerNames) {
+    # check inputs
+    stopifnot (inherits(ff, "flowFrame"))
+    if (!is.character(newMarkerNames) || length(newMarkerNames) == 0) {
+        stop("new marker names should be provided as ",
+             "a character of non zero length")
+    }
+    
+    # 1. update fcs parameters pheno data
+    newpData <- flowCore::pData(flowCore::parameters(ff))
+    channels <- newpData$names
+    nChannels <- length(channels)
+    
+    if (is.null(channels)) {
+        stop("did not find channel names in flow frame pheno data",
+             " => inconsistency!")
+    }
+    if (length(newMarkerNames) != nChannels) {
+        stop("length of new marker names differs from length of channel names",
+             " => inconsistency!")
+    }
+    newpData$desc <- newMarkerNames
+    flowCore::pData(ff) <- newpData
+    
+    # 2. update fcs keywords
+    potentialKeywordChannels <- paste0("$P", 1:nChannels,"N")
+    potentialKeywordMarkers <- paste0("$P", 1:nChannels,"S")
+    kch <- flowCore::keyword(ff, potentialKeywordChannels)
+    kmk <- flowCore::keyword(ff, potentialKeywordMarkers)
+    for (k in kch) {
+        # if channel name exists as a keyword in fcs
+        # => update corresponding marker name
+        if (!is.null(kch[k][[potentialKeywordChannels[k]]])) {
+            flowCore::keyword(ff)[[potentialKeywordMarkers[k]]] <- 
+                newMarkerNames[k]
+        }
+    }
+}
