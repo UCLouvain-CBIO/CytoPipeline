@@ -124,6 +124,9 @@ subsample <- function(ff, nEvents, seed = NULL, ...) {
             replace = FALSE
         )
     }
+    
+    # order the kept events to maintain chronology of events ! 
+    keep <- sort(keep)
 
     # add Original_ID as a new column if necessary
     ff <- appendCellID(ff)

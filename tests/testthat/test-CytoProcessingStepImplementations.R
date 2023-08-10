@@ -97,36 +97,6 @@ test_that("estimateScaleTransforms work", {
     )
 })
 
-# test_that("selectRandomSamples works", {
-#     rawDataDir <-
-#         system.file("extdata", package = "CytoPipeline")
-#     sampleFiles <-
-#         file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
-#     
-#     seed <- 2
-#     nSamples <- 1
-#     
-#     newSampleFiles <- selectRandomSamples(sampleFiles, 
-#                                           nSamples = nSamples,
-#                                           seed = seed)
-#     expected <- sampleFiles[1]
-#     expect_equal(newSampleFiles,
-#                  expected)
-#     
-#     newSampleFiles <- selectRandomSamples(sampleFiles, 
-#                                           nSamples = 3,
-#                                           seed = seed)
-#     
-#     expect_equal(newSampleFiles,
-#                  sampleFiles)
-#     
-#     expect_error(selectRandomSamples(sampleFiles, 
-#                                      nSamples = 0,
-#                                      seed = seed),
-#                  regexp = "should be a numeric >= 1")
-#                                           
-#         
-# })
 
 test_that("readSampleFiles with no sample files gives an error", {
     rawDataDir <-
@@ -551,7 +521,7 @@ test_that("removeDebrisManualGate works", {
     
     ref_ff_cells <- readRDS(test_path("fixtures", "ff_cells_manual_gate.rds"))
     
-    #saveRDS(ff_cells, test_path("fixtures", "ff_cells_manual_gate.rds"))
+    # saveRDS(ff_cells, test_path("fixtures", "ff_cells_manual_gate.rds"))
     
     expect_equal(
         flowCore::exprs(ff_cells),
@@ -575,7 +545,7 @@ test_that("removeDeadCellsManualGate works", {
     
     ref_ff_lcells <- readRDS(test_path("fixtures", "ff_lcells_manual_gate.rds"))
     
-    #saveRDS(ff_lcells, test_path("fixtures", "ff_lcells_manual_gate.rds"))
+    # saveRDS(ff_lcells, test_path("fixtures", "ff_lcells_manual_gate.rds"))
     
     expect_equal(
         flowCore::exprs(ff_lcells),

@@ -13,6 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
+data("OMIP021Samples")
 
 test_that("areSignalCols works", {
     ff <- OMIP021Samples[[1]]
