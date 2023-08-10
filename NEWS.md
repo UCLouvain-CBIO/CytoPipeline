@@ -3,7 +3,8 @@
 ## CytoPipeline 1.1.3
 - in subSample(), renamed parameter 'nSamples' into 'nEvents', and added 
 possibility for passing unused parameters, in order to support 
-the use of the function as a processing step.
+the use of the function as a processing step. Also amended the function
+as to keep the original order of the events (keep chronology).
 - simplified the arguments of execute() related to the storage of the results
 after last pre-processing step.
 
