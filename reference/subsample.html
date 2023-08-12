@@ -70,7 +70,7 @@ adds also a column 'Original_ID' if not already present in flowFrame.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">subsample</span><span class="op">(</span><span class="va">ff</span>, <span class="va">nEvents</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">subsample</span><span class="op">(</span><span class="va">ff</span>, <span class="va">nEvents</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, keepOriginalCellIDs <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -85,6 +85,11 @@ adds also a column 'Original_ID' if not already present in flowFrame.</p>
 
 <dt>seed</dt>
 <dd><p>can be set for reproducibility of event sub-sampling</p></dd>
+
+
+<dt>keepOriginalCellIDs</dt>
+<dd><p>if TRUE, adds a 'OriginalID' column containing
+the initial IDs of the cell (from 1 to nrow prior to subsampling)</p></dd>
 
 
 <dt>...</dt>
