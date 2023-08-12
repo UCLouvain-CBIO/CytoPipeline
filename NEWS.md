@@ -5,6 +5,7 @@
 possibility for passing unused parameters, in order to support 
 the use of the function as a processing step. Also amended the function
 as to keep the original order of the events (keep chronology).
+Finally, adds a 'keepOriginalCellIDs' parameter (default=TRUE).
 - simplified the arguments of execute() related to the storage of the results
 after last pre-processing step.
 

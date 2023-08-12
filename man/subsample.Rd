@@ -4,7 +4,7 @@
 \alias{subsample}
 \title{sub-sampling of a flowFrame}
 \usage{
-subsample(ff, nEvents, seed = NULL, ...)
+subsample(ff, nEvents, seed = NULL, keepOriginalCellIDs = TRUE, ...)
 }
 \arguments{
 \item{ff}{a flowCore::flowFrame}
@@ -12,6 +12,9 @@ subsample(ff, nEvents, seed = NULL, ...)
 \item{nEvents}{number of events to be obtained using sub-sampling}
 
 \item{seed}{can be set for reproducibility of event sub-sampling}
+
+\item{keepOriginalCellIDs}{if TRUE, adds a 'OriginalID' column containing
+the initial IDs of the cell (from 1 to nrow prior to subsampling)}
 
 \item{...}{additional parameters (currently not used)}
 }

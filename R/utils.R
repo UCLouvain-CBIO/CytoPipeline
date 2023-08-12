@@ -89,6 +89,8 @@ areFluoCols <- function(ff,
 #' @param ff a flowCore::flowFrame
 #' @param nEvents number of events to be obtained using sub-sampling
 #' @param seed  can be set for reproducibility of event sub-sampling
+#' @param keepOriginalCellIDs if TRUE, adds a 'OriginalID' column containing
+#' the initial IDs of the cell (from 1 to nrow prior to subsampling)
 #' @param ... additional parameters (currently not used)
 #'
 #' @return new flowCore::flowFrame with the obtained subset of samples
@@ -102,7 +104,10 @@ areFluoCols <- function(ff,
 #' ff <- subsample(OMIP021Samples[[1]], nEvents = 100)
 #' 
 #'
-subsample <- function(ff, nEvents, seed = NULL, ...) {
+subsample <- function(ff, 
+                      nEvents, 
+                      seed = NULL, 
+                      keepOriginalCellIDs = TRUE, ...) {
     if (!inherits(ff, "flowFrame")) {
         stop("ff type not recognized, should be a flowFrame")
     }
@@ -129,8 +134,10 @@ subsample <- function(ff, nEvents, seed = NULL, ...) {
     keep <- sort(keep)
 
     # add Original_ID as a new column if necessary
-    ff <- appendCellID(ff)
-
+    if (keepOriginalCellIDs) {
+        ff <- appendCellID(ff)    
+    }
+    
     ff[keep, ]
 }
 
