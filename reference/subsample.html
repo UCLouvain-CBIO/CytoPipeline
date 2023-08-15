@@ -88,8 +88,10 @@ adds also a column 'Original_ID' if not already present in flowFrame.</p>
 
 
 <dt>keepOriginalCellIDs</dt>
-<dd><p>if TRUE, adds a 'OriginalID' column containing
-the initial IDs of the cell (from 1 to nrow prior to subsampling)</p></dd>
+<dd><p>if TRUE, adds (if not already present)
+a 'OriginalID' column containing the initial IDs of the cell
+(from 1 to nrow prior to subsampling).
+if FALSE, does the same, but takes as IDs (1 to nrow after subsampling)</p></dd>
 
 
 <dt>...</dt>
