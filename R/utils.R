@@ -89,8 +89,10 @@ areFluoCols <- function(ff,
 #' @param ff a flowCore::flowFrame
 #' @param nEvents number of events to be obtained using sub-sampling
 #' @param seed  can be set for reproducibility of event sub-sampling
-#' @param keepOriginalCellIDs if TRUE, adds a 'OriginalID' column containing
-#' the initial IDs of the cell (from 1 to nrow prior to subsampling)
+#' @param keepOriginalCellIDs if TRUE, adds (if not already present)
+#' a 'OriginalID' column containing the initial IDs of the cell 
+#' (from 1 to nrow prior to subsampling).
+#' if FALSE, does the same, but takes as IDs (1 to nrow after subsampling)
 #' @param ... additional parameters (currently not used)
 #'
 #' @return new flowCore::flowFrame with the obtained subset of samples
@@ -135,10 +137,16 @@ subsample <- function(ff,
 
     # add Original_ID as a new column if necessary
     if (keepOriginalCellIDs) {
-        ff <- appendCellID(ff)    
+        if (!("Original_ID" %in% colnames(flowCore::exprs(ff)))) {
+            ff <- appendCellID(ff)         
+        }
+        ff <- ff[keep,]
+    } else {
+        ff <- ff[keep,]
+        ff <- resetCellIDs(ff)
     }
     
-    ff[keep, ]
+    ff
 }
 
 #' @title compensate with additional options
@@ -923,8 +931,8 @@ removeChannels <- function(ff, channels) {
 #' This column can be used in plots comparing the events pre and post gating.
 #' If the 'Original_ID' column already exists, the function does nothing
 #' @param ff a flowCore::flowFrame
-#' @param eventIDs an integer vector containing the values to be added in
-#' as Original ID's
+#' @param eventIDs an integer vector containing the values to be added 
+#' in expression matrix, as Original ID's.
 #' 
 #' @return new flowCore::flowFrame containing the added 'Original_ID' column
 #' @export
@@ -944,6 +952,47 @@ appendCellID <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
             dimnames = list(c(), list("Original_ID"))
         )
         ff <- flowCore::fr_append_cols(ff, matrixCellIds)
+    } 
+    return(ff)
+}
+
+#' @title reset 'Original_ID' column in a flowframe
+#' @description : on a flowCore::flowFrame, reset 'Original_ID' column.
+#' This column can be used in plots comparing the events pre and post gating.
+#' If the 'Original_ID' column already exists, the function replaces 
+#' the existing IDs by the user provided ones.
+#' If not, an `appendCellID()` is called.
+#' @param ff a flowCore::flowFrame
+#' @param eventIDs an integer vector containing the values to be set 
+#' in expression matrix, as Original ID's.
+#' 
+#' @return new flowCore::flowFrame containing the amended (or added) 
+#' 'Original_ID' column
+#' @export
+#' @examples
+#' 
+#' data(OMIP021Samples)
+#' 
+#' ff <- appendCellID(OMIP021Samples[[1]])
+#' 
+#' subsample_ff <- subsample(ff, 100, keepOriginalCellIDs = TRUE)
+#' 
+#' # re-create a sequence of IDs, ignoring the ones before subsampling
+#' reset_ff <- resetCellIDs(subsample_ff)
+#'
+resetCellIDs <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
+    if (!inherits(ff, "flowFrame")) {
+        stop("ff type not recognized, should be a flowFrame")
+    }
+    if (!("Original_ID" %in% colnames(flowCore::exprs(ff)))) {
+        ff <- appendCellID(ff, eventIDs)
+    } else {
+        if (length(eventIDs) != flowCore::nrow(ff)) {
+            stop("length of provided eventIDs does not match nb of rows")
+        }
+        exprs <- flowCore::exprs(ff)
+        exprs[,"Original_ID"] <- eventIDs
+        ff@exprs <- exprs
     }
     return(ff)
 }

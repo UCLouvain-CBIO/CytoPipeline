@@ -13,8 +13,10 @@ subsample(ff, nEvents, seed = NULL, keepOriginalCellIDs = TRUE, ...)
 
 \item{seed}{can be set for reproducibility of event sub-sampling}
 
-\item{keepOriginalCellIDs}{if TRUE, adds a 'OriginalID' column containing
-the initial IDs of the cell (from 1 to nrow prior to subsampling)}
+\item{keepOriginalCellIDs}{if TRUE, adds (if not already present)
+a 'OriginalID' column containing the initial IDs of the cell
+(from 1 to nrow prior to subsampling).
+if FALSE, does the same, but takes as IDs (1 to nrow after subsampling)}
 
 \item{...}{additional parameters (currently not used)}
 }

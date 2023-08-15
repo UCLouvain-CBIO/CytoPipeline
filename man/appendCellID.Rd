@@ -9,8 +9,8 @@ appendCellID(ff, eventIDs = seq_len(flowCore::nrow(ff)))
 \arguments{
 \item{ff}{a flowCore::flowFrame}
 
-\item{eventIDs}{an integer vector containing the values to be added in
-as Original ID's}
+\item{eventIDs}{an integer vector containing the values to be added
+in expression matrix, as Original ID's.}
 }
 \value{
 new flowCore::flowFrame containing the added 'Original_ID' column

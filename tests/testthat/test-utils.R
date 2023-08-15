@@ -43,8 +43,27 @@ test_that("subsample works", {
     ff <- OMIP021Samples[[1]]
 
     nEvents <- 50
-    ffSub <- subsample(ff, nEvents)
+    seed <- 0
+    ffSub <- subsample(ff, nEvents, seed = seed)
     expect_equal(flowCore::nrow(ffSub), nEvents)
+    # withr::with_seed(
+    #     seed,
+    #     {
+    #         tgtLines <- sample(seq_len(flowCore::nrow(ff)),
+    #                        size = nEvents,
+    #                        replace = FALSE)
+    #         tgtIDs <- flowCore::exprs(ff)[tgtLines,"Original_ID"]
+    #         expect_true(all.equal(tgtIDs, 
+    #                               flowCore::exprs(ffSub)[,"Original_ID"]))
+    #     }
+    # )
+   
+    # same but reset the original IDs
+    ffSub <- subsample(ff, nEvents, seed = seed, keepOriginalCellIDs = FALSE)
+    expect_equal(flowCore::nrow(ffSub), nEvents)
+    tgtIDs <- 1:nEvents
+    expect_true(all.equal(tgtIDs, flowCore::exprs(ffSub)[,"Original_ID"]))
+    
 
     # subsample with more samples than original nrow (5000)
     ffSub <- subsample(ff, 10000)
@@ -490,4 +509,6 @@ test_that("updateCompMatrixLabels works", {
     expect_equal(newColNames, expectedNewNames)
     expect_equal(newRowNames, expectedNewNames)
 })
+
+
 
