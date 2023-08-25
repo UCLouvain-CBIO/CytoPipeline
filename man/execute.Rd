@@ -12,8 +12,6 @@ execute(
   BPPARAM = BiocParallel::bpparam(),
   BPOPTIONS = BiocParallel::bpoptions(packages = c("flowCore")),
   saveLastStepFF = TRUE,
-  saveFFUseFCSFileName = TRUE,
-  saveFFPrefix = "",
   saveFFSuffix = "_preprocessed",
   saveFFFormat = c("fcs", "csv"),
   saveFFCsvUseChannelMarker = TRUE,
@@ -45,12 +43,12 @@ to work properly (visibility of functions). As a minimum,
 the \code{flowCore} package needs to be loaded.
 (hence the default \code{BPOPTIONS = bpoptions(packages = c("flowCore"))} )}
 
-\item{saveLastStepFF}{= TRUE,}
-
-\item{saveFFUseFCSFileName}{if TRUE filename used will be based on
-original fcs filename}
-
-\item{saveFFPrefix}{FF file name prefix}
+\item{saveLastStepFF}{if TRUE, save the final result of the pre-processing,
+for each file.
+By convention, these output files are stored in
+\code{path}/\code{x@experimentName}/output/, the file names used are the same
+as the initial fcs file basenames, concatenated with \code{saveFFSuffix},
+and with file extension corresponding to \code{saveFFFormat}.}
 
 \item{saveFFSuffix}{FF file name suffix}
 

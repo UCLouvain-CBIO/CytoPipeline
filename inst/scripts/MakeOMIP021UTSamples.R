@@ -26,6 +26,9 @@ sampleSize <- 100
 OMIP021UTSamples <- flowCore::fsApply(
     x = OMIP021Samples,
     FUN = function(ff) {
-        subsample(ff, nSamples = sampleSize, seed = 1)
+        subsample(ff, 
+                  nEvents = sampleSize, 
+                  seed = 1,
+                  keepOriginalCellIDs = FALSE)
     }
 )

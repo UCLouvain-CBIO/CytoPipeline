@@ -4,14 +4,21 @@
 \alias{subsample}
 \title{sub-sampling of a flowFrame}
 \usage{
-subsample(ff, nSamples, seed = NULL)
+subsample(ff, nEvents, seed = NULL, keepOriginalCellIDs = TRUE, ...)
 }
 \arguments{
 \item{ff}{a flowCore::flowFrame}
 
-\item{nSamples}{number of samples to be obtained using sub-sampling}
+\item{nEvents}{number of events to be obtained using sub-sampling}
 
 \item{seed}{can be set for reproducibility of event sub-sampling}
+
+\item{keepOriginalCellIDs}{if TRUE, adds (if not already present)
+a 'OriginalID' column containing the initial IDs of the cell
+(from 1 to nrow prior to subsampling).
+if FALSE, does the same, but takes as IDs (1 to nrow after subsampling)}
+
+\item{...}{additional parameters (currently not used)}
 }
 \value{
 new flowCore::flowFrame with the obtained subset of samples
@@ -26,7 +33,7 @@ adds also a column 'Original_ID' if not already present in flowFrame.
 data(OMIP021Samples)
 
 # take first sample of dataset, subsample 100 events and create new flowFrame
-ff <- subsample(OMIP021Samples[[1]], nSamples = 100)
+ff <- subsample(OMIP021Samples[[1]], nEvents = 100)
 
 
 }

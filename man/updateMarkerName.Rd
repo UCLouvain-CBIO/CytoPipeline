@@ -19,6 +19,7 @@ a new flowCore::flowFrame with the updated marker name
 \description{
 : in a flowCore::flowFrame, update the marker name (stored in
 'desc' of parameters data) of a given channel.
+Also update the corresponding keyword in the flowFrame.
 }
 \examples{
 

@@ -63,7 +63,7 @@ jobs:
       VDIFFR_RUN_TESTS: false
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      CODECOV_TOKEN: 'f726ac0c-aee0-4b48-9ee0-a40acd0fac44'
+      CODECOV_TOKEN: 'bf6cfe55-b854-46d9-a5e7-a7874ae7c90e'
 
     steps:
 

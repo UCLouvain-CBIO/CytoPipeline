@@ -13,6 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
+data("OMIP021Samples")
 
 test_that("areSignalCols works", {
     ff <- OMIP021Samples[[1]]
@@ -41,9 +42,28 @@ test_that("areFluoCols works", {
 test_that("subsample works", {
     ff <- OMIP021Samples[[1]]
 
-    nSamples <- 50
-    ffSub <- subsample(ff, nSamples)
-    expect_equal(flowCore::nrow(ffSub), nSamples)
+    nEvents <- 50
+    seed <- 0
+    ffSub <- subsample(ff, nEvents, seed = seed)
+    expect_equal(flowCore::nrow(ffSub), nEvents)
+    # withr::with_seed(
+    #     seed,
+    #     {
+    #         tgtLines <- sample(seq_len(flowCore::nrow(ff)),
+    #                        size = nEvents,
+    #                        replace = FALSE)
+    #         tgtIDs <- flowCore::exprs(ff)[tgtLines,"Original_ID"]
+    #         expect_true(all.equal(tgtIDs, 
+    #                               flowCore::exprs(ffSub)[,"Original_ID"]))
+    #     }
+    # )
+   
+    # same but reset the original IDs
+    ffSub <- subsample(ff, nEvents, seed = seed, keepOriginalCellIDs = FALSE)
+    expect_equal(flowCore::nrow(ffSub), nEvents)
+    tgtIDs <- 1:nEvents
+    expect_true(all.equal(tgtIDs, flowCore::exprs(ffSub)[,"Original_ID"]))
+    
 
     # subsample with more samples than original nrow (5000)
     ffSub <- subsample(ff, 10000)
@@ -390,6 +410,25 @@ test_that("updateMarkerName works", {
     
     checkMkName <- getChannelNamesFromMarkers(retFF, markers = "Fwd Scatter-A")
     expect_equal(checkMkName, "FSC-A")
+    expect_equal(flowCore::keyword(retFF, "$P1S")[["$P1S"]], "Fwd Scatter-A")
+    
+    # same with channel as index
+    retFF <- updateMarkerName(OMIP021Samples[[1]],
+                              channel = 1,
+                              newMarkerName = "Fwd Scatter-A")
+    checkMkName <- getChannelNamesFromMarkers(retFF, markers = "Fwd Scatter-A")
+    expect_equal(checkMkName, "FSC-A")
+    expect_equal(flowCore::keyword(retFF, "$P1S")[["$P1S"]], "Fwd Scatter-A")
+    
+    # now channel provided as marker (desc), not channel name
+    retFF <- updateMarkerName(OMIP021Samples[[1]],
+                              channel = "BV785 - CD3",
+                              newMarkerName = "fancy CD3")
+    checkMkName <- getChannelNamesFromMarkers(retFF, markers = "fancy CD3")
+    expect_equal(checkMkName, "670/30Violet-A")
+    expect_equal(flowCore::keyword(retFF, "$P10S")[["$P10S"]], "fancy CD3")
+    
+    
     
     expect_error(updateMarkerName(OMIP021Samples[[1]], channel = "FFF-A", 
                                   newMarkerName = "whatever"), 
@@ -470,3 +509,6 @@ test_that("updateCompMatrixLabels works", {
     expect_equal(newColNames, expectedNewNames)
     expect_equal(newRowNames, expectedNewNames)
 })
+
+
+

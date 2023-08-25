@@ -25,7 +25,7 @@ library(CytoPipeline)
 # note that automatic download API for FlowRepository does not work anymore 
 # for the time being (May 2022)
 datasetPath <- "/Datasets/OMIP-021/FlowRepository_FR-FCM-ZZ9H_files"
-#datasetPath <- "C:/CBIO/2021-phd-philippe-hauchamps/Datasets/OMIP-021/FlowRepository_FR-FCM-ZZ9H_files"
+datasetPath <- "C:/CBIO/2021-phd-philippe-hauchamps/Datasets/OMIP-021/FlowRepository_FR-FCM-ZZ9H_files"
 
 
 files <- list.files(datasetPath, pattern = "Donor", recursive = TRUE)
@@ -43,14 +43,18 @@ OMIP021Samples <- read.flowSet(
     min.limit = NULL
 )
 
-pData(OMIP021Samples)$Donor <- paste0("Donor_", seq(nDonors))
+flowCore::pData(OMIP021Samples)$Donor <- paste0("Donor_", seq(nDonors))
 
 # sub-sample equal nb of events in each fcs
+# set 
 sampleSize <- 5000
 OMIP021Samples <- fsApply(
     x = OMIP021Samples,
     FUN = function(ff) {
-        subsample(ff, nSamples = sampleSize, seed = 1)
+        subsample(ff, 
+                  nEvents = sampleSize, 
+                  seed = 1,
+                  keepOriginalCellIDs = FALSE)
     }
 )
 

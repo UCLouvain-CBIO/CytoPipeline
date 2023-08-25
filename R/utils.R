@@ -87,8 +87,13 @@ areFluoCols <- function(ff,
 #' with the specified number of samples, without replacement.
 #' adds also a column 'Original_ID' if not already present in flowFrame.
 #' @param ff a flowCore::flowFrame
-#' @param nSamples number of samples to be obtained using sub-sampling
+#' @param nEvents number of events to be obtained using sub-sampling
 #' @param seed  can be set for reproducibility of event sub-sampling
+#' @param keepOriginalCellIDs if TRUE, adds (if not already present)
+#' a 'OriginalID' column containing the initial IDs of the cell 
+#' (from 1 to nrow prior to subsampling).
+#' if FALSE, does the same, but takes as IDs (1 to nrow after subsampling)
+#' @param ... additional parameters (currently not used)
 #'
 #' @return new flowCore::flowFrame with the obtained subset of samples
 #' @export
@@ -98,36 +103,50 @@ areFluoCols <- function(ff,
 #' data(OMIP021Samples)
 #' 
 #' # take first sample of dataset, subsample 100 events and create new flowFrame
-#' ff <- subsample(OMIP021Samples[[1]], nSamples = 100)
+#' ff <- subsample(OMIP021Samples[[1]], nEvents = 100)
 #' 
 #'
-subsample <- function(ff, nSamples, seed = NULL) {
+subsample <- function(ff, 
+                      nEvents, 
+                      seed = NULL, 
+                      keepOriginalCellIDs = TRUE, ...) {
     if (!inherits(ff, "flowFrame")) {
         stop("ff type not recognized, should be a flowFrame")
     }
 
     eventCounts <- length(flowCore::exprs(ff)[, 1])
-    nSamples <- min(eventCounts, nSamples)
+    nEvents <- min(eventCounts, nEvents)
 
     if (!is.null(seed)) {
         withr::with_seed(
             seed,
             keep <- sample(seq_len(eventCounts),
-                size = nSamples,
+                size = nEvents,
                 replace = FALSE
             )
         )
     } else {
         keep <- sample(seq_len(eventCounts),
-            size = nSamples,
+            size = nEvents,
             replace = FALSE
         )
     }
+    
+    # order the kept events to maintain chronology of events ! 
+    keep <- sort(keep)
 
     # add Original_ID as a new column if necessary
-    ff <- appendCellID(ff)
-
-    ff[keep, ]
+    if (keepOriginalCellIDs) {
+        if (!("Original_ID" %in% colnames(flowCore::exprs(ff)))) {
+            ff <- appendCellID(ff)         
+        }
+        ff <- ff[keep,]
+    } else {
+        ff <- ff[keep,]
+        ff <- resetCellIDs(ff)
+    }
+    
+    ff
 }
 
 #' @title compensate with additional options
@@ -804,7 +823,8 @@ getChannelNamesFromMarkers <- function(ff, markers) {
 
 #' @title update marker name of a given flowFrame channel
 #' @description : in a flowCore::flowFrame, update the marker name (stored in
-#' 'desc' of parameters data) of a given channel.
+#' 'desc' of parameters data) of a given channel. 
+#' Also update the corresponding keyword in the flowFrame.
 #' @param ff a flowCore::flowFrame
 #' @param channel the channel for which to update the marker name
 #' @param newMarkerName the new marker name to be given to the selected channel
@@ -820,22 +840,56 @@ getChannelNamesFromMarkers <- function(ff, markers) {
 #'                           newMarkerName = "Fwd Scatter-A")
 #'
 updateMarkerName <- function(ff, channel, newMarkerName) {
+    
+    # 0. check inputs
+    
     if (!inherits(ff, "flowFrame")) {
         stop("ff type not recognized, should be a flowFrame!")
     }
     
-    channelIndex <- which(flowCore::colnames(ff) == channel)
-    if (length(channelIndex) == 0) {
-        stop("channel not found in flowFrame!")
+    if (is.numeric(channel)) {
+        channelIndex <- channel[1]
+    } else if (is.character(channel)){
+        channelIndex <- which(flowCore::colnames(ff) == channel)
+        if (length(channelIndex) == 0) {
+            # try to find corresponding marker
+            chMk <- try(flowCore::getChannelMarker(ff, channel),
+                        silent = TRUE)
+            if (class(chMk) == "try-error") {
+                stop("channel not found in flowFrame!")
+            }
+            channelIndex <- which(flowCore::colnames(ff) == chMk$name)
+            
+        }
     } else {
-        channelIndex <- channelIndex[1]
+        stop("channel shoud be a numeric index of a character!")
     }
     
+    # 1. update flowFrame parameters pheno data
+
     param <- flowCore::parameters(ff)
     paramData <- flowCore::pData(param)
     paramData[channelIndex, "desc"] <- newMarkerName
     flowCore::pData(param) <- paramData
     flowCore::parameters(ff) <- param
+    
+    # 2. update flowFrame keyword
+    targetChannelName <- flowCore::colnames(ff)[channelIndex]
+    nChannels <- length(flowCore::colnames(ff))
+    potentialKeywordChannels <- paste0("$P", 1:nChannels,"N")
+    potentialKeywordMarkers <- paste0("$P", 1:nChannels,"S")
+    kch <- flowCore::keyword(ff, potentialKeywordChannels)
+    #kmk <- flowCore::keyword(ff, potentialKeywordMarkers)
+    
+    # if channel name exists as a keyword in flowFrame
+    # => update corresponding marker name
+    for (k in seq_along(kch)) {
+        if (kch[k][[potentialKeywordChannels[k]]] == targetChannelName) {
+            flowCore::keyword(ff)[[potentialKeywordMarkers[k]]] <- 
+                newMarkerName
+            break
+        }
+    }
     return(ff)
 }
 
@@ -877,8 +931,8 @@ removeChannels <- function(ff, channels) {
 #' This column can be used in plots comparing the events pre and post gating.
 #' If the 'Original_ID' column already exists, the function does nothing
 #' @param ff a flowCore::flowFrame
-#' @param eventIDs an integer vector containing the values to be added in
-#' as Original ID's
+#' @param eventIDs an integer vector containing the values to be added 
+#' in expression matrix, as Original ID's.
 #' 
 #' @return new flowCore::flowFrame containing the added 'Original_ID' column
 #' @export
@@ -898,6 +952,47 @@ appendCellID <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
             dimnames = list(c(), list("Original_ID"))
         )
         ff <- flowCore::fr_append_cols(ff, matrixCellIds)
+    } 
+    return(ff)
+}
+
+#' @title reset 'Original_ID' column in a flowframe
+#' @description : on a flowCore::flowFrame, reset 'Original_ID' column.
+#' This column can be used in plots comparing the events pre and post gating.
+#' If the 'Original_ID' column already exists, the function replaces 
+#' the existing IDs by the user provided ones.
+#' If not, an `appendCellID()` is called.
+#' @param ff a flowCore::flowFrame
+#' @param eventIDs an integer vector containing the values to be set 
+#' in expression matrix, as Original ID's.
+#' 
+#' @return new flowCore::flowFrame containing the amended (or added) 
+#' 'Original_ID' column
+#' @export
+#' @examples
+#' 
+#' data(OMIP021Samples)
+#' 
+#' ff <- appendCellID(OMIP021Samples[[1]])
+#' 
+#' subsample_ff <- subsample(ff, 100, keepOriginalCellIDs = TRUE)
+#' 
+#' # re-create a sequence of IDs, ignoring the ones before subsampling
+#' reset_ff <- resetCellIDs(subsample_ff)
+#'
+resetCellIDs <- function(ff, eventIDs = seq_len(flowCore::nrow(ff))) {
+    if (!inherits(ff, "flowFrame")) {
+        stop("ff type not recognized, should be a flowFrame")
+    }
+    if (!("Original_ID" %in% colnames(flowCore::exprs(ff)))) {
+        ff <- appendCellID(ff, eventIDs)
+    } else {
+        if (length(eventIDs) != flowCore::nrow(ff)) {
+            stop("length of provided eventIDs does not match nb of rows")
+        }
+        exprs <- flowCore::exprs(ff)
+        exprs[,"Original_ID"] <- eventIDs
+        ff@exprs <- exprs
     }
     return(ff)
 }
@@ -1031,8 +1126,6 @@ writeFlowFrame <- function(ff, dir = ".",
     }
 }
 
-
-
 # update compensation matrix labels, replace by bold channel name
 # if label == concatenation of channel, " :: ", marker (as in FlowJo export)
 # if label == marker
@@ -1058,3 +1151,44 @@ writeFlowFrame <- function(ff, dir = ".",
     mat
 }
 
+# update marker names
+# the new set of marker names should be ordered and have the same length
+# as the channel names
+.updateMarkersName <- function(ff, newMarkerNames) {
+    # check inputs
+    stopifnot (inherits(ff, "flowFrame"))
+    if (!is.character(newMarkerNames) || length(newMarkerNames) == 0) {
+        stop("new marker names should be provided as ",
+             "a character of non zero length")
+    }
+    
+    # 1. update fcs parameters pheno data
+    newpData <- flowCore::pData(flowCore::parameters(ff))
+    channels <- newpData$names
+    nChannels <- length(channels)
+    
+    if (is.null(channels)) {
+        stop("did not find channel names in flow frame pheno data",
+             " => inconsistency!")
+    }
+    if (length(newMarkerNames) != nChannels) {
+        stop("length of new marker names differs from length of channel names",
+             " => inconsistency!")
+    }
+    newpData$desc <- newMarkerNames
+    flowCore::pData(ff) <- newpData
+    
+    # 2. update fcs keywords
+    potentialKeywordChannels <- paste0("$P", 1:nChannels,"N")
+    potentialKeywordMarkers <- paste0("$P", 1:nChannels,"S")
+    kch <- flowCore::keyword(ff, potentialKeywordChannels)
+    kmk <- flowCore::keyword(ff, potentialKeywordMarkers)
+    for (k in kch) {
+        # if channel name exists as a keyword in fcs
+        # => update corresponding marker name
+        if (!is.null(kch[k][[potentialKeywordChannels[k]]])) {
+            flowCore::keyword(ff)[[potentialKeywordMarkers[k]]] <- 
+                newMarkerNames[k]
+        }
+    }
+}
