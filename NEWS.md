@@ -1,5 +1,8 @@
 # CytoPipeline 1.1
 
+## CytoPipeline 1.1.4
+- updated fcs files, that are at the source of OMIP021Samples dataset
+
 ## CytoPipeline 1.1.3
 - in subSample(), renamed parameter 'nSamples' into 'nEvents', and added 
 possibility for passing unused parameters, in order to support 
