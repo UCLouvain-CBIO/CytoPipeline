@@ -25,8 +25,6 @@ library(CytoPipeline)
 # note that automatic download API for FlowRepository does not work anymore 
 # for the time being (May 2022)
 datasetPath <- "/Datasets/OMIP-021/FlowRepository_FR-FCM-ZZ9H_files"
-datasetPath <- "C:/CBIO/2021-phd-philippe-hauchamps/Datasets/OMIP-021/FlowRepository_FR-FCM-ZZ9H_files"
-
 
 files <- list.files(datasetPath, pattern = "Donor", recursive = TRUE)
 
