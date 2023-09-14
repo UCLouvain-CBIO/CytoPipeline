@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.5</span>
       </span>
     </div>
 
@@ -67,15 +67,15 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">areFluoCols</span><span class="op">(</span></span>
-<span>  <span class="va">ff</span>,</span>
+<span>  <span class="va">x</span>,</span>
 <span>  toRemovePatterns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FSC"</span>, <span class="st">"SSC"</span>, <span class="st">"Time"</span>, <span class="st">"Original_ID"</span>, <span class="st">"File"</span>, <span class="st">"SampleID"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>ff</dt>
-<dd><p>a flowCore::flowFrame</p></dd>
+    <dl><dt>x</dt>
+<dd><p>a flowCore::flowFrame or a flowCore::flowSet</p></dd>
 
 
 <dt>toRemovePatterns</dt>
@@ -96,7 +96,7 @@ columns in ff</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">OMIP021Samples</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">areFluoCols</span><span class="op">(</span><span class="va">OMIP021Samples</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">areFluoCols</span><span class="op">(</span><span class="va">OMIP021Samples</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          FSC-A          FSC-H          SSC-A          SSC-H 450/50Violet-A </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          FALSE          FALSE          FALSE          FALSE           TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 525/50Violet-A 540/30Violet-A 585/15Violet-A 610/20Violet-A 670/30Violet-A </span>
