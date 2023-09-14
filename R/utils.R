@@ -876,8 +876,8 @@ updateMarkerName <- function(ff, channel, newMarkerName) {
     # 2. update flowFrame keyword
     targetChannelName <- flowCore::colnames(ff)[channelIndex]
     nChannels <- length(flowCore::colnames(ff))
-    potentialKeywordChannels <- paste0("$P", 1:nChannels,"N")
-    potentialKeywordMarkers <- paste0("$P", 1:nChannels,"S")
+    potentialKeywordChannels <- paste0("$P", seq_len(nChannels), "N")
+    potentialKeywordMarkers <- paste0("$P", seq_len(nChannels), "S")
     kch <- flowCore::keyword(ff, potentialKeywordChannels)
     #kmk <- flowCore::keyword(ff, potentialKeywordMarkers)
     
@@ -1179,8 +1179,8 @@ writeFlowFrame <- function(ff, dir = ".",
     flowCore::pData(ff) <- newpData
     
     # 2. update fcs keywords
-    potentialKeywordChannels <- paste0("$P", 1:nChannels,"N")
-    potentialKeywordMarkers <- paste0("$P", 1:nChannels,"S")
+    potentialKeywordChannels <- paste0("$P", seq_len(nChannels), "N")
+    potentialKeywordMarkers <- paste0("$P", seq_len(nChannels), "S")
     kch <- flowCore::keyword(ff, potentialKeywordChannels)
     kmk <- flowCore::keyword(ff, potentialKeywordMarkers)
     for (k in kch) {
