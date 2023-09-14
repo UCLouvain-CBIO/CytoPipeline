@@ -22,6 +22,10 @@ test_that("areSignalCols works", {
 
     res <- areSignalCols(ff)
     expect_equal(res, expectedRes, ignore_attr = TRUE)
+    
+    # same with flowSet
+    res <- areSignalCols(OMIP021Samples)
+    expect_equal(res, expectedRes, ignore_attr = TRUE)
 })
 
 test_that("areFluoCols works", {
@@ -34,6 +38,10 @@ test_that("areFluoCols works", {
     )
 
     res <- areFluoCols(ff)
+    expect_equal(res, expectedRes, ignore_attr = TRUE)
+    
+    # same with flowSet
+    res <- areFluoCols(OMIP021Samples)
     expect_equal(res, expectedRes, ignore_attr = TRUE)
 })
 

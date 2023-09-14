@@ -4,12 +4,14 @@
 \alias{applyScaleTransforms}
 \title{apply scale transforms}
 \usage{
-applyScaleTransforms(ff, transList, ...)
+applyScaleTransforms(x, transList, verbose = FALSE, ...)
 }
 \arguments{
-\item{ff}{a flowCore::flowFrame}
+\item{x}{a flowCore::flowSet or a flowCore::flowFrame}
 
 \item{transList}{a flowCore::transformList}
+
+\item{verbose}{if TRUE, send a message per flowFrame transformed}
 
 \item{...}{other arguments (not used)}
 }
@@ -19,6 +21,9 @@ the transformed flowFrame
 \description{
 wrapper around flowCore::transform() that discards any
 additional parameter passed in (...)
+Additionally, some checks regarding channels correspondance is done:
+if \code{transList} contains transformations for channels that are not present
+in \code{x}, then these transformations are first removed.
 }
 \examples{
 

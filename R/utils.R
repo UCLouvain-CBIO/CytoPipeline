@@ -16,7 +16,7 @@
 
 #' @title find flow frame columns that represent true signal
 #' @description : find flow frame columns that represent true signal
-#' @param ff a flowCore::flowFrame
+#' @param x a flowCore::flowFrame or a flowCore::flowSet
 #' @param toRemovePatterns a vector of string patterns that are to be considered
 #' as non signal
 #'
@@ -28,19 +28,19 @@
 #' 
 #' data(OMIP021Samples)
 #' 
-#' areSignalCols(OMIP021Samples[[1]])
+#' areSignalCols(OMIP021Samples)
 #'
-areSignalCols <- function(ff,
+areSignalCols <- function(x,
                           toRemovePatterns = c(
                               "Time", "Original_ID",
                               "File", "SampleID"
                           )) {
-    if (!inherits(ff, "flowFrame")) {
-        stop("ff type not recognized, should be a flowFrame")
+    if (!inherits(x, "flowFrame") && !inherits(x, "flowSet")) {
+        stop("x type not recognized, should be a flowFrame or a flowSet")
     }
 
 
-    retCols <- vapply(flowCore::colnames(ff),
+    retCols <- vapply(flowCore::colnames(x),
         FUN.VALUE = logical(1),
         FUN = function(ch, toRemovePatterns) {
             res <- TRUE
@@ -55,7 +55,7 @@ areSignalCols <- function(ff,
 }
 #' @title find flow frame columns that represent fluorochrome channel
 #' @description : find flow frame columns that represent fluorochrome channel
-#' @param ff a flowCore::flowFrame
+#' @param x a flowCore::flowFrame or a flowCore::flowSet
 #' @param toRemovePatterns a vector of string patterns that are to be considered
 #' as non fluorochrome
 #'
@@ -67,15 +67,15 @@ areSignalCols <- function(ff,
 #' 
 #' data(OMIP021Samples)
 #' 
-#' areFluoCols(OMIP021Samples[[1]])
+#' areFluoCols(OMIP021Samples)
 #'
-areFluoCols <- function(ff,
+areFluoCols <- function(x,
                         toRemovePatterns = c(
                             "FSC", "SSC",
                             "Time", "Original_ID",
                             "File", "SampleID"
                         )) {
-    return(areSignalCols(ff,
+    return(areSignalCols(x,
         toRemovePatterns = toRemovePatterns
     ))
 }
@@ -855,7 +855,7 @@ updateMarkerName <- function(ff, channel, newMarkerName) {
             # try to find corresponding marker
             chMk <- try(flowCore::getChannelMarker(ff, channel),
                         silent = TRUE)
-            if (class(chMk) == "try-error") {
+            if (inherits(chMk, "try-error")) {
                 stop("channel not found in flowFrame!")
             }
             channelIndex <- which(flowCore::colnames(ff) == chMk$name)

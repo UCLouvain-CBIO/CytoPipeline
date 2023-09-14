@@ -5,12 +5,12 @@
 \title{find flow frame columns that represent true signal}
 \usage{
 areSignalCols(
-  ff,
+  x,
   toRemovePatterns = c("Time", "Original_ID", "File", "SampleID")
 )
 }
 \arguments{
-\item{ff}{a flowCore::flowFrame}
+\item{x}{a flowCore::flowFrame or a flowCore::flowSet}
 
 \item{toRemovePatterns}{a vector of string patterns that are to be considered
 as non signal}
@@ -26,6 +26,6 @@ columns in ff
 
 data(OMIP021Samples)
 
-areSignalCols(OMIP021Samples[[1]])
+areSignalCols(OMIP021Samples)
 
 }

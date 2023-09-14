@@ -1,5 +1,11 @@
 # CytoPipeline 1.1
 
+## CytoPipeline 1.1.5
+- areSignalCols(), are FluoCols() can now accept a flowSet as input, 
+on top of a flowFrame
+- applyScaleTransforms() processing step has been improved (can take flowSet 
+as input, checks channel concordance between transList and data object)
+
 ## CytoPipeline 1.1.4
 - updated fcs files, that are at the source of OMIP021Samples dataset
 

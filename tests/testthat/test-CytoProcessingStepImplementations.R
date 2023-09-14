@@ -661,6 +661,22 @@ test_that("applyScaleTransform works", {
         flowCore::exprs(thisFF),
         flowCore::exprs(refFF)
     )
+    
+    # with flowSets
+    fs_c <- compensateFromMatrix(OMIP021Samples, matrixSource = "fcs")
+    thisFS <- applyScaleTransforms(fs_c, transList)
+    refFF1 <- flowCore::transform(fs_c[[1]], transList)
+    refFF2 <- flowCore::transform(fs_c[[2]], transList)
+    
+    expect_equal(
+        flowCore::exprs(thisFS[[1]]),
+        flowCore::exprs(refFF1)
+    )
+    
+    expect_equal(
+        flowCore::exprs(thisFS[[2]]),
+        flowCore::exprs(refFF2)
+    )
 })
 
 

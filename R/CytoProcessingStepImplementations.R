@@ -116,57 +116,6 @@ estimateScaleTransforms <- function(ff,
     return(transList)
 }
 
-# #' @title select a nb of sample files randomly
-# #' @description Wrapper around sample(sampleFiles, nSamples).
-# #' For the needs of making it a CytoProcessingStep:
-# #' - takes `sampleFiles` as an explicit first parameter
-# #' - can manage a seed
-# #' - allow passing ... as a parameter (not used)
-# #' @param sampleFiles a vector of character path to sample files
-# #' @param nSamples number of samples to randomly select. If `nSamples` is
-# #' higher than nb of available samples, the output will be all samples
-# #' @param seed an optional seed parameters (provided to ease reproducibility).
-# #' @param ... additional parameters passed (not used here).
-# #'
-# #' @return a subset of `sampleFiles`, randomly selected
-# #' @export
-# #' 
-# #' @examples
-# #'
-# #' rawDataDir <-
-# #'     system.file("extdata", package = "CytoPipeline")
-# #' sampleFiles <-
-# #'     file.path(rawDataDir, list.files(rawDataDir, pattern = "Donor"))
-# #' 
-# #' nRandomSamples <- 1
-# #' selectSampleFiles <- selectRandomSamples(sampleFiles, 
-# #'                                          nSamples = nRandomSamples,
-# #'                                          seed = 1)
-# #'                                          
-# selectRandomSamples <- function(sampleFiles,
-#                                 nSamples,
-#                                 seed = NULL,
-#                                 ...) {
-#     
-#     if (!is.numeric(nSamples) || nSamples < 1) {
-#         stop("[nSamples] should be a numeric >= 1")
-#     }
-#     
-#     nAvailableSamples <- length(sampleFiles)
-#     
-#     if (nSamples > nAvailableSamples) nSamples <- nAvailableSamples
-#     
-#     if (!is.null(seed)) {
-#         # set the seed locally in the execution environment,
-#         # restore it afterward
-#         withr::local_seed(seed)
-#     }
-#     
-#     outputSamples <- sample(sampleFiles, nSamples)
-#     
-#     outputSamples
-# }
-
 
 #' @title Read fcs sample files
 #' @description Wrapper around flowCore::read.fcs() or flowCore::read.flowSet().
@@ -1264,8 +1213,12 @@ readRDSObject <- function(RDSFile, ...) {
 ##' @title apply scale transforms
 ##' @description wrapper around flowCore::transform() that discards any 
 ##' additional parameter passed in (...)
-##' @param ff a flowCore::flowFrame
+##' Additionally, some checks regarding channels correspondance is done:  
+##' if `transList` contains transformations for channels that are not present 
+##' in `x`, then these transformations are first removed.
+##' @param x a flowCore::flowSet or a flowCore::flowFrame
 ##' @param transList a flowCore::transformList
+##' @param verbose if TRUE, send a message per flowFrame transformed
 ##' @param ... other arguments (not used)
 ##' @return the transformed flowFrame
 ##' @export
@@ -1285,8 +1238,47 @@ readRDSObject <- function(RDSFile, ...) {
 ##' 
 ##' ff_t <- applyScaleTransforms(ff_c, transList = transList)
 ##' 
-applyScaleTransforms <- function(ff, transList, ...) {
-    ff <- flowCore::transform(ff, transList)
-    return(ff)
+applyScaleTransforms <- function(x, transList, verbose = FALSE, ...) {
+    
+    if (!inherits(transList, "transformList")) {
+        stop("transList should inherit from transformList class")
+    }
+    
+    if (!inherits(x, "flowFrame") && !inherits(x, "flowSet")) {
+        stop("x type not recognized, should be a flowFrame or a flowSet")
+    }
+    
+    # check on channels/markers present in transList
+    signalChannels <- flowCore::colnames(x)[areSignalCols(x)]
+    transfoChannels <- names(transList@transforms)
+    commonChannels <- intersect(signalChannels, transfoChannels)
+    
+    transList@transforms <- transList@transforms[commonChannels]
+    
+    if (inherits(x, "flowFrame")) {
+        if (verbose) {
+            message("scale transforming ff: ", 
+                    flowCore::identifier(x))
+        }
+        ret <- flowCore::transform(x, transList)
+    } else if (inherits(x, "flowSet")) {
+        ret <- flowCore::fsApply(
+            x,
+            FUN = function(ff){
+                if (verbose) {
+                    message("scale transforming ff: ", 
+                            flowCore::identifier(ff))
+                }
+                flowCore::transform(ff, transList)
+            })
+    } else {
+        stop("x should be a flowCore::flowFrame or a flowCore::flowSet")
+    }
+    
+    
+    
+    return(ret)
 }
+
+
 
