@@ -1,3 +1,8 @@
+# CytoPipeline 1.3
+
+## CytoPipeline 1.3.1
+- refactored documentation files
+
 # CytoPipeline 1.1
 
 ## CytoPipeline 1.1.5

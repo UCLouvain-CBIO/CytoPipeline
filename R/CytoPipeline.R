@@ -16,6 +16,8 @@
 
 #' @title CytoPipeline package
 #' 
+#' @docType package
+#' 
 #' @name CytoPipeline
 #'
 #' @rdname CytoPipeline

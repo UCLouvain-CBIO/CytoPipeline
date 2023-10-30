@@ -5,9 +5,77 @@
 \alias{CytoPipeline-class}
 \alias{CytoPipeline-class,}
 \alias{CytoPipelineClass}
+\alias{show,CytoPipeline-method}
+\alias{CytoPipeline,missing-method}
+\alias{CytoPipeline,list-method}
+\alias{CytoPipeline,character-method}
+\alias{as.list.CytoPipeline}
+\alias{experimentName}
+\alias{experimentName<-}
+\alias{sampleFiles}
+\alias{sampleFiles<-}
+\alias{pData}
+\alias{pData<-}
 \title{CytoPipeline class}
+\usage{
+\S4method{show}{CytoPipeline}(object)
+
+\S4method{CytoPipeline}{missing}(
+  object,
+  experimentName = "default_experiment",
+  sampleFiles = character(),
+  pData = NULL
+)
+
+\S4method{CytoPipeline}{list}(
+  object,
+  experimentName = "default_experiment",
+  sampleFiles = character(),
+  pData = NULL
+)
+
+\S4method{CytoPipeline}{character}(
+  object,
+  experimentName = "default_experiment",
+  sampleFiles = character(),
+  pData = NULL
+)
+
+\method{as.list}{CytoPipeline}(x, ...)
+
+experimentName(x)
+
+experimentName(x) <- value
+
+sampleFiles(x)
+
+sampleFiles(x) <- value
+
+pData(x)
+
+pData(x) <- value
+}
+\arguments{
+\item{object}{a \code{character()} containing a JSON input}
+
+\item{experimentName}{the experiment name}
+
+\item{sampleFiles}{the sample files}
+
+\item{pData}{the pheno Data (data.frame or NULL)}
+
+\item{x}{a \code{CytoPipeline} object}
+
+\item{...}{additional arguments (not used here)}
+
+\item{value}{the new value to be assigned}
+}
 \value{
 nothing
+
+\itemize{
+\item for \code{as.list.CytoPipeline}: the obtained list
+}
 }
 \description{
 Class representing a flow cytometry pipeline, and composed of two processing

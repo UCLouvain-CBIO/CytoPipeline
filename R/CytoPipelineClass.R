@@ -297,7 +297,7 @@ setValidity("CytoPipeline", function(object) {
     }
 })
 
-#' @rdname CytoPipeline
+#' @rdname CytoPipelineClass
 #'
 #' @param object a `CytoPipeline` object
 #'
@@ -334,7 +334,7 @@ setGeneric("CytoPipeline", function(object, ...) {
     standardGeneric("CytoPipeline")
 })
 
-#' @rdname CytoPipeline
+#' @rdname CytoPipelineClass
 #' @param experimentName the experiment name
 #' @param sampleFiles the sample files
 #' @param pData the pheno data (data.frame or NULL)
@@ -356,7 +356,7 @@ setMethod(
     }
 )
 
-#' @rdname CytoPipeline
+#' @rdname CytoPipelineClass
 #'
 #' @param object a `list()`
 #' @param experimentName the experiment name
@@ -384,8 +384,7 @@ setMethod(
     }
 )
 
-#' @rdname CytoPipeline
-#'
+#' @rdname CytoPipelineClass
 #'
 #' @param object a `character()` containing a JSON input
 #' @param experimentName the experiment name
@@ -413,7 +412,7 @@ setMethod(
     }
 )
 
-#' @rdname CytoPipeline
+#' @rdname CytoPipelineClass
 #'
 #' @param x a `CytoPipeline` object
 #' @param ... additional arguments (not used here)
@@ -457,7 +456,7 @@ as.list.CytoPipeline <- function(x, ...) {
     return(outputList)
 }
 
-##' @rdname CytoPipeline
+##' @rdname CytoPipelineClass
 ##'
 ##' @param x a `CytoPipeline` object
 ##'
@@ -468,7 +467,7 @@ experimentName <- function(x) {
     return(x@experimentName)
 }
 
-##' @rdname CytoPipeline
+##' @rdname CytoPipelineClass
 ##' @param x a `CytoPipeline` object
 ##' @param value the new value to be assigned
 ##' @export
@@ -479,7 +478,7 @@ experimentName <- function(x) {
     return(x)
 }
 
-##' @rdname CytoPipeline
+##' @rdname CytoPipelineClass
 ##' @param x a `CytoPipeline` object
 ##' @export
 ##'
@@ -488,7 +487,7 @@ sampleFiles <- function(x) {
     return(x@sampleFiles)
 }
 
-##' @rdname CytoPipeline
+##' @rdname CytoPipelineClass
 ##' @param x a `CytoPipeline` object
 ##' @param value the new value to be assigned
 ##' @export
@@ -499,7 +498,7 @@ sampleFiles <- function(x) {
     return(x)
 }
 
-##' @rdname CytoPipeline
+##' @rdname CytoPipelineClass
 ##' @param x a `CytoPipeline` object
 ##' @export
 ##'
@@ -508,7 +507,7 @@ pData <- function(x) {
     return(x@pData)
 }
 
-##' @rdname CytoPipeline
+##' @rdname CytoPipelineClass
 ##' @param x a `CytoPipeline` object
 ##' @param value the new value to be assigned
 ##' @export
