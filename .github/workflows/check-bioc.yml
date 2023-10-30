@@ -164,11 +164,11 @@ jobs:
           remotes::install_cran("BiocManager")
         shell: Rscript {0}
         
-      - name: Manually install vdiffr in version 1.0.5 to avoid compil error
-        run: |
-          BiocManager::install("remotes")
-          remotes::install_version("vdiffr", version = "1.0.5")
-        shell: Rscript {0} 
+      # - name: Manually install vdiffr in version 1.0.5 to avoid compil error
+      #   run: |
+      #     BiocManager::install("remotes")
+      #     remotes::install_version("vdiffr", version = "1.0.5")
+      #   shell: Rscript {0} 
 
       - name: Set BiocVersion
         run: |
