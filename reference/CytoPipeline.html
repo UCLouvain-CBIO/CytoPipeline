@@ -34,7 +34,7 @@ at the vignette!"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.1</span>
       </span>
     </div>
 
@@ -74,7 +74,7 @@ at the vignette!"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>CytoPipeline package</h1>
-    <small class="dont-index">Source: <a href="https://github.com/UCLouvain-CBIO/CytoPipeline/blob/HEAD/R/CytoPipeline.R" class="external-link"><code>R/CytoPipeline.R</code></a>, <a href="https://github.com/UCLouvain-CBIO/CytoPipeline/blob/HEAD/R/CytoPipelineClass.R" class="external-link"><code>R/CytoPipelineClass.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/UCLouvain-CBIO/CytoPipeline/blob/HEAD/R/CytoPipeline.R" class="external-link"><code>R/CytoPipeline.R</code></a></small>
     <div class="hidden name"><code>CytoPipeline.Rd</code></div>
     </div>
 
@@ -99,86 +99,7 @@ of obtained flowFrames at various steps of the pipeline.</p>
 at the vignette!</p>
     </div>
 
-    <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for CytoPipeline</span></span>
-<span><span class="fu">show</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for missing</span></span>
-<span><span class="fu">CytoPipeline</span><span class="op">(</span></span>
-<span>  <span class="va">object</span>,</span>
-<span>  experimentName <span class="op">=</span> <span class="st">"default_experiment"</span>,</span>
-<span>  sampleFiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  pData <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for list</span></span>
-<span><span class="fu">CytoPipeline</span><span class="op">(</span></span>
-<span>  <span class="va">object</span>,</span>
-<span>  experimentName <span class="op">=</span> <span class="st">"default_experiment"</span>,</span>
-<span>  sampleFiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  pData <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for character</span></span>
-<span><span class="fu">CytoPipeline</span><span class="op">(</span></span>
-<span>  <span class="va">object</span>,</span>
-<span>  experimentName <span class="op">=</span> <span class="st">"default_experiment"</span>,</span>
-<span>  sampleFiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  pData <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for CytoPipeline</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">experimentName</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">experimentName</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
-<span></span>
-<span><span class="fu">sampleFiles</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">sampleFiles</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
-<span></span>
-<span><span class="fu">pData</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">pData</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span></code></pre></div>
-    </div>
 
-    <div id="arguments">
-    <h2>Arguments</h2>
-    <dl><dt>object</dt>
-<dd><p>a <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code> containing a JSON input</p></dd>
-
-
-<dt>experimentName</dt>
-<dd><p>the experiment name</p></dd>
-
-
-<dt>sampleFiles</dt>
-<dd><p>the sample files</p></dd>
-
-
-<dt>pData</dt>
-<dd><p>the pheno Data (data.frame or NULL)</p></dd>
-
-
-<dt>x</dt>
-<dd><p>a <code>CytoPipeline</code> object</p></dd>
-
-
-<dt>...</dt>
-<dd><p>additional arguments (not used here)</p></dd>
-
-
-<dt>value</dt>
-<dd><p>the new value to be assigned</p></dd>
-
-</dl></div>
-    <div id="value">
-    <h2>Value</h2>
-    
-
-<ul><li><p>for <code>as.list.CytoPipeline</code>: the obtained list</p></li>
-</ul></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><a href="CytoPipelineClass.html">CytoPipelineClass</a>, <a href="CytoProcessingStep.html">CytoProcessingStep</a></p></div>
