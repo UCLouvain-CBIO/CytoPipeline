@@ -48,7 +48,7 @@ Collate:
     'utils.R'
     'ggplots.R'
 Depends:
-    R (>= 4.3)
+    R (>= 4.4)
 Imports:
     methods,
     stats,
