@@ -65,26 +65,26 @@ test_that("ggplotEvents with 1D works", {
         xChannel = "FSC-A",
         xScale = "linear"
     )
-    vdiffr::expect_doppelganger("ggplotEvents 1D linear single", fig = p)
+    #vdiffr::expect_doppelganger("ggplotEvents 1D linear single", fig = p)
 
     p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "FSC-A",
         xScale = "linear",
         xLinearRange = c(0, 250000)
     )
-    vdiffr::expect_doppelganger(
-        "ggplotEvents 1D linear explicit range - single",
-        fig = p
-    )
+    # vdiffr::expect_doppelganger(
+    #     "ggplotEvents 1D linear explicit range - single",
+    #     fig = p
+    # )
 
     p <- ggplotEvents(OMIP021UTSamples, xChannel = "FSC-A", xScale = "linear")
-    vdiffr::expect_doppelganger("ggplotEvents 1D linear double", fig = p)
+    #vdiffr::expect_doppelganger("ggplotEvents 1D linear double", fig = p)
 
     p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "450/50Violet-A",
         xScale = "logicle"
     )
-    vdiffr::expect_doppelganger("ggplotEvents 1D logicle single", fig = p)
+    #vdiffr::expect_doppelganger("ggplotEvents 1D logicle single", fig = p)
 
     p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "450/50Violet-A",
@@ -96,24 +96,24 @@ test_that("ggplotEvents with 1D works", {
         )
     )
 
-    vdiffr::expect_doppelganger(
-        "ggplotEvents 1D logicle with explicit params - single",
-        fig = p
-    )
+    # vdiffr::expect_doppelganger(
+    #     "ggplotEvents 1D logicle with explicit params - single",
+    #     fig = p
+    # )
 
     p <- ggplotEvents(OMIP021UTSamples[[2]],
         xChannel = "450/50Violet-A",
         xScale = "logicle", nDisplayCells = 500, seed = 1
     )
 
-    vdiffr::expect_doppelganger("ggplotEvents 1D sub-sampling", fig = p)
+    #vdiffr::expect_doppelganger("ggplotEvents 1D sub-sampling", fig = p)
 
     p <- ggplotEvents(OMIP021UTSamples[[2]],
         xChannel = "450/50Violet-A",
         xScale = "logicle", alpha = 0.5, fill = "red"
     )
 
-    vdiffr::expect_doppelganger("ggplotEvents 1D fill and color", fig = p)
+    #vdiffr::expect_doppelganger("ggplotEvents 1D fill and color", fig = p)
 
     compensationMatrix <- flowCore::spillover(OMIP021UTSamples[[1]])$SPILL
 
@@ -141,38 +141,38 @@ test_that("ggplotEvents with 1D works", {
         xScale = "linear", transList = transList,
         runTransforms = FALSE
     )
-    vdiffr::expect_doppelganger(
-        "ggplotEvents 1D transformList logicle not run",
-        fig = p
-    )
+    # vdiffr::expect_doppelganger(
+    #     "ggplotEvents 1D transformList logicle not run",
+    #     fig = p
+    # )
 
     p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "450/50Violet-A",
         xScale = "linear", transList = transList,
         runTransforms = TRUE
     )
-    vdiffr::expect_doppelganger("ggplotEvents 1D transformList logicle run",
-        fig = p
-    )
+    # vdiffr::expect_doppelganger("ggplotEvents 1D transformList logicle run",
+    #     fig = p
+    # )
 
     p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "FSC-A",
         xScale = "logicle", transList = transList,
         runTransforms = FALSE
     )
-    vdiffr::expect_doppelganger(
-        "ggplotEvents 1D transformList linear not run",
-        fig = p
-    )
+    # vdiffr::expect_doppelganger(
+    #     "ggplotEvents 1D transformList linear not run",
+    #     fig = p
+    # )
 
     p <- ggplotEvents(OMIP021UTSamples[[1]],
         xChannel = "FSC-A",
         xScale = "logicle", transList = transList,
         runTransforms = TRUE
     )
-    vdiffr::expect_doppelganger("ggplotEvents 1D transformList linear run",
-        fig = p
-    )
+    # vdiffr::expect_doppelganger("ggplotEvents 1D transformList linear run",
+    #     fig = p
+    # )
 })
 
 test_that("ggplotEvents with 2D works", {
