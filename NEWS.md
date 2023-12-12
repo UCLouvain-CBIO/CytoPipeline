@@ -3,6 +3,10 @@
 ## CytoPipeline 1.3.1
 - refactored documentation files
 
+## CytoPipeline 1.3.2
+- systematically override `pData` in cache upon execute() to allow running 
+consistently running several times for increasing number of samples
+
 # CytoPipeline 1.1
 
 ## CytoPipeline 1.1.5

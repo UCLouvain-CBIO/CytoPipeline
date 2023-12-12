@@ -631,7 +631,14 @@ execute <- function(x,
         cacheResourceName <- "phenoData"
         msg <- paste0("Proceeding with phenoData")
         if (cacheResourceName %in% BiocFileCache::bfcinfo(bfc)$rname) {
-            message(msg, ": found in cache => not need to store again!")
+            #message(msg, ": found in cache => no need to store again!")
+            message(msg, ": found in cache => updating it!")
+            cacheResourceFile <- BiocFileCache::bfcrpath(
+                x = bfc,
+                rnames = cacheResourceName
+            )
+            saveRDS(pData(x), unname(cacheResourceFile))
+            # no need to update meta data in this case...
         } else {
             message(msg, " ...")
             # browser()

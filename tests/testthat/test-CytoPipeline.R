@@ -252,6 +252,12 @@ test_that("Execution of CytoPipeline with correct phenoData raises no error", {
                                      rmCache = TRUE,
                                      path = outputDir
             ))
+            
+            # re-execute un second time to test behaviour with pData
+            execute(pipL,
+                    rmCache = FALSE,
+                    path = outputDir
+            )
         },
         NA
     )
