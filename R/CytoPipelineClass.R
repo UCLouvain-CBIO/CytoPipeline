@@ -495,7 +495,15 @@ sampleFiles <- function(x) {
 "sampleFiles<-" <- function(x, value) {
     stopifnot(inherits(x, "CytoPipeline"))
     x@sampleFiles <- value
-    return(x)
+    
+    if (!is.null(pData(x))) {
+        # maintain consistency between order of x@pData and order of x@sampleFile
+        # x@pData is driving
+        x@sampleFiles <- x@sampleFiles[order(match(
+            x@sampleFiles, rownames(x@pData)))]
+    }
+    
+    if (isTRUE(methods::validObject(x))) return(x)
 }
 
 ##' @rdname CytoPipelineClass
@@ -515,6 +523,14 @@ pData <- function(x) {
 "pData<-" <- function(x, value) {
     stopifnot(inherits(x, "CytoPipeline"))
     x@pData <- value
+    
+    if (length(x@sampleFiles)) {
+        # maintain consistency between order of x@pData and order of x@sampleFile
+        # x@pData is driving
+        x@sampleFiles <- x@sampleFiles[order(match(
+            x@sampleFiles, rownames(x@pData)))]
+    }
+    
     if (isTRUE(methods::validObject(x))) return(x)
 }
 

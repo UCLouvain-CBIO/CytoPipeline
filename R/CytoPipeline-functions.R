@@ -695,7 +695,7 @@ execute <- function(x,
             if (s == 1) {
                 res <- executeProcessingStep(
                     x@scaleTransformProcessingQueue[[s]],
-                    sampleFiles = x@sampleFiles,
+                    sampleFiles = sampleFiles(x),
                     pData = x@pData)
                 
             } else {
@@ -854,12 +854,12 @@ execute <- function(x,
     
     if (useBiocParallel) {
         #browser()
-        invisible(BiocParallel::bplapply(x@sampleFiles, 
+        invisible(BiocParallel::bplapply(sampleFiles(x), 
                                          BPPARAM = BPPARAM,
                                          BPOPTIONS = BPOPTIONS, 
                                          FUN = preProcessOneFile))
     } else {
-        invisible(lapply(x@sampleFiles, FUN = preProcessOneFile))
+        invisible(lapply(sampleFiles(x), FUN = preProcessOneFile))
     }
 }
 
@@ -1061,21 +1061,11 @@ buildCytoPipelineFromCache <- function(experimentName, path = ".") {
             # updating sample files
             # follow pData order if any, otherwise alphabetical order of 
             # file basenames 
-            sampleFiles <- unique(stats::na.omit(cacheInfo$fcsfile))
-            if (is.null(x@pData)) {
-                x@sampleFiles <- sort(sampleFiles)
-            } else {
-                x@sampleFiles <- sampleFiles[order(match(
-                    sampleFiles, rownames(x@pData)))]
-            }
+            sampleFiles(x) <- sort(unique(stats::na.omit(cacheInfo$fcsfile)))
         } else {
             # no pre-processing step found in cache
             # => no sample file can be updated
-            x@sampleFiles <- character()
-        }
-        
-        if (!isTRUE(validObject(x))) {
-            stop("Object built from cache is not valid.")
+            sampleFiles(x) <- character()
         }
 
         return(x)
@@ -1115,7 +1105,7 @@ checkCytoPipelineConsistencyWithCache <- function(
     
     if (whichQueue %in% c("both", "pre-processing")) {
         nPreProcessingSteps <- length(x@flowFramesPreProcessingQueue)
-        nSampleFiles <- length(x@sampleFiles)
+        nSampleFiles <- length(sampleFiles(x))
         ret$preProcessingStepStatus <-
             matrix(rep("not_run", nPreProcessingSteps * nSampleFiles),
                    nrow = nPreProcessingSteps,
@@ -1129,7 +1119,7 @@ checkCytoPipelineConsistencyWithCache <- function(
         if (nPreProcessingSteps > 0 && nSampleFiles > 0) {
             rownames(ret$preProcessingStepStatus) <-
                 getProcessingStepNames(x, whichQueue = "pre-processing")
-            colnames(ret$preProcessingStepStatus) <- basename(x@sampleFiles)
+            colnames(ret$preProcessingStepStatus) <- basename(sampleFiles(x))
         }
     }
     
@@ -1261,16 +1251,16 @@ checkCytoPipelineConsistencyWithCache <- function(
         }
         
         if (is.null(sampleFile)) {
-            sampleFileIndices <- seq_along(x@sampleFiles)
+            sampleFileIndices <- seq_along(sampleFiles(x))
         } else if (is.numeric(sampleFile)) {
-            if (all(sampleFile > 0 && sampleFile <= length(x@sampleFiles))) {
+            if (all(sampleFile > 0 && sampleFile <= length(sampleFiles(x)))) {
                 sampleFileIndices <- sampleFile
             } else {
                 stop("sampleFile out of bounds")
             }
         } else {
             sampleFileIndices <-
-                which(basename(x@sampleFiles) == basename(sampleFile))
+                which(basename(sampleFiles(x)) == basename(sampleFile))
             if (length(sampleFileIndices) == 0) {
                 stop("sampleFile not found in CytoPipeline")
             } 
@@ -1278,7 +1268,7 @@ checkCytoPipelineConsistencyWithCache <- function(
         
         for (s in sampleFileIndices) {
             # take only steps with the target sample file
-            sampleFile <- basename(x@sampleFiles[s])
+            sampleFile <- basename(sampleFiles(x)[s])
             stepsInfos <-
                 cacheInfo[
                     !is.na(cacheInfo$fcsfile) & cacheInfo$fcsfile == sampleFile,
@@ -1546,14 +1536,14 @@ getCytoPipelineObjectFromCache <-
             sampleFile <- NULL
         } else {
             if (is.numeric(sampleFile)) {
-                if (sampleFile > 0 && sampleFile <= length(x@sampleFiles)) {
-                    sampleFile <- x@sampleFiles[sampleFile]
+                if (sampleFile > 0 && sampleFile <= length(sampleFiles(x))) {
+                    sampleFile <- sampleFiles(x)[sampleFile]
                 } else {
                     stop("sampleFile out of bounds")
                 }
             } else {
                 sampleFileIndex <-
-                    which(basename(x@sampleFiles) == basename(sampleFile))
+                    which(basename(sampleFiles(x)) == basename(sampleFile))
                 if (length(sampleFileIndex) == 0) {
                     stop("sampleFile not found in CytoPipeline")
                 } else if (length(sampleFileIndex) > 1) {
@@ -1858,21 +1848,21 @@ plotCytoPipelineProcessingQueue <-
             
         } else {
             if (whichQueue == "pre-processing") {
-                if (is.null(sampleFile) && length(x@sampleFiles) > 0) {
+                if (is.null(sampleFile) && length(sampleFiles(x)) > 0) {
                     message(
                         "no sample file passed as argument ",
                         "=> defaulting to first sample file"
                     )
                     sampleFileIndex <- 1
                 } else if (is.numeric(sampleFile)) {
-                    if (sampleFile > 0 && sampleFile <= length(x@sampleFiles)) {
+                    if (sampleFile > 0 && sampleFile <= length(sampleFiles(x))) {
                         sampleFileIndex <- sampleFile
                     } else {
                         stop("sampleFile out of bounds")
                     }
                 } else {
                     sampleFileIndex <-
-                        which(basename(x@sampleFiles) == basename(sampleFile))
+                        which(basename(sampleFiles(x)) == basename(sampleFile))
                     if (length(sampleFileIndex) == 0) {
                         stop("sampleFile not found in CytoPipeline")
                     } else if (length(sampleFileIndex) > 1) {

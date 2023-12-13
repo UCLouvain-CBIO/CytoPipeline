@@ -6,8 +6,8 @@
 ## CytoPipeline 1.3.2
 - systematically override `pData` in cache upon execute() to allow running 
 consistently running several times for increasing number of samples
-- in `buildCytoPipelineFromCache()`: make sure that order of sample files 
-follow the one of `pData` rownames if `pData` exists
+- `sampleFiles<-` and `pData<-`: make sure that order of sample files 
+follow the one of `pData` rownames if `pData` exists.
 
 # CytoPipeline 1.1
 
