@@ -520,7 +520,8 @@ pData <- function(x) {
 
 .validProcessingQueue <- function(x, queueName) {
     msg <- NULL
-    if (length(x) && !all(vapply(x, inherits, "CytoProcessingStep"))) {
+    if (length(x) && !all(vapply(
+        x, inherits, what = "CytoProcessingStep", FUN.VALUE = TRUE))) {
         msg <- paste0(
             "'",
             queueName,

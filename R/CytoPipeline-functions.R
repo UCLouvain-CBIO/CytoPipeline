@@ -1059,11 +1059,23 @@ buildCytoPipelineFromCache <- function(experimentName, path = ".") {
             }
 
             # updating sample files
-            x@sampleFiles <- sort(unique(stats::na.omit(cacheInfo$fcsfile)))
+            # follow pData order if any, otherwise alphabetical order of 
+            # file basenames 
+            sampleFiles <- unique(stats::na.omit(cacheInfo$fcsfile))
+            if (is.null(x@pData)) {
+                x@sampleFiles <- sort(sampleFiles)
+            } else {
+                x@sampleFiles <- sampleFiles[order(match(
+                    sampleFiles, rownames(x@pData)))]
+            }
         } else {
             # no pre-processing step found in cache
             # => no sample file can be updated
             x@sampleFiles <- character()
+        }
+        
+        if (!isTRUE(validObject(x))) {
+            stop("Object built from cache is not valid.")
         }
 
         return(x)
