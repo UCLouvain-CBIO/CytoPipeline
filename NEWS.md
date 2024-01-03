@@ -8,6 +8,7 @@
 consistently running several times for increasing number of samples
 - `sampleFiles<-` and `pData<-`: make sure that order of sample files 
 follow the one of `pData` rownames if `pData` exists.
+- added 'verbose' argument in `estimateScaleTransforms()`
 
 # CytoPipeline 1.1
 

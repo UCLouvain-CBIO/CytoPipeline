@@ -9,7 +9,8 @@ estimateScaleTransforms(
   fluoMethod = c("estimateLogicle", "none"),
   scatterMethod = c("none", "linearQuantile"),
   scatterRefMarker = NULL,
-  specificScatterChannels = NULL
+  specificScatterChannels = NULL,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ estimateScaleTransforms(
 
 \item{specificScatterChannels}{vector of scatter channels for which we
 still want to apply the fluo method (and not the scatter Method)}
+
+\item{verbose}{if TRUE, send messages to the user at each step}
 }
 \value{
 a flowCore::flowFrame with removed low quality events from the input

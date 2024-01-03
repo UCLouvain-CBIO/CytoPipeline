@@ -34,6 +34,7 @@
 #' @param scatterRefMarker the reference channel that is used to align the
 #' @param specificScatterChannels vector of scatter channels for which we 
 #' still want to apply the fluo method (and not the scatter Method)
+#' @param verbose if TRUE, send messages to the user at each step
 #'
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
@@ -58,15 +59,18 @@ estimateScaleTransforms <- function(ff,
                                     scatterMethod = c("none",
                                                       "linearQuantile"),
                                     scatterRefMarker = NULL,
-                                    specificScatterChannels = NULL){
+                                    specificScatterChannels = NULL,
+                                    verbose = FALSE){
     fluoMethod <- match.arg(fluoMethod)
     scatterMethod <- match.arg(scatterMethod)
     
     if (fluoMethod == "estimateLogicle") {
-        message(
-            "estimating logicle transformations ",
-            "for fluorochrome channels..."
-        )
+        if (verbose) {
+            message(
+                "estimating logicle transformations ",
+                "for fluorochrome channels..."
+            ) 
+        }
         fluoCols <- flowCore::colnames(ff)[areFluoCols(ff)]
         transList <- flowCore::estimateLogicle(ff, fluoCols)
     } # else do nothing
@@ -76,18 +80,21 @@ estimateScaleTransforms <- function(ff,
             stop("linear scatter method requires a scatterRefMarker")
         }
         
-        message(
-            "Estimating linear transformation for scatter channels : ",
-            "reference marker = ",
-            scatterRefMarker,
-            "..."
-        )
+        if (verbose) {
+            message(
+                "Estimating linear transformation for scatter channels : ",
+                "reference marker = ",
+                scatterRefMarker,
+                "..."
+            )
+        }
+        
         transList <-
             computeScatterChannelsLinearScale(
                 ff,
                 transList = transList,
                 referenceChannel = scatterRefMarker,
-                silent = FALSE
+                silent = !verbose
             )
     } # else do nothing
     
@@ -98,13 +105,17 @@ estimateScaleTransforms <- function(ff,
             scatterChannels <-
                 flowCore::colnames(ff)[!areFluoCols(ff) & areSignalCols(ff)]
             if (!(ch %in% scatterChannels)) {
-                message("Specific channel [", ch, "] is not a scatter channel",
-                        " => no correction of scale transformation done")
+                if (verbose) {
+                    message("Specific channel [", ch, "] is not a scatter channel",
+                            " => no correction of scale transformation done")
+                }
             } else {
                 transList@transforms[[ch]] <- NULL
                 effectiveScatterChannels <- c(effectiveScatterChannels, ch)
-                message("Specific scatter channel found: [", ch, "] ",
-                        "=> correcting scale transformation to logicle...")
+                if (verbose) {
+                    message("Specific scatter channel found: [", ch, "] ",
+                            "=> correcting scale transformation to logicle...")
+                }
             } 
         }
         
