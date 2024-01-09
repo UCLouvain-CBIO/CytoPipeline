@@ -224,7 +224,11 @@ jobs:
         ##if: github.ref == 'refs/heads/master' && env.run_pkgdown == 'true' && runner.os == 'Linux'
         if: env.run_pkgdown == 'true' && runner.os == 'Linux'
         run: |
-          remotes::install_github("r-lib/pkgdown")
+          withr::with_makevars(
+            c(CFLAGS = "-w",
+              CXXFLAGS = "-w"), 
+            remotes::install_github("r-lib/pkgdown"), 
+            assignment = "+=")
         shell: Rscript {0}
 
       - name: Session info
