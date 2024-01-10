@@ -94,7 +94,8 @@ For the estimateLogicle function, see flowCore documentation.</p>
 <span>  fluoMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"estimateLogicle"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  scatterMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"linearQuantile"</span><span class="op">)</span>,</span>
 <span>  scatterRefMarker <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  specificScatterChannels <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  specificScatterChannels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -120,6 +121,10 @@ For the estimateLogicle function, see flowCore documentation.</p>
 <dd><p>vector of scatter channels for which we
 still want to apply the fluo method (and not the scatter Method)</p></dd>
 
+
+<dt>verbose</dt>
+<dd><p>if TRUE, send messages to the user at each step</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -142,18 +147,6 @@ still want to apply the fluo method (and not the scatter Method)</p></dd>
 <span class="r-in"><span>        fluoMethod <span class="op">=</span> <span class="st">"estimateLogicle"</span>,</span></span>
 <span class="r-in"><span>        scatterMethod <span class="op">=</span> <span class="st">"linear"</span>,</span></span>
 <span class="r-in"><span>        scatterRefMarker <span class="op">=</span> <span class="st">"BV785 - CD3"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> estimating logicle transformations for fluorochrome channels...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating linear transformation for scatter channels : reference marker = BV785 - CD3...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> applying specific linear transformation for FSC-A channel...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> initial quantiles : q5 = 10464.0482 ; q95 = 192509.607</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> target quantiles : q5 = 0.2959 ; q95 = 2.8742</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> a = 1.42e-05 ; b = 1.48e-01</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> applying FSC-A linear transformation for FSC-H channel...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> applying specific linear transformation for SSC-A channel...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> initial quantiles : q5 = 16345.6462 ; q95 = 245485.3555</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> target quantiles : q5 = 0.2959 ; q95 = 2.8742</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> a = 1.13e-05 ; b = 1.12e-01</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> applying SSC-A linear transformation for SSC-H channel...</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
