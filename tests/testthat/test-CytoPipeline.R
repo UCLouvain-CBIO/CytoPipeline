@@ -1090,5 +1090,73 @@ test_that("getCytoPipelineObject works", {
             ),
         NA
     )
+        
+    
 })
 
+test_that("collectNbOfRetainedEvents works", {
+    
+    experimentName <- "OMIP021_PeacoQC"
+    
+    rawDataDir <-
+        system.file("extdata", package = "CytoPipeline")
+    sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
+                                                    pattern = "Donor"
+    ))
+    
+    stepNames <- c("flowframe_read", "remove_margins", "compensate",
+                   "remove_doublets", "remove_debris", "remove_dead_cells",
+                   "perform_QC", "transform")
+    
+    # with missing whichSampleFiles argument
+    nbEventsDF1 <- collectNbOfRetainedEvents(
+        experimentName = experimentName,
+        path = outputDir
+    )
+    
+    expect_equal(unname(colnames(nbEventsDF1)), stepNames)
+    expect_equal(unname(rownames(nbEventsDF1)), basename(sampleFiles))
+    expect_equal(nbEventsDF1[1,1], 5000)
+    expect_equal(nbEventsDF1[1,2], 4494)
+    expect_equal(nbEventsDF1[1,3], 4494)
+    expect_equal(nbEventsDF1[1,4], 3541)
+    expect_equal(nbEventsDF1[1,5], 2983)
+    expect_equal(nbEventsDF1[1,6], 2888)
+    expect_equal(nbEventsDF1[1,7], 2000)
+    expect_equal(nbEventsDF1[1,8], 2000)
+    expect_equal(nbEventsDF1[2,1], 5000)
+    expect_equal(nbEventsDF1[2,2], 4700)
+    expect_equal(nbEventsDF1[2,3], 4700)
+    expect_equal(nbEventsDF1[2,4], 3809)
+    expect_equal(nbEventsDF1[2,5], 3347)
+    expect_equal(nbEventsDF1[2,6], 3306)
+    expect_equal(nbEventsDF1[2,7], 2500)
+    expect_equal(nbEventsDF1[2,8], 2500)
+    
+    # with explicit whichSampleFiles argument
+    nbEventsDF2 <- collectNbOfRetainedEvents(
+        experimentName = experimentName,
+        path = outputDir,
+        whichSampleFiles = sampleFiles[1]
+    )
+    
+    expect_equal(unname(colnames(nbEventsDF2)), stepNames)
+    expect_equal(unname(rownames(nbEventsDF2)), basename(sampleFiles[1]))
+    expect_equal(nbEventsDF2[1,1], 5000)
+    expect_equal(nbEventsDF2[1,2], 4494)
+    expect_equal(nbEventsDF2[1,3], 4494)
+    expect_equal(nbEventsDF2[1,4], 3541)
+    expect_equal(nbEventsDF2[1,5], 2983)
+    expect_equal(nbEventsDF2[1,6], 2888)
+    expect_equal(nbEventsDF2[1,7], 2000)
+    expect_equal(nbEventsDF2[1,8], 2000)
+    
+    # with wrong whichSampleFiles argument
+    expect_error(
+        collectNbOfRetainedEvents(
+            experimentName = experimentName,
+            path = outputDir,
+            whichSampleFiles = 3
+        ), regexp = "sampleFile out of bounds")
+    
+})

@@ -1,7 +1,7 @@
 # CytoPipeline 1.3
 
-## CytoPipeline 1.3.1
-- refactored documentation files
+## CytoPipeline 1.3.3
+- added `collectNbOfRetainedEvents()` function
 
 ## CytoPipeline 1.3.2
 - systematically override `pData` in cache upon execute() to allow running 
@@ -9,6 +9,9 @@ consistently running several times for increasing number of samples
 - `sampleFiles<-` and `pData<-`: make sure that order of sample files 
 follow the one of `pData` rownames if `pData` exists.
 - added 'verbose' argument in `estimateScaleTransforms()`
+
+## CytoPipeline 1.3.1
+- refactored documentation files
 
 # CytoPipeline 1.1
 

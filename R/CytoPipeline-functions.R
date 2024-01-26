@@ -1382,12 +1382,17 @@ export2JSONFile <- function(x, path) {
 #' @description functions to obtain results objects
 #' formats
 #' @param x a CytoPipeline object
+#' @param experimentName the experimentName used to select the file cache on
+#' disk
 #' @param path root path to locate the search for file caches
 #' @param whichQueue which queue to look into
 #' @param sampleFile which sampleFile is looked for:
 #' - if whichQueue == "scale transform", the sampleFile is ignored
 #' - if NULL and whichQueue == "pre-processing", the sampleFile is
 #' defaulted to the first one belonging to the experiment
+#' @param whichSampleFiles indicates for which sample files the number
+#' of retained events are to be collected. 
+#' If missing, all sample files will be used.
 #' @param objectName (character) which object name to look for
 #' @param pattern optional pattern limiting the search for experiment
 #' names
@@ -1474,8 +1479,12 @@ export2JSONFile <- function(x, path) {
 #'                                    objectName = "compensate_obj",
 #'                                    path = outputDir)
 #' class(obj) # flowCore::flowSet 
+#' 
+#' # collect number of retained events at each step
+#' nbEventsDF <- collectNbOfRetainedEvents( 
+#'         experimentName = experimentNames[1],
+#'         path = outputDir) 
 #'
-
 NULL
 
 #' @title Find CytoPipeline experiments stored in a file cache
@@ -1623,7 +1632,7 @@ getCytoPipelineObjectFromCache <-
         return(ret)
     }
 
-#' internal function for the time being
+
 #' @title File cache objects information
 #' @describeIn inspectCytoPipelineObjects 
 #'   Given a CytoPipeline object,     
@@ -1991,3 +2000,89 @@ plotCytoPipelineProcessingQueue <-
             graphics::title(main = theTitle)
         }
     }
+
+#' @title Nb of retained events at each preprocessing step
+#' @describeIn inspectCytoPipelineObjects 
+#'   Given a CytoPipeline object,     
+#'   this function retrieves, for all pre-processing steps,
+#'   given the output is a flowFrame,
+#'   the number of retained event.    
+#' @returns - for `collectNbOfRetainedEvents`:
+#'   a dataframe with the collected number of events
+#'   columns refer to pre-processing steps
+#'   rows refer to samples
+#' @export
+#
+collectNbOfRetainedEvents <- function( 
+        experimentName,
+        path = ".",
+        whichSampleFiles) {
+    
+    pipL <- CytoPipeline::buildCytoPipelineFromCache(
+        experimentName = experimentName,
+        path = path
+    )
+    
+    if (missing(whichSampleFiles)) {
+        whichSampleFiles <- CytoPipeline::sampleFiles(pipL)
+    } else if (is.character(whichSampleFiles)) {
+        whichSampleFiles <- basename(whichSampleFiles)
+    }
+    
+    nEventPerSampleList <- list()
+    allStepNames <- c()
+    for (s in seq_along(whichSampleFiles)) {
+        message("Collecting nb of events for sample file ", 
+                whichSampleFiles[s], 
+                "...")
+        objInfos <- CytoPipeline::getCytoPipelineObjectInfos(
+            pipL,
+            whichQueue = "pre-processing",
+            sampleFile = whichSampleFiles[s],
+            path = path)
+        objInfos <- objInfos[objInfos[,"ObjectClass"] == "flowFrame",]
+        
+        nEventPerSampleList[[s]] <- lapply(
+            objInfos[,"ObjectName"],
+            FUN = function(objName) {
+                message("Reading object ", objName, "...")
+                ff <- CytoPipeline::getCytoPipelineFlowFrame(
+                    pipL,
+                    path = path,
+                    whichQueue = "pre-processing",
+                    sampleFile = whichSampleFiles[s],
+                    objectName = objName)
+                flowCore::nrow(ff)})
+        
+        stepNames <- vapply(objInfos[,"ObjectName"],
+                            FUN = function(str){
+                                gsub(x = str,
+                                     pattern = "_obj",
+                                     replacement = "")
+                            },
+                            FUN.VALUE = character(length = 1))   
+        
+        names(nEventPerSampleList[[s]]) <- stepNames
+        
+        allStepNames <- union(allStepNames, stepNames)
+    }
+    
+    nSampleFiles <- length(whichSampleFiles)
+    nAllSteps <- length(allStepNames)
+    eventNbs <- matrix(rep(NA, nSampleFiles * nAllSteps),
+                       nrow = nSampleFiles)
+    rownames(eventNbs) <- as.character(whichSampleFiles)
+    colnames(eventNbs) <- allStepNames
+    
+    for (s in seq_along(whichSampleFiles)) {
+        stepNames <- names(nEventPerSampleList[[s]])
+        for (st in seq_along(stepNames)) {
+            eventNbs[as.character(whichSampleFiles)[s],
+                     stepNames[st]] <- 
+                nEventPerSampleList[[s]][[st]]
+        }
+    }
+    
+    as.data.frame(eventNbs)
+    
+}

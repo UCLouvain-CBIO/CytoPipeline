@@ -8,6 +8,7 @@
 \alias{getCytoPipelineFlowFrame}
 \alias{getCytoPipelineScaleTransform}
 \alias{plotCytoPipelineProcessingQueue}
+\alias{collectNbOfRetainedEvents}
 \title{inspect CytoPipeline results objects}
 \usage{
 getCytoPipelineExperimentNames(
@@ -64,6 +65,8 @@ plotCytoPipelineProcessingQueue(
   dtext = 0.15,
   ...
 )
+
+collectNbOfRetainedEvents(experimentName, path = ".", whichSampleFiles)
 }
 \arguments{
 \item{path}{root path to locate the search for file caches}
@@ -118,6 +121,13 @@ round, hexa, multi)}
 (one numeric value)}
 
 \item{...}{other arguments passed to diagram::plotmat()}
+
+\item{experimentName}{the experimentName used to select the file cache on
+disk}
+
+\item{whichSampleFiles}{indicates for which sample files the number
+of retained events are to be collected.
+If missing, all sample files will be used.}
 }
 \value{
 \itemize{
@@ -154,12 +164,17 @@ target object is not found, or if the object is no transformList)
 \item for \code{plotCytoPipelineProcessingQueue}:
 nothing
 }
+
+\itemize{
+\item for \code{collectNbOfRetainedEvents}:
+a dataframe with the collected number of events
+columns refer to pre-processing steps
+rows refer to samples
+}
 }
 \description{
 functions to obtain results objects
 formats
-
-internal function for the time being
 }
 \section{Functions}{
 \itemize{
@@ -197,6 +212,11 @@ the corresponding box appears in orange
 \item If at least one step is not consistent with cache, the whole
 set of boxes appears in red
 }
+
+\item \code{collectNbOfRetainedEvents()}: Given a CytoPipeline object,
+this function retrieves, for all pre-processing steps,
+given the output is a flowFrame,
+the number of retained event.
 
 }}
 \examples{
@@ -261,5 +281,10 @@ obj <-
                                    objectName = "compensate_obj",
                                    path = outputDir)
 class(obj) # flowCore::flowSet 
+
+# collect number of retained events at each step
+nbEventsDF <- collectNbOfRetainedEvents( 
+        experimentName = experimentNames[1],
+        path = outputDir) 
 
 }
