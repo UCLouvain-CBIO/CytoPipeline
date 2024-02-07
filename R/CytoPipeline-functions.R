@@ -320,7 +320,7 @@ makeBFCClean <- function(bfc){
     if (nrow(cacheInfo) > 0) {
         toRemoveRids <- cacheInfo[is.na(cacheInfo$type),"rid"]
         if (nrow(toRemoveRids) > 0) {
-            bfc <- BiocFileCache::bfcremove(bfc, toRemoveRids)    
+            bfc <- BiocFileCache::bfcremove(bfc, toRemoveRids$rid)    
         }
     }
     invisible(bfc)
