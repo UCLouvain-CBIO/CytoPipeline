@@ -312,6 +312,20 @@ showProcessingSteps <- function(x,
     }
 }
 
+# internal function to remove ill-defined bfc entries ("type" col is NA)
+# which could have been generated when a previous pipeline run 
+# either crashed or was manually forced to stop in the middle of a step
+makeBFCClean <- function(bfc){
+    cacheInfo <- BiocFileCache::bfcinfo(bfc)
+    if (nrow(cacheInfo) > 0) {
+        toRemoveRids <- cacheInfo[is.na(cacheInfo$type),"rid"]
+        if (nrow(toRemoveRids) > 0) {
+            bfc <- BiocFileCache::bfcremove(bfc, toRemoveRids)    
+        }
+    }
+    invisible(bfc)
+}
+
 
 #' @title executing CytoPipeline object
 #' @description this function triggers the execution of the processing queues of
@@ -619,6 +633,10 @@ execute <- function(x,
             bfc <- BiocFileCache::BiocFileCache(localCacheDir, ask = FALSE)
         }
     }
+    
+    # for robustness-sake, clean bfc from potentially interrupted previous run 
+    # (crash/manually forced interruption)
+    bfc <- makeBFCClean(bfc)
 
     # checking consistency between to-be-run processing steps and cache
     res <- checkCytoPipelineConsistencyWithCache(x, path = path)

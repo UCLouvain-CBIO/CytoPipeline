@@ -1,5 +1,10 @@
 # CytoPipeline 1.3
 
+## CytoPipeline 1.3.4
+- in execute(), when cache does already exist, make it clean before executing 
+the pipeline steps (= preventing inconsistent cache upon crash/forced 
+interruption)
+
 ## CytoPipeline 1.3.3
 - added `collectNbOfRetainedEvents()` function
 
