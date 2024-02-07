@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.4</span>
       </span>
     </div>
 
@@ -63,11 +63,15 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.3" id="cytopipeline-13">CytoPipeline 1.3<a class="anchor" aria-label="anchor" href="#cytopipeline-13"></a></h2>
 <div class="section level3">
-<h3 id="cytopipeline-1-3">CytoPipeline 1.3.3<a class="anchor" aria-label="anchor" href="#cytopipeline-1-3"></a></h3>
+<h3 id="cytopipeline-1-3">CytoPipeline 1.3.4<a class="anchor" aria-label="anchor" href="#cytopipeline-1-3"></a></h3>
+<ul><li>in execute(), when cache does already exist, make it clean before executing the pipeline steps (= preventing inconsistent cache upon crash/forced interruption)</li>
+</ul></div>
+<div class="section level3">
+<h3 id="cytopipeline-1-3-1">CytoPipeline 1.3.3<a class="anchor" aria-label="anchor" href="#cytopipeline-1-3-1"></a></h3>
 <ul><li>added <code><a href="../reference/inspectCytoPipelineObjects.html">collectNbOfRetainedEvents()</a></code> function</li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-1-3-1">CytoPipeline 1.3.2<a class="anchor" aria-label="anchor" href="#cytopipeline-1-3-1"></a></h3>
+<h3 id="cytopipeline-1-3-2">CytoPipeline 1.3.2<a class="anchor" aria-label="anchor" href="#cytopipeline-1-3-2"></a></h3>
 <ul><li>systematically override <code>pData</code> in cache upon execute() to allow running consistently running several times for increasing number of samples</li>
 <li>
 <code>sampleFiles&lt;-</code> and <code>pData&lt;-</code>: make sure that order of sample files follow the one of <code>pData</code> rownames if <code>pData</code> exists.</li>
@@ -75,7 +79,7 @@
 </li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-1-3-2">CytoPipeline 1.3.1<a class="anchor" aria-label="anchor" href="#cytopipeline-1-3-2"></a></h3>
+<h3 id="cytopipeline-1-3-3">CytoPipeline 1.3.1<a class="anchor" aria-label="anchor" href="#cytopipeline-1-3-3"></a></h3>
 <ul><li>refactored documentation files</li>
 </ul></div>
 </div>
