@@ -4,7 +4,7 @@ bibentry(
               suite for building and visualizing automated pre-processing
               pipelines for flow cytometry data",
   author   = "Philippe Hauchamps and Babak Bayat and Simon Delandre and
-              Mehdi Hamrouni and Marie Toussaint and Stéphane Temmerman and
+              Mehdi Hamrouni and Marie Toussaint and Stephane Temmerman and
               Dan Lin and Laurent Gatto",
   journal  = "BMC Bioinformatics",
   year     = 2024,
