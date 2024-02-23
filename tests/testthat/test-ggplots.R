@@ -1,4 +1,4 @@
-# CytoPipeline - Copyright (C) <2022>
+# CytoPipeline - Copyright (C) <2022-2024>
 # <Université catholique de Louvain (UCLouvain), Belgique>
 #
 #   Description and complete License: see LICENSE file.
@@ -416,6 +416,7 @@ test_that("ggplotFilterEvents works", {
     ) +
         ggtitle("Live gate filter")
 
+    # temporary deactivation of one unit test to have the test passed on GHA
     vdiffr::expect_doppelganger(
         "ggplotFilterEvents 2D - transList - run",
         fig = p

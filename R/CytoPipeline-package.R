@@ -1,4 +1,4 @@
-# CytoPipeline - Copyright (C) <2022>
+# CytoPipeline - Copyright (C) <2022-2024>
 # <Université catholique de Louvain (UCLouvain), Belgique>
 #
 #   Description and complete License: see LICENSE file.
@@ -13,10 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (<http://www.gnu.org/licenses/>).
 
-
 #' @title CytoPipeline package
-#' 
-#' @docType package
 #' 
 #' @name CytoPipeline
 #'
@@ -47,4 +44,10 @@
 #' 
 #' For a step by step example using `CytoPipeline`, please have a look 
 #' at the vignette!
+#' 
+#' @keywords internal
+"_PACKAGE"
+
+## usethis namespace: start
+## usethis namespace: end
 NULL

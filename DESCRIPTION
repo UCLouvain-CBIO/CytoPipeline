@@ -32,14 +32,14 @@ Description: This package provides support for automation and visualization of
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 BugReports: https://github.com/UCLouvain-CBIO/CytoPipeline/issues
 URL: https://uclouvain-cbio.github.io/CytoPipeline
 biocViews: FlowCytometry, Preprocessing, QualityControl, WorkflowStep,
  ImmunoOncology, Software, Visualization
 Collate:
     'CytoPipeline-functions.R'
-    'CytoPipeline.R'
+    'CytoPipeline-package.R'
     'CytoPipelineClass.R'
     'CytoProcessingStep.R'
     'CytoProcessingStepImplementations.R'
