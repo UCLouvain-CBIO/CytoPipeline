@@ -1,5 +1,9 @@
 # CytoPipeline 1.3
 
+## CytoPipeline 1.3.6
+- `execute()` now stores the nb of events retained at each pre-processing step,
+to speed-up `collectNbOfRetainedEvents()`
+
 ## CytoPipeline 1.3.5
 - added CITATION file
 

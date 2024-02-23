@@ -513,6 +513,105 @@ obj <- getCytoPipelineObjectFromCache(pipL_PeacoQC,
 show(obj)
 ```
 
+## Getting and plotting the nb of retained events are each step
+
+Getting the number of retained events at each pre-processing step, and tracking 
+these changes throughout the pre-processing steps of a pipeline 
+for different samples is a useful quality control.  
+
+This can be implemented using *CytoPipeline* `collectNbOfRetainedEvents()` 
+function. Examples of using this function in quality control plots are shown 
+in this section.
+
+```{r getNbEvents}
+ret <- CytoPipeline::collectNbOfRetainedEvents(
+    experimentName = "OMIP021_PeacoQC",
+    path = workDir
+)
+ret
+```
+```{r getRetainedProp}
+retainedProp <- 
+    as.data.frame(t(apply(
+        ret,
+        MARGIN = 1,
+        FUN = function(line) {
+            if (length(line) == 0 || is.na(line[1])) {
+                as.numeric(rep(NA, length(line)))
+            } else {
+                round(line/line[1], 3)
+            }
+        }
+    )))
+
+retainedProp <- retainedProp[-1]
+
+retainedProp
+```
+
+```{r getStepRemovedProp}
+stepRemovedProp <- 
+    as.data.frame(t(apply(
+        ret,
+        MARGIN = 1,
+        FUN = function(line) {
+            if (length(line) == 0) {
+                as.numeric(rep(NA, length(line)))
+            } else {
+                round(1-line/dplyr::lag(line), 3)
+            }
+        }
+    )))
+
+stepRemovedProp <- stepRemovedProp[-1]
+
+stepRemovedProp
+```
+
+```{r loadAddPackages}
+library("reshape2")
+library("ggplot2")
+```
+
+
+
+```{r plotRetainedProp}
+
+myGGPlot <- function(DF, title){
+    stepNames = colnames(DF)
+    rowNames = rownames(DF)
+    DFLongFmt <- reshape(DF,
+                         direction = "long",
+                         v.names = "proportion",
+                         varying = stepNames,
+                         timevar = "step",
+                         time = stepNames,
+                         ids = rowNames)
+    
+    DFLongFmt$step <- factor(DFLongFmt$step, levels = stepNames)
+    
+    
+    ggplot(data = DFLongFmt,
+                 mapping = aes(x = step, y = proportion, text = id)) +
+        geom_point(col = "blue") + 
+        ggtitle(title) +
+        theme(axis.text.x = element_text(angle = 90))
+    
+}
+
+p1 <- myGGPlot(DF = retainedProp, 
+               title = "Retained event proportion at each step")
+p1
+```
+
+
+```{r plotStepRemovedProp}
+p2 <- myGGPlot(DF = stepRemovedProp,
+               title = "Event proportion removed by each step")
+p2
+```
+
+
 
 ## Interactive visualization
 

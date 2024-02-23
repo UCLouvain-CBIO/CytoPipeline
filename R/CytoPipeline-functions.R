@@ -825,6 +825,12 @@ execute <- function(x,
                     as.json.CytoProcessingStep(
                         x@flowFramesPreProcessingQueue[[s]]
                     )
+                # specific for pre-processing step generating flow frames:
+                # store nb of events at step
+                nEvents <- 0
+                if (inherits(res, "flowFrame")) {
+                    nEvents <- flowCore::nrow(res)
+                }
                 genericMeta <-
                     data.frame(list(
                         rid = names(cacheResourceFile),
@@ -838,7 +844,8 @@ execute <- function(x,
                 preprocessingMeta <-
                     data.frame(list(
                         rid = names(cacheResourceFile),
-                        fcsfile = basename(file)
+                        fcsfile = basename(file),
+                        nEvents = nEvents
                     ))
                 
                 BiocFileCache::bfcmeta(bfc, name = "generic", append = TRUE) <-
@@ -2043,64 +2050,104 @@ collectNbOfRetainedEvents <- function(
     
     if (missing(whichSampleFiles)) {
         whichSampleFiles <- CytoPipeline::sampleFiles(pipL)
+    } else if (is.numeric(whichSampleFiles)) {
+        sF <- CytoPipeline::sampleFiles(pipL)
+        if (min(whichSampleFiles) < 1 || max(whichSampleFiles) > length(sF)) {
+            stop("whichSampleFiles out of bounds")
+        }
+        whichSampleFiles <- CytoPipeline::sampleFiles(pipL)[whichSampleFiles]
     } else if (is.character(whichSampleFiles)) {
         whichSampleFiles <- basename(whichSampleFiles)
+    } else {
+        stop("whichSampleFiles should be either character or numeric")
     }
     
-    nEventPerSampleList <- list()
-    allStepNames <- c()
-    for (s in seq_along(whichSampleFiles)) {
-        message("Collecting nb of events for sample file ", 
-                whichSampleFiles[s], 
-                "...")
-        objInfos <- CytoPipeline::getCytoPipelineObjectInfos(
-            pipL,
-            whichQueue = "pre-processing",
-            sampleFile = whichSampleFiles[s],
-            path = path)
-        objInfos <- objInfos[objInfos[,"ObjectClass"] == "flowFrame",]
-        
-        nEventPerSampleList[[s]] <- lapply(
-            objInfos[,"ObjectName"],
-            FUN = function(objName) {
-                message("Reading object ", objName, "...")
-                ff <- CytoPipeline::getCytoPipelineFlowFrame(
-                    pipL,
-                    path = path,
-                    whichQueue = "pre-processing",
-                    sampleFile = whichSampleFiles[s],
-                    objectName = objName)
-                flowCore::nrow(ff)})
-        
-        stepNames <- vapply(objInfos[,"ObjectName"],
-                            FUN = function(str){
-                                gsub(x = str,
-                                     pattern = "_obj",
-                                     replacement = "")
-                            },
-                            FUN.VALUE = character(length = 1))   
-        
-        names(nEventPerSampleList[[s]]) <- stepNames
-        
-        allStepNames <- union(allStepNames, stepNames)
-    }
+    cacheDir <- file.path(path,  experimentName, ".cache")
+    bfc <- BiocFileCache::BiocFileCache(cacheDir, ask = FALSE)
     
-    nSampleFiles <- length(whichSampleFiles)
-    nAllSteps <- length(allStepNames)
-    eventNbs <- matrix(rep(NA, nSampleFiles * nAllSteps),
-                       nrow = nSampleFiles)
-    rownames(eventNbs) <- as.character(whichSampleFiles)
-    colnames(eventNbs) <- allStepNames
+    metaPrepDF <- BiocFileCache::bfcmeta(bfc, name = "preprocessing")
     
-    for (s in seq_along(whichSampleFiles)) {
-        stepNames <- names(nEventPerSampleList[[s]])
-        for (st in seq_along(stepNames)) {
-            eventNbs[as.character(whichSampleFiles)[s],
-                     stepNames[st]] <- 
-                nEventPerSampleList[[s]][[st]]
+    if ("nEvents" %in% colnames(metaPrepDF)) {
+        # as of CytoPipeline version 1.3.6,
+        # nb of events are stored for each step
+        cacheInfo <- BiocFileCache::bfcinfo(bfc)
+        metaPrepDF <- metaPrepDF[metaPrepDF$fcsfile %in% whichSampleFiles,]
+        DFM <- merge(x = metaPrepDF, y = cacheInfo, by = "rid")
+        #browser()
+        DFM <- 
+            DFM[order(DFM$fcsfile.x, DFM$stepNb),][
+                ,c("rid","fcsfile.x","stepNb", "stepName", "nEvents.x")]
+        allStepNames <- unique(DFM$stepName)
+        nSampleFiles <- length(whichSampleFiles)
+        nAllSteps <- length(allStepNames)
+        eventNbs <- matrix(rep(NA, nSampleFiles * nAllSteps),
+                           nrow = nSampleFiles)
+        rownames(eventNbs) <- as.character(whichSampleFiles)
+        colnames(eventNbs) <- allStepNames
+        
+        for (i in seq_len(nrow(DFM))) {
+            sampleName <- DFM[i, "fcsfile.x"]
+            stepName <- DFM[i, "stepName"]
+            eventNbs[sampleName, stepName] <- DFM[i, "nEvents.x"]
         }
     }
-    
+    else {
+        # version < 1.3.6 => collect nb of events from reading the flowFrames
+        # from cache
+        
+        nEventPerSampleList <- list()
+        allStepNames <- c()
+        for (s in seq_along(whichSampleFiles)) {
+            message("Collecting nb of events for sample file ", 
+                    whichSampleFiles[s], 
+                    "...")
+            objInfos <- CytoPipeline::getCytoPipelineObjectInfos(
+                pipL,
+                whichQueue = "pre-processing",
+                sampleFile = whichSampleFiles[s],
+                path = path)
+            objInfos <- objInfos[objInfos[,"ObjectClass"] == "flowFrame",]
+            
+            nEventPerSampleList[[s]] <- lapply(
+                objInfos[,"ObjectName"],
+                FUN = function(objName) {
+                    message("Reading object ", objName, "...")
+                    ff <- CytoPipeline::getCytoPipelineFlowFrame(
+                        pipL,
+                        path = path,
+                        whichQueue = "pre-processing",
+                        sampleFile = whichSampleFiles[s],
+                        objectName = objName)
+                    flowCore::nrow(ff)})
+            
+            stepNames <- vapply(objInfos[,"ObjectName"],
+                                FUN = function(str){
+                                    gsub(x = str,
+                                         pattern = "_obj",
+                                         replacement = "")
+                                },
+                                FUN.VALUE = character(length = 1))   
+            
+            names(nEventPerSampleList[[s]]) <- stepNames
+            
+            allStepNames <- union(allStepNames, stepNames)
+        }
+        
+        nSampleFiles <- length(whichSampleFiles)
+        nAllSteps <- length(allStepNames)
+        eventNbs <- matrix(rep(NA, nSampleFiles * nAllSteps),
+                           nrow = nSampleFiles)
+        rownames(eventNbs) <- as.character(whichSampleFiles)
+        colnames(eventNbs) <- allStepNames
+        
+        for (s in seq_along(whichSampleFiles)) {
+            stepNames <- names(nEventPerSampleList[[s]])
+            for (st in seq_along(stepNames)) {
+                eventNbs[as.character(whichSampleFiles)[s],
+                         stepNames[st]] <- 
+                    nEventPerSampleList[[s]][[st]]
+            }
+        }
+    }
     as.data.frame(eventNbs)
-    
 }

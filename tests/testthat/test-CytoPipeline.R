@@ -1157,6 +1157,6 @@ test_that("collectNbOfRetainedEvents works", {
             experimentName = experimentName,
             path = outputDir,
             whichSampleFiles = 3
-        ), regexp = "sampleFile out of bounds")
+        ), regexp = "whichSampleFiles out of bounds")
     
 })
