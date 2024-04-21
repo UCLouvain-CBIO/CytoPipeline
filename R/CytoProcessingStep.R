@@ -144,9 +144,8 @@ setMethod("show", "CytoProcessingStep", function(object) {
     }
 })
 
-#' @param x a `CytoProcessingStep` object.
-#'
-#' @param ... optional additional arguments to be passed along.
+#' @param x                 a `CytoProcessingStep` object.
+#' @param ...               optional additional arguments to be passed along.
 #'
 #' @rdname CytoProcessingStep
 #'
@@ -154,6 +153,7 @@ setMethod("show", "CytoProcessingStep", function(object) {
 #'
 #' @export
 executeProcessingStep <- function(x, ...) {
+    
     if (!methods::is(x, "CytoProcessingStep")) {
         stop("'x' should be a 'CytoProcessingStep' object!")
     }
@@ -175,8 +175,42 @@ executeProcessingStep <- function(x, ...) {
     if (length(msg)) {
         stop(msg)
     }
+    
+    # extract samplePhenoData from ...
+    dot3List <- list(...)
+    samplePhenoData <- dot3List[["samplePhenoData"]]
+    if (!is.null(samplePhenoData)) {
+        if (!inherits(samplePhenoData, "data.frame") || 
+            nrow(samplePhenoData) != 1) {
+            stop("samplePhenoData must be a one row data frame")
+        }
+    }
+    dot3List[["samplePhenoData"]] <- NULL
+    
+    # match specific `$` arguments if pData
+    theArgs <- x@ARGS 
+    
+    theArgs <- lapply(
+        theArgs,
+        FUN = function(arg, samplePhenoData){
+            if(is.character(arg) && length(arg) == 1) {
+                if(substr(arg, 1, 1) == "$") {
+                    if (is.null(samplePhenoData)) {
+                        stop("'$' argument needs not null samplePhenoData")
+                    } else {
+                        phenoDataColName <- substr(arg, 2, nchar(arg))
+                        arg <- samplePhenoData[1, phenoDataColName]
+                    }
+                }
+            }
+            arg
+        },
+        samplePhenoData = samplePhenoData
+    )
+    
     # execute processing step
-    do.call(x@FUN, args = c(list(...), x@ARGS))
+    ret <- do.call(x@FUN, args = c(dot3List, theArgs))
+    ret
 }
 
 #' @param x a `CytoProcessingStep` object.

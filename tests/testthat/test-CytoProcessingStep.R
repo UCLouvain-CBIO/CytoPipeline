@@ -40,6 +40,39 @@ test_that("CytoProcessingStep basics works", {
     expect_equal(res, 55)
 })
 
+test_that("CytoProcessingStep works with samplePhenoData", {
+    sumWithBounds <- function(low, high) {
+        if (low > high) stop("low > high !")
+        sum(seq(from = low, to = high))
+    }
+    ps <- CytoProcessingStep("summing step", 
+                             sumWithBounds, 
+                             ARGS = list(low = 1, high = 10))
+    res <- executeProcessingStep(ps)
+    expect_equal(res, 55)
+    
+    sPD <- data.frame(VAR1 = 5, VAR2 = 8)
+    
+    ps2 <- CytoProcessingStep("summing step", 
+                              sumWithBounds, 
+                              ARGS = list(low = 1,
+                                          high = "$VAR2"))
+    res2 <- executeProcessingStep(ps2,
+                                  samplePhenoData = sPD)
+    expect_equal(res2, 36)
+    
+    ps3 <- CytoProcessingStep("summing step", 
+                             sumWithBounds, 
+                             ARGS = list(low = "$VAR1",
+                                         high = "$VAR2"))
+    
+    res3 <- executeProcessingStep(ps3,
+                                  samplePhenoData = sPD)
+    
+    expect_equal(res3, 26)
+                                 
+})
+
 test_that("CytoProcessingStep wrong function works", {
     ps <- CytoProcessingStep("dummy step", "mistake_fun")
     
@@ -90,3 +123,4 @@ test_that("CytoProcessingStep exports and imports work", {
                  regexp = "does not work")
                                         
 })
+

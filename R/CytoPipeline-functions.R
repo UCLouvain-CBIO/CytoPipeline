@@ -713,6 +713,7 @@ execute <- function(x,
             if (s == 1) {
                 res <- executeProcessingStep(
                     x@scaleTransformProcessingQueue[[s]],
+                    samplePhenoData = NULL,
                     sampleFiles = sampleFiles(x),
                     pData = x@pData)
                 
@@ -720,6 +721,7 @@ execute <- function(x,
                 res <-
                     executeProcessingStep(
                         x@scaleTransformProcessingQueue[[s]],
+                        samplePhenoData = NULL,
                         res
                     )
             }
@@ -768,17 +770,17 @@ execute <- function(x,
         }
     }
     
-    preProcessOneFile <- function(file) {
+    preProcessOneFile <- function(i, files) {
         # browser()
         message("#####################################################")
-        message("### NOW PRE-PROCESSING FILE ", file, "...")
+        message("### NOW PRE-PROCESSING FILE ", files[i], "...")
         message("#####################################################")
         
         for (s in seq_along(x@flowFramesPreProcessingQueue)) {
             stepName <- getCPSName(x@flowFramesPreProcessingQueue[[s]])
             cacheResourceName <- paste0(
                 "preprocessing_",
-                basename(file),
+                basename(files[i]),
                 "_step", s, "_",
                 stepName
             )
@@ -796,11 +798,13 @@ execute <- function(x,
             } else {
                 message(msg, " ...")
                 # browser()
+                samplePhenoData <- if(is.null(x@pData)) NULL else x@pData[i, ]
                 if (s == 1) {
                     res <-
                         executeProcessingStep(
                             x@flowFramesPreProcessingQueue[[s]],
-                            sampleFiles = file,
+                            samplePhenoData = samplePhenoData,
+                            sampleFiles = files[i],
                             transList = currentTransList,
                             pData = x@pData
                         )
@@ -808,6 +812,7 @@ execute <- function(x,
                     res <-
                         executeProcessingStep(
                             x@flowFramesPreProcessingQueue[[s]],
+                            samplePhenoData = samplePhenoData,
                             # ff = res,
                             res,
                             transList = currentTransList
@@ -844,7 +849,7 @@ execute <- function(x,
                 preprocessingMeta <-
                     data.frame(list(
                         rid = names(cacheResourceFile),
-                        fcsfile = basename(file),
+                        fcsfile = basename(files[i]),
                         nEvents = nEvents
                     ))
                 
@@ -879,12 +884,15 @@ execute <- function(x,
     
     if (useBiocParallel) {
         #browser()
-        invisible(BiocParallel::bplapply(sampleFiles(x), 
+        invisible(BiocParallel::bplapply(seq_along(sampleFiles(x)),
+                                         sampleFiles(x),
                                          BPPARAM = BPPARAM,
                                          BPOPTIONS = BPOPTIONS, 
                                          FUN = preProcessOneFile))
     } else {
-        invisible(lapply(sampleFiles(x), FUN = preProcessOneFile))
+        invisible(lapply(seq_along(sampleFiles(x)),
+                         sampleFiles(x), 
+                         FUN = preProcessOneFile))
     }
 }
 
