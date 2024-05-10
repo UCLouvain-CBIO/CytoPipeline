@@ -713,15 +713,19 @@ execute <- function(x,
             if (s == 1) {
                 res <- executeProcessingStep(
                     x@scaleTransformProcessingQueue[[s]],
-                    samplePhenoData = NULL,
-                    sampleFiles = sampleFiles(x),
-                    pData = x@pData)
+                    pData = x@pData,
+                    sampleFiles = sampleFiles(x))
                 
             } else {
+                currentPData <- x@pData
+                if (!is.null(currentPData) && inherits(res, "flowSet")) {
+                    currentPData <- 
+                        currentPData[flowCore::sampleNames(res), , drop=FALSE]
+                }
                 res <-
                     executeProcessingStep(
                         x@scaleTransformProcessingQueue[[s]],
-                        samplePhenoData = NULL,
+                        pData = currentPData,
                         res
                     )
             }
@@ -798,21 +802,21 @@ execute <- function(x,
             } else {
                 message(msg, " ...")
                 # browser()
-                samplePhenoData <- if(is.null(x@pData)) NULL else x@pData[i, ]
+                samplePhenoData <- if(is.null(x@pData)) NULL else 
+                    x@pData[i, , drop = FALSE]
                 if (s == 1) {
                     res <-
                         executeProcessingStep(
                             x@flowFramesPreProcessingQueue[[s]],
-                            samplePhenoData = samplePhenoData,
+                            pData = samplePhenoData,
                             sampleFiles = files[i],
-                            transList = currentTransList,
-                            pData = x@pData
+                            transList = currentTransList
                         )
                 } else {
                     res <-
                         executeProcessingStep(
                             x@flowFramesPreProcessingQueue[[s]],
-                            samplePhenoData = samplePhenoData,
+                            pData = samplePhenoData,
                             # ff = res,
                             res,
                             transList = currentTransList

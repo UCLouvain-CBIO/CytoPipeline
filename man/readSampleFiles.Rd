@@ -9,7 +9,6 @@ readSampleFiles(
   whichSamples = "all",
   nSamples = NULL,
   seed = NULL,
-  pData = NULL,
   channelMarkerFile = NULL,
   ...
 )
@@ -31,10 +30,6 @@ If \code{nSamples} is higher than nb of available samples,
 the output will be all samples}
 
 \item{seed}{an optional seed parameters (provided to ease reproducibility).}
-
-\item{pData}{an optional \code{data.frame} containing
-additional information for each sample file.
-The \code{pData} raw names must correspond to \code{basename(sampleFiles)}.}
 
 \item{channelMarkerFile}{an optional path to a csv file which provides the
 mapping between channels and markers. If provided, this csv file should

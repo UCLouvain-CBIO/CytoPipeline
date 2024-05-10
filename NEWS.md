@@ -1,3 +1,8 @@
+# CytoPipeline 1.5
+
+## CytoPipeline 1.5.1
+- updated processing step argument matching using `phenoData`
+
 # CytoPipeline 1.3
 
 ## CytoPipeline 1.3.6

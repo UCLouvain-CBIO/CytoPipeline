@@ -40,7 +40,7 @@ test_that("CytoProcessingStep basics works", {
     expect_equal(res, 55)
 })
 
-test_that("CytoProcessingStep works with samplePhenoData", {
+test_that("CytoProcessingStep works with pData", {
     sumWithBounds <- function(low, high) {
         if (low > high) stop("low > high !")
         sum(seq(from = low, to = high))
@@ -58,7 +58,7 @@ test_that("CytoProcessingStep works with samplePhenoData", {
                               ARGS = list(low = 1,
                                           high = "$VAR2"))
     res2 <- executeProcessingStep(ps2,
-                                  samplePhenoData = sPD)
+                                  pData = sPD)
     expect_equal(res2, 36)
     
     ps3 <- CytoProcessingStep("summing step", 
@@ -67,7 +67,7 @@ test_that("CytoProcessingStep works with samplePhenoData", {
                                          high = "$VAR2"))
     
     res3 <- executeProcessingStep(ps3,
-                                  samplePhenoData = sPD)
+                                  pData = sPD)
     
     expect_equal(res3, 26)
                                  

@@ -178,34 +178,33 @@ executeProcessingStep <- function(x, ...) {
     
     # extract samplePhenoData from ...
     dot3List <- list(...)
-    samplePhenoData <- dot3List[["samplePhenoData"]]
-    if (!is.null(samplePhenoData)) {
-        if (!inherits(samplePhenoData, "data.frame") || 
-            nrow(samplePhenoData) != 1) {
-            stop("samplePhenoData must be a one row data frame")
+    pData <- dot3List[["pData"]]
+    if (!is.null(pData)) {
+        if (!inherits(pData, "data.frame")) {
+            stop("pData must be a data frame")
         }
     }
-    dot3List[["samplePhenoData"]] <- NULL
+    dot3List[["pData"]] <- NULL
     
     # match specific `$` arguments if pData
     theArgs <- x@ARGS 
     
     theArgs <- lapply(
         theArgs,
-        FUN = function(arg, samplePhenoData){
+        FUN = function(arg, pData){
             if(is.character(arg) && length(arg) == 1) {
                 if(substr(arg, 1, 1) == "$") {
-                    if (is.null(samplePhenoData)) {
-                        stop("'$' argument needs not null samplePhenoData")
+                    if (is.null(pData)) {
+                        stop("'$' argument needs not null pData")
                     } else {
-                        phenoDataColName <- substr(arg, 2, nchar(arg))
-                        arg <- samplePhenoData[1, phenoDataColName]
+                        pDataColName <- substr(arg, 2, nchar(arg))
+                        arg <- pData[, pDataColName, drop = TRUE]
                     }
                 }
             }
             arg
         },
-        samplePhenoData = samplePhenoData
+        pData = pData
     )
     
     # execute processing step
