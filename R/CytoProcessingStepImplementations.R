@@ -244,10 +244,10 @@ readSampleFiles <- function(sampleFiles,
         }
         channelMarkerMapping <- utils::read.csv(channelMarkerFile)
         
-        if (!("Channel" %in% flowCore::colnames(channelMarkerMapping))) {
+        if (!("Channel" %in% colnames(channelMarkerMapping))) {
             stop("channelMarkersMapping should contain [Channel] column!")
         }
-        if (!("Marker" %in% flowCore::colnames(channelMarkerMapping))) {
+        if (!("Marker" %in% colnames(channelMarkerMapping))) {
             stop("channelMarkersMapping should contain [Marker] column!")
         }
         if ("Used" %in% colnames(channelMarkerMapping)) {
