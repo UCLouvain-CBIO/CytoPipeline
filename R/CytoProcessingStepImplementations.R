@@ -244,6 +244,9 @@ readSampleFiles <- function(sampleFiles,
         }
         channelMarkerMapping <- utils::read.csv(channelMarkerFile)
         
+        message("COL NAMES MARKER MAPPING: ", 
+                paste(colnames(channelMarkerMapping), collapse = ", "))
+        
         if (!("Channel" %in% colnames(channelMarkerMapping))) {
             stop("channelMarkersMapping should contain [Channel] column!")
         }
