@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Automation and Visualization of Flow Cytometry Data Analysis Pipelines • CytoPipeline</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CytoPipeline</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
       </span>
     </div>
 
@@ -493,8 +493,6 @@ ignored here.</p>
 <span><span class="co">## margin event in file Donor1.fcs . This should be verified.</span></span></code></pre>
 <pre><code><span><span class="co">## Removing margins from file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
-<pre><code><span><span class="co">## Compensating file : Donor1.fcs</span></span></code></pre>
-<pre><code><span><span class="co">## Compensating file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [flowframe_aggregate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [scale_transform_estimate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
@@ -507,7 +505,6 @@ ignored here.</p>
 <span><span class="co">## channel_specifications = PQCChannelSpecs): More than 10.12 % is considered as a</span></span>
 <span><span class="co">## margin event in file Donor1.fcs . This should be verified.</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
-<pre><code><span><span class="co">## Compensating file : Donor1.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [perform_QC] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Applying PeacoQC method...</span></span></code></pre>
 <pre><code><span><span class="co">## Starting quality control analysis for Donor1.fcs</span></span></code></pre>
@@ -529,7 +526,6 @@ ignored here.</p>
 <pre><code><span><span class="co">## Proceeding with step 2 [remove_margins] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Removing margins from file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
-<pre><code><span><span class="co">## Compensating file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [perform_QC] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Applying PeacoQC method...</span></span></code></pre>
 <pre><code><span><span class="co">## Starting quality control analysis for Donor2.fcs</span></span></code></pre>
@@ -551,7 +547,7 @@ ignored here.</p>
 <p>Note: again this might generate some warnings, due to flowAI.<br>
 These are highly dependent on the shape of the data investigated, and
 can safely be ignored here.</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># execute flowAI pipeline</span></span>
 <span><span class="fu"><a href="../reference/execute.html">execute</a></span><span class="op">(</span><span class="va">pipL_flowAI</span>, path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
@@ -565,8 +561,6 @@ can safely be ignored here.</p>
 <span><span class="co">## margin event in file Donor1.fcs . This should be verified.</span></span></code></pre>
 <pre><code><span><span class="co">## Removing margins from file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
-<pre><code><span><span class="co">## Compensating file : Donor1.fcs</span></span></code></pre>
-<pre><code><span><span class="co">## Compensating file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [flowframe_aggregate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [scale_transform_estimate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
@@ -580,7 +574,6 @@ can safely be ignored here.</p>
 <span><span class="co">## 0% of anomalous cells detected in signal acquisition check. </span></span>
 <span><span class="co">## 0.12% of anomalous cells detected in the dynamic range check.</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
-<pre><code><span><span class="co">## Compensating file : Donor1.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [remove_doublets] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [remove_debris] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 6 [remove_dead_cells] ...</span></span></code></pre>
@@ -595,7 +588,6 @@ can safely be ignored here.</p>
 <span><span class="co">## 0% of anomalous cells detected in signal acquisition check. </span></span>
 <span><span class="co">## 0.1% of anomalous cells detected in the dynamic range check.</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
-<pre><code><span><span class="co">## Compensating file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [remove_doublets] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [remove_debris] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 6 [remove_dead_cells] ...</span></span></code></pre>
@@ -607,7 +599,7 @@ can safely be ignored here.</p>
 <div class="section level3">
 <h3 id="plotting-processing-queues-as-workflow-graphs">Plotting processing queues as workflow graphs<a class="anchor" aria-label="anchor" href="#plotting-processing-queues-as-workflow-graphs"></a>
 </h3>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot work flow graph - PeacoQC - scale transformList</span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_PeacoQC</span>,</span>
@@ -618,7 +610,7 @@ can safely be ignored here.</p>
 PeacoQC pipeline - scale transformList processing queue
 </p>
 </div>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot work flow graph - PeacoQC - pre-processing</span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_PeacoQC</span>,</span>
@@ -630,7 +622,7 @@ PeacoQC pipeline - scale transformList processing queue
 PeacoQC pipeline - file pre-processing queue
 </p>
 </div>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot work flow graph - flowAI - scale transformList</span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_flowAI</span>,</span>
@@ -641,7 +633,7 @@ PeacoQC pipeline - file pre-processing queue
 flowAI pipeline - scale transformList processing queue
 </p>
 </div>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot work flow graph - flowAI - pre-processing</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
@@ -658,7 +650,7 @@ flowAI pipeline - file pre-processing queue
 <div class="section level3">
 <h3 id="obtaining-information-about-pipeline-generated-objects">Obtaining information about pipeline generated objects<a class="anchor" aria-label="anchor" href="#obtaining-information-about-pipeline-generated-objects"></a>
 </h3>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectInfos</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>, </span>
 <span>                           path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                           whichQueue <span class="op">=</span> <span class="st">"scale transform"</span><span class="op">)</span></span></code></pre></div>
@@ -668,7 +660,7 @@ flowAI pipeline - file pre-processing queue
 <span><span class="co">## 3               compensate_obj       flowSet</span></span>
 <span><span class="co">## 4      flowframe_aggregate_obj     flowFrame</span></span>
 <span><span class="co">## 5 scale_transform_estimate_obj transformList</span></span></code></pre>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectInfos</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>, </span>
 <span>                           path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                           whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
@@ -685,7 +677,7 @@ flowAI pipeline - file pre-processing queue
 <div class="section level3">
 <h3 id="retrieving-flow-frames-at-different-steps-and-plotting-them">Retrieving flow frames at different steps and plotting them<a class="anchor" aria-label="anchor" href="#retrieving-flow-frames-at-different-steps-and-plotting-them"></a>
 </h3>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># example of retrieving a flow frame</span></span>
 <span><span class="co"># at a given step</span></span>
 <span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineFlowFrame</a></span><span class="op">(</span></span>
@@ -702,14 +694,14 @@ flowAI pipeline - file pre-processing queue
 <span>  sampleFile <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  objectName <span class="op">=</span> <span class="st">"remove_debris_obj"</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="CytoPipeline_files/figure-html/ggplotEvents1-1.png" alt="1-dimensional distribution plot (forward scatter channel)" width="700"><p class="caption">
 1-dimensional distribution plot (forward scatter channel)
 </p>
 </div>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span>, yChannel <span class="op">=</span> <span class="st">"SSC-A"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="CytoPipeline_files/figure-html/ggplotEvents2-1.png" alt="2-dimensional distribution plot (forward scatter vs. side scatter channels)" width="700"><p class="caption">
@@ -717,7 +709,7 @@ flowAI pipeline - file pre-processing queue
 channels)
 </p>
 </div>
-<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotFilterEvents.html">ggplotFilterEvents</a></span><span class="op">(</span><span class="va">ff</span>, <span class="va">ff2</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span>, yChannel <span class="op">=</span> <span class="st">"SSC-A"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="CytoPipeline_files/figure-html/ggplotEvents3-1.png" alt="2-dimensional difference plot between remove_doublets and remove_debris steps" width="700"><p class="caption">
@@ -735,7 +727,7 @@ cache, that is not specifically a <code><a href="https://rdrr.io/pkg/flowCore/ma
 represents a set of<br><code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-class.html" class="external-link">flowCore::flowFrame</a></code>objects, that was obtained after the
 compensation step of the scale transformation processing queue, prior to
 aggregating the two samples.</p>
-<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectFromCache</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>,</span>
 <span>                                      path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                                      whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
@@ -754,7 +746,7 @@ pipeline for different samples is a useful quality control.</p>
 <p>This can be implemented using <em>CytoPipeline</em>
 <code><a href="../reference/inspectCytoPipelineObjects.html">collectNbOfRetainedEvents()</a></code> function. Examples of using
 this function in quality control plots are shown in this section.</p>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ret</span> <span class="op">&lt;-</span> <span class="fu">CytoPipeline</span><span class="fu">::</span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">collectNbOfRetainedEvents</a></span><span class="op">(</span></span>
 <span>    experimentName <span class="op">=</span> <span class="st">"OMIP021_PeacoQC"</span>,</span>
 <span>    path <span class="op">=</span> <span class="va">workDir</span></span>
@@ -766,7 +758,7 @@ this function in quality control plots are shown in this section.</p>
 <span><span class="co">##            remove_debris remove_dead_cells</span></span>
 <span><span class="co">## Donor1.fcs          1850              1784</span></span>
 <span><span class="co">## Donor2.fcs          3019              2984</span></span></code></pre>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">retainedProp</span> <span class="op">&lt;-</span> </span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span></span>
 <span>        <span class="va">ret</span>,</span>
@@ -789,7 +781,7 @@ this function in quality control plots are shown in this section.</p>
 <span><span class="co">##            remove_dead_cells</span></span>
 <span><span class="co">## Donor1.fcs             0.357</span></span>
 <span><span class="co">## Donor2.fcs             0.597</span></span></code></pre>
-<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stepRemovedProp</span> <span class="op">&lt;-</span> </span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span></span>
 <span>        <span class="va">ret</span>,</span>
@@ -812,10 +804,10 @@ this function in quality control plots are shown in this section.</p>
 <span><span class="co">##            remove_dead_cells</span></span>
 <span><span class="co">## Donor1.fcs             0.036</span></span>
 <span><span class="co">## Donor2.fcs             0.012</span></span></code></pre>
-<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/hadley/reshape" class="external-link">"reshape2"</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myGGPlot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">DF</span>, <span class="va">title</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="va">stepNames</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">DF</span><span class="op">)</span></span>
 <span>    <span class="va">rowNames</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">DF</span><span class="op">)</span></span>
@@ -842,7 +834,7 @@ this function in quality control plots are shown in this section.</p>
 <span>               title <span class="op">=</span> <span class="st">"Retained event proportion at each step"</span><span class="op">)</span></span>
 <span><span class="va">p1</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotRetainedProp-1.png" width="700"></p>
-<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">myGGPlot</span><span class="op">(</span>DF <span class="op">=</span> <span class="va">stepRemovedProp</span>,</span>
 <span>               title <span class="op">=</span> <span class="st">"Event proportion removed by each step"</span><span class="op">)</span></span>
 <span><span class="va">p2</span></span></code></pre></div>
@@ -857,7 +849,7 @@ either in the form of <code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-
 <code><a href="https://rdrr.io/pkg/flowCore/man/transformList-class.html" class="external-link">flowCore::transformList</a></code>. To do this, install the
 <code>CytoPipelineGUI</code> package, and uncomment the following
 code:</p>
-<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#devtools::install_github("https://github.com/UCLouvain-CBIO/CytoPipelineGUI")</span></span>
 <span><span class="co">#CytoPipelineGUI::CytoPipelineCheckApp(dir = workDir)</span></span></code></pre></div>
 </div>
@@ -886,9 +878,9 @@ do it!</p>
 <div class="section level2">
 <h2 class="unnumbered" id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<pre><code><span><span class="co">## R Under development (unstable) (2024-02-19 r85946)</span></span>
+<pre><code><span><span class="co">## R version 4.4.0 (2024-04-24)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">## Running under: Ubuntu 22.04.3 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 22.04.4 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -909,49 +901,49 @@ do it!</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggplot2_3.5.0      reshape2_1.4.4     CytoPipeline_1.3.6 BiocStyle_2.31.0  </span></span>
+<span><span class="co">## [1] ggplot2_3.5.1      reshape2_1.4.4     CytoPipeline_1.5.1 BiocStyle_2.33.0  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] DBI_1.2.2             gridExtra_2.3         rlang_1.1.3          </span></span>
 <span><span class="co">##   [4] magrittr_2.0.3        clue_0.3-65           GetoptLong_1.0.5     </span></span>
-<span><span class="co">##   [7] matrixStats_1.2.0     compiler_4.4.0        RSQLite_2.3.5        </span></span>
-<span><span class="co">##  [10] png_0.1-8             systemfonts_1.0.5     vctrs_0.6.5          </span></span>
+<span><span class="co">##   [7] matrixStats_1.3.0     compiler_4.4.0        RSQLite_2.3.6        </span></span>
+<span><span class="co">##  [10] png_0.1-8             systemfonts_1.0.6     vctrs_0.6.5          </span></span>
 <span><span class="co">##  [13] stringr_1.5.1         pkgconfig_2.0.3       shape_1.4.6.1        </span></span>
-<span><span class="co">##  [16] crayon_1.5.2          fastmap_1.1.1         dbplyr_2.4.0         </span></span>
-<span><span class="co">##  [19] labeling_0.4.3        utf8_1.2.4            ncdfFlow_2.49.0      </span></span>
-<span><span class="co">##  [22] rmarkdown_2.25        graph_1.81.0          ragg_1.2.7           </span></span>
-<span><span class="co">##  [25] purrr_1.0.2           bit_4.0.5             xfun_0.42            </span></span>
-<span><span class="co">##  [28] zlibbioc_1.49.0       cachem_1.0.8          jsonlite_1.8.8       </span></span>
-<span><span class="co">##  [31] flowWorkspace_4.15.4  blob_1.2.4            highr_0.10           </span></span>
+<span><span class="co">##  [16] crayon_1.5.2          fastmap_1.1.1         dbplyr_2.5.0         </span></span>
+<span><span class="co">##  [19] labeling_0.4.3        utf8_1.2.4            ncdfFlow_2.51.0      </span></span>
+<span><span class="co">##  [22] rmarkdown_2.26.2      graph_1.83.0          ragg_1.3.1           </span></span>
+<span><span class="co">##  [25] purrr_1.0.2           bit_4.0.5             xfun_0.43            </span></span>
+<span><span class="co">##  [28] zlibbioc_1.51.0       cachem_1.0.8          jsonlite_1.8.8       </span></span>
+<span><span class="co">##  [31] flowWorkspace_4.17.0  blob_1.2.4            highr_0.10           </span></span>
 <span><span class="co">##  [34] parallel_4.4.0        cluster_2.1.6         R6_2.5.1             </span></span>
-<span><span class="co">##  [37] bslib_0.6.1           stringi_1.8.3         RColorBrewer_1.1-3   </span></span>
-<span><span class="co">##  [40] jquerylib_0.1.4       Rcpp_1.0.12           bookdown_0.37        </span></span>
-<span><span class="co">##  [43] iterators_1.0.14      knitr_1.45            zoo_1.8-12           </span></span>
-<span><span class="co">##  [46] IRanges_2.37.1        flowCore_2.15.2       tidyselect_1.2.0     </span></span>
-<span><span class="co">##  [49] yaml_2.3.8            doParallel_1.0.17     codetools_0.2-19     </span></span>
-<span><span class="co">##  [52] curl_5.2.0            lattice_0.22-5        tibble_3.2.1         </span></span>
-<span><span class="co">##  [55] plyr_1.8.9            Biobase_2.63.0        withr_3.0.0          </span></span>
-<span><span class="co">##  [58] evaluate_0.23         desc_1.4.3            BiocFileCache_2.11.1 </span></span>
-<span><span class="co">##  [61] circlize_0.4.16       pillar_1.9.0          BiocManager_1.30.22  </span></span>
-<span><span class="co">##  [64] filelock_1.0.3        foreach_1.5.2         flowAI_1.33.0        </span></span>
+<span><span class="co">##  [37] bslib_0.7.0           stringi_1.8.4         RColorBrewer_1.1-3   </span></span>
+<span><span class="co">##  [40] jquerylib_0.1.4       Rcpp_1.0.12           bookdown_0.39        </span></span>
+<span><span class="co">##  [43] iterators_1.0.14      knitr_1.46            zoo_1.8-12           </span></span>
+<span><span class="co">##  [46] IRanges_2.39.0        flowCore_2.17.0       tidyselect_1.2.1     </span></span>
+<span><span class="co">##  [49] yaml_2.3.8            doParallel_1.0.17     codetools_0.2-20     </span></span>
+<span><span class="co">##  [52] curl_5.2.1            lattice_0.22-6        tibble_3.2.1         </span></span>
+<span><span class="co">##  [55] plyr_1.8.9            Biobase_2.65.0        withr_3.0.0          </span></span>
+<span><span class="co">##  [58] evaluate_0.23         desc_1.4.3            BiocFileCache_2.13.0 </span></span>
+<span><span class="co">##  [61] circlize_0.4.16       pillar_1.9.0          BiocManager_1.30.23  </span></span>
+<span><span class="co">##  [64] filelock_1.0.3        foreach_1.5.2         flowAI_1.35.0        </span></span>
 <span><span class="co">##  [67] stats4_4.4.0          generics_0.1.3        diagram_1.6.5        </span></span>
-<span><span class="co">##  [70] S4Vectors_0.41.3      munsell_0.5.0         ggcyto_1.31.1        </span></span>
-<span><span class="co">##  [73] scales_1.3.0          PeacoQC_1.13.0        glue_1.7.0           </span></span>
+<span><span class="co">##  [70] S4Vectors_0.43.0      munsell_0.5.1         ggcyto_1.33.0        </span></span>
+<span><span class="co">##  [73] scales_1.3.0          PeacoQC_1.15.0        glue_1.7.0           </span></span>
 <span><span class="co">##  [76] changepoint_2.2.4     tools_4.4.0           hexbin_1.28.3        </span></span>
-<span><span class="co">##  [79] data.table_1.15.0     fs_1.6.3              XML_3.99-0.16.1      </span></span>
-<span><span class="co">##  [82] grid_4.4.0            RProtoBufLib_2.15.0   colorspace_2.1-0     </span></span>
+<span><span class="co">##  [79] data.table_1.15.4     fs_1.6.4              XML_3.99-0.16.1      </span></span>
+<span><span class="co">##  [82] grid_4.4.0            RProtoBufLib_2.17.0   colorspace_2.1-0     </span></span>
 <span><span class="co">##  [85] cli_3.6.2             textshaping_0.3.7     fansi_1.0.6          </span></span>
-<span><span class="co">##  [88] cytolib_2.15.2        ComplexHeatmap_2.19.0 dplyr_1.1.4          </span></span>
-<span><span class="co">##  [91] Rgraphviz_2.47.0      gtable_0.3.4          sass_0.4.8           </span></span>
-<span><span class="co">##  [94] digest_0.6.34         BiocGenerics_0.49.1   farver_2.1.1         </span></span>
-<span><span class="co">##  [97] rjson_0.2.21          memoise_2.0.1         htmltools_0.5.7      </span></span>
-<span><span class="co">## [100] pkgdown_2.0.7.9000    lifecycle_1.0.4       httr_1.4.7           </span></span>
-<span><span class="co">## [103] GlobalOptions_0.1.2   bit64_4.0.5</span></span></code></pre>
+<span><span class="co">##  [88] cytolib_2.17.0        ComplexHeatmap_2.21.0 dplyr_1.1.4          </span></span>
+<span><span class="co">##  [91] Rgraphviz_2.49.0      gtable_0.3.5          sass_0.4.9           </span></span>
+<span><span class="co">##  [94] digest_0.6.35         BiocGenerics_0.51.0   farver_2.1.1         </span></span>
+<span><span class="co">##  [97] rjson_0.2.21          htmlwidgets_1.6.4     memoise_2.0.1        </span></span>
+<span><span class="co">## [100] htmltools_0.5.8.1     pkgdown_2.0.9.9000    lifecycle_1.0.4      </span></span>
+<span><span class="co">## [103] httr_1.4.7            GlobalOptions_0.1.2   bit64_4.0.5</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-flowCore" class="csl-entry">
 Ellis B, Hahne F, Haaland P. 2022. <em><span class="nocase">flowCore</span>: Basic Structures for Flow Cytometry
 Data.</em> <a href="https://bioconductor.org/packages/flowCore/" class="external-link">https://bioconductor.org/packages/flowCore/</a>.
@@ -996,7 +988,7 @@ Discerning Tools for Flow Cytometry Data.”</span>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
 </div>
 
       </footer>
