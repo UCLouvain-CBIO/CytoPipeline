@@ -1,8 +1,8 @@
-pandoc: 3.1.13
+pandoc: '3.2'
 pkgdown: 2.0.9.9000
-pkgdown_sha: c76d8daed6ff2b57361747bd1795e0ea0a03b06b
+pkgdown_sha: be8bb7dcc54262e4d2c7130bafc534b293bafb04
 articles:
   CytoPipeline: CytoPipeline.html
   Demo: Demo.html
-last_built: 2024-05-11T12:06Z
+last_built: 2024-05-24T15:20Z
 
