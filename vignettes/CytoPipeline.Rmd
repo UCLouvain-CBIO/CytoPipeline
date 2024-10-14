@@ -576,7 +576,10 @@ library("ggplot2")
 
 
 ```{r plotRetainedProp}
-
+#| fig.alt: >
+#|   Scatterplot of proportion of retained events as a function of the 
+#|   cumulated preprocessing steps, for the two fcs files.
+#|   As expected, this proportion decreases at each step.
 myGGPlot <- function(DF, title){
     stepNames = colnames(DF)
     rowNames = rownames(DF)
@@ -606,6 +609,10 @@ p1
 
 
 ```{r plotStepRemovedProp}
+#| fig.alt: >
+#|   Scatterplot of number of events removed as a function of the 
+#|   preprocessing step, for the two fcs files.
+#|   The proportion varies between 0.0 and 0.4.
 p2 <- myGGPlot(DF = stepRemovedProp,
                title = "Event proportion removed by each step")
 p2
