@@ -1,5 +1,9 @@
 # CytoPipeline 1.5
 
+## CytoPipeline 1.5.2
+- updated unit test to account for flowAI version change
+- now suggesting `CytoPipelineGUI` package
+
 ## CytoPipeline 1.5.1
 - updated processing step argument matching using `phenoData`
 
