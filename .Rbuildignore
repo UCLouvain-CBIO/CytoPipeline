@@ -5,3 +5,5 @@
 ^data-raw$
 ^doc$
 ^Meta$
+^docs$
+^pkgdown$
