@@ -1,150 +1,52 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/articles/CytoPipeline.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Demo.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/CytoPipeline.html</loc>
-  </url>
-  <url>
-    <loc>/reference/CytoPipelineClass.html</loc>
-  </url>
-  <url>
-    <loc>/reference/CytoProcessingStep.html</loc>
-  </url>
-  <url>
-    <loc>/reference/OMIP021Samples.html</loc>
-  </url>
-  <url>
-    <loc>/reference/aggregateAndSample.html</loc>
-  </url>
-  <url>
-    <loc>/reference/appendCellID.html</loc>
-  </url>
-  <url>
-    <loc>/reference/applyScaleTransforms.html</loc>
-  </url>
-  <url>
-    <loc>/reference/areFluoCols.html</loc>
-  </url>
-  <url>
-    <loc>/reference/areSignalCols.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compensateFromMatrix.html</loc>
-  </url>
-  <url>
-    <loc>/reference/computeScatterChannelsLinearScale.html</loc>
-  </url>
-  <url>
-    <loc>/reference/estimateScaleTransforms.html</loc>
-  </url>
-  <url>
-    <loc>/reference/execute.html</loc>
-  </url>
-  <url>
-    <loc>/reference/exportCytoPipeline.html</loc>
-  </url>
-  <url>
-    <loc>/reference/findTimeChannel.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getAcquiredCompensationMatrix.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getChannelNamesFromMarkers.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getFCSFileName.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getTransfoParams.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ggplotEvents.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ggplotFilterEvents.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ggplotFlowRate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/handlingProcessingSteps.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/inspectCytoPipelineObjects.html</loc>
-  </url>
-  <url>
-    <loc>/reference/interactingWithCytoPipelineCache.html</loc>
-  </url>
-  <url>
-    <loc>/reference/qualityControlFlowAI.html</loc>
-  </url>
-  <url>
-    <loc>/reference/qualityControlPeacoQC.html</loc>
-  </url>
-  <url>
-    <loc>/reference/readRDSObject.html</loc>
-  </url>
-  <url>
-    <loc>/reference/readSampleFiles.html</loc>
-  </url>
-  <url>
-    <loc>/reference/removeChannels.html</loc>
-  </url>
-  <url>
-    <loc>/reference/removeDeadCellsManualGate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/removeDebrisManualGate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/removeDoubletsCytoPipeline.html</loc>
-  </url>
-  <url>
-    <loc>/reference/removeMarginsPeacoQC.html</loc>
-  </url>
-  <url>
-    <loc>/reference/resetCellIDs.html</loc>
-  </url>
-  <url>
-    <loc>/reference/runCompensation.html</loc>
-  </url>
-  <url>
-    <loc>/reference/singletsGate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/subsample.html</loc>
-  </url>
-  <url>
-    <loc>/reference/updateMarkerName.html</loc>
-  </url>
-  <url>
-    <loc>/reference/writeFlowFrame.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/404.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/LICENSE-text.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/articles/CytoPipeline.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/articles/Demo.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/articles/index.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/authors.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/index.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/news/index.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipeline.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoProcessingStep.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/OMIP021Samples.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/aggregateAndSample.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/appendCellID.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/applyScaleTransforms.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/areFluoCols.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/areSignalCols.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/compensateFromMatrix.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/computeScatterChannelsLinearScale.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/estimateScaleTransforms.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/execute.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/exportCytoPipeline.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/findTimeChannel.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/getAcquiredCompensationMatrix.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/getChannelNamesFromMarkers.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/getFCSFileName.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/getTransfoParams.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/ggplotEvents.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/ggplotFilterEvents.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/ggplotFlowRate.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/handlingProcessingSteps.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/index.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/inspectCytoPipelineObjects.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/interactingWithCytoPipelineCache.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/qualityControlFlowAI.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/qualityControlPeacoQC.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/readRDSObject.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/readSampleFiles.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/removeChannels.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/removeDeadCellsManualGate.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/removeDebrisManualGate.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/removeDoubletsCytoPipeline.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/removeMarginsPeacoQC.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/resetCellIDs.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/runCompensation.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/singletsGate.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/subsample.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/updateMarkerName.html</loc></url>
+<url><loc>https://uclouvain-cbio.github.io/CytoPipeline/reference/writeFlowFrame.html</loc></url>
 </urlset>
+
