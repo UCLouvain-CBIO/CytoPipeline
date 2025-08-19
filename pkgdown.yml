@@ -4,7 +4,7 @@ pkgdown_sha: 290661e6bf8dc6bcb4eb738939c5fcc2f52a3247
 articles:
   CytoPipeline: CytoPipeline.html
   Demo: Demo.html
-last_built: 2025-08-19T10:09Z
+last_built: 2025-08-19T10:19Z
 urls:
   reference: https://uclouvain-cbio.github.io/CytoPipeline/reference
   article: https://uclouvain-cbio.github.io/CytoPipeline/articles
