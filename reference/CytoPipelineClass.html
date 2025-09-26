@@ -19,7 +19,7 @@ a list of CytoProcessingStep(s) for the pre-processing of flow frames
 
     <a class="navbar-brand me-2" href="../index.html">CytoPipeline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -168,8 +168,8 @@ all fcs files to be run into the pipeline</p></dd>
 <dt><code>pData</code></dt>
 <dd><p>An optional <code>data.frame</code> containing
 additional information for each sample file.
-The <code>pData</code> raw names must correspond to <code>basename(sampleFiles)</code>
-otherwise validation of the CytoPipeline object will fail!</p></dd>
+The <code>pData</code> raw names should correspond to the sample files
+(using full paths or base paths).</p></dd>
 
 
 </dl></div>
