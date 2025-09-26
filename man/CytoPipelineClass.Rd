@@ -105,8 +105,8 @@ all fcs files to be run into the pipeline}
 
 \item{\code{pData}}{An optional \code{data.frame} containing
 additional information for each sample file.
-The \code{pData} raw names must correspond to \code{basename(sampleFiles)}
-otherwise validation of the CytoPipeline object will fail!}
+The \code{pData} raw names should correspond to the sample files
+(using full paths or base paths).}
 }}
 
 \examples{

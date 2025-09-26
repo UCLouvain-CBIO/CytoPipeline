@@ -105,11 +105,13 @@ test_that("Cytopipeline add/remove/clean processing step works", {
 
     newPhenoData <- data.frame(name = c("Donor1", "Donor2"),
                                donor = c(1,2))
+    rownames(newPhenoData) <- newPhenoData$name
+    
     expect_error(pData(pipL) <- "invalidCharacterType",
                  regexp = "is not TRUE")
 
     expect_error(pData(pipL) <- newPhenoData,
-                 regexp = "should contain all sample file basenames")
+                 regexp = "should correspond to sample file names")
 
 })
 
@@ -209,7 +211,7 @@ test_that("Creation of CytoPipeline with wrong phenoData raises an error", {
             pipL <- CytoPipeline(experimentName = experimentName,
                                  sampleFiles = sampleFiles,
                                  pData = phenoData)
-        }, "Row names of non-null @pData slot should contain all sample file")
+        }, "Row names of non-null @pData slot should correspond")
 })
 
 test_that("Execution of CytoPipeline with correct phenoData raises no error", {
@@ -247,6 +249,19 @@ test_that("Execution of CytoPipeline with correct phenoData raises no error", {
                                       )
                                   )
                 )
+            
+            pipL <- 
+                addProcessingStep(pipL,
+                                  whichQueue = "pre-processing",
+                                  CytoProcessingStep(
+                                    name = "flowFrame_read",
+                                    FUN = "readSampleFiles",
+                                    ARGS = list(
+                                          truncate_max_range = FALSE,
+                                        min.limit = NULL
+                                    )
+                                  )
+                )
 
             suppressWarnings(execute(pipL,
                                      rmCache = TRUE,
@@ -267,6 +282,41 @@ test_that("Execution of CytoPipeline with correct phenoData raises no error", {
 
     newPData <- pData(newPipL)
     expect_true(all.equal(phenoData, newPData))
+    
+    # test whether pheno data row names are set by default
+    phenoData2 <- phenoData
+    rownames(phenoData2) <- NULL
+    pData(newPipL) <- phenoData2
+    
+    newPData2 <- pData(newPipL)
+    expect_true(all.equal(phenoData, newPData2))
+    
+    # test whether updating sample files can work
+    
+    expect_error({
+        sampleFiles(newPipL) <- c("Donor1.fcs", "Donor2.fcs")}, NA)
+    
+    expect_error({
+        sampleFiles(newPipL) <- c("./Donor1.fcs", "./Donor2.fcs")}, NA)
+    
+    expect_error({
+        sampleFiles(newPipL) <- c("Donor2.fcs", "Donor1.fcs")}, NA)
+    
+    expect_error({
+        sampleFiles(newPipL) <- c("Donor1.fcs")}, 
+        "number of rows should be equal to number of samples")
+    
+    expect_error({
+        sampleFiles(newPipL) <- c("Donor1.fcs", "Donor3.fcs")}, 
+        "should correspond to sample file names")
+    
+    expect_error({
+        sampleFiles(newPipL) <- c("Donor1.fcs", "Donor1.fcs")}, 
+        "should correspond to sample file names")
+    
+    # test that order is driven by pData row names
+    sampleFiles(newPipL) <- c("Donor2.fcs", "Donor1.fcs")
+    expect_equal(rownames(pData(newPipL)), c("Donor1.fcs", "Donor2.fcs"))
 })
 
 
@@ -475,16 +525,16 @@ test_that("CytoPipeline with complex flows raises no error", {
 })
 
 test_that("CytoPipeline with json input raises no error", {
+    rawDataDir <-
+        system.file("extdata", package = "CytoPipeline")
+    experimentName <- "OMIP021_PeacoQC"
+    sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
+                                                    pattern = "Donor"))
+    jsonDir <- system.file("extdata", package = "CytoPipeline")
+    jsonPath <- file.path(jsonDir, "pipelineParams.json")
+    
     expect_error(
         {
-            rawDataDir <-
-                system.file("extdata", package = "CytoPipeline")
-            experimentName <- "OMIP021_PeacoQC"
-            sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-                                                            pattern = "Donor"))
-            jsonDir <- system.file("extdata", package = "CytoPipeline")
-            jsonPath <- file.path(jsonDir, "pipelineParams.json")
-
             pipL2 <- CytoPipeline(jsonPath,
                                   experimentName = experimentName,
                                   sampleFiles = sampleFiles)
@@ -495,6 +545,29 @@ test_that("CytoPipeline with json input raises no error", {
         },
         NA
     )
+    # test if pheno data is correctly set with json parameters
+    phenoData <- data.frame(row.names = basename(sampleFiles),
+                            donor = c(1,2),
+                            group = c("G1", "G1"))
+    
+    pipL3 <- CytoPipeline(jsonPath,
+                          experimentName = experimentName,
+                          sampleFiles = sampleFiles,
+                          pData = phenoData)
+    
+    expect_true(all.equal(phenoData, pData(pipL3)))
+    
+    # now without row names
+    phenoData2 <- data.frame(donor = c(1,2),
+                             group = c("G1", "G1"))
+    
+    pipL4 <- CytoPipeline(jsonPath,
+                          experimentName = experimentName,
+                          sampleFiles = sampleFiles,
+                          pData = phenoData2)
+    
+    expect_true(all.equal(phenoData, pData(pipL4)))
+    
 })
 
 test_that("CytoPipeline with Biocparallel::Serial (by default) raises no error",

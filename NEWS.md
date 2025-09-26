@@ -1,5 +1,9 @@
 # CytoPipeline 1.9
 
+## CytoPipeline 1.9.2
+- sample files can now have duplicate base names 
+(provided full paths are different)
+
 ## CytoPipeline 1.9.1
 - upgraded to GHA cache v4
 

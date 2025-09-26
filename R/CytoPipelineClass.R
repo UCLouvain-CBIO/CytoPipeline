@@ -48,8 +48,8 @@ setClassUnion("DataFrameOrNull",
 #'
 #' @slot pData An optional `data.frame` containing
 #' additional information for each sample file. 
-#' The `pData` raw names must correspond to `basename(sampleFiles)`
-#' otherwise validation of the CytoPipeline object will fail!
+#' The `pData` raw names should correspond to the sample files
+#' (using full paths or base paths).
 #'
 #' @exportClass CytoPipeline
 #' 
@@ -256,19 +256,10 @@ setClass("CytoPipeline",
 )
 
 setValidity("CytoPipeline", function(object) {
-    if (!is.null(object@pData)) {
-        #browser()
-        if (!inherits(object@pData, "data.frame")) {
-            return("Non-null @pData slot should be a data.frame")
-        }
-        # if (!isTRUE(all.equal(rownames(object@pData), 
-        #                       basename(object@sampleFiles))))
-        if (!all(basename(object@sampleFiles) %in% rownames(object@pData))) {
-            msg <- paste0("Row names of non-null @pData slot should contain ",
-                          "all sample file basenames")
-            return(msg)
-        }
-    }
+    msg <- .validPData(object)
+    
+    if (length(msg))
+        return(msg)
     
     msg1 <- .validProcessingQueue(
         object@scaleTransformProcessingQueue,
@@ -319,8 +310,9 @@ setMethod(
             cat("No sample file\n")
         }
         if (!is.null(object@pData)) {
-            cat("pheno data:\n")
-            show(object@pData)
+            #browser()
+            cat("pheno data (head):\n")
+            show(head(object@pData))
         } else {
             cat("No pheno data\n")
         }
@@ -346,13 +338,18 @@ setMethod(
              experimentName = "default_experiment",
              sampleFiles = character(),
              pData = NULL) {
-        methods::new("CytoPipeline",
+        x <- methods::new("CytoPipeline",
             experimentName = experimentName,
             scaleTransformProcessingQueue = list(),
             flowFramesPreProcessingQueue = list(),
             sampleFiles = sampleFiles,
-            pData = pData
+            pData = NULL
         )
+        if (!is.null(pData)) {
+            pData(x) <- pData
+        }
+        
+        return(x)
     }
 )
 
@@ -376,10 +373,15 @@ setMethod(
             scaleTransformProcessingQueue = list(),
             flowFramesPreProcessingQueue = list(),
             sampleFiles = sampleFiles,
-            pData = pData
+            pData = NULL # will be created later on
         )
+        #browser()
         x <- .makeSlots(x, object)
         x <- .makeProcessingQueues(x, object)
+        if (!is.null(pData)) {
+            # with validation and possible sample order change
+            pData(x) <- pData
+        }
         return(x)
     }
 )
@@ -399,16 +401,20 @@ setMethod(
              experimentName = "default_experiment",
              sampleFiles = character(),
              pData = NULL) {
-        pipelineParams <- jsonlite::read_json(object,
-            simplifyVector = TRUE,
-            simplifyDataFrame = FALSE
-        )
-        cytoPipeline <- CytoPipeline(pipelineParams,
-                                     experimentName = experimentName,
-                                     sampleFiles = sampleFiles,
-                                     pData = pData)
+        
         #browser()
-        return(cytoPipeline)
+        
+        pipelineParams <- jsonlite::read_json(
+            object,
+            simplifyVector = TRUE,
+            simplifyDataFrame = FALSE)
+        
+        x <- CytoPipeline(pipelineParams,
+                          experimentName = experimentName,
+                          sampleFiles = sampleFiles,
+                          pData = pData)
+        #browser()
+        return(x)
     }
 )
 
@@ -520,18 +526,45 @@ pData <- function(x) {
 ##' @param value the new value to be assigned
 ##' @export
 ##'
-"pData<-" <- function(x, value) {
+`pData<-` <- function(x, value) {
     stopifnot(inherits(x, "CytoPipeline"))
-    x@pData <- value
-    
-    if (length(x@sampleFiles)) {
-        # maintain consistency between order of x@pData and order of x@sampleFile
-        # x@pData is driving
-        x@sampleFiles <- x@sampleFiles[order(match(
-            x@sampleFiles, rownames(x@pData)))]
+    stopifnot(inherits(value, "data.frame")) 
+    #browser()
+    if (length(x@sampleFiles) == 0) {
+        stop(paste0("Cannot assign pData to empty CytoPipeline object ",
+                    "(no sample files)"))
     }
     
-    if (isTRUE(methods::validObject(x))) return(x)
+    if (length(x@sampleFiles) != nrow(value)){
+        stop(paste0("Cannot assign pData to CytoPipeline object: ",
+                    "mismatch between pData number of rows ",
+                    "and number of samples"))
+    }
+    
+    #if(is.null(rownames(value))){
+    if(isTRUE(all.equal(rownames(value), as.character(1:nrow(value))))){
+        # row names cannot be null, when not specified the data frame
+        # contains by default numbers converted in strings
+        
+        # in that case, we automatically assign row names
+        # if basename of sample files are unique => use base sample filename
+        # otherwise, use full name (= full path)
+        if(length(unique(basename(x@sampleFiles))) == length(x@sampleFiles)){
+            rownames(value) <- basename(x@sampleFiles)
+        } else {
+            rownames(value) <- x@sampleFiles
+        }
+    }
+    
+    x@pData <- value
+    
+    retMsg <- methods::validObject((x))
+    
+    if (isTRUE(retMsg)){
+        x <- .alignSampleOrderWithPData(x)
+    } else {
+        stop(retMsg)
+    }
 }
 
 .validProcessingQueue <- function(x, queueName) {
@@ -545,6 +578,54 @@ pData <- function(x) {
         )
     }
     return(msg)
+}
+
+.validPData <- function(x) {
+    msg <- NULL
+    if (!is.null(x@pData)) {
+        #browser()
+        if (!inherits(x@pData, "data.frame")) {
+            return("Non-null @pData slot should be a data.frame")
+        }
+        
+        # check that nrow of @pData correspond to number of samples
+        nSamples <- length(x@sampleFiles)
+        if (nrow(x@pData) != nSamples) {
+            return("@pData number of rows should be equal to number of samples")
+        }
+        
+        # are full names of sample files used as pData row names ? 
+        if (all(x@sampleFiles %in% rownames(x@pData)) && 
+            all(rownames(x@pData) %in% x@sampleFiles)) {
+            return(msg) #NULL
+        }
+        
+        # are base names of sample files used as pData row names ? 
+        if (all(basename(x@sampleFiles) %in% rownames(x@pData)) &&
+            all(rownames(x@pData) %in% basename(x@sampleFiles))) {
+            return(msg) #NULL
+        }
+        
+        msg <- paste0("Row names of non-null @pData slot should correspond ",
+                      "to sample file names (full path or basename)")
+        return(msg)
+    }
+    return(msg)
+}
+
+.alignSampleOrderWithPData <- function(x) {
+    # maintain consistency between order of x@pData and order x@sampleFiles;
+    # x@pData is driving
+    matching <- match(x@sampleFiles, rownames(x@pData))
+    if (sum(is.na(matching)) > 0) {
+        matching <- match(basename(x@sampleFiles), rownames(x@pData))
+    }
+    if (sum(is.na(matching)) > 0) {
+        stop(paste0("mismatch between sample file names ",
+                    "and pData row names (= unexpected inconsistency)"))
+    }
+    x@sampleFiles <- x@sampleFiles[order(matching)]
+    return(x)
 }
 
 .makeSlots <- function(x, params) {

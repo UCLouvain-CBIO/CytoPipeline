@@ -1012,6 +1012,7 @@ buildCytoPipelineFromCache <- function(experimentName, path = ".") {
         )
         return(x)
     } else {
+        phenoData <- NULL
         cacheDir <- file.path(path, x@experimentName, ".cache")
 
         bfc <- BiocFileCache::BiocFileCache(cacheDir, ask = FALSE)
@@ -1033,7 +1034,6 @@ buildCytoPipelineFromCache <- function(experimentName, path = ".") {
                     rnames = cacheResourceName
                 )
             phenoData <- readRDS(file = cacheResourceFile)
-            pData(x) <- phenoData
         }
 
         # now building scale transform processing queue
@@ -1104,7 +1104,11 @@ buildCytoPipelineFromCache <- function(experimentName, path = ".") {
             # => no sample file can be updated
             sampleFiles(x) <- character()
         }
-
+        
+        # finally: set pheno data (can only be done when sample files are known)
+        if (!is.null(phenoData) && length(sampleFiles(x)) > 0) {
+            pData(x) <- phenoData    
+        }
         return(x)
     }
 }
