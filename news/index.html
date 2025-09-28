@@ -42,7 +42,12 @@
 <div class="section level3">
 <h3 id="cytopipeline-1-9">CytoPipeline 1.9.2<a class="anchor" aria-label="anchor" href="#cytopipeline-1-9"></a></h3>
 <ul><li>sample files can now have duplicate base names (provided full paths are different)</li>
-</ul></div>
+<li>
+<code>pData&lt;-</code> is now more liberal.<br></li>
+</ul><ol style="list-style-type: decimal"><li>It can accept new pData containing more rows than existing sample names (the corresponding subset of pData is taken).</li>
+<li>It can accept pData with row names pointing to either sample file full paths or base file names</li>
+<li>It can accept pData with no row names provided the number of rows correspond to the number of sample files. Row names are then set by default to sample file base names (if unique), or sample file full paths.</li>
+</ol></div>
 <div class="section level3">
 <h3 id="cytopipeline-1-9-1">CytoPipeline 1.9.1<a class="anchor" aria-label="anchor" href="#cytopipeline-1-9-1"></a></h3>
 <ul><li>upgraded to GHA cache v4</li>

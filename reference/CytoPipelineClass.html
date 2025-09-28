@@ -131,7 +131,16 @@ transformations per channel</p></li>
 
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
-<dd><p>the new value to be assigned</p></dd>
+<dd><p>the new value to be assigned.
+the <code>pData&lt;-</code> setter is a bit more liberal than it used to be:</p><ol><li><p>It can accept new pData containing more rows than existing sample names
+(the corresponding subset of pData is taken).</p></li>
+<li><p>It can accept pData with row names pointing to either
+sample file full paths or base file names</p></li>
+<li><p>It can accept pData with no row names
+provided the number of rows correspond to the number of sample files.
+Row names are then set by default to sample file base names (if unique),
+or sample file full paths.</p></li>
+</ol></dd>
 
 </dl></div>
     <div class="section level2">
