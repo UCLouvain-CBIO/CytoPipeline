@@ -286,10 +286,26 @@ test_that("Execution of CytoPipeline with correct phenoData raises no error", {
     # test whether pheno data row names are set by default
     phenoData2 <- phenoData
     rownames(phenoData2) <- NULL
-    pData(newPipL) <- phenoData2
+    
+    expect_message(
+        pData(newPipL) <- phenoData2,
+        "pData row names has been set by default")
     
     newPData2 <- pData(newPipL)
     expect_true(all.equal(phenoData, newPData2))
+    
+    # test whether pheno data subset can be taken
+    phenoData3 <- data.frame(
+        row.names = c("Donor0.fcs", "Donor1.fcs", "Donor2.fcs", "Donor3.fcs"),
+                      donor = c(0,1,2,3),
+                      group = c("G0", "G1", "G1", "G2"))
+    
+    expect_message(
+        pData(newPipL) <- phenoData3,
+        "pData row subset corresponding to existing sample names")           
+    newPData3 <- pData(newPipL)
+    expect_true(all.equal(phenoData, newPData3))
+    
     
     # test whether updating sample files can work
     

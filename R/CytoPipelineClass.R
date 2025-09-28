@@ -523,7 +523,16 @@ pData <- function(x) {
 
 ##' @rdname CytoPipelineClass
 ##' @param x a `CytoPipeline` object
-##' @param value the new value to be assigned
+##' @param value the new value to be assigned. 
+##' the `pData<-` setter is a bit more liberal than it used to be:
+##' 1. It can accept new pData containing more rows than existing sample names 
+##' (the corresponding subset of pData is taken).
+##' 2. It can accept pData with row names pointing to either 
+##' sample file full paths or base file names
+##' 3. It can accept pData with no row names 
+##' provided the number of rows correspond to the number of sample files. 
+##' Row names are then set by default to sample file base names (if unique), 
+##' or sample file full paths.
 ##' @export
 ##'
 `pData<-` <- function(x, value) {
@@ -536,9 +545,22 @@ pData <- function(x) {
     }
     
     if (length(x@sampleFiles) != nrow(value)){
-        stop(paste0("Cannot assign pData to CytoPipeline object: ",
-                    "mismatch between pData number of rows ",
-                    "and number of samples"))
+        # are full names of sample files used as pData row names ? 
+        # (or) are base names of sample files used as pData row names ? 
+        # if so, take the subset of pData that correspond to sample names
+        if (all(x@sampleFiles %in% rownames(value))) {
+            subset <- which(rownames(value) %in% x@sampleFiles)
+        } else if (all(basename(x@sampleFiles) %in% rownames(value))){
+            subset <- which(rownames(value) %in% basename(x@sampleFiles))
+        } else {
+            stop(paste0("Cannot assign pData to CytoPipeline object: ",
+                        "mismatch between pData number of rows ",
+                        "and number of samples, AND ",
+                        "could not find all sample names in pData row names"))
+        }
+        message(paste0("pData row subset corresponding ",
+                       "to existing sample names has been applied."))
+        value <- value[subset,]
     }
     
     #if(is.null(rownames(value))){
@@ -554,6 +576,8 @@ pData <- function(x) {
         } else {
             rownames(value) <- x@sampleFiles
         }
+        message(paste0("pData row names has been set by default ",
+                       "to sample names."))
     }
     
     x@pData <- value

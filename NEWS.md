@@ -3,6 +3,14 @@
 ## CytoPipeline 1.9.2
 - sample files can now have duplicate base names 
 (provided full paths are different)
+- `pData<-` is now more liberal.   
+1. It can accept new pData containing more rows than existing sample names 
+(the corresponding subset of pData is taken).
+2. It can accept pData with row names pointing to either sample file full paths 
+or base file names
+3. It can accept pData with no row names provided the number of rows correspond 
+to the number of sample files. Row names are then set by default to sample 
+file base names (if unique), or sample file full paths.
 
 ## CytoPipeline 1.9.1
 - upgraded to GHA cache v4

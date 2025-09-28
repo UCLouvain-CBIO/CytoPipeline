@@ -68,7 +68,18 @@ pData(x) <- value
 
 \item{...}{additional arguments (not used here)}
 
-\item{value}{the new value to be assigned}
+\item{value}{the new value to be assigned.
+the \verb{pData<-} setter is a bit more liberal than it used to be:
+\enumerate{
+\item It can accept new pData containing more rows than existing sample names
+(the corresponding subset of pData is taken).
+\item It can accept pData with row names pointing to either
+sample file full paths or base file names
+\item It can accept pData with no row names
+provided the number of rows correspond to the number of sample files.
+Row names are then set by default to sample file base names (if unique),
+or sample file full paths.
+}}
 }
 \value{
 nothing
