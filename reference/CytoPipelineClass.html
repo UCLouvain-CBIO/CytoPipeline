@@ -19,7 +19,7 @@ a list of CytoProcessingStep(s) for the pre-processing of flow frames
 
     <a class="navbar-brand me-2" href="../index.html">CytoPipeline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +99,11 @@ transformations per channel</p></li>
 <span></span>
 <span><span class="fu">pData</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">pData</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span></code></pre></div>
+<span><span class="fu">pData</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
+<span></span>
+<span><span class="fu">sampleDisplayNames</span><span class="op">(</span><span class="va">x</span>, sampleFiles <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sampleNameFromDisplayName</span><span class="op">(</span><span class="va">x</span>, <span class="va">displayName</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -115,7 +119,8 @@ transformations per channel</p></li>
 
 
 <dt id="arg-samplefiles">sampleFiles<a class="anchor" aria-label="anchor" href="#arg-samplefiles"></a></dt>
-<dd><p>the sample files</p></dd>
+<dd><p>a character (e.g. sampleFileNames) or a numeric vector
+(e.g. indices of sample files). If NULL, all samples will be displayed.</p></dd>
 
 
 <dt id="arg-pdata">pData<a class="anchor" aria-label="anchor" href="#arg-pdata"></a></dt>
@@ -142,11 +147,20 @@ Row names are then set by default to sample file base names (if unique),
 or sample file full paths.</p></li>
 </ol></dd>
 
+
+<dt id="arg-displayname">displayName<a class="anchor" aria-label="anchor" href="#arg-displayname"></a></dt>
+<dd><p>a character</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>nothing</p>
 <ul><li><p>for <code>as.list.CytoPipeline</code>: the obtained list</p></li>
+</ul><ul><li><p>for <code>sampleDisplayNames</code>: a character vector
+of sample display names</p></li>
+</ul><ul><li><p>for <code>sampleNameFromDisplayName</code>: the sample name corresponding
+to the specified display name.
+of sample display names</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="slots">Slots<a class="anchor" aria-label="anchor" href="#slots"></a></h2>
@@ -178,7 +192,11 @@ all fcs files to be run into the pipeline</p></dd>
 <dd><p>An optional <code>data.frame</code> containing
 additional information for each sample file.
 The <code>pData</code> raw names should correspond to the sample files
-(using full paths or base paths).</p></dd>
+(using full paths or base paths).
+If the <code>pData</code> contains a columns with name 'displayName', this will have
+an impact in the <code>sampleDisplayNames()</code> function, i.e. sample display
+names will be the one mentioned in <code>pData</code>, instead of typically
+base file names (or larger paths if base file names are not unique)</p></dd>
 
 
 </dl></div>
