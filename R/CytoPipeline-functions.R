@@ -2063,17 +2063,13 @@ plotCytoPipelineProcessingQueue <-
                 "Experiment: ", x@experimentName,
                 "\nProcessing queue: ", whichQueue
             )
-            fileName <- sampleFiles(x)[sampleFileIndex]
-            if (length(unique(basename(sampleFiles(x)))) 
-                == length(basename(sampleFiles(x))))
-            {
-                fileName <- basename(fileName)
-            }
+            
             if (sampleFileIndex != 0) {
+                displayFileName <- sampleDisplayNames(x)[sampleFileIndex]
                 theTitle <- paste0(
                     theTitle,
                     "\nSample:",
-                    fileName)
+                    displayFileName)
             }
             graphics::title(main = theTitle)
         }

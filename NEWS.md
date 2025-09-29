@@ -1,5 +1,8 @@
 # CytoPipeline 1.9
 
+## CytoPipeline 1.9.3
+- added sampleDisplayNames()
+
 ## CytoPipeline 1.9.2
 - sample files can now have duplicate base names 
 (provided full paths are different)

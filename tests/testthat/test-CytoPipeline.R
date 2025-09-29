@@ -1247,3 +1247,133 @@ test_that("collectNbOfRetainedEvents works", {
         ), regexp = "whichSampleFiles out of bounds")
 
 })
+
+test_that("getMinimumUniqueFileNames works", {
+    expect_error(.getMinimumUniqueFileNames(1),
+                 "is not TRUE")
+    
+    fileNames <- "C:Users/folder1/file1.csv"
+    ret <- .getMinimumUniqueFileNames(fileNames)
+    expect_equal(ret, basename(fileNames))
+    
+    fileNames <- c(
+        "C:Users/folder1/file1.csv",
+        "C:Users/folder1/file2.csv")
+    
+    ret <- .getMinimumUniqueFileNames(fileNames)
+    expect_equal(ret, basename(fileNames))
+    
+    fileNames <- c(
+        "../../folder1/subfolder1/file1.csv",
+        "../../folder1/subfolder2/file1.csv",
+        "../../folder1/subfolder2/file2.csv")
+    
+    expected_ret <- c(
+        "subfolder1/file1.csv",
+        "subfolder2/file1.csv",
+        "subfolder2/file2.csv")
+    
+    ret <- .getMinimumUniqueFileNames(fileNames)
+    expect_equal(ret, expected_ret)    
+    
+    fileNames <- c(
+        "../../folder1/subfolder1/file1.csv",
+        "../../folder1/file1.csv",
+        "../../folder1/subfolder2/file2.csv")
+    
+    expected_ret <- c(
+        "subfolder1/file1.csv",
+        "folder1/file1.csv",
+        "subfolder2/file2.csv")
+    
+    ret <- .getMinimumUniqueFileNames(fileNames)
+    expect_equal(ret, expected_ret)    
+
+    fileNames <- c(
+        "/folder1/subfolder1/file1.csv",
+        "/folder2/subfolder1/file1.csv")    
+    
+    expected_ret <- c(
+        "folder1/subfolder1/file1.csv",
+        "folder2/subfolder1/file1.csv")
+    
+    ret <- .getMinimumUniqueFileNames(fileNames)
+    expect_equal(ret, expected_ret)   
+    
+    fileNames <- c(
+        "/file1.csv",
+        "/folder1/subfolder1/file1.csv")    
+    
+    expected_ret <- c(
+        "/file1.csv",
+        "subfolder1/file1.csv")
+    
+    ret <- .getMinimumUniqueFileNames(fileNames)
+    expect_equal(ret, expected_ret)   
+
+    fileNames <- c("/folder1/file1.csv",
+                   "/folder1/file1.csv")    
+    
+    expect_error(.getMinimumUniqueFileNames(fileNames),
+                 "provided file names are not unique")
+    
+})
+
+
+test_that("display names do work", {
+
+    rawDataDir <-
+        system.file("extdata", package = "CytoPipeline")
+    experimentName <- "OMIP021_PeacoQC"
+    sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
+                                                    pattern = "Donor"
+    ))
+    
+    phenoData <- data.frame(donor = c(1,2),
+                            group = c("G1", "G1"))
+    
+    # main parameters : sample files and output files
+    pipelineParams <- list()
+    pipelineParams$experimentName <- experimentName
+    pipelineParams$sampleFiles <- sampleFiles
+    pipelineParams$pData <- phenoData
+    
+    pipL <- CytoPipeline(pipelineParams)
+    
+    ret <- sampleDisplayNames(pipL)
+    
+    expected_ret <- c("Donor1.fcs", "Donor2.fcs")
+    
+    expect_equal(ret, expected_ret)
+    
+    ret <- sampleDisplayNames(pipL, c(1,2))
+    
+    expect_equal(ret, expected_ret)
+    
+    ret <- sampleDisplayNames(pipL, 2)
+    
+    expect_equal(ret, expected_ret[2])
+    
+    ret <- sampleDisplayNames(pipL, sampleFiles(pipL)[1])
+    
+    expect_equal(ret, expected_ret[1])
+    
+    phenoData <- data.frame(displayName = c("S1", "S2"),
+                            donor = c(1,2),
+                            group = c("G1", "G1"))
+    
+    pData(pipL) <- phenoData
+    
+    ret <- sampleDisplayNames(pipL)
+    
+    expected_ret <- c("S1", "S2")
+    
+    expect_equal(ret, expected_ret)
+    
+    ret <- sampleNameFromDisplayName(pipL, "S2")
+    
+    expect_equal(ret, sampleFiles(pipL)[2])
+    
+})
+                   
+    

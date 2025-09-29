@@ -16,6 +16,8 @@
 \alias{sampleFiles<-}
 \alias{pData}
 \alias{pData<-}
+\alias{sampleDisplayNames}
+\alias{sampleNameFromDisplayName}
 \title{CytoPipeline class}
 \usage{
 \S4method{show}{CytoPipeline}(object)
@@ -54,13 +56,18 @@ sampleFiles(x) <- value
 pData(x)
 
 pData(x) <- value
+
+sampleDisplayNames(x, sampleFiles = NULL)
+
+sampleNameFromDisplayName(x, displayName)
 }
 \arguments{
 \item{object}{a \code{character()} containing a JSON input}
 
 \item{experimentName}{the experiment name}
 
-\item{sampleFiles}{the sample files}
+\item{sampleFiles}{a character (e.g. sampleFileNames) or a numeric vector
+(e.g. indices of sample files). If NULL, all samples will be displayed.}
 
 \item{pData}{the pheno Data (data.frame or NULL)}
 
@@ -80,12 +87,25 @@ provided the number of rows correspond to the number of sample files.
 Row names are then set by default to sample file base names (if unique),
 or sample file full paths.
 }}
+
+\item{displayName}{a character}
 }
 \value{
 nothing
 
 \itemize{
 \item for \code{as.list.CytoPipeline}: the obtained list
+}
+
+\itemize{
+\item for \code{sampleDisplayNames}: a character vector
+of sample display names
+}
+
+\itemize{
+\item for \code{sampleNameFromDisplayName}: the sample name corresponding
+to the specified display name.
+of sample display names
 }
 }
 \description{
@@ -117,7 +137,11 @@ all fcs files to be run into the pipeline}
 \item{\code{pData}}{An optional \code{data.frame} containing
 additional information for each sample file.
 The \code{pData} raw names should correspond to the sample files
-(using full paths or base paths).}
+(using full paths or base paths).
+If the \code{pData} contains a columns with name 'displayName', this will have
+an impact in the \code{sampleDisplayNames()} function, i.e. sample display
+names will be the one mentioned in \code{pData}, instead of typically
+base file names (or larger paths if base file names are not unique)}
 }}
 
 \examples{

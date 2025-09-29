@@ -49,7 +49,11 @@ setClassUnion("DataFrameOrNull",
 #' @slot pData An optional `data.frame` containing
 #' additional information for each sample file. 
 #' The `pData` raw names should correspond to the sample files
-#' (using full paths or base paths).
+#' (using full paths or base paths).  
+#' If the `pData` contains a columns with name 'displayName', this will have
+#' an impact in the `sampleDisplayNames()` function, i.e. sample display
+#' names will be the one mentioned in `pData`, instead of typically 
+#' base file names (or larger paths if base file names are not unique)
 #'
 #' @exportClass CytoPipeline
 #' 
@@ -303,11 +307,17 @@ setMethod(
             "Pipeline object for flow cytometry experiment:",
             object@experimentName, "\n"
         )
-        if (length(object@sampleFiles)) {
+        if (length(object@sampleFiles) > 0) {
             cat(
                 "Sample files:", length(object@sampleFiles),
                 "sample file(s)\n"
             )
+            sampleInfo <- data.frame(
+                displayName = sampleDisplayNames(object),
+                sampleFile = sampleFiles(object))
+            cat("head(samples):\n")
+            show(head(sampleInfo))
+            
         } else {
             cat("No sample file\n")
         }
@@ -600,6 +610,73 @@ pData <- function(x) {
     }
 }
 
+##' @rdname CytoPipelineClass
+##' @param x a `CytoPipeline` object
+##' @param sampleFiles a character (e.g. sampleFileNames) or a numeric vector
+##' (e.g. indices of sample files). If NULL, all samples will be displayed.
+##' @return - for `sampleDisplayNames`: a character vector
+##' of sample display names
+##' @export
+##'
+sampleDisplayNames <- function(x, sampleFiles = NULL) {
+    stopifnot(inherits(x, "CytoPipeline"))
+    if (length(x@sampleFiles) == 0)
+        return(NULL)
+    
+    sampleFileIndices <- NULL
+    if (is.null(sampleFiles)) {
+        sampleFileIndices <- seq_along(sampleFiles(x))
+    } else if (is.numeric(sampleFiles)) {
+        if (all(sampleFiles > 0) && 
+            length(sampleFiles) <= length(sampleFiles(x))) {
+            sampleFileIndices <- sampleFiles
+        } else {
+            stop("sampleFiles out of bounds")
+        }
+    } else {
+        sampleFileIndices <-
+            which(sampleFiles(x) %in% sampleFiles)
+        if (length(sampleFileIndices) < length(sampleFiles)) {
+            stop("could not find all sampleFiles in CytoPipeline")
+        } 
+    }
+    
+    if (!is.null(x@pData)) {
+        if("displayname" %in% tolower(gsub("[[:punct:]]", 
+                                           "",
+                                           colnames(x@pData)))) {
+            colIndex <- which(
+                tolower(gsub("[[:punct:]]", 
+                             "",
+                             colnames(x@pData))) == "displayname")
+            
+            return(x@pData[sampleFileIndices, colIndex, drop = TRUE])
+        } 
+    }
+    
+    # display names not found in pData => build them based on sampleFiles
+    .getMinimumUniqueFileNames(
+        sampleFiles(x))[sampleFileIndices, drop = TRUE]
+}
+
+##' @rdname CytoPipelineClass
+##' @param x a `CytoPipeline` object
+##' @param displayName a character
+##' @return - for `sampleNameFromDisplayName`: the sample name corresponding 
+##' to the specified display name.
+##' of sample display names
+##' @export
+##'
+sampleNameFromDisplayName <- function(x, displayName) {
+    stopifnot(inherits(x, "CytoPipeline"))
+    displayNames <- sampleDisplayNames(x)
+    index <- which(displayNames == displayName)
+    if (length(index) == 0) {
+        stop("could not find sample display name in CytoPipeline")
+    }
+    sampleFiles(x)[index]
+}
+
 .validProcessingQueue <- function(x, queueName) {
     msg <- NULL
     if (length(x) && !all(vapply(
@@ -763,4 +840,50 @@ pData <- function(x) {
         }
     }
     return(x)
+}
+
+# find minimum extension of file basename which keeps the vector
+# of file names with unique values
+.getMinimumUniqueFileNames <- function(fileNames){
+    stopifnot(is.character(fileNames))
+    
+    foundUnique <- FALSE
+    trialNames <- basename(fileNames)
+    stopCriterium <- FALSE
+    while (!foundUnique && !stopCriterium){
+        if (length(unique(trialNames)) == length(trialNames)){
+            foundUnique <- TRUE
+        } else {
+            prefixes <- mapply(
+                FUN = function(x, y){gsub(x, "", y)}, 
+                trialNames, 
+                fileNames, 
+                SIMPLIFY = TRUE, 
+                USE.NAMES = FALSE)
+            candidateTrialNames <- mapply(
+                FUN = function(x, y){
+                    if(x != ""){
+                        file.path(basename(x), y)
+                    } else {
+                        y
+                    }
+                },
+                prefixes,
+                trialNames,
+                SIMPLIFY = TRUE,
+                USE.NAMES = FALSE)
+            
+            if(all(candidateTrialNames == trialNames))
+            {
+                # not possible to go further in extending name
+                stopCriterium <- TRUE
+            }
+            
+            trialNames <- candidateTrialNames
+        }
+    }
+    if (!foundUnique){
+        stop("it seems provided file names are not unique.")
+    }
+    return(trialNames)
 }
