@@ -328,7 +328,11 @@ test_that("Execution of CytoPipeline with correct phenoData raises no error", {
     
     expect_error({
         sampleFiles(newPipL) <- c("Donor1.fcs", "Donor1.fcs")}, 
-        "should correspond to sample file names")
+        "does not contain unique values")
+    
+    expect_error({
+        sampleFiles(newPipL) <- c(1,2)},
+        "not a character vector")
     
     # test that order is driven by pData row names
     sampleFiles(newPipL) <- c("Donor2.fcs", "Donor1.fcs")
@@ -1082,12 +1086,6 @@ test_that("getCytoPipelineObject works", {
         {
             experimentName <- "OMIP021_PeacoQC"
 
-            rawDataDir <-
-                system.file("extdata", package = "CytoPipeline")
-            sampleFiles <- file.path(rawDataDir, list.files(rawDataDir,
-                pattern = "Donor"
-            ))
-
             pipL7 <- buildCytoPipelineFromCache(
                 experimentName = experimentName,
                 path = outputDir
@@ -1101,7 +1099,7 @@ test_that("getCytoPipelineObject works", {
 
             getCytoPipelineObjectInfos(pipL7,
                 whichQueue = "pre-processing",
-                sampleFile = sampleFiles[1],
+                sampleFile = sampleFiles(pipL7)[1],
                 path = outputDir
             )
             getCytoPipelineObjectInfos(pipL7,
@@ -1111,20 +1109,20 @@ test_that("getCytoPipelineObject works", {
             )
             getCytoPipelineObjectInfos(pipL7,
                 whichQueue = "scale transform",
-                sampleFile = sampleFiles[1],
+                sampleFile = sampleFiles(pipL7)[1],
                 path = outputDir
             )
 
             ffFrom <- getCytoPipelineFlowFrame(pipL7,
                 whichQueue = "pre-processing",
-                sampleFile = sampleFiles[1],
+                sampleFile = sampleFiles(pipL7)[1],
                 objectName = "compensate_obj",
                 path = outputDir
             )
 
             ffTo <- getCytoPipelineFlowFrame(pipL7,
                 whichQueue = "pre-processing",
-                sampleFile = sampleFiles[1],
+                sampleFile = sampleFiles(pipL7)[1],
                 objectName = "remove_doublets_obj",
                 path = outputDir
             )
@@ -1226,7 +1224,7 @@ test_that("collectNbOfRetainedEvents works", {
     nbEventsDF2 <- collectNbOfRetainedEvents(
         experimentName = experimentName,
         path = outputDir,
-        whichSampleFiles = sampleFiles[1]
+        whichSampleFiles = basename(sampleFiles[1])
     )
 
     expect_equal(unname(colnames(nbEventsDF2)), stepNames)

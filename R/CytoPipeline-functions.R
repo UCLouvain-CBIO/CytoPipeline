@@ -780,11 +780,17 @@ execute <- function(x,
         message("### NOW PRE-PROCESSING FILE ", files[i], "...")
         message("#####################################################")
         
+        file_basenames <- basename(files)
+        file_name_in_cache <- file_basenames[i]
+        if (length(unique(file_basenames)) < length(file_basenames)){
+            file_name_in_cache <- files[i]
+        }
+        
         for (s in seq_along(x@flowFramesPreProcessingQueue)) {
             stepName <- getCPSName(x@flowFramesPreProcessingQueue[[s]])
             cacheResourceName <- paste0(
                 "preprocessing_",
-                basename(files[i]),
+                file_name_in_cache,
                 "_step", s, "_",
                 stepName
             )
@@ -853,7 +859,7 @@ execute <- function(x,
                 preprocessingMeta <-
                     data.frame(list(
                         rid = names(cacheResourceFile),
-                        fcsfile = basename(files[i]),
+                        fcsfile = file_name_in_cache,
                         nEvents = nEvents
                     ))
                 
@@ -1124,6 +1130,12 @@ checkCytoPipelineConsistencyWithCache <- function(
         sampleFile = NULL) {
     
     stopifnot(inherits(x, "CytoPipeline"))
+    
+    useBaseName <- TRUE
+    basenames <- basename(sampleFiles(x))
+    if (length(unique(basenames)) < length(basenames)){
+        useBaseName <- FALSE
+    }
         
     whichQueue <- match.arg(whichQueue)    
         
@@ -1160,7 +1172,15 @@ checkCytoPipelineConsistencyWithCache <- function(
         if (nPreProcessingSteps > 0 && nSampleFiles > 0) {
             rownames(ret$preProcessingStepStatus) <-
                 getProcessingStepNames(x, whichQueue = "pre-processing")
-            colnames(ret$preProcessingStepStatus) <- basename(sampleFiles(x))
+
+            if (useBaseName) {
+                colnames(ret$preProcessingStepStatus) <- 
+                    basename(sampleFiles(x))
+            } else {
+                colnames(ret$preProcessingStepStatus) <- 
+                    sampleFiles(x)
+            }
+            
         }
     }
     
@@ -1301,15 +1321,21 @@ checkCytoPipelineConsistencyWithCache <- function(
             }
         } else {
             sampleFileIndices <-
-                which(basename(sampleFiles(x)) == basename(sampleFile))
+                which(sampleFiles(x) == sampleFile)
             if (length(sampleFileIndices) == 0) {
                 stop("sampleFile not found in CytoPipeline")
             } 
         }
         
+        
         for (s in sampleFileIndices) {
             # take only steps with the target sample file
-            sampleFile <- basename(sampleFiles(x)[s])
+            if (useBaseName) {
+                sampleFile <- basename(sampleFiles(x)[s])    
+            } else {
+                sampleFile <- sampleFiles(x)[s]
+            }
+            
             stepsInfos <-
                 cacheInfo[
                     !is.na(cacheInfo$fcsfile) & cacheInfo$fcsfile == sampleFile,
@@ -1593,7 +1619,7 @@ getCytoPipelineObjectFromCache <-
                 }
             } else {
                 sampleFileIndex <-
-                    which(basename(sampleFiles(x)) == basename(sampleFile))
+                    which(sampleFiles(x) == sampleFile)
                 if (length(sampleFileIndex) == 0) {
                     stop("sampleFile not found in CytoPipeline")
                 } else if (length(sampleFileIndex) > 1) {
@@ -1622,7 +1648,10 @@ getCytoPipelineObjectFromCache <-
         cacheInfo <- BiocFileCache::bfcinfo(bfc)
         if (!is.null(sampleFile)) {
             sampleFiles <- unique(stats::na.omit(cacheInfo$fcsfile))
-            sampleFile <- basename(sampleFile)
+            if (length(unique(basename(sampleFiles(x)))) == 
+                length(basename(sampleFiles(x)))) {
+                sampleFile <- basename(sampleFile)
+            }
             if (!(sampleFile %in% sampleFiles)) {
                 stop(sampleFile, " not found in experiment run!")
             }
@@ -1724,7 +1753,10 @@ getCytoPipelineObjectInfos <-
                 }
                 sampleFile <- sampleFiles(x)[sampleFileIndex]
             }
-            sampleFile <- basename(sampleFile)
+            if (length(unique(basename(sampleFiles(x)))) == 
+                       length(basename(sampleFiles(x)))) {
+                sampleFile <- basename(sampleFile)
+            }
             if (!(sampleFile %in% sampleFiles)) {
                 stop(sampleFile, " not found in experiment run!")
             }
@@ -1912,7 +1944,7 @@ plotCytoPipelineProcessingQueue <-
                     }
                 } else {
                     sampleFileIndex <-
-                        which(basename(sampleFiles(x)) == basename(sampleFile))
+                        which(sampleFiles(x) == sampleFile)
                     if (length(sampleFileIndex) == 0) {
                         stop("sampleFile not found in CytoPipeline")
                     } else if (length(sampleFileIndex) > 1) {
@@ -2031,12 +2063,17 @@ plotCytoPipelineProcessingQueue <-
                 "Experiment: ", x@experimentName,
                 "\nProcessing queue: ", whichQueue
             )
+            fileName <- sampleFiles(x)[sampleFileIndex]
+            if (length(unique(basename(sampleFiles(x)))) 
+                == length(basename(sampleFiles(x))))
+            {
+                fileName <- basename(fileName)
+            }
             if (sampleFileIndex != 0) {
                 theTitle <- paste0(
                     theTitle,
                     "\nSample:",
-                    basename(sampleFiles(x)[sampleFileIndex])
-                )
+                    fileName)
             }
             graphics::title(main = theTitle)
         }
@@ -2073,7 +2110,7 @@ collectNbOfRetainedEvents <- function(
         }
         whichSampleFiles <- CytoPipeline::sampleFiles(pipL)[whichSampleFiles]
     } else if (is.character(whichSampleFiles)) {
-        whichSampleFiles <- basename(whichSampleFiles)
+        #whichSampleFiles <- basename(whichSampleFiles)
     } else {
         stop("whichSampleFiles should be either character or numeric")
     }

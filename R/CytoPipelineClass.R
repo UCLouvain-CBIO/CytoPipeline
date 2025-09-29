@@ -293,6 +293,8 @@ setValidity("CytoPipeline", function(object) {
 #' @param object a `CytoPipeline` object
 #'
 #' @importMethodsFrom methods show
+#' @importFrom utils head
+#' 
 #'
 setMethod(
     "show", "CytoPipeline",
@@ -500,6 +502,13 @@ sampleFiles <- function(x) {
 ##'
 "sampleFiles<-" <- function(x, value) {
     stopifnot(inherits(x, "CytoPipeline"))
+    if (!is.character(value)) {
+        stop("cannot assign sampleFiles: not a character vector passed.")
+    }    
+    if (length(unique(value)) < length(value)){
+        stop("cannot assign sampleFiles: character vector does not ",
+             "contain unique values.")
+    }
     x@sampleFiles <- value
     
     if (!is.null(pData(x))) {
