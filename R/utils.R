@@ -198,7 +198,7 @@ runCompensation <- function(obj, spillover, updateChannelNames = TRUE) {
 #' @title Aggregate and sample multiple flow frames of a flow set together
 #' @description Aggregate multiple flow frames in order to analyze them
 #' simultaneously.
-#' A new FF, which contains about cTotal cells, with ceiling(cTotal/nFiles)
+#' A new FF, which contains about nTotalEvents cells, nTotalEvents/nFiles
 #' cells from each file.
 #' Two new columns are added:
 #' a column indicating the original file by index, and
@@ -209,6 +209,16 @@ runCompensation <- function(obj, spillover, updateChannelNames = TRUE) {
 #' @param fs a flowCore::flowset
 #' @param nTotalEvents Total number of cells to select from the input flow
 #' frames
+#' @param setup How to proceed when nTotalEvents/nFiles is too high 
+#' for some of the flow frames: 
+#' - forceBalance (default): compute the minimum nb of events per flow frame, 
+#' and keep that amount of events from each flow frame.      
+#' - forceNEvents: try to be as balanced as possible, but force a 
+#' total of nTotalEvents if possible, i.e. takes all events from the flow frame 
+#' with too low nb of events, and then fill in the total with events 
+#' from the bigger flow frames in a balanced way.
+#' However, if nTotalEvents is greater than the sum of all events, 
+#' take all events only once.    
 #' @param seed seed to be set before sampling for reproducibility.
 #' Default NULL does not set any seed.
 #' @param channels Channels/markers to keep in the aggregate.
@@ -232,6 +242,7 @@ runCompensation <- function(obj, spillover, updateChannelNames = TRUE) {
 #'     nTotalEvents = nCells)
 aggregateAndSample <- function(fs,
                                nTotalEvents,
+                               setup = c("forceNEvent", "forceBalance"),
                                seed = NULL,
                                channels = NULL,
                                writeOutput = FALSE,
@@ -246,6 +257,7 @@ aggregateAndSample <- function(fs,
              " or flowCore::flowFrame")
     }
 
+    setup <- match.arg(setup)
 
     if (!is.null(seed)) {
         # set the seed locally in the execution environment,
@@ -254,13 +266,69 @@ aggregateAndSample <- function(fs,
     }
 
     nFrames <- length(fs)
-    cFrame <- ceiling(nTotalEvents / nFrames)
+    
+    
     flowFrame <- NULL
     diffNumberChannels <- FALSE
     diffMarkers <- FALSE
+    
+    # decide, depending on setup, what is the number of rows to select by ff
+    ffNRows <- flowCore::fsApply(fs, 
+                                 FUN = function(ff) {flowCore::nrow(ff)},
+                                 simplify = TRUE)
+    nRowsToSelect <- rep(0, nFrames)
+    
+    minNRow <- min(ffNRows) 
+    sumNRow  <- sum(ffNRows)
+    
+    cFrame <- ceiling(nTotalEvents / nFrames)
+    if (cFrame <= minNRow){
+        nRowsToSelect <- rep(cFrame, nFrames)
+    } else {
+        if (setup == "forceBalance"){
+            nRowsToSelect <- rep(minNRow, nFrames)
+        } else { #setup == forceNEvent
+            nRowsToSelect <- rep(0, nFrames)
+            trialRows <- cFrame
+            allocated <- 0.
+            stillToAllocate <- nTotalEvents
+            while(stillToAllocate > 0 && allocated < sumNRow) {
+                for(i in seq_len(nFrames)) {
+                     nRowsToSelect[i] <- min(ffNRows[i], trialRows)
+                }
+                allocated <- sum(nRowsToSelect)
+                stillToAllocate <- nTotalEvents - allocated
+                nSpareFF <- nFrames - sum(nRowsToSelect[i] == ffNRows[i])
+                if (nSpareFF > 0)
+                {
+                    trialRows <- trialRows + ceiling(stillToAllocate / nSpareFF)
+                }
+            }
+        }
+    }
+    
+    nExcess <- sum(nRowsToSelect) - nTotalEvents
+    if(nExcess < 0){
+        warning("Could not choose as much as ",  
+                nTotalEvents, 
+                " events for subsampling, sampled number of events = ", 
+                sum(nRowsToSelect))
+    }
+    while(nExcess > 0){
+        nToWithdraw <- min(nExcess, nFrames)
+        whereToWithdraw <- sample.int(nFrames, 
+                                      size = nToWithdraw, 
+                                      replace = FALSE)
+        for(j in seq_along(whereToWithdraw)) {
+            nRowsToSelect[whereToWithdraw[j]] <- 
+                nRowsToSelect[whereToWithdraw[j]] - 1
+        }
+        nExcess <- nExcess - nToWithdraw
+    }
+    
     for (i in seq_len(nFrames)) {
         current_ff <- fs[[i]]
-        ids <- sample(seq_len(nrow(current_ff)), min(nrow(current_ff), cFrame))
+        ids <- sample(seq_len(nrow(current_ff)), nRowsToSelect[i])
         if (keepOrder) {
             ids <- sort(ids)
         }
@@ -277,7 +345,7 @@ aggregateAndSample <- function(fs,
         if (prev_ids > 0) {
             new_col_names[3] <- paste0(new_col_names[3], prev_ids + 1)
         }
-        file_ids <- rep(i, min(nrow(current_ff), cFrame))
+        file_ids <- rep(i, nRowsToSelect[i])
         m <- cbind(file_ids, file_ids + stats::rnorm(
             length(file_ids),
             0, 0.1

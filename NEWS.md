@@ -1,7 +1,14 @@
 # CytoPipeline 1.9
 
+## CytoPipeline 1.9.4
+- improved `aggregateAndSample()` added a `setup` parameter, such that when 
+it is equal to "forceNEvent", the nb of events selected per flow frame is not 
+always balanced, to always obtain `nTotalEvents` 
+(except when the total nb of available events, taking all flowFrames,
+is less than `nTotalEvents`).
+
 ## CytoPipeline 1.9.3
-- added sampleDisplayNames()
+- added `sampleDisplayNames()`
 
 ## CytoPipeline 1.9.2
 - sample files can now have duplicate base names 

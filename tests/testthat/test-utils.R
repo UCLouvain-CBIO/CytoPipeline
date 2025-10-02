@@ -168,6 +168,33 @@ test_that("aggregateAndSample works", {
     expect_equal(nrow(flowCore::exprs(agg)[ind1, ]), nCells / 2)
     ind2 <- which(flowCore::exprs(agg)[, "File"] == 2)
     expect_equal(nrow(flowCore::exprs(agg)[ind2, ]), nCells / 2)
+    
+    nCells <- 99
+    agg <- aggregateAndSample(
+        fs = OMIP021Samples,
+        nTotalEvents = nCells,
+        seed = 1
+    )
+    
+    expect_equal(nrow(flowCore::exprs(agg)), nCells)
+    
+    ind1 <- which(flowCore::exprs(agg)[, "File"] == 1)
+    expect_equal(nrow(flowCore::exprs(agg)[ind1, ]), (nCells-1) / 2)
+    ind2 <- which(flowCore::exprs(agg)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg)[ind2, ]), (nCells+1) / 2)
+    
+    # too high total nb of cells
+    nCells<- 10001
+    expect_warning(
+        {agg <- aggregateAndSample(
+            fs = OMIP021Samples,
+            nTotalEvents = nCells,
+            seed = 1
+        )},
+        "Could not choose as much"
+    )
+    
+    expect_equal(nrow(flowCore::exprs(agg)), 10000)
 })
 
 test_that("aggregateAndSample still works with flow frame", {
@@ -176,6 +203,148 @@ test_that("aggregateAndSample still works with flow frame", {
                               nTotalEvents = nCells,
                               seed = 1)
     expect_equal(nrow(flowCore::exprs(agg)), nCells)
+    
+    # too high total nb of cells
+    nCells<- 10001
+    expect_warning(
+        {agg <- aggregateAndSample(
+            fs = OMIP021Samples[[1]],
+            nTotalEvents = nCells,
+            seed = 1
+        )},
+        "Could not choose as much"
+    )
+    
+    expect_equal(nrow(flowCore::exprs(agg)), 5000)
+})
+
+test_that("aggregateAndSample works with too few cells", {
+    ffList <- list()
+    ffList[[1]] <- OMIP021Samples[[1]]
+    exprs1 <- flowCore::exprs(ffList[[1]])
+    exprs1 <- exprs1[1:500,]
+    flowCore::exprs(ffList[[1]]) <- exprs1
+    ffList[[2]] <- OMIP021Samples[[2]]
+    exprs2 <- flowCore::exprs(ffList[[2]])
+    exprs2 <- exprs2[1:700,]
+    flowCore::exprs(ffList[[2]]) <- exprs2
+    ffList[[3]] <- OMIP021Samples[[2]]
+    exprs3 <- flowCore::exprs(ffList[[3]])
+    exprs3 <- exprs3[1:3000,]
+    flowCore::exprs(ffList[[3]]) <- exprs3
+    fsNew <- as(ffList,"flowSet")
+    
+    #(nCell/nFrame < min)
+    nCells <- 600 
+    agg1 <- aggregateAndSample(fs = fsNew,
+                               setup = "forceBalance",
+                               nTotalEvents = nCells,
+                               seed = 1)
+    expect_equal(nrow(flowCore::exprs(agg1)), nCells)
+    ind1 <- which(flowCore::exprs(agg1)[, "File"] == 1)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind1, ]), nCells / 3)
+    ind2 <- which(flowCore::exprs(agg1)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind2, ]), nCells / 3)
+    ind3 <- which(flowCore::exprs(agg1)[, "File"] == 3)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind3, ]), nCells / 3)
+    
+    agg2 <- aggregateAndSample(fs = fsNew,
+                               setup = "forceNEvent",
+                               nTotalEvents = nCells,
+                               seed = 1)
+    expect_equal(nrow(flowCore::exprs(agg2)), nCells)
+    ind4 <- which(flowCore::exprs(agg2)[, "File"] == 1)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind4, ]), nCells / 3)
+    ind5 <- which(flowCore::exprs(agg2)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind5, ]), nCells / 3)
+    ind6 <- which(flowCore::exprs(agg2)[, "File"] == 3)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind6, ]), nCells / 3)
+    
+    #(min < nCells/nFrame < nCells < max)
+    nCells <- 1800
+    expect_warning(
+        {agg1 <- aggregateAndSample(fs = fsNew,
+                               setup = "forceBalance",
+                               nTotalEvents = nCells,
+                               seed = 1)},
+        "Could not choose as much")
+    expect_equal(nrow(flowCore::exprs(agg1)), 1500)
+    ind1 <- which(flowCore::exprs(agg1)[, "File"] == 1)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind1, ]), 500)
+    ind2 <- which(flowCore::exprs(agg1)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind2, ]), 500)
+    ind3 <- which(flowCore::exprs(agg1)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind3, ]), 500)
+    
+    agg2 <- aggregateAndSample(fs = fsNew,
+                               setup = "forceNEvent",
+                               nTotalEvents = nCells,
+                               seed = 1)
+    expect_equal(nrow(flowCore::exprs(agg2)), nCells)
+    ind4 <- which(flowCore::exprs(agg2)[, "File"] == 1)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind4, ]), 500)
+    ind5 <- which(flowCore::exprs(agg2)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind5, ]), 650)
+    ind6 <- which(flowCore::exprs(agg2)[, "File"] == 3)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind6, ]), 650)
+    
+    #(min < nCells/nFrame < max < nCells < sum)
+    nCells <- 3300
+    expect_warning(
+        {agg1 <- aggregateAndSample(fs = fsNew,
+                                    setup = "forceBalance",
+                                    nTotalEvents = nCells,
+                                    seed = 1)},
+        "Could not choose as much")
+    expect_equal(nrow(flowCore::exprs(agg1)), 1500)
+    ind1 <- which(flowCore::exprs(agg1)[, "File"] == 1)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind1, ]), 500)
+    ind2 <- which(flowCore::exprs(agg1)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind2, ]), 500)
+    ind3 <- which(flowCore::exprs(agg1)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind3, ]), 500)
+    
+    agg2 <- aggregateAndSample(fs = fsNew,
+                               setup = "forceNEvent",
+                               nTotalEvents = nCells,
+                               seed = 1)
+    expect_equal(nrow(flowCore::exprs(agg2)), nCells)
+    ind4 <- which(flowCore::exprs(agg2)[, "File"] == 1)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind4, ]), 500)
+    ind5 <- which(flowCore::exprs(agg2)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind5, ]), 700)
+    ind6 <- which(flowCore::exprs(agg2)[, "File"] == 3)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind6, ]), 2100)
+    
+    # too high total nb of cells (nCells > sum)
+    nCells <- 5000
+    expect_warning(
+        {agg1 <- aggregateAndSample(fs = fsNew,
+                                    setup = "forceBalance",
+                                    nTotalEvents = nCells,
+                                    seed = 1)},
+        "Could not choose as much")
+    expect_equal(nrow(flowCore::exprs(agg1)), 1500)
+    ind1 <- which(flowCore::exprs(agg1)[, "File"] == 1)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind1, ]), 500)
+    ind2 <- which(flowCore::exprs(agg1)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind2, ]), 500)
+    ind3 <- which(flowCore::exprs(agg1)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg1)[ind3, ]), 500)
+    
+    expect_warning(
+        {agg2 <- aggregateAndSample(fs = fsNew,
+                                    setup = "forceNEvent",
+                                    nTotalEvents = nCells,
+                                    seed = 1)},
+        "Could not choose as much")
+    expect_equal(nrow(flowCore::exprs(agg2)), 4200)
+    ind4 <- which(flowCore::exprs(agg2)[, "File"] == 1)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind4, ]), 500)
+    ind5 <- which(flowCore::exprs(agg2)[, "File"] == 2)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind5, ]), 700)
+    ind6 <- which(flowCore::exprs(agg2)[, "File"] == 3)
+    expect_equal(nrow(flowCore::exprs(agg2)[ind6, ]), 3000)
 })
 
 test_that("getTransfoParams works", {

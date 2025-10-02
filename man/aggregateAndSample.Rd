@@ -7,6 +7,7 @@
 aggregateAndSample(
   fs,
   nTotalEvents,
+  setup = c("forceNEvent", "forceBalance"),
   seed = NULL,
   channels = NULL,
   writeOutput = FALSE,
@@ -19,6 +20,19 @@ aggregateAndSample(
 
 \item{nTotalEvents}{Total number of cells to select from the input flow
 frames}
+
+\item{setup}{How to proceed when nTotalEvents/nFiles is too high
+for some of the flow frames:
+\itemize{
+\item forceBalance (default): compute the minimum nb of events per flow frame,
+and keep that amount of events from each flow frame.
+\item forceNEvents: try to be as balanced as possible, but force a
+total of nTotalEvents if possible, i.e. takes all events from the flow frame
+with too low nb of events, and then fill in the total with events
+from the bigger flow frames in a balanced way.
+However, if nTotalEvents is greater than the sum of all events,
+take all events only once.
+}}
 
 \item{seed}{seed to be set before sampling for reproducibility.
 Default NULL does not set any seed.}
@@ -40,7 +54,7 @@ returns a new flowCore::flowFrame
 \description{
 Aggregate multiple flow frames in order to analyze them
 simultaneously.
-A new FF, which contains about cTotal cells, with ceiling(cTotal/nFiles)
+A new FF, which contains about nTotalEvents cells, nTotalEvents/nFiles
 cells from each file.
 Two new columns are added:
 a column indicating the original file by index, and
