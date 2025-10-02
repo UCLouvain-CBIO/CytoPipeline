@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CytoPipeline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -468,6 +468,9 @@ ignored here.</p>
 <pre><code><span><span class="co">## Removing margins from file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [flowframe_aggregate] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Warning in aggregateAndSample(new("flowSet", frames = &lt;environment&gt;, phenoData</span></span>
+<span><span class="co">## = new("AnnotatedDataFrame", : Could not choose as much as 10000 events for</span></span>
+<span><span class="co">## subsampling, sampled number of events = 9194</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [scale_transform_estimate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
 <pre><code><span><span class="co">## ### NOW PRE-PROCESSING FILE /__w/_temp/Library/CytoPipeline/extdata/Donor1.fcs...</span></span></code></pre>
@@ -521,7 +524,7 @@ ignored here.</p>
 <p>Note: again this might generate some warnings, due to flowAI.<br>
 These are highly dependent on the shape of the data investigated, and
 can safely be ignored here.</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># execute flowAI pipeline</span></span>
 <span><span class="fu"><a href="../reference/execute.html">execute</a></span><span class="op">(</span><span class="va">pipL_flowAI</span>, path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
@@ -536,6 +539,9 @@ can safely be ignored here.</p>
 <pre><code><span><span class="co">## Removing margins from file : Donor2.fcs</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 3 [compensate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 4 [flowframe_aggregate] ...</span></span></code></pre>
+<pre><code><span><span class="co">## Warning in aggregateAndSample(new("flowSet", frames = &lt;environment&gt;, phenoData</span></span>
+<span><span class="co">## = new("AnnotatedDataFrame", : Could not choose as much as 10000 events for</span></span>
+<span><span class="co">## subsampling, sampled number of events = 9194</span></span></code></pre>
 <pre><code><span><span class="co">## Proceeding with step 5 [scale_transform_estimate] ...</span></span></code></pre>
 <pre><code><span><span class="co">## #####################################################</span></span></code></pre>
 <pre><code><span><span class="co">## ### NOW PRE-PROCESSING FILE /__w/_temp/Library/CytoPipeline/extdata/Donor1.fcs...</span></span></code></pre>
@@ -573,7 +579,7 @@ can safely be ignored here.</p>
 <div class="section level3">
 <h3 id="plotting-processing-queues-as-workflow-graphs">Plotting processing queues as workflow graphs<a class="anchor" aria-label="anchor" href="#plotting-processing-queues-as-workflow-graphs"></a>
 </h3>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot work flow graph - PeacoQC - scale transformList</span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_PeacoQC</span>,</span>
@@ -584,7 +590,7 @@ can safely be ignored here.</p>
 PeacoQC pipeline - scale transformList processing queue
 </p>
 </div>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot work flow graph - PeacoQC - pre-processing</span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_PeacoQC</span>,</span>
@@ -596,7 +602,7 @@ PeacoQC pipeline - scale transformList processing queue
 PeacoQC pipeline - file pre-processing queue
 </p>
 </div>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot work flow graph - flowAI - scale transformList</span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
 <span>  <span class="va">pipL_flowAI</span>,</span>
@@ -607,7 +613,7 @@ PeacoQC pipeline - file pre-processing queue
 flowAI pipeline - scale transformList processing queue
 </p>
 </div>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot work flow graph - flowAI - pre-processing</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue</a></span><span class="op">(</span></span>
@@ -624,7 +630,7 @@ flowAI pipeline - file pre-processing queue
 <div class="section level3">
 <h3 id="obtaining-information-about-pipeline-generated-objects">Obtaining information about pipeline generated objects<a class="anchor" aria-label="anchor" href="#obtaining-information-about-pipeline-generated-objects"></a>
 </h3>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectInfos</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>, </span>
 <span>                           path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                           whichQueue <span class="op">=</span> <span class="st">"scale transform"</span><span class="op">)</span></span></code></pre></div>
@@ -634,7 +640,7 @@ flowAI pipeline - file pre-processing queue
 <span><span class="co">## 3               compensate_obj       flowSet</span></span>
 <span><span class="co">## 4      flowframe_aggregate_obj     flowFrame</span></span>
 <span><span class="co">## 5 scale_transform_estimate_obj transformList</span></span></code></pre>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectInfos</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>, </span>
 <span>                           path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                           whichQueue <span class="op">=</span> <span class="st">"pre-processing"</span>,</span>
@@ -651,7 +657,7 @@ flowAI pipeline - file pre-processing queue
 <div class="section level3">
 <h3 id="retrieving-flow-frames-at-different-steps-and-plotting-them">Retrieving flow frames at different steps and plotting them<a class="anchor" aria-label="anchor" href="#retrieving-flow-frames-at-different-steps-and-plotting-them"></a>
 </h3>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># example of retrieving a flow frame</span></span>
 <span><span class="co"># at a given step</span></span>
 <span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineFlowFrame</a></span><span class="op">(</span></span>
@@ -668,14 +674,14 @@ flowAI pipeline - file pre-processing queue
 <span>  sampleFile <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  objectName <span class="op">=</span> <span class="st">"remove_debris_obj"</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">workDir</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="CytoPipeline_files/figure-html/ggplotEvents1-1.png" alt="1-dimensional distribution plot (forward scatter channel)" width="700"><p class="caption">
 1-dimensional distribution plot (forward scatter channel)
 </p>
 </div>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotEvents.html">ggplotEvents</a></span><span class="op">(</span><span class="va">ff</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span>, yChannel <span class="op">=</span> <span class="st">"SSC-A"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="CytoPipeline_files/figure-html/ggplotEvents2-1.png" alt="2-dimensional distribution plot (forward scatter vs. side scatter channels)" width="700"><p class="caption">
@@ -683,7 +689,7 @@ flowAI pipeline - file pre-processing queue
 channels)
 </p>
 </div>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggplotFilterEvents.html">ggplotFilterEvents</a></span><span class="op">(</span><span class="va">ff</span>, <span class="va">ff2</span>, xChannel <span class="op">=</span> <span class="st">"FSC-A"</span>, yChannel <span class="op">=</span> <span class="st">"SSC-A"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="CytoPipeline_files/figure-html/ggplotEvents3-1.png" alt="2-dimensional difference plot between remove_doublets and remove_debris steps" width="700"><p class="caption">
@@ -701,7 +707,7 @@ cache, that is not specifically a <code><a href="https://rdrr.io/pkg/flowCore/ma
 represents a set of<br><code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-class.html" class="external-link">flowCore::flowFrame</a></code>objects, that was obtained after the
 compensation step of the scale transformation processing queue, prior to
 aggregating the two samples.</p>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">getCytoPipelineObjectFromCache</a></span><span class="op">(</span><span class="va">pipL_PeacoQC</span>,</span>
 <span>                                      path <span class="op">=</span> <span class="va">workDir</span>,</span>
 <span>                                      whichQueue <span class="op">=</span> <span class="st">"scale transform"</span>,</span>
@@ -720,7 +726,7 @@ pipeline for different samples is a useful quality control.</p>
 <p>This can be implemented using <em>CytoPipeline</em>
 <code><a href="../reference/inspectCytoPipelineObjects.html">collectNbOfRetainedEvents()</a></code> function. Examples of using
 this function in quality control plots are shown in this section.</p>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ret</span> <span class="op">&lt;-</span> <span class="fu">CytoPipeline</span><span class="fu">::</span><span class="fu"><a href="../reference/inspectCytoPipelineObjects.html">collectNbOfRetainedEvents</a></span><span class="op">(</span></span>
 <span>    experimentName <span class="op">=</span> <span class="st">"OMIP021_PeacoQC"</span>,</span>
 <span>    path <span class="op">=</span> <span class="va">workDir</span></span>
@@ -732,7 +738,7 @@ this function in quality control plots are shown in this section.</p>
 <span><span class="co">##            remove_debris remove_dead_cells</span></span>
 <span><span class="co">## Donor1.fcs          1850              1784</span></span>
 <span><span class="co">## Donor2.fcs          3019              2984</span></span></code></pre>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">retainedProp</span> <span class="op">&lt;-</span> </span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span></span>
 <span>        <span class="va">ret</span>,</span>
@@ -755,7 +761,7 @@ this function in quality control plots are shown in this section.</p>
 <span><span class="co">##            remove_dead_cells</span></span>
 <span><span class="co">## Donor1.fcs             0.357</span></span>
 <span><span class="co">## Donor2.fcs             0.597</span></span></code></pre>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stepRemovedProp</span> <span class="op">&lt;-</span> </span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span></span>
 <span>        <span class="va">ret</span>,</span>
@@ -778,10 +784,10 @@ this function in quality control plots are shown in this section.</p>
 <span><span class="co">##            remove_dead_cells</span></span>
 <span><span class="co">## Donor1.fcs             0.036</span></span>
 <span><span class="co">## Donor2.fcs             0.012</span></span></code></pre>
-<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/hadley/reshape" class="external-link">"reshape2"</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myGGPlot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">DF</span>, <span class="va">title</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="va">stepNames</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">DF</span><span class="op">)</span></span>
 <span>    <span class="va">rowNames</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">DF</span><span class="op">)</span></span>
@@ -808,7 +814,7 @@ this function in quality control plots are shown in this section.</p>
 <span>               title <span class="op">=</span> <span class="st">"Retained event proportion at each step"</span><span class="op">)</span></span>
 <span><span class="va">p1</span></span></code></pre></div>
 <p><img src="CytoPipeline_files/figure-html/plotRetainedProp-1.png" alt="Scatterplot of proportion of retained events as a function of the  cumulated preprocessing steps, for the two fcs files. As expected, this proportion decreases at each step." width="700"></p>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">myGGPlot</span><span class="op">(</span>DF <span class="op">=</span> <span class="va">stepRemovedProp</span>,</span>
 <span>               title <span class="op">=</span> <span class="st">"Event proportion removed by each step"</span><span class="op">)</span></span>
 <span><span class="va">p2</span></span></code></pre></div>
@@ -823,7 +829,7 @@ either in the form of <code><a href="https://rdrr.io/pkg/flowCore/man/flowFrame-
 <code><a href="https://rdrr.io/pkg/flowCore/man/transformList-class.html" class="external-link">flowCore::transformList</a></code>. To do this, install the
 <code>CytoPipelineGUI</code> package, and uncomment the following
 code:</p>
-<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#devtools::install_github("https://github.com/UCLouvain-CBIO/CytoPipelineGUI")</span></span>
 <span><span class="co">#CytoPipelineGUI::CytoPipelineCheckApp(dir = workDir)</span></span></code></pre></div>
 </div>
@@ -875,7 +881,7 @@ do it!</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggplot2_4.0.0      reshape2_1.4.4     CytoPipeline_1.9.3 BiocStyle_2.37.1  </span></span>
+<span><span class="co">## [1] ggplot2_4.0.0      reshape2_1.4.4     CytoPipeline_1.9.4 BiocStyle_2.37.1  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] changepoint_2.3       tidyselect_1.2.1      dplyr_1.1.4          </span></span>
@@ -897,9 +903,9 @@ do it!</p>
 <span><span class="co">##  [49] DBI_1.2.3             cachem_1.1.0          flowCore_2.21.0      </span></span>
 <span><span class="co">##  [52] stringr_1.5.2         parallel_4.5.1        BiocManager_1.30.26  </span></span>
 <span><span class="co">##  [55] matrixStats_1.5.0     vctrs_0.6.5           jsonlite_2.0.0       </span></span>
-<span><span class="co">##  [58] cytolib_2.21.0        bookdown_0.44         IRanges_2.43.3       </span></span>
+<span><span class="co">##  [58] cytolib_2.21.0        bookdown_0.44         IRanges_2.43.4       </span></span>
 <span><span class="co">##  [61] GetoptLong_1.0.5      S4Vectors_0.47.4      bit64_4.6.0-1        </span></span>
-<span><span class="co">##  [64] clue_0.3-66           Rgraphviz_2.53.0      systemfonts_1.2.3    </span></span>
+<span><span class="co">##  [64] clue_0.3-66           Rgraphviz_2.53.0      systemfonts_1.3.1    </span></span>
 <span><span class="co">##  [67] foreach_1.5.2         jquerylib_0.1.4       hexbin_1.28.5        </span></span>
 <span><span class="co">##  [70] glue_1.8.0            pkgdown_2.1.3.9000    codetools_0.2-20     </span></span>
 <span><span class="co">##  [73] stringi_1.8.7         shape_1.4.6.1         gtable_0.3.6         </span></span>

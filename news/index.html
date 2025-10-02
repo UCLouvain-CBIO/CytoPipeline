@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CytoPipeline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,11 +40,16 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.9" id="cytopipeline-19">CytoPipeline 1.9<a class="anchor" aria-label="anchor" href="#cytopipeline-19"></a></h2>
 <div class="section level3">
-<h3 id="cytopipeline-1-9">CytoPipeline 1.9.3<a class="anchor" aria-label="anchor" href="#cytopipeline-1-9"></a></h3>
-<ul><li>added sampleDisplayNames()</li>
+<h3 id="cytopipeline-1-9">CytoPipeline 1.9.4<a class="anchor" aria-label="anchor" href="#cytopipeline-1-9"></a></h3>
+<ul><li>improved <code><a href="../reference/aggregateAndSample.html">aggregateAndSample()</a></code> added a <code>setup</code> parameter, such that when it is equal to “forceNEvent”, the nb of events selected per flow frame is not always balanced, to always obtain <code>nTotalEvents</code> (except when the total nb of available events, taking all flowFrames, is less than <code>nTotalEvents</code>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="cytopipeline-1-9-1">CytoPipeline 1.9.2<a class="anchor" aria-label="anchor" href="#cytopipeline-1-9-1"></a></h3>
+<h3 id="cytopipeline-1-9-1">CytoPipeline 1.9.3<a class="anchor" aria-label="anchor" href="#cytopipeline-1-9-1"></a></h3>
+<ul><li>added <code><a href="../reference/CytoPipelineClass.html">sampleDisplayNames()</a></code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="cytopipeline-1-9-2">CytoPipeline 1.9.2<a class="anchor" aria-label="anchor" href="#cytopipeline-1-9-2"></a></h3>
 <ul><li>sample files can now have duplicate base names (provided full paths are different)</li>
 <li>
 <code>pData&lt;-</code> is now more liberal.<br></li>
@@ -53,7 +58,7 @@
 <li>It can accept pData with no row names provided the number of rows correspond to the number of sample files. Row names are then set by default to sample file base names (if unique), or sample file full paths.</li>
 </ol></div>
 <div class="section level3">
-<h3 id="cytopipeline-1-9-2">CytoPipeline 1.9.1<a class="anchor" aria-label="anchor" href="#cytopipeline-1-9-2"></a></h3>
+<h3 id="cytopipeline-1-9-3">CytoPipeline 1.9.1<a class="anchor" aria-label="anchor" href="#cytopipeline-1-9-3"></a></h3>
 <ul><li>upgraded to GHA cache v4</li>
 </ul></div>
 </div>
