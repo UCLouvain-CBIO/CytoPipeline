@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CytoPipeline</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,8 +41,7 @@
 
 
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -53,229 +52,267 @@
 
         </dt>
         <dd>CytoPipeline class</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="CytoProcessingStep.html">CytoProcessingStep()</a></code> <code><a href="CytoProcessingStep.html">show(<i>&lt;CytoProcessingStep&gt;</i>)</a></code> <code><a href="CytoProcessingStep.html">executeProcessingStep()</a></code> <code><a href="CytoProcessingStep.html">getCPSName()</a></code> <code><a href="CytoProcessingStep.html">getCPSFUN()</a></code> <code><a href="CytoProcessingStep.html">getCPSARGS()</a></code> <code><a href="CytoProcessingStep.html">as.list(<i>&lt;CytoProcessingStep&gt;</i>)</a></code> <code><a href="CytoProcessingStep.html">as.json.CytoProcessingStep()</a></code> <code><a href="CytoProcessingStep.html">from.json.CytoProcessingStep()</a></code>
 
         </dt>
         <dd>Cyto Processing step</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="OMIP021Samples.html">OMIP021Samples</a></code>
 
         </dt>
         <dd>OMIP021Samples dataset</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="aggregateAndSample.html">aggregateAndSample()</a></code>
 
         </dt>
         <dd>Aggregate and sample multiple flow frames of a flow set together</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="appendCellID.html">appendCellID()</a></code>
 
         </dt>
         <dd>append 'Original_ID' column to a flowframe</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="applyScaleTransforms.html">applyScaleTransforms()</a></code>
 
         </dt>
         <dd>apply scale transforms</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="areFluoCols.html">areFluoCols()</a></code>
 
         </dt>
         <dd>find flow frame columns that represent fluorochrome channel</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="areSignalCols.html">areSignalCols()</a></code>
 
         </dt>
         <dd>find flow frame columns that represent true signal</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="compensateFromMatrix.html">compensateFromMatrix()</a></code>
 
         </dt>
         <dd>compensation of fcs file(s) from matrix</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="computeScatterChannelsLinearScale.html">computeScatterChannelsLinearScale()</a></code>
 
         </dt>
         <dd>compute linear transformation of scatter channels found in ff, based on 5% and 95% of referenceChannel, set as target. If there is a transformation defined in transList for referenceChannel, it is applied first, before computing quantiles. Then the computed linear transformations (or each scatter channel) are added into the transfo_list. -A channels are computed, and same linear transformation is then applied to corresponding -W and -H channels (if they exist in ff).</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="estimateScaleTransforms.html">estimateScaleTransforms()</a></code>
 
         </dt>
         <dd>estimates scale tranformations</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="execute.html">execute()</a></code>
 
         </dt>
         <dd>executing CytoPipeline object</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="exportCytoPipeline.html">export2JSONFile()</a></code>
 
         </dt>
         <dd>exporting CytoPipeline objects</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="findTimeChannel.html">findTimeChannel()</a></code>
 
         </dt>
         <dd>find time channel in flowSet/flowFrame</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="getAcquiredCompensationMatrix.html">getAcquiredCompensationMatrix()</a></code>
 
         </dt>
         <dd>extract compensation matrix from a flowCore::flowFrame</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="getChannelNamesFromMarkers.html">getChannelNamesFromMarkers()</a></code>
 
         </dt>
         <dd>get channel names from markers</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="getFCSFileName.html">getFCSFileName()</a></code>
 
         </dt>
         <dd>get fcs file name</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="getTransfoParams.html">getTransfoParams()</a></code>
 
         </dt>
         <dd>get tranformation parameters for a specific channel</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="ggplotEvents.html">ggplotEvents()</a></code>
 
         </dt>
         <dd>plot events in 1D or 2D, using ggplot2</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="ggplotFilterEvents.html">ggplotFilterEvents()</a></code>
 
         </dt>
         <dd>plot filtered events in 2D, using ggplot</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="ggplotFlowRate.html">ggplotFlowRate()</a></code>
 
         </dt>
         <dd>plot flow rate as a function of time, using ggplot2</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="handlingProcessingSteps.html">addProcessingStep()</a></code> <code><a href="handlingProcessingSteps.html">removeProcessingStep()</a></code> <code><a href="handlingProcessingSteps.html">getNbProcessingSteps()</a></code> <code><a href="handlingProcessingSteps.html">getProcessingStep()</a></code> <code><a href="handlingProcessingSteps.html">getProcessingStepNames()</a></code> <code><a href="handlingProcessingSteps.html">cleanProcessingSteps()</a></code> <code><a href="handlingProcessingSteps.html">showProcessingSteps()</a></code>
 
         </dt>
         <dd>handling processing steps in CytoPipeline objects</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="inspectCytoPipelineObjects.html">getCytoPipelineExperimentNames()</a></code> <code><a href="inspectCytoPipelineObjects.html">getCytoPipelineObjectFromCache()</a></code> <code><a href="inspectCytoPipelineObjects.html">getCytoPipelineObjectInfos()</a></code> <code><a href="inspectCytoPipelineObjects.html">getCytoPipelineFlowFrame()</a></code> <code><a href="inspectCytoPipelineObjects.html">getCytoPipelineScaleTransform()</a></code> <code><a href="inspectCytoPipelineObjects.html">plotCytoPipelineProcessingQueue()</a></code> <code><a href="inspectCytoPipelineObjects.html">collectNbOfRetainedEvents()</a></code>
 
         </dt>
         <dd>inspect CytoPipeline results objects</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="interactingWithCytoPipelineCache.html">deleteCytoPipelineCache()</a></code> <code><a href="interactingWithCytoPipelineCache.html">buildCytoPipelineFromCache()</a></code> <code><a href="interactingWithCytoPipelineCache.html">checkCytoPipelineConsistencyWithCache()</a></code>
 
         </dt>
         <dd>interaction between CytoPipeline object and disk cache</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="qualityControlFlowAI.html">qualityControlFlowAI()</a></code>
 
         </dt>
         <dd>perform QC with flowAI</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="qualityControlPeacoQC.html">qualityControlPeacoQC()</a></code>
 
         </dt>
         <dd>perform QC with PeacoQC</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="readRDSObject.html">readRDSObject()</a></code>
 
         </dt>
         <dd>read RDS object</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="readSampleFiles.html">readSampleFiles()</a></code>
 
         </dt>
         <dd>Read fcs sample files</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="removeChannels.html">removeChannels()</a></code>
 
         </dt>
         <dd>remove channels from a flowFrame</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="removeDeadCellsManualGate.html">removeDeadCellsManualGate()</a></code>
 
         </dt>
         <dd>remove dead cells from a flowFrame using manual gating</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="removeDebrisManualGate.html">removeDebrisManualGate()</a></code>
 
         </dt>
         <dd>remove debris from a flowFrame using manual gating</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="removeDoubletsCytoPipeline.html">removeDoubletsCytoPipeline()</a></code>
 
         </dt>
         <dd>remove doublets from a flowFrame, using CytoPipeline custom algorithm</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="removeMarginsPeacoQC.html">removeMarginsPeacoQC()</a></code>
 
         </dt>
         <dd>remove margin events using PeacoQC</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="resetCellIDs.html">resetCellIDs()</a></code>
 
         </dt>
         <dd>reset 'Original_ID' column in a flowframe</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="runCompensation.html">runCompensation()</a></code>
 
         </dt>
         <dd>compensate with additional options</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="singletsGate.html">singletsGate()</a></code>
 
         </dt>
         <dd>Clean doublet events from flow cytometry data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="subsample.html">subsample()</a></code>
 
         </dt>
         <dd>sub-sampling of a flowFrame</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="updateMarkerName.html">updateMarkerName()</a></code>
 
         </dt>
         <dd>update marker name of a given flowFrame channel</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="writeFlowFrame.html">writeFlowFrame()</a></code>
 
@@ -290,7 +327,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
 </div>
 
     </footer></div>

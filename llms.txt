@@ -1,0 +1,186 @@
+## Automation and visualization of flow cytometry data analysis pipelines
+
+[![Project Status: Active – The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![R-CMD-check-bioc](https://github.com/UCLouvain-CBIO/CytoPipeline/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/UCLouvain-CBIO/CytoPipeline/actions?query=workflow%3AR-CMD-check-bioc)
+[![codecov.io](https://codecov.io/github/UCLouvain-CBIO/CytoPipeline/coverage.svg?branch=main)](https://codecov.io/github/UCLouvain-CBIO/CytoPipeline?branch=main)
+[![license](https://img.shields.io/badge/license-GPL3.0-blue)](https://opensource.org/licenses/GPL-3.0)
+
+### What is CytoPipeline?
+
+`CytoPipeline` is a package that provides support for automation and
+visualization of flow cytometry data analysis pipelines. In the current
+state, the package focuses on the preprocessing and quality control
+part.
+
+The framework is based on two main S4 classes, i.e. `CytoPipeline` and
+`CytoProcessingStep`. The `CytoProcessingStep` defines the link between
+pipeline step names and corresponding R functions that are either
+provided in the CytoPipeline package itself, or exported from a third
+party package, or coded by the user her/himself. The processing steps
+need to be specified centrally and explicitly using either a json input
+file or through step by step creation of a `CytoPipeline` object with
+dedicated methods.
+
+After having run the pipeline, obtained results at all steps can be
+retrieved and visualized thanks to file caching (the running facility
+uses a `BiocFileCache` implementation). The package provides also
+specific visualization tools like pipeline workflow summary display, and
+1D/2D comparison plots of obtained flowFrames at various steps of the
+pipeline.
+
+### License
+
+The `CytoPipeline` code is provided under [GPL license version 3.0 or
+higher](https://opensource.org/licenses/GPL-3.0). The documentation,
+including the manual pages and the vignettes, are distributed under a
+[CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/).
+
+### Citation
+
+If you use `Cytopipeline` in your research, please use the following
+citation:
+
+> Hauchamps P, Bayat B, Delandre S, Hamrouni M, Toussaint M, Temmerman
+> S, Lin D, Gatto L (2024). “CytoPipeline and CytoPipelineGUI: a
+> Bioconductor R package suite for building and visualizing automated
+> pre-processing pipelines for flow cytometry data.” *BMC
+> Bioinformatics*, *25*(1), 80. <doi:10.1186/s12859-024-05691-z>
+> <https://doi.org/10.1186/s12859-024-05691-z>.
+
+or run `citation("CytoPipeline")` to get the bibtex entry.
+
+# Package index
+
+## All functions
+
+- [`show(`*`<CytoPipeline>`*`)`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`CytoPipeline(`*`<missing>`*`)`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`CytoPipeline(`*`<list>`*`)`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`CytoPipeline(`*`<character>`*`)`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`as.list(`*`<CytoPipeline>`*`)`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`experimentName()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`` `experimentName<-`() ``](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`sampleFiles()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`` `sampleFiles<-`() ``](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`pData()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`` `pData<-`() ``](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`sampleDisplayNames()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  [`sampleNameFromDisplayName()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoPipelineClass.md)
+  : CytoPipeline class
+- [`CytoProcessingStep()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoProcessingStep.md)
+  [`show(`*`<CytoProcessingStep>`*`)`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoProcessingStep.md)
+  [`executeProcessingStep()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoProcessingStep.md)
+  [`getCPSName()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoProcessingStep.md)
+  [`getCPSFUN()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoProcessingStep.md)
+  [`getCPSARGS()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoProcessingStep.md)
+  [`as.list(`*`<CytoProcessingStep>`*`)`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoProcessingStep.md)
+  [`as.json.CytoProcessingStep()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoProcessingStep.md)
+  [`from.json.CytoProcessingStep()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/CytoProcessingStep.md)
+  : Cyto Processing step
+- [`OMIP021Samples`](https://uclouvain-cbio.github.io/CytoPipeline/reference/OMIP021Samples.md)
+  : OMIP021Samples dataset
+- [`aggregateAndSample()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/aggregateAndSample.md)
+  : Aggregate and sample multiple flow frames of a flow set together
+- [`appendCellID()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/appendCellID.md)
+  : append 'Original_ID' column to a flowframe
+- [`applyScaleTransforms()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/applyScaleTransforms.md)
+  : apply scale transforms
+- [`areFluoCols()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/areFluoCols.md)
+  : find flow frame columns that represent fluorochrome channel
+- [`areSignalCols()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/areSignalCols.md)
+  : find flow frame columns that represent true signal
+- [`compensateFromMatrix()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/compensateFromMatrix.md)
+  : compensation of fcs file(s) from matrix
+- [`computeScatterChannelsLinearScale()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/computeScatterChannelsLinearScale.md)
+  : compute linear transformation of scatter channels found in ff, based
+  on 5% and 95% of referenceChannel, set as target. If there is a
+  transformation defined in transList for referenceChannel, it is
+  applied first, before computing quantiles. Then the computed linear
+  transformations (or each scatter channel) are added into the
+  transfo_list. -A channels are computed, and same linear transformation
+  is then applied to corresponding -W and -H channels (if they exist in
+  ff).
+- [`estimateScaleTransforms()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/estimateScaleTransforms.md)
+  : estimates scale tranformations
+- [`execute()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/execute.md)
+  : executing CytoPipeline object
+- [`export2JSONFile()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/exportCytoPipeline.md)
+  : exporting CytoPipeline objects
+- [`findTimeChannel()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/findTimeChannel.md)
+  : find time channel in flowSet/flowFrame
+- [`getAcquiredCompensationMatrix()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/getAcquiredCompensationMatrix.md)
+  : extract compensation matrix from a flowCore::flowFrame
+- [`getChannelNamesFromMarkers()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/getChannelNamesFromMarkers.md)
+  : get channel names from markers
+- [`getFCSFileName()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/getFCSFileName.md)
+  : get fcs file name
+- [`getTransfoParams()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/getTransfoParams.md)
+  : get tranformation parameters for a specific channel
+- [`ggplotEvents()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/ggplotEvents.md)
+  : plot events in 1D or 2D, using ggplot2
+- [`ggplotFilterEvents()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/ggplotFilterEvents.md)
+  : plot filtered events in 2D, using ggplot
+- [`ggplotFlowRate()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/ggplotFlowRate.md)
+  : plot flow rate as a function of time, using ggplot2
+- [`addProcessingStep()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/handlingProcessingSteps.md)
+  [`removeProcessingStep()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/handlingProcessingSteps.md)
+  [`getNbProcessingSteps()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/handlingProcessingSteps.md)
+  [`getProcessingStep()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/handlingProcessingSteps.md)
+  [`getProcessingStepNames()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/handlingProcessingSteps.md)
+  [`cleanProcessingSteps()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/handlingProcessingSteps.md)
+  [`showProcessingSteps()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/handlingProcessingSteps.md)
+  : handling processing steps in CytoPipeline objects
+- [`getCytoPipelineExperimentNames()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/inspectCytoPipelineObjects.md)
+  [`getCytoPipelineObjectFromCache()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/inspectCytoPipelineObjects.md)
+  [`getCytoPipelineObjectInfos()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/inspectCytoPipelineObjects.md)
+  [`getCytoPipelineFlowFrame()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/inspectCytoPipelineObjects.md)
+  [`getCytoPipelineScaleTransform()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/inspectCytoPipelineObjects.md)
+  [`plotCytoPipelineProcessingQueue()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/inspectCytoPipelineObjects.md)
+  [`collectNbOfRetainedEvents()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/inspectCytoPipelineObjects.md)
+  : inspect CytoPipeline results objects
+- [`deleteCytoPipelineCache()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/interactingWithCytoPipelineCache.md)
+  [`buildCytoPipelineFromCache()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/interactingWithCytoPipelineCache.md)
+  [`checkCytoPipelineConsistencyWithCache()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/interactingWithCytoPipelineCache.md)
+  : interaction between CytoPipeline object and disk cache
+- [`qualityControlFlowAI()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/qualityControlFlowAI.md)
+  : perform QC with flowAI
+- [`qualityControlPeacoQC()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/qualityControlPeacoQC.md)
+  : perform QC with PeacoQC
+- [`readRDSObject()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/readRDSObject.md)
+  : read RDS object
+- [`readSampleFiles()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/readSampleFiles.md)
+  : Read fcs sample files
+- [`removeChannels()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/removeChannels.md)
+  : remove channels from a flowFrame
+- [`removeDeadCellsManualGate()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/removeDeadCellsManualGate.md)
+  : remove dead cells from a flowFrame using manual gating
+- [`removeDebrisManualGate()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/removeDebrisManualGate.md)
+  : remove debris from a flowFrame using manual gating
+- [`removeDoubletsCytoPipeline()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/removeDoubletsCytoPipeline.md)
+  : remove doublets from a flowFrame, using CytoPipeline custom
+  algorithm
+- [`removeMarginsPeacoQC()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/removeMarginsPeacoQC.md)
+  : remove margin events using PeacoQC
+- [`resetCellIDs()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/resetCellIDs.md)
+  : reset 'Original_ID' column in a flowframe
+- [`runCompensation()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/runCompensation.md)
+  : compensate with additional options
+- [`singletsGate()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/singletsGate.md)
+  : Clean doublet events from flow cytometry data
+- [`subsample()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/subsample.md)
+  : sub-sampling of a flowFrame
+- [`updateMarkerName()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/updateMarkerName.md)
+  : update marker name of a given flowFrame channel
+- [`writeFlowFrame()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/writeFlowFrame.md)
+  : write flowFrame to disk
+
+# Articles
+
+### All vignettes
+
+- [Automation and Visualization of Flow Cytometry Data Analysis
+  Pipelines](https://uclouvain-cbio.github.io/CytoPipeline/articles/CytoPipeline.md):
+- [Demonstration of the CytoPipeline R package suite
+  functionalities](https://uclouvain-cbio.github.io/CytoPipeline/articles/Demo.md):
