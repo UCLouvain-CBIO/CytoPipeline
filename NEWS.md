@@ -1,3 +1,7 @@
+
+# CytoPipeline 1.11
+(no devel)
+
 # CytoPipeline 1.9
 
 ## CytoPipeline 1.9.4
