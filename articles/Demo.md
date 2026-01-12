@@ -68,7 +68,7 @@ Unable to execute JavaScript.
 
 ## Session information
 
-    ## R Under development (unstable) (2025-11-22 r89050)
+    ## R Under development (unstable) (2026-01-10 r89298)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.3 LTS
     ## 
@@ -95,12 +95,12 @@ Unable to execute JavaScript.
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] digest_0.6.39       desc_1.4.3          R6_2.6.1           
-    ##  [4] bookdown_0.45       fastmap_1.2.0       xfun_0.54          
-    ##  [7] cachem_1.1.0        knitr_1.50          htmltools_0.5.8.1  
-    ## [10] rmarkdown_2.30      lifecycle_1.0.4     cli_3.6.5          
+    ##  [4] bookdown_0.46       fastmap_1.2.0       xfun_0.55          
+    ##  [7] cachem_1.1.0        knitr_1.51          htmltools_0.5.9    
+    ## [10] rmarkdown_2.30      lifecycle_1.0.5     cli_3.6.5          
     ## [13] sass_0.4.10         pkgdown_2.2.0.9000  textshaping_1.0.4  
     ## [16] jquerylib_0.1.4     systemfonts_1.3.1   compiler_4.6.0     
     ## [19] tools_4.6.0         ragg_1.5.0          bslib_0.9.0        
-    ## [22] evaluate_1.0.5      yaml_2.3.10         BiocManager_1.30.27
-    ## [25] jsonlite_2.0.0      rlang_1.1.6         fs_1.6.6           
-    ## [28] htmlwidgets_1.6.4
+    ## [22] evaluate_1.0.5      yaml_2.3.12         BiocManager_1.30.27
+    ## [25] otel_0.2.0          jsonlite_2.0.0      rlang_1.1.7        
+    ## [28] fs_1.6.6            htmlwidgets_1.6.4

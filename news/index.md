@@ -2,7 +2,12 @@
 
 ## CytoPipeline 1.11
 
-(no devel)
+- Bug correction for scale transfo pipelines with sample specific data:
+  implemented a work-around in
+  [`readSampleFiles()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/readSampleFiles.md):
+  forced flowSet sample names to full file paths as this was not done
+  automatically by
+  [`flowCore::read.flowSet()`](https://rdrr.io/pkg/flowCore/man/read.flowSet.html).
 
 ## CytoPipeline 1.9
 

@@ -924,7 +924,7 @@ a `CytoPipeline` object, this is the place to do it!
 
 ## Session information
 
-    ## R Under development (unstable) (2025-11-22 r89050)
+    ## R Under development (unstable) (2026-01-10 r89298)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.3 LTS
     ## 
@@ -954,37 +954,38 @@ a `CytoPipeline` object, this is the place to do it!
     ##   [1] changepoint_2.3       tidyselect_1.2.1      dplyr_1.1.4          
     ##   [4] farver_2.1.2          blob_1.2.4            filelock_1.0.3       
     ##   [7] S7_0.2.1              fastmap_1.2.0         BiocFileCache_3.1.0  
-    ##  [10] XML_3.99-0.20         digest_0.6.39         lifecycle_1.0.4      
-    ##  [13] cluster_2.1.8.1       RSQLite_2.4.4         magrittr_2.0.4       
-    ##  [16] compiler_4.6.0        rlang_1.1.6           sass_0.4.10          
-    ##  [19] tools_4.6.0           yaml_2.3.10           data.table_1.17.8    
-    ##  [22] knitr_1.50            labeling_0.4.3        htmlwidgets_1.6.4    
+    ##  [10] XML_3.99-0.20         digest_0.6.39         lifecycle_1.0.5      
+    ##  [13] cluster_2.1.8.1       RSQLite_2.4.5         magrittr_2.0.4       
+    ##  [16] compiler_4.6.0        rlang_1.1.7           sass_0.4.10          
+    ##  [19] tools_4.6.0           yaml_2.3.12           data.table_1.18.0    
+    ##  [22] knitr_1.51            labeling_0.4.3        htmlwidgets_1.6.4    
     ##  [25] bit_4.6.0             curl_7.0.0            diagram_1.6.5        
     ##  [28] plyr_1.8.9            RColorBrewer_1.1-3    withr_3.0.2          
-    ##  [31] purrr_1.2.0           RProtoBufLib_2.23.0   BiocGenerics_0.57.0  
+    ##  [31] purrr_1.2.1           RProtoBufLib_2.23.0   BiocGenerics_0.57.0  
     ##  [34] PeacoQC_1.21.0        desc_1.4.3            grid_4.6.0           
     ##  [37] stats4_4.6.0          flowAI_1.41.0         colorspace_2.1-2     
     ##  [40] scales_1.4.0          iterators_1.0.14      cli_3.6.5            
     ##  [43] rmarkdown_2.30        crayon_1.5.3          ragg_1.5.0           
-    ##  [46] ncdfFlow_2.57.0       generics_0.1.4        rjson_0.2.23         
-    ##  [49] DBI_1.2.3             cachem_1.1.0          flowCore_2.23.0      
-    ##  [52] stringr_1.6.0         parallel_4.6.0        BiocManager_1.30.27  
-    ##  [55] matrixStats_1.5.0     vctrs_0.6.5           jsonlite_2.0.0       
-    ##  [58] cytolib_2.23.0        bookdown_0.45         IRanges_2.45.0       
-    ##  [61] GetoptLong_1.0.5      S4Vectors_0.49.0      bit64_4.6.0-1        
-    ##  [64] clue_0.3-66           Rgraphviz_2.55.0      systemfonts_1.3.1    
-    ##  [67] foreach_1.5.2         jquerylib_0.1.4       hexbin_1.28.5        
-    ##  [70] glue_1.8.0            pkgdown_2.2.0.9000    codetools_0.2-20     
-    ##  [73] stringi_1.8.7         shape_1.4.6.1         gtable_0.3.6         
-    ##  [76] ggcyto_1.39.0         ComplexHeatmap_2.27.0 tibble_3.3.0         
-    ##  [79] pillar_1.11.1         rappdirs_0.3.3        htmltools_0.5.8.1    
-    ##  [82] graph_1.89.0          circlize_0.4.16       R6_2.6.1             
-    ##  [85] dbplyr_2.5.1          httr2_1.2.1           textshaping_1.0.4    
-    ##  [88] doParallel_1.0.17     evaluate_1.0.5        flowWorkspace_4.23.0 
-    ##  [91] lattice_0.22-7        Biobase_2.71.0        png_0.1-8            
-    ##  [94] memoise_2.0.1         bslib_0.9.0           Rcpp_1.1.0           
-    ##  [97] gridExtra_2.3         xfun_0.54             zoo_1.8-14           
-    ## [100] fs_1.6.6              pkgconfig_2.0.3       GlobalOptions_0.1.2
+    ##  [46] ncdfFlow_2.57.0       generics_0.1.4        otel_0.2.0           
+    ##  [49] rjson_0.2.23          DBI_1.2.3             cachem_1.1.0         
+    ##  [52] flowCore_2.23.1       stringr_1.6.0         parallel_4.6.0       
+    ##  [55] BiocManager_1.30.27   matrixStats_1.5.0     vctrs_0.6.5          
+    ##  [58] jsonlite_2.0.0        cytolib_2.23.0        bookdown_0.46        
+    ##  [61] IRanges_2.45.0        GetoptLong_1.1.0      S4Vectors_0.49.0     
+    ##  [64] bit64_4.6.0-1         clue_0.3-66           Rgraphviz_2.55.0     
+    ##  [67] systemfonts_1.3.1     foreach_1.5.2         jquerylib_0.1.4      
+    ##  [70] hexbin_1.28.5         glue_1.8.0            pkgdown_2.2.0.9000   
+    ##  [73] codetools_0.2-20      stringi_1.8.7         shape_1.4.6.1        
+    ##  [76] gtable_0.3.6          ggcyto_1.39.1         ComplexHeatmap_2.27.0
+    ##  [79] tibble_3.3.1          pillar_1.11.1         rappdirs_0.3.3       
+    ##  [82] htmltools_0.5.9       graph_1.89.1          circlize_0.4.17      
+    ##  [85] R6_2.6.1              dbplyr_2.5.1          httr2_1.2.2          
+    ##  [88] textshaping_1.0.4     doParallel_1.0.17     evaluate_1.0.5       
+    ##  [91] flowWorkspace_4.23.1  lattice_0.22-7        Biobase_2.71.0       
+    ##  [94] png_0.1-8             memoise_2.0.1         bslib_0.9.0          
+    ##  [97] Rcpp_1.1.1            gridExtra_2.3         xfun_0.55            
+    ## [100] zoo_1.8-15            fs_1.6.6              pkgconfig_2.0.3      
+    ## [103] GlobalOptions_0.1.3
 
 ## References
 
