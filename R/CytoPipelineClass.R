@@ -322,7 +322,6 @@ setMethod(
             cat("No sample file\n")
         }
         if (!is.null(object@pData)) {
-            #browser()
             cat("pheno data (head):\n")
             show(head(object@pData))
         } else {
@@ -387,7 +386,6 @@ setMethod(
             sampleFiles = sampleFiles,
             pData = NULL # will be created later on
         )
-        #browser()
         x <- .makeSlots(x, object)
         x <- .makeProcessingQueues(x, object)
         if (!is.null(pData)) {
@@ -414,8 +412,6 @@ setMethod(
              sampleFiles = character(),
              pData = NULL) {
         
-        #browser()
-        
         pipelineParams <- jsonlite::read_json(
             object,
             simplifyVector = TRUE,
@@ -425,7 +421,6 @@ setMethod(
                           experimentName = experimentName,
                           sampleFiles = sampleFiles,
                           pData = pData)
-        #browser()
         return(x)
     }
 )
@@ -441,8 +436,6 @@ setMethod(
 #'
 as.list.CytoPipeline <- function(x, ...) {
     stopifnot(inherits(x, "CytoPipeline"))
-
-    # browser()
 
     slots <- methods::slotNames(x)
     slots <- slots[!slots %in% c(
@@ -557,7 +550,6 @@ pData <- function(x) {
 `pData<-` <- function(x, value) {
     stopifnot(inherits(x, "CytoPipeline"))
     stopifnot(inherits(value, "data.frame")) 
-    #browser()
     if (length(x@sampleFiles) == 0) {
         stop(paste0("Cannot assign pData to empty CytoPipeline object ",
                     "(no sample files)"))
@@ -693,7 +685,6 @@ sampleNameFromDisplayName <- function(x, displayName) {
 .validPData <- function(x) {
     msg <- NULL
     if (!is.null(x@pData)) {
-        #browser()
         if (!inherits(x@pData, "data.frame")) {
             return("Non-null @pData slot should be a data.frame")
         }
@@ -791,8 +782,6 @@ sampleNameFromDisplayName <- function(x, displayName) {
         inherits(x, "CytoPipeline"),
         is.list(params)
     ))
-
-    # browser()
 
     # generate scale transform processing queue
     if (!is.null(params$scaleTransformProcessingSteps)) {

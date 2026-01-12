@@ -226,6 +226,11 @@ readSampleFiles <- function(sampleFiles,
         res <- flowCore::read.flowSet(sampleFiles,
                                       ...)
         
+        # work around to have the full file paths in sampleNames
+        # as apparently this is not done automatically by
+        # flowCore::read.flowSet - only the base filename is stored
+        flowCore::sampleNames(res) <- sampleFiles
+        
         # Add a column with Cell ID
         res <- flowCore::fsApply(
             x = res,
@@ -233,7 +238,11 @@ readSampleFiles <- function(sampleFiles,
                 appendCellID(ff)
             }
         )
+        
+        
     } 
+    
+    
     
     # do we need to do any post processing to the files ?
     # => remove channels or update marker names ? 
@@ -513,7 +522,6 @@ compensateFromMatrix <- function(x,
                                  verbose = FALSE,
                                  ...) {
 
-    #browser()
     matrixSource <- match.arg(matrixSource)
     
     if (matrixSource == "import"){
@@ -554,7 +562,6 @@ compensateFromMatrix <- function(x,
                     matrixPath)
         }
         
-        #browser()
         if (matrixSource == "fcs") {
             # obtains compensation matrix
             compensationMatrix <-
