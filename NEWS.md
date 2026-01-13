@@ -4,6 +4,8 @@
 implemented a work-around in `readSampleFiles()`: forced flowSet sample names
 to full file paths as this was not done automatically 
 by `flowCore::read.flowSet()`. 
+- `estimateScaleTransforms()` now has `...` in parameter list, 
+allowing to pass additional parameters to `flowCore::estimateLogicle()`.
 
 # CytoPipeline 1.9
 

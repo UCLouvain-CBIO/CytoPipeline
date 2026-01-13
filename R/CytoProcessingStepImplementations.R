@@ -35,6 +35,7 @@
 #' @param specificScatterChannels vector of scatter channels for which we 
 #' still want to apply the fluo method (and not the scatter Method)
 #' @param verbose if TRUE, send messages to the user at each step
+#' @param ... additional parameters passed to flowCore::estimateLogicle()
 #'
 #' @return a flowCore::flowFrame with removed low quality events from the input
 #' @export
@@ -60,7 +61,8 @@ estimateScaleTransforms <- function(ff,
                                                       "linearQuantile"),
                                     scatterRefMarker = NULL,
                                     specificScatterChannels = NULL,
-                                    verbose = FALSE){
+                                    verbose = FALSE,
+                                    ...){
     fluoMethod <- match.arg(fluoMethod)
     scatterMethod <- match.arg(scatterMethod)
     
@@ -72,7 +74,7 @@ estimateScaleTransforms <- function(ff,
             ) 
         }
         fluoCols <- flowCore::colnames(ff)[areFluoCols(ff)]
-        transList <- flowCore::estimateLogicle(ff, fluoCols)
+        transList <- flowCore::estimateLogicle(ff, fluoCols, ...)
     } # else do nothing
     
     if (scatterMethod == "linearQuantile") {
@@ -121,7 +123,8 @@ estimateScaleTransforms <- function(ff,
         
         transList <- c(transList, 
                        flowCore::estimateLogicle(ff, 
-                                                 effectiveScatterChannels))
+                                                 effectiveScatterChannels,
+                                                 ...))
     }
     
     return(transList)
