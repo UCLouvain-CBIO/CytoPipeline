@@ -7,7 +7,7 @@
 
     CytoPipeline is a R package for automating and visualizating flow cytometry data analysis pipelines.
 
-    Copyright (C) <2022-2025> <Université catholique de Louvain (UCLouvain), Belgique>
+    Copyright (C) <2022-2026> <Université catholique de Louvain (UCLouvain), Belgique>
     The list of the contributors to the development of CytoPipeline is given in the DESCRIPTION file.
 
 
