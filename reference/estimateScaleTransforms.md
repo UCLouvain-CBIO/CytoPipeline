@@ -24,7 +24,8 @@ estimateScaleTransforms(
   scatterMethod = c("none", "linearQuantile"),
   scatterRefMarker = NULL,
   specificScatterChannels = NULL,
-  verbose = FALSE
+  verbose = FALSE,
+  ...
 )
 ```
 
@@ -54,6 +55,10 @@ estimateScaleTransforms(
 - verbose:
 
   if TRUE, send messages to the user at each step
+
+- ...:
+
+  additional parameters passed to flowCore::estimateLogicle()
 
 ## Value
 

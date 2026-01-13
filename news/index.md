@@ -8,6 +8,10 @@
   forced flowSet sample names to full file paths as this was not done
   automatically by
   [`flowCore::read.flowSet()`](https://rdrr.io/pkg/flowCore/man/read.flowSet.html).
+- [`estimateScaleTransforms()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/estimateScaleTransforms.md)
+  now has `...` in parameter list, allowing to pass additional
+  parameters to
+  [`flowCore::estimateLogicle()`](https://rdrr.io/pkg/flowCore/man/logicleTransform.html).
 
 ## CytoPipeline 1.9
 
