@@ -2,6 +2,8 @@
 
 ## CytoPipeline 1.11
 
+### CytoPipeline 1.11.1
+
 - Bug correction for scale transfo pipelines with sample specific data:
   implemented a work-around in
   [`readSampleFiles()`](https://uclouvain-cbio.github.io/CytoPipeline/reference/readSampleFiles.md):

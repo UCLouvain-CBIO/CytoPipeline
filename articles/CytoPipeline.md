@@ -947,12 +947,12 @@ a `CytoPipeline` object, this is the place to do it!
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] ggplot2_4.0.1       reshape2_1.4.5      CytoPipeline_1.11.0
+    ## [1] ggplot2_4.0.1       reshape2_1.4.5      CytoPipeline_1.11.1
     ## [4] BiocStyle_2.39.0   
     ## 
     ## loaded via a namespace (and not attached):
     ##   [1] changepoint_2.3       tidyselect_1.2.1      dplyr_1.1.4          
-    ##   [4] farver_2.1.2          blob_1.2.4            filelock_1.0.3       
+    ##   [4] farver_2.1.2          blob_1.3.0            filelock_1.0.3       
     ##   [7] S7_0.2.1              fastmap_1.2.0         BiocFileCache_3.1.0  
     ##  [10] XML_3.99-0.20         digest_0.6.39         lifecycle_1.0.5      
     ##  [13] cluster_2.1.8.1       RSQLite_2.4.5         magrittr_2.0.4       
