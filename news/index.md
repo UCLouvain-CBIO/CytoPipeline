@@ -1,5 +1,11 @@
 # Changelog
 
+## CytoPipeline 1.13
+
+### CytoPipeline 1.13.1
+
+(no change)
+
 ## CytoPipeline 1.11
 
 ### CytoPipeline 1.11.1
@@ -35,7 +41,7 @@
 
 - sample files can now have duplicate base names (provided full paths
   are different)
-- `pData<-` is now more liberal.  
+- `pData<-` is now more liberal.\
 
 1.  It can accept new pData containing more rows than existing sample
     names (the corresponding subset of pData is taken).

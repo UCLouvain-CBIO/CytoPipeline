@@ -1,9 +1,9 @@
 # plot events in 1D or 2D, using ggplot2
 
 plot events of specific channels of either : flowCore::flowFrame, or
-flowCore::flowSet in 2D or 1D, mimicking FlowJo type of graph.  
-if 1D : geom_density will be used  
-if 2D : geom_hex will be used  
+flowCore::flowSet in 2D or 1D, mimicking FlowJo type of graph.\
+if 1D : geom_density will be used\
+if 2D : geom_hex will be used\
 
 ## Usage
 

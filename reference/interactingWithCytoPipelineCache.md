@@ -43,8 +43,8 @@ checkCytoPipelineConsistencyWithCache(
 
 ## Value
 
-for `deleteCytoPipelineCache`: TRUE if successfully removed  
-for `buildCytoPipelineFromCache`: the built CytoPipeline object  
+for `deleteCytoPipelineCache`: TRUE if successfully removed\
+for `buildCytoPipelineFromCache`: the built CytoPipeline object\
 for `checkCytoPipelineConsistencyWithCache`: a list with the following
 values:
 
